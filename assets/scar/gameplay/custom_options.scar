@@ -121,11 +121,11 @@ function CustomOptions_SetPopCap(_match)
 	end
 
 	if pop_size > 0 then
-		InternalCustomOptions_SetPopCap(_match, pop_size)
+		InternalCustomOptions_SetPopCap(pop_size)
 	end
 end
 
-function InternalCustomOptions_SetPopCap(_match, pop_size)
+function InternalCustomOptions_SetPopCap(pop_size)
 	for _, player in pairs(PLAYERS) do
 		if Player_GetRaceName(player.id) == "mongol" then
 			Player_SetMaxPopulation(player.id, CT_Personnel, pop_size)
