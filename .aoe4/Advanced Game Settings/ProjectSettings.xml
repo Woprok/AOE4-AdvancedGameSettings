@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectSettings xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/Essence.Editor.Core">
+	<LastDocumentDirectory>D:\Games\SteamLibrary\steamapps\common\Age of Empires IV\cardinal\archives</LastDocumentDirectory>
+	<LastDocumentType>Script</LastDocumentType>
+	<PluginSettings xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+		<d2p1:anyType xmlns:d3p1="http://schemas.datacontract.org/2004/07/Essence.Editor.Controls" i:type="d3p1:FileExplorerProjectSettings">
+			<d3p1:ExpandedPaths>
+				<d2p1:KeyValueOfstringArrayOfstringty7Ep6D1>
+					<d2p1:Key>AssetExplorerGeneric</d2p1:Key>
+					<d2p1:Value>
+						<d2p1:string>assets\attrib\instances\army</d2p1:string>
+						<d2p1:string>assets\locdb</d2p1:string>
+						<d2p1:string>assets\scar\gamemodes</d2p1:string>
+						<d2p1:string>assets\scar\gameplay</d2p1:string>
+						<d2p1:string>assets\scar\winconditions</d2p1:string>
+					</d2p1:Value>
+				</d2p1:KeyValueOfstringArrayOfstringty7Ep6D1>
+			</d3p1:ExpandedPaths>
+			<d3p1:Version>0</d3p1:Version>
+		</d2p1:anyType>
+	</PluginSettings>
+	<RecentFiles>
+		<History xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+			<d3p1:string>D:\Woprok\AOE4\Advanced Game Settings\assets\attrib\Advanced Game Attributes.xml</d3p1:string>
+			<d3p1:string>D:\Woprok\AOE4\Advanced Game Settings\assets\scar\winconditions\regicide.scar</d3p1:string>
+			<d3p1:string>D:\Woprok\AOE4\Advanced Game Settings\assets\scar\gameplay\custom_options.scar</d3p1:string>
+			<d3p1:string>D:\Woprok\AOE4\Advanced Game Settings\assets\scar\winconditions\advanced_mode.rdo</d3p1:string>
+			<d3p1:string>D:\Woprok\AOE4\Advanced Game Settings\assets\scar\gamemodes\advanced_mode.scar</d3p1:string>
+			<d3p1:string>D:\Woprok\AOE4\Advanced Game Settings\assets\attrib\instances\army\english.xml</d3p1:string>
+			<d3p1:string>C:\Users\Woprok-NB\AppData\Local\Temp\mongol.rgd</d3p1:string>
+			<d3p1:string>C:\Users\Woprok-NB\AppData\Local\Temp\hre.rgd</d3p1:string>
+			<d3p1:string>C:\Users\Woprok-NB\AppData\Local\Temp\abbasid.rgd</d3p1:string>
+			<d3p1:string>D:\Games\SteamLibrary\steamapps\common\Age of Empires IV\cardinal\archives\Attrib.sga</d3p1:string>
+		</History>
+	</RecentFiles>
+</ProjectSettings>

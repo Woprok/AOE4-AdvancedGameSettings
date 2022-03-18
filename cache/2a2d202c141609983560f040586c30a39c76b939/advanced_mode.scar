@@ -1,0 +1,397 @@
+-----------------------------------------------------------------------
+--
+-- Standard Game Mode 
+--
+-- (c) Relic Entertainment 2017
+--
+-----------------------------------------------------------------------
+import("cardinal.scar")
+
+-----------------------------------------------------------------------
+-- Scripting framework 
+-----------------------------------------------------------------------
+
+Core_RegisterModule("StandardMode")		-- Call this before importing vision.scar so StandardMode_OnGameSetup() is called before Vision_OnGameSetup()   
+
+-- replay system
+import("replay/replaystatviewer.scar")
+
+-- gameplay systems
+import("gameplay/score.scar")
+import("gameplay/diplomacy.scar")
+import("gameplay/vision.scar")
+import("gameplay/cheat.scar") 
+
+-- start conditions
+import("startconditions/classic_start.scar")
+import("startconditions/nomad_start.scar")
+
+-- win conditions
+import("winconditions/annihilation.scar")	-- When conquest, religious, and wonder are all unselected in match options
+import("winconditions/elimination.scar")	-- For players who quit or drop (through pause menu or disconnection)
+import("winconditions/surrender.scar")		-- For players who surrender (through pause menu)
+import("winconditions/conquest.scar")
+import("winconditions/wonder.scar")
+import("winconditions/religious.scar")
+import("winconditions/regicide.scar")
+
+-- training
+import("training/coretraininggoals.scar")
+import("training/frenchtraininggoals.scar")
+import("training/englishtraininggoals.scar")
+import("training/sultanatetraininggoals.scar")
+import("training/rustraininggoals.scar")
+import("training/mongoltraininggoals.scar")
+import("training/chinesetraininggoals.scar")
+import("training/abbasidtraininggoals.scar")
+
+-- UI support
+import("gameplay/event_cues.scar")
+import("gameplay/currentageui.scar")
+import("gameplay/chi/current_dynasty_ui.scar")
+
+-----------------------------------------------------------------------
+-- Data
+-----------------------------------------------------------------------
+
+_match = {
+	options = {},
+	is_cheat_enabled = false,
+	is_diplomacy_enabled = false,
+	is_tribute_enabled = true,
+	speed = {						-- modifier multipliers 
+		setspeed = 1,
+		build = 1,
+		repair = 1,
+		gather = 1,		
+		upgrade = 1,
+		production = 1,
+		modifiers = {},
+	},
+	custom = {
+		max_age = 4,	
+	}
+}
+
+
+-----------------------------------------------------------------------
+-- Callbacks
+-----------------------------------------------------------------------
+
+-- Callback invoked by OnGameSetup() in core.scar
+function StandardMode_OnGameSetup()
+	
+	Setup_GetWinConditionOptions(_match.options)
+	
+	-- Win condition options
+	if _match.options.section_inner_win_conditions then
+		if not _match.options.section_inner_win_conditions.option_win_condition_conquest then
+			Core_UnregisterModule("Conquest")
+		end	
+	
+		if not _match.options.section_inner_win_conditions.option_win_condition_religious then
+			Core_UnregisterModule("Religious")
+		end
+		
+		if not _match.options.section_inner_win_conditions.option_win_condition_wonder then
+			Core_UnregisterModule("Wonder")
+		end	
+		
+		if not _match.options.section_inner_win_conditions.option_win_condition_regicide then
+			Core_UnregisterModule("Regicide")
+		end	
+	end
+
+	--Starting age
+	if _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_start_nomad then 
+		--_match.options.section_starting_conditions.option_start_age.enum_value == _match.options.section_starting_conditions.option_start_age.enum_items.option_start_nomad then
+		Core_UnregisterModule("ClassicStart")
+	else
+		Core_UnregisterModule("NomadStart")				
+	end
+
+	--Shared vision
+	if not _match.options.section_starting_conditions
+		or not _match.options.section_starting_conditions.option_vision
+		or _match.options.section_starting_conditions.option_vision.enum_value == _match.options.section_starting_conditions.option_vision.enum_items.option_vision_default then
+		--(_match.options.section_starting_conditions and _match.options.section_starting_conditions.option_vision.enum_value == _match.options.section_starting_conditions.option_vision.enum_items.option_vision_default) then
+		Core_UnregisterModule("Vision")	
+	end
+	
+	--Diplomacy options
+	if _match.options.section_diplomacy then
+		_match.is_diplomacy_enabled = not _match.options.section_diplomacy.option_diplomacy_teams		
+		_match.is_tribute_enabled = _match.options.section_diplomacy.option_diplomacy_tribute
+	end
+	
+	-- Set player behaviour when eliminated
+	if _match.options.section_endgame then 
+		allow_spectators = _match.options.section_endgame.option_allow_spectators
+	end
+	
+	_match.is_cheat_enabled = Misc_IsCommandLineOptionSet("cheat")
+	_match.revealMap = Misc_IsCommandLineOptionSet("no_fow")
+end
+
+function StandardMode_SetPopCap()
+	local pop_size = 200
+	if
+		_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_50 then
+		pop_size = 50
+	elseif
+		_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_100 then
+		pop_size = 100
+	elseif
+		_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_150 then
+		pop_size = 150
+	elseif
+		_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_200 then
+		pop_size = 200
+	elseif
+		_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_300 then
+		pop_size = 300
+	elseif
+		_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_400 then
+		pop_size = 400
+	elseif
+		_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_500 then
+		pop_size = 500
+	elseif
+		_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_1000 then
+		pop_size = 1000
+	elseif
+		_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_10000 then
+		pop_size = 10000
+	end
+	
+	for _, player in pairs(PLAYERS) do
+		if Player_GetRaceName(player.id) == "mongol" then
+			Player_SetMaxPopulation(player.id, CT_Personnel, pop_size)
+			Player_SetMaxPopulation(player.id, CT_Vehicle, pop_size)
+		end	
+		Player_SetMaxCapPopulation(player.id, CT_Personnel, pop_size)
+		Player_SetMaxCapPopulation(player.id, CT_Vehicle, pop_size)
+	end
+	
+end
+
+function StandardMode_SetAgeCap()
+	local last_age = 4
+	if
+		_match.options.section_custom_conditions.option_max_age.enum_value == _match.options.section_custom_conditions.option_max_age.enum_items.option_max_age_1 then
+		last_age = AGE_DARK
+	elseif
+		_match.options.section_custom_conditions.option_max_age.enum_value == _match.options.section_custom_conditions.option_max_age.enum_items.option_max_age_2 then
+		last_age = AGE_FEUDAL
+	elseif
+		_match.options.section_custom_conditions.option_max_age.enum_value == _match.options.section_custom_conditions.option_max_age.enum_items.option_max_age_3 then
+		last_age = AGE_CASTLE
+	elseif
+		_match.options.section_custom_conditions.option_max_age.enum_value == _match.options.section_custom_conditions.option_max_age.enum_items.option_max_age_4 then
+		last_age = AGE_IMPERIAL
+	end
+	_match.custom.max_age = last_age
+
+	
+	for _, player in pairs(PLAYERS) do
+		if Player_GetRaceName(player.id) == "abbasid" then
+			set_abbasids_age_limit(player)
+		end
+		
+		Player_SetMaximumAge(player.id, last_age)
+	end
+	Rule_AddGlobalEvent(StandardMode_OnUpdateComplete, GE_UpgradeComplete);
+end
+
+-- Callback invoked by OnInit() in core.scar
+function StandardMode_OnInit()
+
+	UI_AllTerritoryHide()
+
+	Core_CallDelegateFunctions("DiplomacyEnabled", _match.is_diplomacy_enabled)
+	Core_CallDelegateFunctions("TributeEnabled", _match.is_tribute_enabled)
+	
+	ReplayStatViewer_PopulateReplayStatTabs({"CurrentResourcesTemplate", "IncomeTemplate", "MilitaryTemplate"})
+
+	
+	if _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_speed and 
+		_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_1x then
+		StandardMode_SetSpeed(1)
+	elseif _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_speed and 
+		_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_2x then
+		StandardMode_SetSpeed(2)	
+	elseif _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_speed and 
+		_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_3x then
+		StandardMode_SetSpeed(3)	
+	elseif _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_speed and 
+		_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_5x then
+		StandardMode_SetSpeed(5)	
+	elseif _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_speed and 
+		_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_10x then
+		StandardMode_SetSpeed(10)
+	end
+	
+	for _, player in pairs(PLAYERS) do
+		
+	end
+	
+	if _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_pop then
+		StandardMode_SetPopCap()
+	end
+	if _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_max_age then
+		StandardMode_SetAgeCap()
+	end
+	
+	if _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_speed then
+		Rule_AddGlobalEvent(StandardMode_OnConstructionComplete, GE_ConstructionComplete)
+	end	
+	
+	-- Optionally remove initial units
+	if Misc_IsCommandLineOptionSet("no_units") then
+        for _, player in pairs(PLAYERS) do              
+            SGroup_DestroyAllSquads(Player_GetSquads(player.id))
+            print(string.format("StandardMode_OnInit() - Removed all squads owned by Player %d", player.index))
+        end         
+    end
+	
+	-- Optionally remove gaia animals
+	if Misc_IsCommandLineOptionSet("no_gaia") then    
+        local egroup = EGroup_CreateUnique()
+        World_GetAllNeutralEntities(egroup)
+        EGroup_Filter(egroup, "animal", FILTER_KEEP)
+        EGroup_DestroyAllEntities(egroup)    		
+		EGroup_Destroy(egroup)
+		print(string.format("StandardMode_OnInit() - All neutral animal entities removed"))
+    end
+end
+
+function StandardMode_Start()
+	-- Fog of war options
+	if (_match.options.section_starting_conditions and _match.options.section_starting_conditions.option_fow) then
+		if (_match.options.section_starting_conditions.option_fow.enum_value == _match.options.section_starting_conditions.option_fow.enum_items.option_fow_explore) then 
+			FOW_ExploreAll()
+		elseif (_match.options.section_starting_conditions.option_fow.enum_value == _match.options.section_starting_conditions.option_fow.enum_items.option_fow_reveal) then
+			FOW_ForceRevealAllUnblockedAreas()
+		end
+	end
+
+	-- UI Options
+	if (_match.options.section_starting_conditions and _match.options.section_starting_conditions.option_score) then
+		for _, player in pairs(PLAYERS) do
+			player.scarModel.show_actual_score = true
+			UI_SetPlayerDataContext(player.id, player.scarModel)
+		end
+	end
+end
+
+
+-- Callback invoked by Core_OnGameOver() 
+function StandardMode_OnGameOver()
+	Rule_RemoveGlobalEvent(StandardMode_OnConstructionComplete)
+	Rule_RemoveGlobalEvent(StandardMode_OnUpdateComplete)
+end
+
+function set_abbasids_age_limit(player)
+	if _match.custom.max_age == 1 then
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_culture_wing"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_economy_wing"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_military_wing"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_trade_wing"), ITEM_LOCKED)
+	end
+	if _match.custom.max_age == 2 then
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_culture_wing_feudal"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_economy_wing_feudal"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_military_wing_feudal"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_trade_wing_feudal"), ITEM_LOCKED)
+	end
+	if _match.custom.max_age == 3 then
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_culture_wing_castle"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_economy_wing_castle"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_military_wing_castle"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_trade_wing_castle"), ITEM_LOCKED)
+	end
+	if _match.custom.max_age == 4 then
+		--Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_culture_wing_imperial"), ITEM_LOCKED)
+		--Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_economy_wing_imperial"), ITEM_LOCKED)
+		--Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_military_wing_imperial"), ITEM_LOCKED)
+		--Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_add_trade_wing_imperial"), ITEM_LOCKED)
+	end
+end
+
+-- Global event callback for GE_UpgradeComplete
+function StandardMode_OnUpdateComplete(context)	
+
+	for _, player in pairs(PLAYERS) do
+		if Player_GetRaceName(player.id) == "abbasid" then
+			-- nerf abbassids and their age up
+			if _match.options.section_custom_conditions and 
+				_match.options.section_custom_conditions.option_max_age and
+				Player_GetCurrentAge(player.id) == _match.custom.max_age then
+				-- get max age allowed
+				set_abbasids_age_limit(player)
+				--Player_SetUpgradeAvailability(player.id, ,ITEM_LOCKED)
+			end
+		end
+	end
+end
+
+
+
+-- Global event callback for GE_ConstructionComplete
+function StandardMode_OnConstructionComplete(context)	
+
+	local player = Core_GetPlayersTableEntry(context.player)
+	local entity = context.entity
+		
+	-- Accelerate unit production if cheat/option enabled
+	if _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_speed then
+			Modifier_ApplyToEntity(Modifier_Create(MAT_Entity, "production_speed_modifier", MUT_Multiplication, false, _match.speed.setspeed, nil), entity, 0.0)
+			Modifier_ApplyToEntity(Modifier_Create(MAT_Entity, "cost_ticks_modifier", MUT_Multiplication, false, 1/_match.speed.setspeed, nil), entity, 0.0)
+	end
+end
+
+
+-- Modifies the default gathering, construction, production, and upgrade speeds for all units and players.
+function StandardMode_SetSpeed(speed)
+	
+	-- Removed existing speed modifiers
+	for _, modifier in pairs(_match.speed.modifiers) do
+		Modifier_RemoveInternal(modifier.ModifierID)
+	end
+	_match.speed.modifiers = {}
+	_match.speed.setspeed = speed
+	_match.speed.build = speed
+	_match.speed.repair = speed
+	_match.speed.gather = speed
+	_match.speed.upgrade = speed
+	_match.speed.production = speed
+	
+	local ApplyModifier = function(player_id, modifier_ebp, modifier_type, modifier_value)
+		if modifier_value ~= 1 then 
+			local modifier = Modifier_Create(MAT_EntityType, modifier_type, MUT_Multiplication, false, modifier_value, modifier_ebp)
+			Modifier_ApplyToPlayer(modifier, player_id, 0.0)
+			table.insert(_match.speed.modifiers, modifier)
+		end
+	end
+	
+	-- Apply new modifiers
+	for _, player in pairs(PLAYERS) do	
+		local villager_ebp = Cardinal_ConvertTypeToEntityBlueprint("villager", player.id)		
+		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_food", _match.speed.gather)
+		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_wood", _match.speed.gather)
+		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_gold", _match.speed.gather)
+		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_stone", _match.speed.gather)
+		ApplyModifier(player.id, villager_ebp, "construction_rate", _match.speed.build)
+--		ApplyModifier(player.id, villager_ebp, "repair_rate_modifier", _match.speed.repair)
+	end
+end

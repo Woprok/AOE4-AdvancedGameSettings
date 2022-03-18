@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BurnProject xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/Essence.Editor.Core.Burning">
+	<Excludes i:nil="true" />
+	<NamedBurnerParameters>
+		<NamedParameters>
+			<Description i:nil="true" />
+			<Name>Attributes</Name>
+			<Parameters xmlns:d4p1="http://schemas.datacontract.org/2004/07/Essence.Editor.Attributes.Burning" i:type="d4p1:AttributeBurnParameters">
+				<d4p1:CheckForMigrations>false</d4p1:CheckForMigrations>
+				<d4p1:InstanceExcludes i:nil="true" />
+				<d4p1:ValidateInstances>true</d4p1:ValidateInstances>
+			</Parameters>
+		</NamedParameters>
+		<NamedParameters>
+			<Description i:nil="true" />
+			<Name>Localization</Name>
+			<Parameters xmlns:d4p1="http://schemas.datacontract.org/2004/07/Essence.Editor.Localization.Burning" i:type="d4p1:UCSBurnParameters">
+				<d4p1:ExcludeTags i:nil="true" />
+				<d4p1:IncludeTags i:nil="true" />
+				<d4p1:Locales i:nil="true" />
+				<d4p1:Prefix i:nil="true" />
+				<d4p1:PseudolocalizationElongate>true</d4p1:PseudolocalizationElongate>
+				<d4p1:PseudolocalizationPrefix i:nil="true" />
+				<d4p1:Pseudolocalize>true</d4p1:Pseudolocalize>
+				<d4p1:ReadyForTranslation>false</d4p1:ReadyForTranslation>
+			</Parameters>
+		</NamedParameters>
+		<NamedParameters>
+			<Description i:nil="true" />
+			<Name>Lua</Name>
+			<Parameters xmlns:d4p1="http://schemas.datacontract.org/2004/07/Essence.Editor.Bridge.Burning" i:type="d4p1:LuaBurnParameters">
+				<d4p1:Format>Text</d4p1:Format>
+				<d4p1:StripDebugInformation>false</d4p1:StripDebugInformation>
+			</Parameters>
+		</NamedParameters>
+		<NamedParameters>
+			<Description i:nil="true" />
+			<Name>Reflect</Name>
+			<Parameters xmlns:d4p1="http://schemas.datacontract.org/2004/07/Essence.Editor.Burning" i:type="d4p1:ReflectBurnerParameters">
+				<d4p1:Extension i:nil="true" />
+				<d4p1:SerializeTypes>true</d4p1:SerializeTypes>
+				<d4p1:ValidateDataObjects>true</d4p1:ValidateDataObjects>
+			</Parameters>
+		</NamedParameters>
+		<NamedParameters>
+			<Description i:nil="true" />
+			<Name>UI Textures</Name>
+			<Parameters xmlns:d4p1="http://schemas.datacontract.org/2004/07/Essence.Editor.Bridge.Burning" i:type="d4p1:TextureBurnParameters">
+				<d4p1:AlphaBorder>0</d4p1:AlphaBorder>
+				<d4p1:AlphaBorderA>0</d4p1:AlphaBorderA>
+				<d4p1:BinaryAlphaThreshold>127</d4p1:BinaryAlphaThreshold>
+				<d4p1:BurnAsV3>false</d4p1:BurnAsV3>
+				<d4p1:ColourBorder>0</d4p1:ColourBorder>
+				<d4p1:ColourBorderB>0</d4p1:ColourBorderB>
+				<d4p1:ColourBorderG>0</d4p1:ColourBorderG>
+				<d4p1:ColourBorderR>0</d4p1:ColourBorderR>
+				<d4p1:ColourSpace>Linear</d4p1:ColourSpace>
+				<d4p1:DitherAlpha>false</d4p1:DitherAlpha>
+				<d4p1:DitherColour>false</d4p1:DitherColour>
+				<d4p1:FailIfTooBig>true</d4p1:FailIfTooBig>
+				<d4p1:FlipImage>false</d4p1:FlipImage>
+				<d4p1:ForceFormat>false</d4p1:ForceFormat>
+				<d4p1:MaxDimension>2048</d4p1:MaxDimension>
+				<d4p1:MipmapFilter>None</d4p1:MipmapFilter>
+				<d4p1:MixInputs i:nil="true" />
+				<d4p1:MixInputsDefaults i:nil="true" />
+				<d4p1:PerceptualWeighting>false</d4p1:PerceptualWeighting>
+				<d4p1:PreferredFormat>BC7</d4p1:PreferredFormat>
+				<d4p1:PremultiplyAlpha>false</d4p1:PremultiplyAlpha>
+				<d4p1:Rescale>None</d4p1:Rescale>
+				<d4p1:RescaleFilter>Quadratic</d4p1:RescaleFilter>
+				<d4p1:ShrinkSingleColorTextures>false</d4p1:ShrinkSingleColorTextures>
+				<d4p1:StorageSegmentSize>0</d4p1:StorageSegmentSize>
+			</Parameters>
+		</NamedParameters>
+		<NamedParameters>
+			<Description i:nil="true" />
+			<Name>UI Textures (Scenarios)</Name>
+			<Parameters xmlns:d4p1="http://schemas.datacontract.org/2004/07/Essence.Editor.Bridge.Burning" i:type="d4p1:TextureBurnParameters">
+				<d4p1:AlphaBorder>0</d4p1:AlphaBorder>
+				<d4p1:AlphaBorderA>0</d4p1:AlphaBorderA>
+				<d4p1:BinaryAlphaThreshold>127</d4p1:BinaryAlphaThreshold>
+				<d4p1:BurnAsV3>false</d4p1:BurnAsV3>
+				<d4p1:ColourBorder>0</d4p1:ColourBorder>
+				<d4p1:ColourBorderB>0</d4p1:ColourBorderB>
+				<d4p1:ColourBorderG>0</d4p1:ColourBorderG>
+				<d4p1:ColourBorderR>0</d4p1:ColourBorderR>
+				<d4p1:ColourSpace>Linear</d4p1:ColourSpace>
+				<d4p1:DitherAlpha>false</d4p1:DitherAlpha>
+				<d4p1:DitherColour>false</d4p1:DitherColour>
+				<d4p1:FailIfTooBig>false</d4p1:FailIfTooBig>
+				<d4p1:FlipImage>false</d4p1:FlipImage>
+				<d4p1:ForceFormat>false</d4p1:ForceFormat>
+				<d4p1:MaxDimension>0</d4p1:MaxDimension>
+				<d4p1:MipmapFilter>None</d4p1:MipmapFilter>
+				<d4p1:MixInputs i:nil="true" />
+				<d4p1:MixInputsDefaults i:nil="true" />
+				<d4p1:PerceptualWeighting>false</d4p1:PerceptualWeighting>
+				<d4p1:PreferredFormat>BC7</d4p1:PreferredFormat>
+				<d4p1:PremultiplyAlpha>false</d4p1:PremultiplyAlpha>
+				<d4p1:Rescale>MultipleOfFour_Nearest</d4p1:Rescale>
+				<d4p1:RescaleFilter>Quadratic</d4p1:RescaleFilter>
+				<d4p1:ShrinkSingleColorTextures>false</d4p1:ShrinkSingleColorTextures>
+				<d4p1:StorageSegmentSize>0</d4p1:StorageSegmentSize>
+			</Parameters>
+		</NamedParameters>
+	</NamedBurnerParameters>
+	<NamedPackagerParameters>
+		<NamedParameters>
+			<Description i:nil="true" />
+			<Name>Archive</Name>
+			<Parameters xmlns:d4p1="http://schemas.datacontract.org/2004/07/Essence.Editor.Bridge.Burning" i:type="d4p1:ArchiveParameters">
+				<d4p1:ArchiveSignature i:nil="true" />
+				<d4p1:BlockSize>0</d4p1:BlockSize>
+				<d4p1:CreationPolicy>AlwaysCreate</d4p1:CreationPolicy>
+				<d4p1:DefaultStorageType>StreamCompress</d4p1:DefaultStorageType>
+				<d4p1:DefaultVerificationType>SHA1Blocks</d4p1:DefaultVerificationType>
+				<d4p1:FileStorageSettings>
+					<d4p1:ArchiveParameters.FileStorageSetting>
+						<d4p1:Extensions>.events;.info;.prefabdata;.scar;.scenref</d4p1:Extensions>
+						<d4p1:MaxSize>0</d4p1:MaxSize>
+						<d4p1:MinSize>0</d4p1:MinSize>
+						<d4p1:StorageType>BufferCompress</d4p1:StorageType>
+					</d4p1:ArchiveParameters.FileStorageSetting>
+					<d4p1:ArchiveParameters.FileStorageSetting>
+						<d4p1:Extensions>.rrtex</d4p1:Extensions>
+						<d4p1:MaxSize>0</d4p1:MaxSize>
+						<d4p1:MinSize>0</d4p1:MinSize>
+						<d4p1:StorageType>Store</d4p1:StorageType>
+					</d4p1:ArchiveParameters.FileStorageSetting>
+				</d4p1:FileStorageSettings>
+				<d4p1:FileVerificationSettings>
+					<d4p1:ArchiveParameters.FileVerificationSetting>
+						<d4p1:Extensions>.rrtex</d4p1:Extensions>
+						<d4p1:MaxSize>0</d4p1:MaxSize>
+						<d4p1:MinSize>0</d4p1:MinSize>
+						<d4p1:VerificationType>CRC</d4p1:VerificationType>
+					</d4p1:ArchiveParameters.FileVerificationSetting>
+				</d4p1:FileVerificationSettings>
+				<d4p1:Name>Advanced_Game_Settings</d4p1:Name>
+				<d4p1:NiceName>64c5019a145c4e4da448dbd3adeea61e</d4p1:NiceName>
+				<d4p1:Version>0</d4p1:Version>
+			</Parameters>
+		</NamedParameters>
+	</NamedPackagerParameters>
+	<Rules>
+		<BurnRule>
+			<Alias>attrib</Alias>
+			<Burner>Mod Attributes</Burner>
+			<Configurations>Debug Release Profile RTM</Configurations>
+			<Excludes i:nil="true" />
+			<Includes>attrib\*.xml</Includes>
+			<IsEnabled>true</IsEnabled>
+			<NamedParameters>Attributes</NamedParameters>
+			<PathOverride i:nil="true" />
+			<Target>Archive</Target>
+		</BurnRule>
+		<BurnRule>
+			<Alias>locale</Alias>
+			<Burner>UCS</Burner>
+			<Configurations>Debug Release Profile RTM</Configurations>
+			<Excludes i:nil="true" />
+			<Includes>locdb\*.locdb</Includes>
+			<IsEnabled>true</IsEnabled>
+			<NamedParameters>Localization</NamedParameters>
+			<PathOverride></PathOverride>
+			<Target>Archive</Target>
+		</BurnRule>
+		<BurnRule>
+			<Alias>info</Alias>
+			<Burner>ReflectBurner</Burner>
+			<Configurations>Debug Release Profile RTM</Configurations>
+			<Excludes i:nil="true" />
+			<Includes>mod.*</Includes>
+			<IsEnabled>true</IsEnabled>
+			<NamedParameters>Reflect</NamedParameters>
+			<PathOverride i:nil="true" />
+			<Target>Archive</Target>
+		</BurnRule>
+		<BurnRule>
+			<Alias>info</Alias>
+			<Burner>RRTextureBurner</Burner>
+			<Configurations>Debug Release Profile RTM</Configurations>
+			<Excludes i:nil="true" />
+			<Includes>mod.*</Includes>
+			<IsEnabled>true</IsEnabled>
+			<NamedParameters>UI Textures</NamedParameters>
+			<PathOverride i:nil="true" />
+			<Target>Archive</Target>
+		</BurnRule>
+		<BurnRule>
+			<Alias>data</Alias>
+			<Burner>Lua</Burner>
+			<Configurations>Debug Release Profile RTM</Configurations>
+			<Excludes i:nil="true" />
+			<Includes>scar\**\*.scar</Includes>
+			<IsEnabled>true</IsEnabled>
+			<NamedParameters>Lua</NamedParameters>
+			<PathOverride i:nil="true" />
+			<Target>Archive</Target>
+		</BurnRule>
+		<BurnRule>
+			<Alias>data</Alias>
+			<Burner>Lua</Burner>
+			<Configurations>Debug Release Profile RTM</Configurations>
+			<Excludes i:nil="true" />
+			<Includes>scar\terrainlayout\**\*.lua</Includes>
+			<IsEnabled>true</IsEnabled>
+			<NamedParameters>Lua</NamedParameters>
+			<PathOverride i:nil="true" />
+			<Target>Archive</Target>
+		</BurnRule>
+		<BurnRule>
+			<Alias>data</Alias>
+			<Burner>ReflectBurner</Burner>
+			<Configurations>Debug Release Profile RTM</Configurations>
+			<Excludes i:nil="true" />
+			<Includes>scar\winconditions\**\*.*;scenarios\**\*.*</Includes>
+			<IsEnabled>true</IsEnabled>
+			<NamedParameters>Reflect</NamedParameters>
+			<PathOverride i:nil="true" />
+			<Target>Archive</Target>
+		</BurnRule>
+		<BurnRule>
+			<Alias>data</Alias>
+			<Burner>RRTextureBurner</Burner>
+			<Configurations>Debug Release Profile RTM</Configurations>
+			<Excludes i:nil="true" />
+			<Includes>scenarios\**\*.*</Includes>
+			<IsEnabled>true</IsEnabled>
+			<NamedParameters>UI Textures (Scenarios)</NamedParameters>
+			<PathOverride i:nil="true" />
+			<Target>Archive</Target>
+		</BurnRule>
+		<BurnRule>
+			<Alias>data</Alias>
+			<Burner>Chunky</Burner>
+			<Configurations>Debug Release Profile RTM</Configurations>
+			<Excludes></Excludes>
+			<Includes>scenarios\**\*.aps;scenarios\**\*.exclude;scenarios\**\*.layer;scenarios\**\*.nis;scenarios\**\*.override;scenarios\**\*.scenario</Includes>
+			<IsEnabled>true</IsEnabled>
+			<NamedParameters i:nil="true" />
+			<PathOverride i:nil="true" />
+			<Target>Archive</Target>
+		</BurnRule>
+		<BurnRule>
+			<Alias>data</Alias>
+			<Burner>Lua</Burner>
+			<Configurations>Debug Release Profile RTM</Configurations>
+			<Excludes i:nil="true" />
+			<Includes>scenarios\**\*.events;scenarios\**\*.info;scenarios\**\*.prefabdata;scenarios\**\*.scar;scenarios\**\*.scenref</Includes>
+			<IsEnabled>true</IsEnabled>
+			<NamedParameters>Lua</NamedParameters>
+			<PathOverride i:nil="true" />
+			<Target>Archive</Target>
+		</BurnRule>
+		<BurnRule>
+			<Alias>info</Alias>
+			<Burner>RRTextureBurner</Burner>
+			<Configurations>Debug Release Profile RTM</Configurations>
+			<Excludes i:nil="true" />
+			<Includes>screenshots\*.*</Includes>
+			<IsEnabled>true</IsEnabled>
+			<NamedParameters>UI Textures</NamedParameters>
+			<PathOverride i:nil="true" />
+			<Target>Archive</Target>
+		</BurnRule>
+		<BurnRule>
+			<Alias>data</Alias>
+			<Burner>RRTextureBurner</Burner>
+			<Configurations>Debug Release Profile RTM</Configurations>
+			<Excludes></Excludes>
+			<Includes>ui\icons\**\*.*;ui\images\**\*.*</Includes>
+			<IsEnabled>true</IsEnabled>
+			<NamedParameters>UI Textures</NamedParameters>
+			<PathOverride i:nil="true" />
+			<Target>Archive</Target>
+		</BurnRule>
+	</Rules>
+	<Targets>
+		<BurnTarget>
+			<CanPreview>false</CanPreview>
+			<Description i:nil="true" />
+			<Name>Archive</Name>
+			<NamedParameters>Archive</NamedParameters>
+			<Packager>Archive</Packager>
+			<Tags i:nil="true" />
+		</BurnTarget>
+	</Targets>
+</BurnProject>

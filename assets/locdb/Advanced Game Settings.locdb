@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Metadata xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="Localization">
+	<CustomDictionary xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+	<CustomFields />
+	<Locales>
+		<Locale>
+			<DisplayName>English</DisplayName>
+			<EngineName i:nil="true" />
+			<Name>en</Name>
+		</Locale>
+	</Locales>
+	<Pipelines />
+	<Scans />
+	<StorageLocations>
+		<StorageLocation>
+			<DisplayName>Default</DisplayName>
+			<RelativePath>.</RelativePath>
+			<SerializeCustomFields>true</SerializeCustomFields>
+		</StorageLocation>
+	</StorageLocations>
+	<Tags />
+	<Version>2</Version>
+</Metadata>

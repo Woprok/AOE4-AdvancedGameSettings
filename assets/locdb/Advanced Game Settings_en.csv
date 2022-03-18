@@ -1,0 +1,112 @@
+﻿ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
+1,,,Mod name.,,,Advanced Game Settings
+2,,,Mod description.,,,"Extends standard options with following:\nStarting Age: Nomad\nLast Age: Age I, Age II, Age III, Age IV\nPopulation Capacity: 50, 100, 150, 200, 300, 400, 500, 1000, 10000\nGame Speed: 1x, 2x, 3x, 5x, 10x\nWin Conditions: Includes Regicide\n\nRegicide changes:\nSpawns castle for each player next to a TC."
+3,,,,,,Advanced Game Settings
+4,,,,,,Win Conditions
+5,,,,,,Advanced Match Options
+6,,,,,,Match Options
+7,,,,,,Reveal On Elimination
+8,,,,,,Reveal Fog of War to eliminated players
+9,,,,,,Reveal Fog of War to eliminated players
+10,,,,,,Initial state of the map
+11,,,,,,Initial state of the map
+12,,,,,,Map State
+13,,,,,,Concealed
+14,,,,,,Concealed
+15,,,,,,Explored
+16,,,,,,Explored
+17,,,,,,Revealed
+18,,,,,,Revealed
+19,,,,,,Player Scores are visible when Pinned Player Information is On
+20,,,,,,Player Scores are visible when Pinned Player Information is On
+21,,,,,,Display Player Scores
+22,,,,,,"Combine standard mode with Regicide or just change settings with new options like nomad start, population capacity, speed and last age."
+23,,,,,,Landmarks
+24,,,,,,Destroy all enemy Landmarks
+25,,,,,,Landmarks
+26,,,,,,Wonder
+27,,,,,,Build and defend Wonder
+28,,,,,,Wonder
+29,,,,,,Control all the Sacred Sites
+30,,,,,,Sacred
+31,,,,,,Sacred
+32,,,,,,Starting Resources
+33,,,,,,Resources allotted to each player at match start
+34,,,,,,Resources allotted to each player at match start
+35,,,,,,Standard
+36,,,,,,Standard
+37,,,,,,High
+38,,,,,,High
+39,,,,,,Vey High
+40,,,,,,Vey High
+41,,,,,,Maximum
+42,,,,,,Maximum
+43,,,,,,Starting Age
+44,,,,,,Age at which players start the match
+45,,,,,,Age at which players start the match
+46,,,,,,Age I
+47,,,,,,Age I
+48,,,,,,Age II
+49,,,,,,Age II
+50,,,,,,Age III
+51,,,,,,Age III
+52,,,,,,Age IV
+53,,,,,,Age IV
+54,,,,,,Regicide
+55,,,,,,Regicide
+56,,,,,,Kill all the enemy Kings
+57,,,,,,Nomad
+58,,,,,,Nomad
+59,,,,,,All players start without town center.
+60,,,,,,Last Age
+61,,,,,,Last Age
+62,,,,,,Set max age allowed for each player
+63,,,,,,Age IV
+64,,,,,,Age IV
+65,,,,,,Age III
+66,,,,,,Age III
+67,,,,,,Age II
+68,,,,,,Age II
+69,,,,,,Age I
+70,,,,,,Age I
+71,,,,,,Game Speed
+72,,,,,,Game Speed
+73,,,,,,Modifies game rates
+74,,,,,,10x
+75,,,,,,10x
+76,,,,,,5x
+77,,,,,,5x
+78,,,,,,3x
+79,,,,,,3x
+80,,,,,,2x
+81,,,,,,2x
+82,,,,,,1x
+83,,,,,,1x
+84,,,,,,Maximum reachable population.
+85,,,,,,Population Capacity
+86,,,,,,Population Capacity
+87,,,,,,50
+88,,,,,,50
+89,,,,,,100
+90,,,,,,100
+91,,,,,,150
+92,,,,,,150
+93,,,,,,200
+94,,,,,,200
+95,,,,,,300
+96,,,,,,300
+97,,,,,,400
+98,,,,,,400
+99,,,,,,500
+100,,,,,,500
+101,,,,,,1000
+102,,,,,,1000
+103,,,,,,10000
+104,,,,,,10000
+105,,,,,,Spawn Keep
+106,,,,,,Spawn Keep
+107,,,,,,Spawn Keep next to each player Town Center
+108,,,,,,Spawn King next to each player Town Center
+109,,,,,,Spawn King
+110,,,,,,Spawn King
+111,,,,,,Additional Units and Buildings

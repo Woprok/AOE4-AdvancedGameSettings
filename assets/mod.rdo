@@ -1,0 +1,28 @@
+<DataWarehouse>
+	<!--Advanced Game Settings/-->
+	<DataObject Name="Advanced Game Settings" Type="Mod" Id="9371442999237507302" Version="1">
+		<DataProperty Name="m_description" Type="Object">
+			<DataValue Name="util::ReflectLocString">4950485878857785491</DataValue>
+			<!--Advanced Game Settings/util::ReflectLocString/-->
+			<DataObject Name="" Type="util::ReflectLocString" Id="4950485878857785491" OwnerId="9371442999237507302">
+				<DataProperty Name="m_modPart2" Type="UInt32" Value="3554363556"/>
+				<DataProperty Name="m_modPart3" Type="UInt32" Value="514256557"/>
+				<DataProperty Name="m_modPart0" Type="UInt32" Value="1690632602"/>
+				<DataProperty Name="m_modPart1" Type="UInt32" Value="1313674332"/>
+				<DataProperty Name="m_locStringKey" Type="Int32" Value="2"/>
+			</DataObject>
+		</DataProperty>
+		<DataProperty Name="m_name" Type="Object">
+			<DataValue Name="util::ReflectLocString">11584670279372945104</DataValue>
+			<!--Advanced Game Settings/util::ReflectLocString/-->
+			<DataObject Name="" Type="util::ReflectLocString" Id="11584670279372945104" OwnerId="9371442999237507302">
+				<DataProperty Name="m_modPart2" Type="UInt32" Value="3554363556"/>
+				<DataProperty Name="m_modPart3" Type="UInt32" Value="514256557"/>
+				<DataProperty Name="m_modPart0" Type="UInt32" Value="1690632602"/>
+				<DataProperty Name="m_modPart1" Type="UInt32" Value="1313674332"/>
+				<DataProperty Name="m_locStringKey" Type="Int32" Value="1"/>
+			</DataObject>
+		</DataProperty>
+	</DataObject>
+</DataWarehouse>
+
