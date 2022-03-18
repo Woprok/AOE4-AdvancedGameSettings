@@ -143,6 +143,7 @@ function AdvancedMode_OnInit()
 	CustomOptions_SetPopCap(_match)
 	CustomOptions_SetGameSpeed(_match)
 	CustomOptions_LockAgeUp(_match)	
+	CustomOptions_AddGameSpeedRule()
 end
 
 function AdvancedMode_PostInit()
@@ -166,5 +167,5 @@ function AdvancedMode_Start()
 end
 
 function AdvancedMode_OnGameOver()
-	CustomOptions_AddGameSpeedRule()
+	CustomOptions_RemoveGameSpeedRule()
 end
