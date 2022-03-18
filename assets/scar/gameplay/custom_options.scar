@@ -128,12 +128,20 @@ end
 function InternalCustomOptions_SetPopCap(pop_size)
 	for _, player in pairs(PLAYERS) do
 		if Player_GetRaceName(player.id) == "mongol" then
-			Player_SetMaxPopulation(player.id, CT_Personnel, pop_size)
-			Player_SetMaxPopulation(player.id, CT_Vehicle, pop_size)
+			CustomOptions_Player_SetMaxPopulation(player.id, pop_size)
 		end	
-		Player_SetMaxCapPopulation(player.id, CT_Personnel, pop_size)
-		Player_SetMaxCapPopulation(player.id, CT_Vehicle, pop_size)
+		CustomOptions_SetMaxCapPopulation(player.id, pop_size)
 	end
+end
+
+function CustomOptions_Player_SetMaxPopulation(player, pop_size)
+	Player_SetMaxPopulation(player.id, CT_Personnel, pop_size - 200)
+	Player_SetMaxPopulation(player.id, CT_Vehicle, pop_size - 200)
+end
+
+function CustomOptions_SetMaxCapPopulation(player, pop_size)
+	Player_SetMaxCapPopulation(player.id, CT_Personnel, pop_size - 200)
+	Player_SetMaxCapPopulation(player.id, CT_Vehicle, pop_size - 200)
 end
 
 function CustomOptions_AddGameSpeedRule()
