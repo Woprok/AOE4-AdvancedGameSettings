@@ -148,7 +148,7 @@
 							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
 							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="13592791796999871476" OwnerId="3828341675178517339">
 								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
-								<DataProperty Name="m_fileName" Type="String" Value=""/>
+								<DataProperty Name="m_fileName" Type="String" Value="building_town_center_dummy_start"/>
 							</DataObject>
 						</DataProperty>
 					</DataObject>
