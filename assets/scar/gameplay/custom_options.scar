@@ -566,12 +566,36 @@ function CustomOptions_RevealInitialMapArea(_match)
 	end
 end
 
+function InternalCustomOptions_GetTownCenterCapital(player_civ)
+	local ebp_building
+	if player_civ == "english" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_eng")			
+	elseif player_civ == "chinese" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_chi")			
+	elseif player_civ == "french" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_fre")			
+	elseif player_civ == "hre" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_hre")			
+	elseif player_civ == "mongol" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_mon")			
+	elseif player_civ == "rus" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_rus")			
+	elseif player_civ == "sultanate" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_sul")			
+	elseif player_civ == "abbasid" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_abb")			
+	end
+	return ebp_building
+end
+
 function CustomOptions_SpawnTowns(_match)
 	for i, player in pairs(PLAYERS) do			
-	
-		local townCenterEBP = Cardinal_ConvertTypeToEntityBlueprint(_match.types.townCenter, player.id)				
+		-- chinese dont work with this, most likely due to missing value in table for their capital TC
+		--local townCenterEBP = Cardinal_ConvertTypeToEntityBlueprint({_match.types.townCenter, _match.types.landmark}, player.id)				
 		
 		local player_civ = Player_GetRaceName(player.id)
+		
+		local townCenterEBP = InternalCustomOptions_GetTownCenterCapital(player_civ)
 		
 		if (player_civ == "mongol") then
 			local sqTownCenter = Player_GetSquadsFromType(player.id, _match.types.townCenter)

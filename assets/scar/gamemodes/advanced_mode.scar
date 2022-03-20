@@ -76,11 +76,15 @@ _match = {
 		max_age = 4,	
 	},
 	ebps = {
+		townCenterCapital = {			-- blueprints by race (filled dynamically)
+		},
 		townCenter = {			-- blueprints by race (filled dynamically)
 		},
 	},
 	types = {
+		townCenterCapital = "town_center_capital",
 		townCenter = "town_center",
+		landmark = "landmark",
 	},
 	ages = {   					
 		{			
