@@ -141,21 +141,7 @@
 					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
 					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="7424233087217027135" OwnerId="1730607072237176585">
 						<DataProperty Name="m_playerUpgrades" Type="Object"/>
-						<DataProperty Name="m_startingSquads" Type="Object">
-							<DataValue Name="WinCondition::StartingSquad">13053045220319525891</DataValue>
-							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/WinCondition::StartingSquad/-->
-							<DataObject Name="" Type="WinCondition::StartingSquad" Id="13053045220319525891" OwnerId="7424233087217027135">
-								<DataProperty Name="m_checkRequirements" Type="Bool" Value="false"/>
-								<DataProperty Name="m_squad" Type="Object">
-									<DataValue Name="ReflectPBG_SquadProperties">2095755842169338034</DataValue>
-									<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/WinCondition::StartingSquad/ReflectPBG_SquadProperties/-->
-									<DataObject Name="" Type="ReflectPBG_SquadProperties" Id="2095755842169338034" OwnerId="13053045220319525891">
-										<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
-										<DataProperty Name="m_fileName" Type="String" Value="unit_scout_1_abb"/>
-									</DataObject>
-								</DataProperty>
-							</DataObject>
-						</DataProperty>
+						<DataProperty Name="m_startingSquads" Type="Object"/>
 						<DataProperty Name="m_race" Type="Object">
 							<DataValue Name="ReflectPBG_Race">15089479817803617007</DataValue>
 							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_Race/-->
