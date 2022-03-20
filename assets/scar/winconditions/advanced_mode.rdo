@@ -120,21 +120,7 @@
 					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
 					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="3828341675178517339" OwnerId="1730607072237176585">
 						<DataProperty Name="m_playerUpgrades" Type="Object"/>
-						<DataProperty Name="m_startingSquads" Type="Object">
-							<DataValue Name="WinCondition::StartingSquad">7334874615985980183</DataValue>
-							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/WinCondition::StartingSquad/-->
-							<DataObject Name="" Type="WinCondition::StartingSquad" Id="7334874615985980183" OwnerId="3828341675178517339">
-								<DataProperty Name="m_checkRequirements" Type="Bool" Value="false"/>
-								<DataProperty Name="m_squad" Type="Object">
-									<DataValue Name="ReflectPBG_SquadProperties">1175981029794561488</DataValue>
-									<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/WinCondition::StartingSquad/ReflectPBG_SquadProperties/-->
-									<DataObject Name="" Type="ReflectPBG_SquadProperties" Id="1175981029794561488" OwnerId="7334874615985980183">
-										<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
-										<DataProperty Name="m_fileName" Type="String" Value="building_town_center_capital_moving_mon"/>
-									</DataObject>
-								</DataProperty>
-							</DataObject>
-						</DataProperty>
+						<DataProperty Name="m_startingSquads" Type="Object"/>
 						<DataProperty Name="m_race" Type="Object">
 							<DataValue Name="ReflectPBG_Race">18295056120572020022</DataValue>
 							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_Race/-->

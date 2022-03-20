@@ -25,9 +25,10 @@ import("gameplay/diplomacy.scar")
 import("gameplay/vision.scar")
 import("gameplay/cheat.scar") 
 
--- start conditions
-import("startconditions/classic_start.scar")
-import("startconditions/nomad_start.scar")
+-- start conditions 
+-- we will use our own, so it behaves as intended always.
+--import("startconditions/classic_start.scar")
+--import("startconditions/nomad_start.scar")
 
 -- win conditions
 import("winconditions/annihilation.scar")	-- When conquest, religious, and wonder are all unselected in match options
@@ -73,9 +74,54 @@ _match = {
 	},
 	custom = {
 		max_age = 4,	
-	}
-}
+	},
+	ebps = {
+		townCenter = {			-- blueprints by race (filled dynamically)
+		},
+	},
+	types = {
+		townCenter = "town_center",
+	},
+	ages = {   					
+		{			
+			option = "option_start_age_1",
+			initialUpgrades = {
+				BP_GetUpgradeBlueprint("dark_age"),
+			},
+		},
+		{			
+			option = "option_start_age_2", 
+			initialUpgrades = {						
+				BP_GetUpgradeBlueprint("dark_age"),
+				BP_GetUpgradeBlueprint("feudal_age"),
+			},
+		},
+		{			
+			option = "option_start_age_3",
+			initialUpgrades = {
+				BP_GetUpgradeBlueprint("dark_age"),
+				BP_GetUpgradeBlueprint("feudal_age"),
+				BP_GetUpgradeBlueprint("castle_age"),
+			},
+		},
+		{			
+			option = "option_start_age_4",
+			initialUpgrades = {
+				BP_GetUpgradeBlueprint("dark_age"),
+				BP_GetUpgradeBlueprint("feudal_age"),
+				BP_GetUpgradeBlueprint("castle_age"),
+				BP_GetUpgradeBlueprint("imperial_age"),
+			},
+		},
+	},
+	nomad = {
+		wood = 400,
+		stone = 300,
+	},
+	FOWRevealRadius = 70, -- radius around player start position within which FOW is initially revealed
 
+	
+}
 
 -----------------------------------------------------------------------
 -- Callbacks
@@ -105,12 +151,12 @@ function AdvancedMode_OnGameSetup()
 	end
 
 	--Starting age
-	if _match.options.section_custom_conditions and 
-		_match.options.section_custom_conditions.option_start_nomad then 
-		Core_UnregisterModule("ClassicStart")
-	else
-		Core_UnregisterModule("NomadStart")				
-	end
+	--if _match.options.section_custom_conditions and 
+	--	_match.options.section_custom_conditions.option_start_nomad then 
+	--	Core_UnregisterModule("ClassicStart")
+	--else
+	--	Core_UnregisterModule("NomadStart")				
+	--end
 
 	--Shared vision
 	if not _match.options.section_starting_conditions
@@ -147,6 +193,10 @@ function AdvancedMode_OnInit()
 end
 
 function AdvancedMode_PostInit()
+	-- Spawn TC or Nomad
+	CustomOptions_HandleStartPosition(_match)
+	-- Spawn each civilization squad
+	CustomOptions_SpawnInitialSquads()
 	-- Spawn keep and king even if regicide is disabled for players that choose this option
 	if not _match.options.section_inner_win_conditions.option_win_condition_regicide then
 		
@@ -157,11 +207,14 @@ function AdvancedMode_PostInit()
 			CustomOptions_SpawnKings()		
 		end		
 	end	
-	-- Spawn each civilization squad
-	CustomOptions_SpawnInitialSquads()
 end
 
 function AdvancedMode_Start()
+	if _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_start_nomad then 
+		-- nomad
+		CustomOptions_NomadStartInit(_match)
+	end
 	CustomOptions_SetFOW(_match)
 	CustomOptions_EnableScore(_match)
 end
