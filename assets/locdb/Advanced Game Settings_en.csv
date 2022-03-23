@@ -1,6 +1,6 @@
 ﻿ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
 1,,,Mod name.,,,Advanced Game Settings
-2,,,Mod description.,,,"Extends standard Age of Empires 4 game mode with option known from previous games.\n\nCurrent features:\nWin conditions:\n- Regicide\nMatch Options:\n- Nomad\n- Last Age\n- Game Speed\n- Population Capacity\nFun Options:\n- Spawn King\n- Spawn Keep\n\n\nSource code, feedback, bug reports or contribution to mode can be done at: https://github.com/Woprok/AOE4-AdvancedGameSettings "
+2,,,Mod description.,,,"Extends standard Age of Empires 4 game mode with option known from previous games.\n\nAdditional features included in current version of the mod:\nWin Conditions\n- Regicide\nMatch Options\n- Nomad\n- Last Age\n- Game Speed\n- Population Capacity\nFun Options\n- Spawn King\n- Spawn Keep\n\n\nSource code, feedback, bug reports or contribution to mode can be done at: github.com/Woprok/AOE4-AdvancedGameSettings "
 3,,,,,,Advanced Game Settings
 4,,,,,,Win Conditions
 5,,,,,,Advanced Match Options
