@@ -1,6 +1,6 @@
 ﻿ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
-1,,,Mod name.,,,Advanced Game Settings (Fixed)
-2,,,Mod description.,,,"Extends standard options with following:\nStarting Option: Nomad\nLast Age: Age I, Age II, Age III, Age IV\nPopulation Capacity: 50, 100, 150, 200, 300, 400, 500, 1000, 10000\nGame Speed: 1x, 2x, 3x, 5x, 10x\nWin Conditions: Includes Regicide\n\nRegicide changes:\nSpawns castle for each player next to a TC."
+1,,,Mod name.,,,Advanced Game Settings
+2,,,Mod description.,,,"Extends standard Age of Empires 4 game mode with option known from previous games.\n\nCurrent features:\nWin conditions:\n- Regicide\nMatch Options:\n- Nomad\n- Last Age\n- Game Speed\n- Population Capacity\nFun Options:\n- Spawn King\n- Spawn Keep\n\n\nSource code, feedback, bug reports or contribution to mode can be done at: https://github.com/Woprok/AOE4-AdvancedGameSettings "
 3,,,,,,Advanced Game Settings
 4,,,,,,Win Conditions
 5,,,,,,Advanced Match Options

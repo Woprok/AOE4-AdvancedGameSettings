@@ -201,15 +201,16 @@ function AdvancedMode_PostInit()
 	CustomOptions_HandleStartPosition(_match)
 	-- Spawn each civilization squad
 	CustomOptions_SpawnInitialSquads()
-	-- Spawn keep and king even if regicide is disabled for players that choose this option
+	-- Spawn king even if regicide is disabled for players that choose this option
 	if not _match.options.section_inner_win_conditions.option_win_condition_regicide then
 		
 		if _match.options.section_custom_conditions_2.spawn_king then
 			CustomOptions_SpawnKeeps()
-		end
-		if _match.options.section_custom_conditions_2.spawn_keep then
-			CustomOptions_SpawnKings()		
-		end		
+		end	
+	end	
+	-- Spawn keep if it was allowed
+	if _match.options.section_custom_conditions_2.spawn_keep then
+		CustomOptions_SpawnKings()		
 	end	
 end
 
