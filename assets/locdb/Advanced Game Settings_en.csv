@@ -1,6 +1,6 @@
 ﻿ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
 1,,,Mod name.,,,Advanced Game Settings
-2,,,Mod description.,,,"Extends standard Age of Empires 4 game mode with options known from previous games.\r\n\r\nAdditional features included in current version of the mod:\r\nWin Conditions\r\n- Regicide\r\nMatch Options\r\n- Nomad\r\n- Last Age\r\n- Game Speed\r\n- Population Capacity\r\nFun Options\r\n- Spawn King\r\n- Spawn Keep\r\n\r\n\r\nSource code, feedback, bug reports or contribution to mode can be done at: https://github.com/ W o p r o k /AOE4-AdvancedGameSettings"
+2,,,Mod description.,,,"Extends standard Age of Empires 4 game mode with options known from previous games.\r\n\r\nAdditional features included in current version of the mod:\r\nWin Conditions\r\n- Regicide\r\nWin Conditions Options\r\n- Sacred Timer\r\n- Wonder Timer\r\nDiplomacy Options\r\n- Treaty Timer\r\n- Enable Tribute\r\n- Enable Diplomacy\r\nMatch Options\r\n- Nomad\r\n- Last Age\r\n- Game Speed\r\n- Population Capacity\r\nFun Options\r\n- Spawn King\r\n- Spawn Keep\r\n\r\n\r\nSource code, feedback, bug reports or contribution to mode can be done at: https://github.com/ W o p r o k /AOE4-AdvancedGameSettings"
 3,,,,,,Advanced Game Settings
 4,,,,,,Win Conditions
 5,,,,,,Advanced Match Options
@@ -159,4 +159,31 @@
 160,,,,,,Amount of time needed to win with Sacred victory. Note: Treaty disallows timer ticking.
 161,,,,,,Wonder Timer
 162,,,,,,Wonder Timer
-163,,,,,,Amount of time needed to win with Wonder victory. Note: Treaty disallows timer ticking.
+163,,,,,,Amount of time needed to win with Wonder victory. Note: Treaty disallows timer ticking. Instant will work during treaty.
+164,,,,,,Instant
+165,,,,,,Instant
+166,,,,,,10 minutes
+167,,,,,,10 minutes
+168,,,,,,15 minutes
+169,,,,,,15 minutes
+170,,,,,,20 minutes
+171,,,,,,20 minutes
+172,,,,,,30 minutes
+173,,,,,,30 minutes
+174,,,,,,5 minutes
+175,,,,,,5 minutes
+176,,,,,,10 minutes
+177,,,,,,10 minutes
+178,,,,,,15 minutes
+179,,,,,,15 minutes
+180,,,,,,20 minutes
+181,,,,,,20 minutes
+182,,,,,,30 minutes
+183,,,,,,30 minutes
+184,,,,,,25 minutes
+185,,,,,,25 minutes
+186,,,,,,25 minutes
+187,,,,,,25 minutes
+188,,,,,,5 minutes
+189,,,,,,5 minutes
+190,,,,,,Win Conditions Settings

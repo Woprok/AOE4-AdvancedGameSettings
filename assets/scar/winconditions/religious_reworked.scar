@@ -18,6 +18,7 @@ import("replay/replaystatviewer.scar")
 
 _religious = {
 	module = "Religious",		-- Module name
+	can_tick = true,
 	last_person_standing = false,	-- true = fixed teams, false = dynamic diplomacy (i.e. only 1 player can win)
 	conversion_radius = 10.0,	-- Radius around holy sites within which a monk/unit must be to capture/neutralize it - must match value in Holy Site strategic_point_ext
 	update_interval = 0.125,
@@ -83,25 +84,25 @@ Core_RegisterModule(_religious.module)
 
 function Religious_UpdateConditions(_match)
 	local new_timer_in_minutes = -1
-	if _match.options.section_inner_win_conditions and 
-		_match.options.section_inner_win_conditions.option_religious_timer then
+	if _match.options.section_outer_win_conditions and 
+		_match.options.section_outer_win_conditions.option_religious_timer then
 		if
-			_match.options.section_inner_win_conditions.option_religious_timer.enum_value == _match.options.section_inner_win_conditions.option_religious_timer.enum_items.religious_5 then
+			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_5 then
 			new_timer_in_minutes = 5
 		elseif
-			_match.options.section_inner_win_conditions.option_religious_timer.enum_value == _match.options.section_inner_win_conditions.option_religious_timer.enum_items.religious_10 then
+			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_10 then
 			new_timer_in_minutes = 10
 		elseif
-			_match.options.section_inner_win_conditions.option_religious_timer.enum_value == _match.options.section_inner_win_conditions.option_religious_timer.enum_items.religious_15 then
+			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_15 then
 			new_timer_in_minutes = 15
 		elseif
-			_match.options.section_inner_win_conditions.option_religious_timer.enum_value == _match.options.section_inner_win_conditions.option_religious_timer.enum_items.religious_20 then
+			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_20 then
 			new_timer_in_minutes = 20
 		elseif
-			_match.options.section_inner_win_conditions.option_religious_timer.enum_value == _match.options.section_inner_win_conditions.option_religious_timer.enum_items.religious_25 then
+			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_25 then
 			new_timer_in_minutes = 25
 		elseif
-			_match.options.section_inner_win_conditions.option_religious_timer.enum_value == _match.options.section_inner_win_conditions.option_religious_timer.enum_items.religious_30 then
+			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_30 then
 			new_timer_in_minutes = 30
 		end
 	end
@@ -112,8 +113,7 @@ function Religious_UpdateConditions(_match)
 end
 
 function Religious_CanTick(can_tick)
-
-	
+	_religious.can_tick = can_tick	
 end
 
 -- Callback invoked when Diplomacy is enabled (indicates whether win condition should be based on player or team).
@@ -945,7 +945,7 @@ function Religious_UpdateObjectiveState()
 	end
 	
 	-- If a group of allies is in control of all Holy Sites
-	if Religious_AllSitesControlled() then
+	if Religious_AllSitesControlled() and _religious.can_tick then
 		
 		-- If a countdown timer does not yet exist
 		if not Timer_Exists(_religious.timer_victory) then

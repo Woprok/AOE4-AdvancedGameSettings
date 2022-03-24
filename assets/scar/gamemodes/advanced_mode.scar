@@ -144,14 +144,19 @@ function AdvancedMode_OnGameSetup()
 		if not _match.options.section_inner_win_conditions.option_win_condition_conquest then
 			Core_UnregisterModule("Conquest")
 		end	
-	
+		
 		if not _match.options.section_inner_win_conditions.option_win_condition_religious then
 			Core_UnregisterModule("Religious")
+		else
+			Religious_UpdateConditions(_match)
 		end
+	
 		
 		if not _match.options.section_inner_win_conditions.option_win_condition_wonder then
 			Core_UnregisterModule("Wonder")
-		end	
+		else
+			Wonder_UpdateConditions(_match)
+		end
 		
 		if not _match.options.section_inner_win_conditions.option_win_condition_regicide then
 			Core_UnregisterModule("Regicide")

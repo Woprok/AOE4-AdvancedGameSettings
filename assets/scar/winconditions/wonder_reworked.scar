@@ -16,6 +16,7 @@ import("replay/replaystatviewer.scar")
 -----------------------------------------------------------------------
 
 _wonder = {
+	solo_victory = false,		-- only builder wins if true
 	time_victory = 15 * 60,		-- Countdown time to victory after wonder is constructed (in seconds)	
 	countdown_notifications = {	-- Points during countdown at which to display loss warning.   
 		{ time = 3 * 60 },		-- Arrange in decreasing order since music intensity increases when the last one triggers
@@ -94,44 +95,59 @@ Core_RegisterModule("Wonder")
 
 function Wonder_UpdateConditions(_match)
 	local new_timer_in_minutes = -1
-	if _match.options.section_inner_win_conditions and 
-		_match.options.section_inner_win_conditions.option_wonder_timer then
+	if _match.options.section_outer_win_conditions and 
+		_match.options.section_outer_win_conditions.option_wonder_timer then
 		if
-			_match.options.section_inner_win_conditions.option_wonder_timer.enum_value == _match.options.section_inner_win_conditions.option_wonder_timer.enum_items.wonder_instant then
+			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_instant then
 			new_timer_in_minutes = 0
 		elseif
-			_match.options.section_inner_win_conditions.option_wonder_timer.enum_value == _match.options.section_inner_win_conditions.option_wonder_timer.enum_items.wonder_5 then
+			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_5 then
 			new_timer_in_minutes = 5
 		elseif
-			_match.options.section_inner_win_conditions.option_wonder_timer.enum_value == _match.options.section_inner_win_conditions.option_wonder_timer.enum_items.wonder_10 then
+			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_10 then
 			new_timer_in_minutes = 10
 		elseif
-			_match.options.section_inner_win_conditions.option_wonder_timer.enum_value == _match.options.section_inner_win_conditions.option_wonder_timer.enum_items.wonder_15 then
+			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_15 then
 			new_timer_in_minutes = 15
 		elseif
-			_match.options.section_inner_win_conditions.option_wonder_timer.enum_value == _match.options.section_inner_win_conditions.option_wonder_timer.enum_items.wonder_20 then
+			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_20 then
 			new_timer_in_minutes = 20
 		elseif
-			_match.options.section_inner_win_conditions.option_wonder_timer.enum_value == _match.options.section_inner_win_conditions.option_wonder_timer.enum_items.wonder_25 then
+			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_25 then
 			new_timer_in_minutes = 25
 		elseif
-			_match.options.section_inner_win_conditions.option_wonder_timer.enum_value == _match.options.section_inner_win_conditions.option_wonder_timer.enum_items.wonder_30 then
+			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_30 then
 			new_timer_in_minutes = 30
 		end
 	end
 
-	if new_timer_in_minutes > 0 then
+	if new_timer_in_minutes >= 0 then
 		_wonder.time_victory = new_timer_in_minutes * 60 -- in seconds
 	end	
 end
 
 function Wonder_CanTick(can_tick)
-
-	
+	if _wonder.time_victory > 0 then
+		for _, player in pairs(PLAYERS) do
+			Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", can_tick)	
+		end
+	end
 end
 
+function Wonder_IsSoloVictory(is_solo)
+	_wonder.solo_victory = true
+end
 
-
+function Wonder_CanWin(wonder_player, other_player)
+	if wonder_player.id == other_player.id then
+		return true
+	end
+	if wonder_player.id ~= other_player.id and not _wonder.solo_victory then
+		return true
+	end
+	
+	return false
+end
 
 
 -- Callback invoked when Diplomacy is enabled (indicates win condition should be based on player instead of team).
@@ -269,7 +285,7 @@ function Wonder_OnConstructionStart(context)
 				cue.title = Loc_FormatText(11159074, player_owner.playerName)			-- "%1PLAYER_NAME% is building a Wonder"
 				
 				-- If wonder owner is local player's ally
-				if Player_ObserveRelationship(player_local.id, player_owner.id) == R_ALLY then
+				if Player_ObserveRelationship(player_local.id, player_owner.id) == R_ALLY and Wonder_CanWin(player_owner, player_local) then
 					
 					-- Set cue sfx
 					cue.sfx = _wonder.sfx.construction_start_player_team
@@ -382,7 +398,7 @@ function Wonder_OnEntityKilled(context)
 							else
 								
 								-- If wonder owner is local player's ally
-								if Player_ObserveRelationship(player_local.id, player_owner.id) == R_ALLY then
+								if Player_ObserveRelationship(player_local.id, player_owner.id) == R_ALLY and Wonder_CanWin(player_owner, player_local) then
 									
 									-- Set cue title
 									cue.title = Loc_FormatText(11159076, player_owner.playerName)	-- "%1PLAYER_NAME%'s Wonder destroyed"
@@ -429,7 +445,7 @@ function Wonder_OnEntityKilled(context)
 						else 
 							
 							-- If wonder owner is local player's ally
-							if Player_ObserveRelationship(player_local.id, player_owner.id) == R_ALLY then
+							if Player_ObserveRelationship(player_local.id, player_owner.id) == R_ALLY and Wonder_CanWin(player_owner, player_local) then
 								
 								-- Set cue title
 								cue.title = Loc_FormatText(11198646, player_owner.playerName)	-- "Enemy destroyed %1PLAYER_NAME%'s Wonder"
@@ -538,7 +554,7 @@ function Wonder_OnDamageReceived(context)
 					else
 						
 						-- If wonder owner is local player's ally
-						if Player_ObserveRelationship(player_local.id, player_owner.id) == R_ALLY then
+						if Player_ObserveRelationship(player_local.id, player_owner.id) == R_ALLY and Wonder_CanWin(player_owner, player_local) then
 							
 							-- Set cue title
 							cue.title = Loc_FormatText(11198637, player_owner.playerName)	-- "Enemy attackingÂ %1PLAYER_NAME%'s Wonder"
@@ -612,7 +628,7 @@ function Wonder_Update()
 						local ally_owns_wonder = nil
 						
 						-- If wonder owner is on local player's ally
-						if Player_ObserveRelationship(player_local.id, player.id) == R_ALLY then
+						if Player_ObserveRelationship(player_local.id, player.id) == R_ALLY and Wonder_CanWin(player, player_local) then
 							
 							-- Ally owns wonder
 							ally_owns_wonder = true
@@ -746,7 +762,7 @@ function Wonder_CheckVictory()
 	for _, player in pairs(PLAYERS) do	
 		if Timer_Exists(player._wonder.timer_victory_deterministic) and Timer_GetRemaining(player._wonder.timer_victory_deterministic) == 0 then
 			if player._wonder.objective_id ~= nil then
-				if Player_ObserveRelationship(player.id, player_local.id) == R_ALLY then 
+				if Player_ObserveRelationship(player.id, player_local.id) == R_ALLY and Wonder_CanWin(player, player_local) then 
 					Obj_SetState(player._wonder.objective_id, OS_Complete)
 				else
 					Obj_SetState(player._wonder.objective_id, OS_Failed)
@@ -765,7 +781,7 @@ function Wonder_CheckVictory()
 		for i, player in pairs(PLAYERS) do
 			
 			-- If player is winning player's ally
-			if Player_ObserveRelationship(player.id, winning_player.id) == R_ALLY then
+			if Player_ObserveRelationship(player.id, winning_player.id) == R_ALLY and Wonder_CanWin(player, winning_player) then
 				Core_SetPlayerVictorious(player.id, Wonder_WinnerPresentation, WR_WONDER)	
 			-- If player is winning player's enemy
 			else
@@ -813,7 +829,7 @@ function Wonder_AddObjective2(ownerID, wonder_entity)
 	if player_owner.isLocal then 			
 		Obj_SetTitle(player_owner._wonder.objective_id, title)
 		Sound_Play2D(_wonder.sfx.countdown_start_player)	
-	elseif Player_ObserveRelationship(player_owner.id, player_local.id) == R_ALLY then 
+	elseif Player_ObserveRelationship(player_owner.id, player_local.id) == R_ALLY and Wonder_CanWin(player_owner, player_local) then 
 		title = Loc_FormatText(11159070, player_owner.playerName)		-- "Defend %1PLAYER_NAME%'s Wonder"			
 		player_owner._wonder.objective_id = Obj_Create(player_local.id, title, Loc_Empty(),  _wonder.icons.objective, "WonderObjectiveTemplate", player_local.raceName, OT_Primary, 0, "defendWonderObj")
 		Sound_Play2D(_wonder.sfx.countdown_start_ally)

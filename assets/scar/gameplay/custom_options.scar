@@ -120,6 +120,9 @@ function InternalCustomOptions_CreateTreaty(_match, treaty_duration)
 	InternalCustomOptions_ShowTimer(treaty_duration)
 	-- no swaping allowed during treaty
 	CustomOptions_SetCustomDiplomacyRuleset(_custom.is_tribute_enabled, false)
+	Religious_CanTick(false)
+	Wonder_CanTick(false)
+	Wonder_IsSoloVictory(true)
 	-- start countdown
 	Rule_Add(InternalCustomOptions_TreatyStart_IncrementCounter)
 end
@@ -148,6 +151,9 @@ function InternalCustomOptions_TreatyStart_End()
 		InternalCustomOptions_EndTimer()
 	-- no swaping allowed during treaty
 		CustomOptions_SetCustomDiplomacyRuleset(_custom.is_tribute_enabled, _custom.is_diplomacy_enabled)
+		Religious_CanTick(true)
+		Wonder_IsSoloVictory(false)
+		Wonder_CanTick(true)
 	end
 end
 
