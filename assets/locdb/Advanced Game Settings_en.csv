@@ -154,3 +154,9 @@
 155,,,custom_options,,,%1MINUTES_REMAINING% minutes until Treaty Ends\r\n
 156,,,,,,No Treaty
 157,,,,,,No Treaty
+158,,,,,,Sacred Timer
+159,,,,,,Sacred Timer
+160,,,,,,Amount of time needed to win with Sacred victory. Note: Treaty disallows timer ticking.
+161,,,,,,Wonder Timer
+162,,,,,,Wonder Timer
+163,,,,,,Amount of time needed to win with Wonder victory. Note: Treaty disallows timer ticking.

@@ -132,54 +132,43 @@ function Diplomacy_UpdateTeam(context_player, tmp_i)
 	}
 end
 
-function Diplomacy_AllPlayer_SaveAndChangeTo(new_relation)
-	-- context_player is observer
-	-- targetPlayer is target to set relation	
-	for _, context_player in pairs(_diplomacy.data_context.players) do				
-		local iterated_context_player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)	
-		-- start save
-		context_player.saved_relations = { }
-		-- iterate all players
-		for _, targetPlayer in ipairs(PLAYERS) do	
-			-- only other, ignore self
-			if targetPlayer.index ~= iterated_context_player.index then 
-				--save old
-				local backup_relation = {
-					player_index = targetPlayer.index,
-					old_relation = Player_ObserveRelationship(iterated_context_player.id, targetPlayer.id)
-				}
-				table.insert(context_player.saved_relations, backup_relation)
+function Diplomacy_AllPlayer_SaveAndChangeToFriends()
+	-- Observer and then all Targets
+	for _, observer_player in pairs(PLAYERS) do				
+		-- Create default empty array for old relations
+		observer_player.saved_relations = { }
+		for _, target_player in pairs(PLAYERS) do	
+			--  Ignore self
+			if target_player.index ~= observer_player.index then 
+				-- Create backup
+				table.insert(observer_player.saved_relations, {
+					target_player_id = target_player.id,
+					old_relation = Player_ObserveRelationship(observer_player.id, target_player.id)
+				})
 				
-				--set new relations
-				if Player_ObserveRelationship(iterated_context_player.id, targetPlayer.id) ~= new_relation then 
-					Player_SetRelationship(iterated_context_player.id, targetPlayer.id, new_relation)
+				-- Set new relations
+				if Player_ObserveRelationship(observer_player.id, target_player.id) ~= R_ALLY then 
+					Player_SetRelationship(observer_player.id, target_player.id, R_ALLY)
 				end
 			end
 		end		
 	end	
-	Diplomacy_UpdateRelationContext()
-	Diplomacy_UpdateDataContext()
 end
 
 function Diplomacy_AllPlayer_LoadFromSave()
-	-- context_player is observer
-	-- targetPlayer is target to set relation
-	for _, context_player in pairs(_diplomacy.data_context.players) do				
-		local iterated_context_player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)				
-		-- iterate saved players as we want only to fix these relations
-		for _, backup_relation in ipairs(context_player.saved_relations) do	
-			local targetPlayer = Core_GetPlayersTableEntryFromIndex(backup_relation.player_index)			
+	-- Observer and then all Targets
+	for _, observer_player in pairs(PLAYERS) do								
+		-- We can just walkthrough saved data
+		for _, backup_relation in pairs(observer_player.saved_relations) do			
 	
-			--set old relations
-			if Player_ObserveRelationship(iterated_context_player.id, targetPlayer.id) ~= backup_relation.old_relation then 
-				Player_SetRelationship(iterated_context_player.id, targetPlayer.id, backup_relation.old_relation)
+			-- Set old relations
+			if Player_ObserveRelationship(observer_player.id, backup_relation.target_player_id) ~= backup_relation.old_relation then 
+				Player_SetRelationship(observer_player.id, backup_relation.target_player_id, backup_relation.old_relation)
 			end
 		end			
 		-- finish load
-		context_player.saved_relations = { }	
+		observer_player.saved_relations = { }	
 	end	
-	Diplomacy_UpdateRelationContext()
-	Diplomacy_UpdateDataContext()
 end
 
 
@@ -505,6 +494,8 @@ function Diplomacy_UpdateDataContext()
 		_diplomacy.data_context.is_team_visible = true
 	end	
 		
+	Diplomacy_UpdateRelationContext()
+	
 	-- Individual players
 	for i, context_player in pairs(_diplomacy.data_context.players) do
 			
@@ -523,16 +514,17 @@ function Diplomacy_UpdateDataContext()
 		end		
 		
 		if context_player.is_tribute_visible_override ~= nil then 
-			context_player.is_tribute_visible = context_player.is_tribute_visible_override
+			context_player.is_tribute_visible = not context_player.isLocal and context_player.is_tribute_visible_override
 		else
 			context_player.is_tribute_visible = not context_player.is_local
 		end
 		
 		if context_player.is_diplomacy_visible_override ~= nil then 
-			context_player.is_diplomacy_visible = context_player.is_diplomacy_visible_override
+			context_player.is_diplomacy_visible = not context_player.isLocal and context_player.is_diplomacy_visible_override
 		else
 			context_player.is_diplomacy_visible = not context_player.is_local
 		end
+		
 		
 		--Individual resource buttons
 		for j, resource in pairs(context_player.tribute) do

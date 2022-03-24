@@ -29,14 +29,29 @@ _custom = {
 -- Functions
 -----------------------------------------------------------------------
 
+function CustomOptions_SetSelectedDiplomacyRuleset(_match)
+	if (_match.options.section_diplomacy) then
+		_custom.is_tribute_enabled = _match.is_tribute_enabled
+		_custom.is_diplomacy_enabled = _match.is_diplomacy_enabled
+		Diplomacy_OverrideAllPlayerDiplomacySettings(_match.is_tribute_enabled, _match.is_diplomacy_enabled)
+	end
+end
+
+-- Requires SetSelected to be used at least once before being used.
+function CustomOptions_SetCustomDiplomacyRuleset(is_tribute_enabled, is_diplomacy_enabled)
+	Diplomacy_OverrideAllPlayerDiplomacySettings(is_tribute_enabled, is_diplomacy_enabled)
+end
+
 function InternalCustomOptions_ShowTimer(minutes_remaining)
 	local cue = _custom.cueCountdown
+	local uiColour = Player_GetUIColour(Game_GetLocalPlayer())
 	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:155", minutes_remaining)			
 	cue.sfx = _custom.sfx_treaty_timer_first
 	Rule_AddOneShot(Treaty_CreateEventCue, 0, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})	
 end
 function InternalCustomOptions_EndTimer()
 	local cue = _custom.cueCountdown
+	local uiColour = Player_GetUIColour(Game_GetLocalPlayer())
 	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:154")			
 	cue.sfx = _custom.sfx_treaty_timer_final
 	Rule_AddOneShot(Treaty_CreateEventCue, 0, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})	
@@ -88,20 +103,23 @@ function CustomOptions_TrySetTreaty(_match)
 	end
 
 	if treaty_time > 0 then
-		InternalCustomOptions_CreateTreaty(treaty_time * 60) --minutes to seconds
+		InternalCustomOptions_CreateTreaty(_match, treaty_time) 
 	end
 end
 
 function InternalCustomOptions_CreateTreaty(_match, treaty_duration)
 	-- time tracking data
 	_custom.treaty.timeStarted = World_GetGameTime()
-	_custom.treaty.timeThreshold = 0
+	_custom.treaty.timeThreshold = 60.0
 	_custom.treaty.timeInterval = 60.0
-	_custom.treaty.duration = treaty_duration
+	_custom.treaty.duration = treaty_duration * 60.0 --minutes to seconds
 	
 	-- Disables fighting
 	
-	--Diplomacy_AllPlayer_SaveAndChangeTo(R_ALLY)
+	Diplomacy_AllPlayer_SaveAndChangeToFriends()
+	InternalCustomOptions_ShowTimer(treaty_duration)
+	-- no swaping allowed during treaty
+	CustomOptions_SetCustomDiplomacyRuleset(_custom.is_tribute_enabled, false)
 	-- start countdown
 	Rule_Add(InternalCustomOptions_TreatyStart_IncrementCounter)
 end
@@ -124,11 +142,12 @@ end
 
 -- Ends treaty start's incremental time accumulation. Enables fighting
 function InternalCustomOptions_TreatyStart_End()
-
 	if Rule_Exists(InternalCustomOptions_TreatyStart_IncrementCounter) then		
 		Rule_Remove(InternalCustomOptions_TreatyStart_IncrementCounter)								
-		--Diplomacy_AllPlayer_LoadFromSave()
+		Diplomacy_AllPlayer_LoadFromSave()
 		InternalCustomOptions_EndTimer()
+	-- no swaping allowed during treaty
+		CustomOptions_SetCustomDiplomacyRuleset(_custom.is_tribute_enabled, _custom.is_diplomacy_enabled)
 	end
 end
 

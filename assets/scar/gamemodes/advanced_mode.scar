@@ -37,8 +37,10 @@ import("winconditions/annihilation.scar")	-- When conquest, religious, and wonde
 import("winconditions/elimination.scar")	-- For players who quit or drop (through pause menu or disconnection)
 import("winconditions/surrender.scar")		-- For players who surrender (through pause menu)
 import("winconditions/conquest.scar")
-import("winconditions/wonder.scar")
-import("winconditions/religious.scar")
+--import("winconditions/wonder.scar")
+--import("winconditions/religious.scar")
+import("winconditions/wonder_reworked.scar")
+import("winconditions/religious_reworked.scar")
 import("winconditions/regicide.scar")
 
 -- training
@@ -203,9 +205,7 @@ function AdvancedMode_OnInit()
 	CustomOptions_AddGameSpeedRule()
 	
 	-- Enforce disabling of buttons in diplomacy/tribute panel until its stated otherwise
-	if (_match.options.section_diplomacy) then
-		Diplomacy_OverrideAllPlayerDiplomacySettings(_match.is_tribute_enabled, _match.is_diplomacy_enabled)
-	end
+	CustomOptions_SetSelectedDiplomacyRuleset(_match)
 end
 
 function AdvancedMode_PostInit()
