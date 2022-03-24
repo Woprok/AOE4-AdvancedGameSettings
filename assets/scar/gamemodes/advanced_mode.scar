@@ -21,7 +21,9 @@ import("replay/replaystatviewer.scar")
 
 -- gameplay systems
 import("gameplay/score.scar")
-import("gameplay/diplomacy.scar")
+--import("gameplay/diplomacy.scar")
+--import("gameplay/relationships.scar")
+import("gameplay/diplomacy_reworked.scar")
 import("gameplay/vision.scar")
 import("gameplay/cheat.scar") 
 

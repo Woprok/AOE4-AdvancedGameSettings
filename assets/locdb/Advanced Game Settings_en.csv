@@ -110,3 +110,25 @@
 109,,,,,,Spawn King
 110,,,,,,Spawn King
 111,,,,,,Additional Units and Buildings
+112,,,,,,Relations
+113,,,,,,Ally
+114,,,,,,Neutral
+115,,,,,,Enemy
+116,,,,,,Tributes
+117,,,,,,Tributes
+118,,,,,,Allow teammates to send resources to each other.
+119,,,,,,Diplomacy
+120,,,,,,Diplomacy
+121,,,,,,Allow players to set custom relations with each other.
+122,,,,,,Players & Relationships
+123,,,,,,Become friendly to %1PLAYER_NAME%
+124,,,,,,Become neutral to %1PLAYER_NAME%
+125,,,,,,Become hostile to %1PLAYER_NAME%
+126,,,,,,Relationships
+127,,,,,,Left or right click to change.
+128,,,,,,%1PLAYER_NAME% considers %2PLAYER_NAME% friendly.
+129,,,,,,%1PLAYER_NAME% considers %2PLAYER_NAME% irrelevant (neutral).
+130,,,,,,%1PLAYER_NAME% considers %2PLAYER_NAME% enemy.
+131,,,,,,
+132,,,,,,Diplomacy
+133,,,diplomacy_reworked,,,Relations
