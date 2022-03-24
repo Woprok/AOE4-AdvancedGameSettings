@@ -116,10 +116,10 @@
 115,,,,,,Enemy
 116,,,,,,Tributes
 117,,,,,,Tributes
-118,,,,,,Allow teammates to send resources to each other.
+118,,,,,,Allow players to send resources to other players.
 119,,,,,,Diplomacy
 120,,,,,,Diplomacy
-121,,,,,,Allow players to set custom relations with each other.
+121,,,,,,"Allow players to set custom relations with each other. Players will not be in teams, even if teams are selected before the start of the game."
 122,,,,,,Players & Relationships
 123,,,,,,Become friendly to %1PLAYER_NAME%
 124,,,,,,Become neutral to %1PLAYER_NAME%
@@ -135,3 +135,22 @@
 136,,,diplomacy_reworked,,,Neutrality
 137,,,diplomacy_reworked,,,Hostility
 138,,,diplomacy_reworked,,,Current stance
+139,,,,,,Treaty
+140,,,,,,Treaty
+141,,,,,,Enforced peaceful relation between players for selected amount of time.
+142,,,,,,10 minutes
+143,,,,,,10 minutes
+144,,,,,,5 minutes
+145,,,,,,5 minutes
+146,,,,,,20 minutes
+147,,,,,,20 minutes
+148,,,,,,30 minutes
+149,,,,,,30 minutes
+150,,,,,,45 minutes
+151,,,,,,45 minutes
+152,,,,,,60 minutes
+153,,,,,,60 minutes
+154,,,custom_options,,,"Treaty is over, prepare for bloodshed."
+155,,,custom_options,,,%1MINUTES_REMAINING% minutes until Treaty Ends\r\n
+156,,,,,,No Treaty
+157,,,,,,No Treaty

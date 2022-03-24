@@ -173,7 +173,8 @@ function AdvancedMode_OnGameSetup()
 	
 	--Diplomacy options
 	if _match.options.section_diplomacy then
-		_match.is_diplomacy_enabled = not _match.options.section_diplomacy.option_diplomacy_teams		
+		_match.options.section_diplomacy.option_diplomacy_teams = not _match.options.section_diplomacy.option_diplomacy_dynamic -- inverse the value for this as original checkbox has reverse logic ?
+		_match.is_diplomacy_enabled = _match.options.section_diplomacy.option_diplomacy_dynamic -- diplomacy enabled -> true is dynamic relations, false is locked teams	
 		_match.is_tribute_enabled = _match.options.section_diplomacy.option_diplomacy_tribute
 	end
 	
@@ -190,12 +191,21 @@ function AdvancedMode_OnInit()
 	Core_CallDelegateFunctions("DiplomacyEnabled", _match.is_diplomacy_enabled)
 	Core_CallDelegateFunctions("TributeEnabled", _match.is_tribute_enabled)
 	
+	if (_match.is_diplomacy_enabled) then
+		Diplomacy_AllPlayer_DestroyTeams()
+	end
+		
 	ReplayStatViewer_PopulateReplayStatTabs({"CurrentResourcesTemplate", "IncomeTemplate", "MilitaryTemplate"})	
 
 	CustomOptions_SetPopCap(_match)
 	CustomOptions_SetGameSpeed(_match)
 	CustomOptions_LockAgeUp(_match)	
 	CustomOptions_AddGameSpeedRule()
+	
+	-- Enforce disabling of buttons in diplomacy/tribute panel until its stated otherwise
+	if (_match.options.section_diplomacy) then
+		Diplomacy_OverrideAllPlayerDiplomacySettings(_match.is_tribute_enabled, _match.is_diplomacy_enabled)
+	end
 end
 
 function AdvancedMode_PostInit()
@@ -224,6 +234,9 @@ function AdvancedMode_Start()
 	end
 	CustomOptions_SetFOW(_match)
 	CustomOptions_EnableScore(_match)
+	
+	--  Try to start treaty timer etc.
+	CustomOptions_TrySetTreaty(_match)
 end
 
 function AdvancedMode_OnGameOver()

@@ -8,10 +8,132 @@ _custom = {
 		timeInterval = 0.5,	-- initialized here to prevent script reloading from failing
 		duration = 90,		-- time (in seconds) until players accumulate enough resources to build a town center
 	},
+	treaty = {
+		timeStarted = 0,
+		timeThreshold = 0, 		--initial threshold check is at start
+		timeInterval = 60.0,	-- initialized here to prevent script reloading from failing, once per minute
+		duration = 0,		    -- time (in seconds) until players can fight
+	},
+	sfx_treaty_timer_first = "sfx_ui_victory_countdown_update_first",
+	sfx_treaty_timer_final = "sfx_ui_victory_countdown_update_final",
+	cueCountdown = {			-- event cue shown at countdown intervals 
+		title = Loc_Empty(),
+		desc = Loc_Empty(),
+		sfx = "sfx_ui_victory_countdown_update_first",
+		icon = "icons\\event_queue_high_priority_large",
+		template = "high_priority", 
+		style = ECV_Queue | ECV_Title,
+	},	
 }
 -----------------------------------------------------------------------
 -- Functions
 -----------------------------------------------------------------------
+
+function InternalCustomOptions_ShowTimer(minutes_remaining)
+	local cue = _custom.cueCountdown
+	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:155", minutes_remaining)			
+	cue.sfx = _custom.sfx_treaty_timer_first
+	Rule_AddOneShot(Treaty_CreateEventCue, 0, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})	
+end
+function InternalCustomOptions_EndTimer()
+	local cue = _custom.cueCountdown
+	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:154")			
+	cue.sfx = _custom.sfx_treaty_timer_final
+	Rule_AddOneShot(Treaty_CreateEventCue, 0, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})	
+end
+-- Event cue function to support delayed events
+function Treaty_CreateEventCue(context, data)
+	
+	-- If event should play in event queue and center screen notification (note: uses high priority icons by default)
+	if data.highPriority then
+		
+		UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", "icons\\event_queue_high_priority", data.sfx, data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Queue, nothing)
+		UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", "icons\\event_queue_high_priority_large", "", data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Title, nothing)
+	
+	-- If event should only play in event queue (note: uses either high priority icon or if not path is specified, the objective arrow icon)
+	else
+		
+		UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", data.queue_icon, data.sfx, data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Queue, nothing)
+		
+	end	
+end
+
+-- Start treaty if its possible based on game option, otherwise does nothing
+function CustomOptions_TrySetTreaty(_match)
+	local treaty_time = -1
+	if _match.options.section_diplomacy and 
+		_match.options.section_diplomacy.option_diplomacy_treaty then
+		if
+			_match.options.section_diplomacy.option_diplomacy_treaty.enum_value == _match.options.section_diplomacy.option_diplomacy_treaty.enum_items.treaty_no then
+			treaty_time = 0
+		elseif
+			_match.options.section_diplomacy.option_diplomacy_treaty.enum_value == _match.options.section_diplomacy.option_diplomacy_treaty.enum_items.treaty_5 then
+			treaty_time = 5
+		elseif
+			_match.options.section_diplomacy.option_diplomacy_treaty.enum_value == _match.options.section_diplomacy.option_diplomacy_treaty.enum_items.treaty_10 then
+			treaty_time = 10
+		elseif
+			_match.options.section_diplomacy.option_diplomacy_treaty.enum_value == _match.options.section_diplomacy.option_diplomacy_treaty.enum_items.treaty_20 then
+			treaty_time = 20
+		elseif
+			_match.options.section_diplomacy.option_diplomacy_treaty.enum_value == _match.options.section_diplomacy.option_diplomacy_treaty.enum_items.treaty_30 then
+			treaty_time = 30
+		elseif
+			_match.options.section_diplomacy.option_diplomacy_treaty.enum_value == _match.options.section_diplomacy.option_diplomacy_treaty.enum_items.treaty_45 then
+			treaty_time = 45
+		elseif
+			_match.options.section_diplomacy.option_diplomacy_treaty.enum_value == _match.options.section_diplomacy.option_diplomacy_treaty.enum_items.treaty_60 then
+			treaty_time = 60
+		end
+	end
+
+	if treaty_time > 0 then
+		InternalCustomOptions_CreateTreaty(treaty_time * 60) --minutes to seconds
+	end
+end
+
+function InternalCustomOptions_CreateTreaty(_match, treaty_duration)
+	-- time tracking data
+	_custom.treaty.timeStarted = World_GetGameTime()
+	_custom.treaty.timeThreshold = 0
+	_custom.treaty.timeInterval = 60.0
+	_custom.treaty.duration = treaty_duration
+	
+	-- Disables fighting
+	
+	--Diplomacy_AllPlayer_SaveAndChangeTo(R_ALLY)
+	-- start countdown
+	Rule_Add(InternalCustomOptions_TreatyStart_IncrementCounter)
+end
+
+-- Rule that incrementally returns initial resources to players over time.
+function InternalCustomOptions_TreatyStart_IncrementCounter()	
+	local world_time = World_GetGameTime()
+	-- if enough time passed end all treaties
+	if world_time - _custom.treaty.timeStarted >= _custom.treaty.duration then
+		InternalCustomOptions_TreatyStart_End()
+	-- everytime threshold is reached we will inform players that one minute passed, in all cases other than final minute passed as that is moment of start
+	elseif world_time - _custom.treaty.timeStarted >= _custom.treaty.timeThreshold then 
+		local minutes_remaining = math.floor((_custom.treaty.duration - (world_time - _custom.treaty.timeStarted)) / 60)
+		InternalCustomOptions_ShowTimer(minutes_remaining)
+		-- define next threshold
+		_custom.treaty.timeThreshold = _custom.treaty.timeThreshold + _custom.treaty.timeInterval		
+	end	
+end
+
+
+-- Ends treaty start's incremental time accumulation. Enables fighting
+function InternalCustomOptions_TreatyStart_End()
+
+	if Rule_Exists(InternalCustomOptions_TreatyStart_IncrementCounter) then		
+		Rule_Remove(InternalCustomOptions_TreatyStart_IncrementCounter)								
+		--Diplomacy_AllPlayer_LoadFromSave()
+		InternalCustomOptions_EndTimer()
+	end
+end
+
+
+
 
 	
 function CustomOptions_SetFOW(_match)

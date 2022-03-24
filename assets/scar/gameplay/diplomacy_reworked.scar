@@ -107,6 +107,101 @@ function Diplomacy_TributeEnabled(is_enabled)
 	end
 end
 
+function Diplomacy_GetContextPlayers()
+	return _diplomacy.data_context.players
+end
+
+-- Call before anything related to Save&Load is done
+function Diplomacy_AllPlayer_DestroyTeams()
+	for _, context_player in pairs(_diplomacy.data_context.players) do				
+		local player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)			
+		Core_AddPlayerToTeam(player.id, nil)	
+		Diplomacy_UpdateTeam(context_player, player.team.index)
+	end	
+	Diplomacy_UpdateRelationContext()
+	Diplomacy_UpdateDataContext()
+end
+
+-- Update team from player (PLAYERS) to local copy of context_player
+function Diplomacy_UpdateTeam(context_player, tmp_i)
+	context_player.team = {
+		number = tmp_i,
+		-- everyone is always member of a team and we dont care anymore as we cant get proper team id
+		name = "-", 
+		--name = Diplomacy_FormatTeamNumber(tmp_i), 
+	}
+end
+
+function Diplomacy_AllPlayer_SaveAndChangeTo(new_relation)
+	-- context_player is observer
+	-- targetPlayer is target to set relation	
+	for _, context_player in pairs(_diplomacy.data_context.players) do				
+		local iterated_context_player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)	
+		-- start save
+		context_player.saved_relations = { }
+		-- iterate all players
+		for _, targetPlayer in ipairs(PLAYERS) do	
+			-- only other, ignore self
+			if targetPlayer.index ~= iterated_context_player.index then 
+				--save old
+				local backup_relation = {
+					player_index = targetPlayer.index,
+					old_relation = Player_ObserveRelationship(iterated_context_player.id, targetPlayer.id)
+				}
+				table.insert(context_player.saved_relations, backup_relation)
+				
+				--set new relations
+				if Player_ObserveRelationship(iterated_context_player.id, targetPlayer.id) ~= new_relation then 
+					Player_SetRelationship(iterated_context_player.id, targetPlayer.id, new_relation)
+				end
+			end
+		end		
+	end	
+	Diplomacy_UpdateRelationContext()
+	Diplomacy_UpdateDataContext()
+end
+
+function Diplomacy_AllPlayer_LoadFromSave()
+	-- context_player is observer
+	-- targetPlayer is target to set relation
+	for _, context_player in pairs(_diplomacy.data_context.players) do				
+		local iterated_context_player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)				
+		-- iterate saved players as we want only to fix these relations
+		for _, backup_relation in ipairs(context_player.saved_relations) do	
+			local targetPlayer = Core_GetPlayersTableEntryFromIndex(backup_relation.player_index)			
+	
+			--set old relations
+			if Player_ObserveRelationship(iterated_context_player.id, targetPlayer.id) ~= backup_relation.old_relation then 
+				Player_SetRelationship(iterated_context_player.id, targetPlayer.id, backup_relation.old_relation)
+			end
+		end			
+		-- finish load
+		context_player.saved_relations = { }	
+	end	
+	Diplomacy_UpdateRelationContext()
+	Diplomacy_UpdateDataContext()
+end
+
+
+function Diplomacy_UpdateRelationContext()
+	-- Update data context
+	local localPlayer = Core_GetPlayersTableEntry(Game_GetLocalPlayer())	
+	for i, context_player in ipairs(_diplomacy.data_context.players) do 		
+		local player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)		
+		if not player.is_local then 		
+			context_player.name.color = UI_GetColourAsString(Player_GetUIColour(player.id))
+			context_player.name.tooltip = Diplomacy_RelationToTooltipConverter(player, localPlayer)
+			context_player.relationTooltip = Diplomacy_RelationToTooltipConverter(localPlayer, player)			
+			context_player.is_ally = Player_ObserveRelationship(player.id, localPlayer.id) == R_ALLY	
+			context_player.is_neutral = Player_ObserveRelationship(player.id, localPlayer.id) == R_NEUTRAL
+			context_player.is_enemy = Player_ObserveRelationship(player.id, localPlayer.id) == R_ENEMY
+			for j, relation in ipairs(context_player.relations) do
+				relation.isChecked = Diplomacy_RelationConverter(relation.relation) ~= Player_ObserveRelationship(localPlayer.id, player.id)
+			end
+		end
+	end
+	Diplomacy_UpdateUI()
+end
 
 -- Callback invoked by Core::OnInit()
 function Diplomacy_OnInit()			
@@ -156,15 +251,23 @@ function Diplomacy_OnGameRestore()
 	--Diplomacy_UpdateUI()	
 end
 
+-- Global event callback for GE_PlayerTeamIdUpdated
+-- Enables/Disables buttons for diplomacy based on context change whenever player moves into another team.
+function Diplomacy_OnPlayerTeamChanged(player, resources)	
+	Diplomacy_UpdateDataContext()
+end
+
 -- Callback invoked by Diplomacy button
 function Diplomacy_ToggleDiplomacyUI()	
 	_diplomacy.data_context.is_ui_expanded = not _diplomacy.data_context.is_ui_expanded	
 	if(_diplomacy.data_context.is_ui_expanded) then
 		UI_AddEventHandler("Scar", "HUDPageBase.Cancel", "Diplomacy_HideDiplomacyUI")
-		Rule_AddGlobalEvent(Diplomacy_OnPlayerAddResource, GE_PlayerAddResource)
+		Rule_AddGlobalEvent(Diplomacy_OnPlayerAddResource, GE_PlayerAddResource)		
+		Rule_AddGlobalEvent(Diplomacy_OnPlayerTeamChanged, GE_PlayerTeamIdUpdated)
 	else
 		UI_RemoveEventHandler("Scar", "HUDPageBase.Cancel", "Diplomacy_HideDiplomacyUI")
-		Rule_RemoveGlobalEvent(Diplomacy_OnPlayerAddResource)
+		Rule_RemoveGlobalEvent(Diplomacy_OnPlayerAddResource)		
+		Rule_RemoveGlobalEvent(Diplomacy_OnPlayerTeamChanged)
 	end
 	Diplomacy_UpdateDataContext()
 end
@@ -425,6 +528,12 @@ function Diplomacy_UpdateDataContext()
 			context_player.is_tribute_visible = not context_player.is_local
 		end
 		
+		if context_player.is_diplomacy_visible_override ~= nil then 
+			context_player.is_diplomacy_visible = context_player.is_diplomacy_visible_override
+		else
+			context_player.is_diplomacy_visible = not context_player.is_local
+		end
+		
 		--Individual resource buttons
 		for j, resource in pairs(context_player.tribute) do
 			
@@ -489,6 +598,19 @@ function Diplomacy_UpdateNameColours()
 			end
 		end
 	end
+end
+
+-- Overrides the default diplomacy UI behaviour for a given player. true/false to override a value. nil to use default.
+function Diplomacy_OverrideAllPlayerDiplomacySettings(is_tribute_visible, is_diplomacy_visible)	
+	--local player = Core_GetPlayersTableEntry(playerID)
+	for i, context_player in pairs(_diplomacy.data_context.players) do		
+		--if context_player.player_index == player.index then
+			context_player.is_tribute_visible_override = is_tribute_visible
+			context_player.is_diplomacy_visible_override = is_diplomacy_visible
+		--	break
+		--end		
+	end
+	Diplomacy_UpdateDataContext()
 end
 
 -- Overrides the default UI behaviour for a given player. true/false to override a value. nil to use default.
@@ -633,7 +755,8 @@ function Diplomacy_CreateDataContext()
 				age = _diplomacy.age[Player_GetCurrentAge(player.id)],
 				is_visible = true,																	-- whether to show this row at all
 				is_score_visible = true,				
-				is_tribute_visible = not player.isLocal,			
+				is_tribute_visible = not player.isLocal,	
+				is_diplomacy_visible = not player.isLocal,			
 				is_tribute_enabled = _diplomacy.tribute.is_enabled and _diplomacy.tribute.is_market_built,-- and not player.isLocal,
 				relationTooltip = Diplomacy_RelationToTooltipConverter(player_local, player),
 				relationToolTipHeader = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:138"),
@@ -901,7 +1024,7 @@ function Diplomacy_CreateUI()
 	                        </esControls:Marquee>
 	                    </Grid>
 	
-	                    <Grid Grid.Row="0" Grid.Column="2">
+	                    <Grid Grid.Row="0" Grid.Column="3">
 	                        <Grid.ColumnDefinitions>
 	                            <ColumnDefinition Width="*" />
 	                            <ColumnDefinition Width="Auto" />
@@ -918,7 +1041,7 @@ function Diplomacy_CreateUI()
 	                    </Grid>
 						
 						
-	                    <Grid Grid.Row="0" Grid.Column="3">
+	                    <Grid Grid.Row="0" Grid.Column="2">
 	                        <Grid.ColumnDefinitions>
 	                            <ColumnDefinition Width="*" />
 	                            <ColumnDefinition Width="Auto" />
@@ -1078,7 +1201,7 @@ function Diplomacy_CreateUI()
 									</Grid>
 									
 									<!-- Resource amount buttons -->
-									<ItemsControl Grid.Column="2" 
+									<ItemsControl Grid.Column="3" 
 												  VerticalAlignment="Center" HorizontalAlignment="Right"
 												  ItemsSource="{Binding [tribute]}"
 												  Visibility="{Binding [is_tribute_visible], Converter={StaticResource BoolToVis}}" >
@@ -1161,10 +1284,10 @@ function Diplomacy_CreateUI()
 									</ItemsControl>
 									
 									<!-- Relation buttons -->
-									<ItemsControl Grid.Column="3" 
-												  VerticalAlignment="Center" HorizontalAlignment="Right"
+									<ItemsControl Grid.Column="2" 
+												  VerticalAlignment="Center" HorizontalAlignment="Center"
 												  ItemsSource="{Binding [relations]}"
-												  Visibility="{Binding [is_tribute_visible], Converter={StaticResource BoolToVis}}" >
+												  Visibility="{Binding [is_diplomacy_visible], Converter={StaticResource BoolToVis}}" >
 										<ItemsControl.ItemsPanel>
 											<ItemsPanelTemplate>
 												<esControls:SpacedStackPanel Orientation="Horizontal" Spacing="3" />
