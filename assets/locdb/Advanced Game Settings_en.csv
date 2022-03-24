@@ -129,6 +129,9 @@
 128,,,,,,%1PLAYER_NAME% considers %2PLAYER_NAME% friendly.
 129,,,,,,%1PLAYER_NAME% considers %2PLAYER_NAME% irrelevant (neutral).
 130,,,,,,%1PLAYER_NAME% considers %2PLAYER_NAME% enemy.
-131,,,,,,
 132,,,,,,Diplomacy
 133,,,diplomacy_reworked,,,Relations
+135,,,diplomacy_reworked,,,Friendship
+136,,,diplomacy_reworked,,,Neutrality
+137,,,diplomacy_reworked,,,Hostility
+138,,,diplomacy_reworked,,,Current stance

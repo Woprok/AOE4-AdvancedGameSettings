@@ -45,7 +45,7 @@ function Diplomacy_DiplomacyEnabled(is_enabled)
 				total_taxes = {amount = 0},
 				total_cost = {amount = 0},
 				players = {},
-				headerRelations = "$64c5019a145c4e4da448dbd3adeea61e:133",
+				headerRelations = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:133"),
 			},
 			cue = {							-- Event cue template (shown when player changes relationship or receives tribute) 
 				lifetime = 10.0,
@@ -82,9 +82,9 @@ function Diplomacy_DiplomacyEnabled(is_enabled)
 				{ resource_type = RT_Stone,image = "pack://application:,,,/WPFGUI;component/icons/resources/resource_stone_icon.png", help = 11164970},
 			},
 			relations = {
-				{ relation_type = R_ALLY, image = "pack://application:,,,/WPFGUI;component/icons/common/orders/rally.png" },
-				{ relation_type = R_NEUTRAL, image = "pack://application:,,,/WPFGUI;component/icons/races/common/buildings/market.png" },
-				{ relation_type = R_ENEMY, image = "pack://application:,,,/WPFGUI;component/icons/races/common/buildings/barracks.png" },
+				{ relation_type = R_ALLY, image = "pack://application:,,,/WPFGUI;component/icons/common/orders/rally.png", help = "$64c5019a145c4e4da448dbd3adeea61e:123", title = "$64c5019a145c4e4da448dbd3adeea61e:135" },
+				{ relation_type = R_NEUTRAL, image = "pack://application:,,,/WPFGUI;component/icons/races/common/buildings/market.png", help = "$64c5019a145c4e4da448dbd3adeea61e:124", title = "$64c5019a145c4e4da448dbd3adeea61e:136" },
+				{ relation_type = R_ENEMY, image = "pack://application:,,,/WPFGUI;component/icons/races/common/buildings/barracks.png", help = "$64c5019a145c4e4da448dbd3adeea61e:125", title = "$64c5019a145c4e4da448dbd3adeea61e:137" },
 			},
 			age = {						-- Loc_string lookup table (indexed by age)
 				Loc_GetString(11180928),					-- I
@@ -636,6 +636,7 @@ function Diplomacy_CreateDataContext()
 				is_tribute_visible = not player.isLocal,			
 				is_tribute_enabled = _diplomacy.tribute.is_enabled and _diplomacy.tribute.is_market_built,-- and not player.isLocal,
 				relationTooltip = Diplomacy_RelationToTooltipConverter(player_local, player),
+				relationToolTipHeader = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:138"),
 				is_ally = Player_ObserveRelationship(player.id, player_local.id) == R_ALLY,
 				is_neutral = Player_ObserveRelationship(player.id, player_local.id) == R_NEUTRAL,
 				is_enemy = Player_ObserveRelationship(player.id, player_local.id) == R_ENEMY,
@@ -651,6 +652,10 @@ function Diplomacy_CreateDataContext()
 				isChecked = Player_ObserveRelationship(player_local.id, player.id) ~= relation.relation_type,
 				relationClickedCommand = UI_CreateCommand("Diplomacy_ChangeRelation"),
 				relationParameter = string.format("%d,%d", player.index, Diplomacy_RelationConverter(relation.relation_type)),
+				tooltip = {
+					title = Loc_FormatText(relation.title),
+					help = Loc_FormatText(relation.help, Player_GetDisplayName(player.id)),
+				},
 			})
 		end
 		
@@ -733,7 +738,6 @@ function Diplomacy_CreateUI()
 		<ResourceDictionary.MergedDictionaries>
 			<ResourceDictionary Source="pack://application:,,,ui/Resources/HUDResources.xaml" />
 		</ResourceDictionary.MergedDictionaries>
-	
 		<!-- Tribute tooltip style -->
 		<Style x:Key="TributeToolTipStyle" TargetType="{x:Type ToolTip}">
             <Setter Property="HasDropShadow" Value="True" />
@@ -747,23 +751,6 @@ function Diplomacy_CreateUI()
                 </Setter.Value>
             </Setter>
         </Style>		
-		<!-- Simple tooltip style -->
-		<Style x:Key="SimpleToolTipStyle" TargetType="{x:Type ToolTip}">
-            <Setter Property="HasDropShadow" Value="True" />
-			<Setter Property="SnapsToDevicePixels" Value="true" />
-            <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="Template">
-                <Setter.Value>								
-					<DataTemplate>
-						<ContentControl Style="{StaticResource HUDTooltipBorderStyle}" Width="{StaticResource HUDTooltipMaxWidthSmall}">
-							<TextBlock 
-									Text="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
-									Style="{StaticResource HUDPrimaryColorLightTitleTextBlock18ptStyle}" />
-						</ContentControl>													
-					</DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>	
 		<!-- Resource button style - a clone of HUDBaseButtonStyle but IsEnabled setter changes Opacity instead of Visibility of background -->
 		<Style x:Key="DiplomacyResourceButtonStyle" TargetType="Button">
 	        <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -813,15 +800,11 @@ function Diplomacy_CreateUI()
 	            </Setter.Value>
 	        </Setter>
 	    </Style>
-		
 		<Style x:Key="DiplomacyHorizontalSeparatorStyle" TargetType="Rectangle">
             <Setter Property="Fill" Value="#616C8C"/>
             <Setter Property="Height" Value="1.2"/>
             <Setter Property="Margin" Value="0,2"/>
         </Style>
-		
-
-		
 		<Style x:Key="DiplomacyVerticalSeparatorStyle" TargetType="Rectangle">
             <Setter Property="Effect" Value="{StaticResource DiplomacyTextDropShadow}" />
             <Setter Property="Fill" Value="{DynamicResource Gray80Brush}" />
@@ -887,7 +870,6 @@ function Diplomacy_CreateUI()
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
-
 					<Grid Grid.Row="0" Margin="0,0,0,3">
 	                    <Grid.ColumnDefinitions>
 	                        <ColumnDefinition MaxWidth="315" />
@@ -952,10 +934,8 @@ function Diplomacy_CreateUI()
 	                        </esControls:Marquee>
 	                    </Grid>
 					</Grid>
-					
 					<Rectangle Grid.Row="1"
                                Style="{StaticResource DiplomacyHorizontalSeparatorStyle}" />
-
 					<!-- Player list -->
 					<ItemsControl Grid.Row="2" ItemsSource="{Binding [players]}">
 						<ItemsControl.ItemTemplate>
@@ -987,9 +967,9 @@ function Diplomacy_CreateUI()
 										<TextBlock Grid.ColumnSpan="3" Margin="0,0,0,1"
                                                    Foreground="{Binding [name][color]}"
                                                    Text="{Binding [name][text]}"
-														ToolTipService.InitialShowDelay="0"
-                                            			ToolTipService.ShowDuration="86400000"
-														ToolTipService.ShowOnDisabled="True">
+												   ToolTipService.InitialShowDelay="0"
+                                        		   ToolTipService.ShowDuration="86400000"
+												   ToolTipService.ShowOnDisabled="True">
 											<TextBlock.Style>
 												<Style BasedOn="{StaticResource HUDDiplomacyPlayerNameTextBlockStyle}" TargetType="TextBlock">
 													<Style.Triggers>
@@ -1000,9 +980,29 @@ function Diplomacy_CreateUI()
 												</Style>
 											</TextBlock.Style>
 											<TextBlock.ToolTip>
-												<ToolTip Style="{StaticResource SimpleToolTipStyle}" 
+												<ToolTip Style="{StaticResource TributeToolTipStyle}" 
 														Placement="Left" 
-														Content="{Binding [relationTooltip]}">
+														Content="{Binding}" 
+														DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}" >
+													<ToolTip.ContentTemplate>
+														<DataTemplate>
+															<ContentControl Style="{StaticResource HUDTooltipBorderStyle}" Width="{StaticResource HUDTooltipMaxWidthSmall}">
+																<Grid>
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="{StaticResource HUDTooltipGutterWidthGridLength}" />
+																		<ColumnDefinition Width="*" />
+																	</Grid.ColumnDefinitions>											
+																	<StackPanel Orientation="Vertical" Grid.Column="1">		
+																		<TextBlock Text="{Binding [relationToolTipHeader]}"
+																					Style="{StaticResource HUDPrimaryColorLightTitleTextBlock18ptStyle}" />							
+																		<TextBlock Text="{Binding [relationTooltip]}" 
+																				Style="{StaticResource HUDGray80ParagraphTextBlock14ptStyle}" 
+																				Margin="{StaticResource SmallMarginTop}" />
+																	</StackPanel>
+																</Grid>
+															</ContentControl>													
+														</DataTemplate>
+													</ToolTip.ContentTemplate>
 												</ToolTip>
 											</TextBlock.ToolTip>
 										</TextBlock>
@@ -1049,9 +1049,29 @@ function Diplomacy_CreateUI()
                                             			ToolTipService.ShowDuration="86400000"
 														ToolTipService.ShowOnDisabled="True">
 											<TextBlock.ToolTip>
-												<ToolTip Style="{StaticResource SimpleToolTipStyle}" 
+												<ToolTip Style="{StaticResource TributeToolTipStyle}" 
 														Placement="Left" 
-														Content="{Binding [name][tooltip]}">
+														Content="{Binding}" 
+														DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}" >
+													<ToolTip.ContentTemplate>
+														<DataTemplate>
+															<ContentControl Style="{StaticResource HUDTooltipBorderStyle}" Width="{StaticResource HUDTooltipMaxWidthSmall}">
+																<Grid>
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="{StaticResource HUDTooltipGutterWidthGridLength}" />
+																		<ColumnDefinition Width="*" />
+																	</Grid.ColumnDefinitions>											
+																	<StackPanel Orientation="Vertical" Grid.Column="1">		
+																		<TextBlock Text="{Binding [relationToolTipHeader]}"
+																					Style="{StaticResource HUDPrimaryColorLightTitleTextBlock18ptStyle}" />						
+																		<TextBlock Text="{Binding [name][tooltip]}" 
+																				Style="{StaticResource HUDGray80ParagraphTextBlock14ptStyle}" 
+																				Margin="{StaticResource SmallMarginTop}" />
+																	</StackPanel>
+																</Grid>
+															</ContentControl>													
+														</DataTemplate>
+													</ToolTip.ContentTemplate>
 												</ToolTip>
 											</TextBlock.ToolTip>
 										</TextBlock>
@@ -1171,16 +1191,10 @@ function Diplomacy_CreateUI()
 												                                      Color="Black" />
 																</Image.Effect>
 															</Image>
-												
-                        									<!-- StringFormat=N0 not supported, so using CastToIntOperator converter instead. -->
-															<!--TextBlock Text="{Binding [amount], Converter={StaticResource CastToIntOperator}}"
-																	Visibility="{Binding [amount], Converter={StaticResource NumberToVis}}"
-																	Style="{StaticResource HUDWhiteDiplomacyScoreTextBlockStyle}"
-																	HorizontalAlignment="Center" /-->
 														</Grid>
 													</Button.Content>
 													<!-- Resource tooltip -->
-													<!--Button.ToolTip>
+													<Button.ToolTip>
 														<ToolTip Style="{StaticResource TributeToolTipStyle}" 
 																Placement="Left" 
 																Content="{Binding}" 
@@ -1193,23 +1207,11 @@ function Diplomacy_CreateUI()
 																				<ColumnDefinition Width="{StaticResource HUDTooltipGutterWidthGridLength}" />
 																				<ColumnDefinition Width="*" />
 																			</Grid.ColumnDefinitions>											
-																			<StackPanel Orientation="Vertical" Grid.Column="1">
-																				
-																				<TextBlock Text="{esUtility:LocString $11164972}"
-																						Style="{StaticResource HUDPrimaryColorLightTitleTextBlock18ptStyle}" />
-																				<Grid HorizontalAlignment="Left">
-																					<Border Background="{StaticResource ButtonBackgroundBrush}" Opacity="0.5" />
-																					
-																					<TextBlock Text="{esUtility:LocString $11164971}"
-																							   Style="{StaticResource HUDWhiteBaseTextBlock14ptStyle}"
-																							   TextWrapping="Wrap"
-																							   Margin="6,2,7,2" />
-																				</Grid>																			
+																			<StackPanel Orientation="Vertical" Grid.Column="1">	
+																				<TextBlock Text="{Binding [tooltip][title]}"
+																						Style="{StaticResource HUDPrimaryColorLightTitleTextBlock18ptStyle}" />														
 																				<TextBlock Text="{Binding [tooltip][help]}" 
 																						Style="{StaticResource HUDGray80ParagraphTextBlock14ptStyle}" 
-																						Margin="{StaticResource SmallMarginTop}" />
-																				<TextBlock Text="{Binding [tooltip][requirements]}" 
-																						Style="{StaticResource HUDErrorColorLightParagraphTextBlock14ptStyle}" 
 																						Margin="{StaticResource SmallMarginTop}" />
 																			</StackPanel>
 																		</Grid>
@@ -1217,7 +1219,7 @@ function Diplomacy_CreateUI()
 																</DataTemplate>
 															</ToolTip.ContentTemplate>
 														</ToolTip>
-													</Button.ToolTip-->
+													</Button.ToolTip>
 												</Button>
 											</DataTemplate>
 										</ItemsControl.ItemTemplate>
@@ -1302,20 +1304,7 @@ function Diplomacy_CreateUI()
 									Margin="0,0,12,0"
 									IsEnabled="{Binding [total_resources][amount], Converter={StaticResource GreaterCompare}, ConverterParameter=0}"
 									esUtility:AudioAttachedProperty.PreviewMouseLeftButtonUpSound="sfx_ui_hud_inGame_tribute_send_play">
-								<!--Button.ToolTip>
-									<ToolTip Style="{StaticResource SimpleToolTipStyle}" 
-											Placement="Left" 
-											Content="{Binding}" 
-											DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}" >
-										<ToolTip.ContentTemplate>
-											<DataTemplate>
-												<Border BorderThickness="0" Background="{StaticResource TooltipBackground}" Padding="8,5">
-													<TextBlock Style="{StaticResource HUDGray80ParagraphTextBlock14ptStyle}" Text="{esUtility:LocString $11161245}" MaxWidth="170" />
-												</Border>
-											</DataTemplate>
-										</ToolTip.ContentTemplate>
-									</ToolTip>
-								</Button.ToolTip-->
+
 							</Button>
 							<!-- Clear button -->
 							<Button Content="{esUtility:LocString $11161244}"
