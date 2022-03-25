@@ -242,6 +242,7 @@ function AdvancedMode_Start()
 	
 	--  Try to start treaty timer etc.
 	CustomOptions_TrySetTreaty(_match)
+	CustomOptions_SetSimulationSpeed(_match)
 end
 
 function AdvancedMode_OnGameOver()

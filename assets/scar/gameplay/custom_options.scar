@@ -404,28 +404,44 @@ function CustomOptions_SetGameSpeed(_match)
 		_match.options.section_custom_conditions.option_speed then
 		if _match.options.section_custom_conditions and 
 			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_025x then
+			speed = 0.25
+		elseif _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_050x then
+			speed = 0.50	
+		elseif _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_075x then
+			speed = 0.75	
+		elseif _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
 			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_1x then
-			speed = 1
+			speed = 1.00	
 		elseif _match.options.section_custom_conditions and 
 			_match.options.section_custom_conditions.option_speed and 
 			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_2x then
-			speed = 2	
+			speed = 2.00
 		elseif _match.options.section_custom_conditions and 
 			_match.options.section_custom_conditions.option_speed and 
 			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_3x then
-			speed = 3	
+			speed = 3.00	
 		elseif _match.options.section_custom_conditions and 
 			_match.options.section_custom_conditions.option_speed and 
 			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_5x then
-			speed = 5	
+			speed = 5.00	
 		elseif _match.options.section_custom_conditions and 
 			_match.options.section_custom_conditions.option_speed and 
 			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_10x then
-			speed = 10
+			speed = 10.00
+		elseif _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_100x then
+			speed = 100.00
 		end
 	end
 	
-	if speed > 0 then
+	if speed > 0 and speed ~= 1.00 then
 		InternalCustomOptions_SetGameSpeed(_match, speed)
 	end
 end
@@ -887,5 +903,48 @@ function InternalCustomOptions_NomadStart_End()
 			Player_AddResource(player.id, RT_Gold, player._nomadStart.resources["Gold"])
 			player._nomadStart = nil	
 		end					
+	end
+end
+
+
+-- Alter game simulation speed, e.g. make everything faster/slower, this should also break all timers to be slower or faster
+function CustomOptions_SetSimulationSpeed(_match)
+	local sim_speed_multi = -1
+	if _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_speed_rate then
+		if
+			_match.options.section_custom_conditions.option_speed_rate.enum_value == _match.options.section_custom_conditions.option_speed_rate.enum_items.option_speed_rate_percentage_50 then
+			sim_speed_multi = 0.50
+		elseif
+			_match.options.section_custom_conditions.option_speed_rate.enum_value == _match.options.section_custom_conditions.option_speed_rate.enum_items.option_speed_rate_percentage_75 then
+			sim_speed_multi = 0.75
+		elseif
+			_match.options.section_custom_conditions.option_speed_rate.enum_value == _match.options.section_custom_conditions.option_speed_rate.enum_items.option_speed_rate_percentage_90 then
+			sim_speed_multi = 0.90
+		elseif
+			_match.options.section_custom_conditions.option_speed_rate.enum_value == _match.options.section_custom_conditions.option_speed_rate.enum_items.option_speed_rate_percentage_100 then
+			sim_speed_multi = 1.00
+		elseif
+			_match.options.section_custom_conditions.option_speed_rate.enum_value == _match.options.section_custom_conditions.option_speed_rate.enum_items.option_speed_rate_percentage_110 then
+			sim_speed_multi = 1.10
+		elseif
+			_match.options.section_custom_conditions.option_speed_rate.enum_value == _match.options.section_custom_conditions.option_speed_rate.enum_items.option_speed_rate_percentage_125 then
+			sim_speed_multi = 1.25
+		elseif
+			_match.options.section_custom_conditions.option_speed_rate.enum_value == _match.options.section_custom_conditions.option_speed_rate.enum_items.option_speed_rate_percentage_150 then
+			sim_speed_multi = 1.50
+		elseif
+			_match.options.section_custom_conditions.option_speed_rate.enum_value == _match.options.section_custom_conditions.option_speed_rate.enum_items.option_speed_rate_percentage_200 then
+			sim_speed_multi = 2.00
+		elseif
+			_match.options.section_custom_conditions.option_speed_rate.enum_value == _match.options.section_custom_conditions.option_speed_rate.enum_items.option_speed_rate_percentage_300 then
+			sim_speed_multi = 3.00
+		end
+	end
+
+	if sim_speed_multi > 0 and sim_speed_multi ~= 1.0 then
+		local old_rate = Game_GetSimRate()
+		local new_rate = old_rate * sim_speed_multi
+		Game_SetSimRate(new_rate)
 	end
 end
