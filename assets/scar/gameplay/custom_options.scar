@@ -1,5 +1,3 @@
-
-
 _custom = {
 	setspeed = 1,
 	nomad = {
@@ -584,18 +582,18 @@ function CustomOptions_SpawnInitialSquads()
 		local player_civ = Player_GetRaceName(player.id)
 		
 		local vil = InternalCustomOptions_GetVillager(player_civ)
-		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 1, -10, 1)
-		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 1, -10, 2)
-		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 1, -10, 3)
-		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 1, -10, 4)
-		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 1, -10, 5)
-		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 1, -10, 6)
+		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 1, 20, 10)
+		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 1, 20, 10)
+		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 1, 20, 10)
+		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 1, 20, 10)
+		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 1, 20, 10)
+		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 1, 20, 10)
 		
 		local sco = InternalCustomOptions_GetScout(player_civ)
-		InternalCustomOptions_SpawnUnitAtStartPosition(player, sco, "scout", 1, -10, 0)
+		InternalCustomOptions_SpawnUnitAtStartPosition(player, sco, "scout", 1, 20, 10)
 		
 		local shp = InternalCustomOptions_GetSheep(player_civ)
-		InternalCustomOptions_SpawnUnitAtStartPosition(player, shp, "sheep", 1, -10, 7)
+		InternalCustomOptions_SpawnUnitAtStartPosition(player, shp, "sheep", 1, 20, 10)
 
 		-- this is spawned directly in rdo file as I dont have proper function to spawn their TC
 		--if player_civ == "mongol" then
@@ -686,17 +684,17 @@ function CustomOptions_HandleStartPosition(_match)
 	-- standard
 		CustomOptions_SpawnTowns(_match)
 	end
-	CustomOptions_ApplyUpgrades(_match)		
+	CustomOptions_ApplyStartingAgeUpgrades(_match)		
 	CustomOptions_RevealInitialMapArea(_match)
 end
 
-function CustomOptions_ApplyUpgrades(_match)
-	-- TODO option to start with all age techs
+function CustomOptions_ApplyStartingAgeUpgrades(_match)
 	local optionAgeStartKey
-	if _match.section_custom_conditions and
-		 _match.section_custom_conditions.get_tech then
-		for key, value in pairs(_match.section_starting_conditions.option_start_age.enum_items) do
-			if (_match.section_starting_conditions.option_start_age.enum_value == value) then
+	if winConditionOptions.section_starting_conditions 
+		and winConditionOptions.section_starting_conditions.option_start_age 
+		and winConditionOptions.section_starting_conditions.option_start_age.enum_items then 
+		for key, value in pairs(winConditionOptions.section_starting_conditions.option_start_age.enum_items) do
+			if (winConditionOptions.section_starting_conditions.option_start_age.enum_value == value) then
 				optionAgeStartKey = key
 			end
 		end

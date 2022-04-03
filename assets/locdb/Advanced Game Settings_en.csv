@@ -216,3 +216,12 @@
 217,,,,,,0.25x
 218,,,,,,100x
 219,,,,,,100x
+220,,,,,,Technology Level
+221,,,,,,Technology Level
+222,,,,,,"Starting age determines which technologies should player receive at the start of the game. None is default behavior, where everything has to be researched. Previous grants player all techs for previous age. Current age gives player all techs for current age."
+223,,,,,,None
+224,,,,,,None
+225,,,,,,Previous Age
+226,,,,,,Previous Age
+227,,,,,,Current Age
+228,,,,,,Current Age
