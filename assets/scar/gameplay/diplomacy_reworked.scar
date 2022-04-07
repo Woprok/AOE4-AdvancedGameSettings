@@ -514,13 +514,13 @@ function Diplomacy_UpdateDataContext()
 		end		
 		
 		if context_player.is_tribute_visible_override ~= nil then 
-			context_player.is_tribute_visible = not context_player.isLocal and context_player.is_tribute_visible_override
+			context_player.is_tribute_visible = not context_player.is_local and context_player.is_tribute_visible_override
 		else
 			context_player.is_tribute_visible = not context_player.is_local
 		end
-		
+			
 		if context_player.is_diplomacy_visible_override ~= nil then 
-			context_player.is_diplomacy_visible = not context_player.isLocal and context_player.is_diplomacy_visible_override
+			context_player.is_diplomacy_visible = not context_player.is_local and context_player.is_diplomacy_visible_override
 		else
 			context_player.is_diplomacy_visible = not context_player.is_local
 		end
