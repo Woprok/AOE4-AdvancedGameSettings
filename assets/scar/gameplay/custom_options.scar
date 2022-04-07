@@ -515,33 +515,9 @@ function CustomOptions_SpawnKeeps()
 	for i, player in pairs(PLAYERS) do
 		local player_civ = Player_GetRaceName(player.id)
 		
-		local ebp_building
+		local ebp_building = InternalCustomOptions_GetKeep(player_civ)
 		
-		if player_civ == "english" then
-			ebp_building = BP_GetEntityBlueprint("building_defense_keep_eng")			
-		elseif player_civ == "chinese" then
-			ebp_building = BP_GetEntityBlueprint("building_defense_keep_chi")			
-		elseif player_civ == "french" then
-			ebp_building = BP_GetEntityBlueprint("building_defense_keep_fre")			
-		elseif player_civ == "hre" then
-			ebp_building = BP_GetEntityBlueprint("building_defense_keep_hre")			
-		elseif player_civ == "mongol" then
-			ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_nov")			
-		elseif player_civ == "rus" then
-			ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_rus")			
-		elseif player_civ == "sultanate" then
-			ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_sul")			
-		elseif player_civ == "abbasid" then
-			ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_abb")			
-		end
-		local sp = Player_GetStartingPosition(player.id)
-		
-		
-		local spawn_position = Util_GetOffsetPosition(player.startingPos, 10, 20)
-		local entity = Entity_Create(ebp_building, player.id, spawn_position, false)
-		Entity_Spawn(entity)
-		Entity_ForceConstruct(entity)
-		Entity_SnapToGridAndGround(entity, false)	
+		InternalCustomOptions_SpawnEntityAtSpawnOffset(player.id, ebp_building, 15, 0, 0)
 	end
 end
 
@@ -598,22 +574,25 @@ function CustomOptions_SpawnInitialSquads()
 		
 		local shp = InternalCustomOptions_GetSheep(player_civ)
 		InternalCustomOptions_SpawnUnitAtStartPosition(player, shp, "sheep", 1, 20, 10)
-
-		-- this is spawned directly in rdo file as I dont have proper function to spawn their TC
-		--if player_civ == "mongol" then
-		--	local tco = InternalCustomOptions_GetOther(player_civ)
-		--	InternalCustomOptions_SpawnBuildingAtStartPosition(player, tco, "town_center", 1, 1)
-		--end
 	end
 end
 
-function InternalCustomOptions_SpawnBuildingAtStartPosition(player, ebp_buildingbp, category, offset, distance)
-	local spawn_position = Util_GetOffsetPosition(player.startingPos, 0, distance)
-	local entity = Entity_Create(ebp_buildingbp, player.id, spawn_position, false)
-	Entity_SnapToGridAndGround(entity, false)
-	Entity_Spawn(entity)
-	Entity_ForceConstruct(entity)
-	EGroup_Add(Player_GetEntitiesFromType(player.id, category), entity)	
+-- ox,oy,oz must be multiples of 5
+function InternalCustomOptions_SpawnEntityAtSpawnOffset(player, entity_bp, ox, oy, oz)
+	--local player = World_GetPlayerAt(1)
+	local ps = Player_GetStartingPosition(player)
+	-- proper rotation
+	local nx = 5 * math.floor(math.floor(ps.x) / 5)
+	local ny = 5 * math.floor(math.floor(ps.y) / 5)
+	local nz = 5 * math.floor(math.floor(ps.z) / 5)
+	local psx = World_Pos(nx + ox, ny + oy, nz + oz)
+	local pst = World_Pos(nx + ox, ny + oy, nz + oz + 5)
+	-- finally spawn it
+	local e = Entity_CreateFacing(entity_bp, player, psx, pst, true)
+	Entity_Spawn(e)
+	Entity_ForceConstruct(e)
+	Entity_SnapToGridAndGround(e, false)
+	return e	
 end
 
 function InternalCustomOptions_SpawnUnitAtStartPosition(player, sbp_unitbp, category, count, offset, distance)
@@ -626,6 +605,48 @@ function InternalCustomOptions_SpawnUnitAtStartPosition(player, sbp_unitbp, cate
 	--Cmd_FormationMove(sg_units, move_position, false)
 end
 
+function InternalCustomOptions_GetKeep(player_civ)
+	local ebp_building
+	if player_civ == "english" then
+		ebp_building = BP_GetEntityBlueprint("building_defense_keep_eng")			
+	elseif player_civ == "chinese" then
+		ebp_building = BP_GetEntityBlueprint("building_defense_keep_chi")			
+	elseif player_civ == "french" then
+		ebp_building = BP_GetEntityBlueprint("building_defense_keep_fre")			
+	elseif player_civ == "hre" then
+		ebp_building = BP_GetEntityBlueprint("building_defense_keep_hre")			
+	elseif player_civ == "mongol" then
+		ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_nov")			
+	elseif player_civ == "rus" then
+		ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_rus")			
+	elseif player_civ == "sultanate" then
+		ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_sul")			
+	elseif player_civ == "abbasid" then
+		ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_abb")			
+	end		
+	return ebp_building
+end
+function InternalCustomOptions_GetTownCenterCapital(player_civ)
+	local ebp_building
+	if player_civ == "english" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_eng")			
+	elseif player_civ == "chinese" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_chi")			
+	elseif player_civ == "french" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_fre")			
+	elseif player_civ == "hre" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_hre")			
+	elseif player_civ == "mongol" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_mon")			
+	elseif player_civ == "rus" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_rus")			
+	elseif player_civ == "sultanate" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_sul")			
+	elseif player_civ == "abbasid" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_abb")			
+	end
+	return ebp_building
+end
 function InternalCustomOptions_GetVillager(player_civ)
 	local sbp_unit
 	if player_civ == "english" then
@@ -731,28 +752,6 @@ function CustomOptions_RevealInitialMapArea(_match)
 	end
 end
 
-function InternalCustomOptions_GetTownCenterCapital(player_civ)
-	local ebp_building
-	if player_civ == "english" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_eng")			
-	elseif player_civ == "chinese" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_chi")			
-	elseif player_civ == "french" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_fre")			
-	elseif player_civ == "hre" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_hre")			
-	elseif player_civ == "mongol" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_mon")			
-	elseif player_civ == "rus" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_rus")			
-	elseif player_civ == "sultanate" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_sul")			
-	elseif player_civ == "abbasid" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_abb")			
-	end
-	return ebp_building
-end
-
 function CustomOptions_SpawnTowns(_match)
 	for i, player in pairs(PLAYERS) do			
 		-- chinese dont work with this, most likely due to missing value in table for their capital TC
@@ -775,10 +774,7 @@ function CustomOptions_SpawnTowns(_match)
 			-- Create the initial (capital) town center, if necessary		
 			local egTownCenter = Player_GetEntitiesFromType(player.id, _match.types.townCenter) 
 			if EGroup_Count(egTownCenter) == 0 then			
-				local townCenter = Entity_Create(townCenterEBP, player.id, player.startingPos, false)
-				Entity_SnapToGridAndGround(townCenter, false)
-				Entity_Spawn(townCenter)
-				Entity_ForceConstruct(townCenter)			
+				local townCenter = InternalCustomOptions_SpawnEntityAtSpawnOffset(player.id, townCenterEBP, 0, 0, 0)	
 				EGroup_Add(egTownCenter, townCenter)
 			end	
 			-- Send event (conquest win condition relies on this)
