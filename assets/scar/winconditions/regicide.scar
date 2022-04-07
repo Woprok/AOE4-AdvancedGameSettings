@@ -17,6 +17,7 @@ import("replay/replaystatviewer.scar")
 
 if _regicide==nil then
 	_regicide = {
+		treaty_active = false,		-- only builder wins if true
 		module = "Regicide",
 		objective_title = "$11218487", 
 		last_man_standing = false, -- false = fixed teams, true = dynamic diplomacy (i.e. only 1 player can win).
@@ -77,11 +78,6 @@ function Regicide_Start()
 	
 	-- Setup the player's objective UI by calling the below function directly
 	Regicide_AddObjective()
-	
-end
-
--- Called when Core_SetPlayerDefeated() is invoked. Signals that a player has been eliminated from play due to defeat.
-function Regicide_OnPlayerDefeated(player, reason)
 	
 end
 
@@ -161,47 +157,61 @@ end
 -- Standard Functions
 -----------------------------------------------------------------------
 
-function WinCondition_CheckSurrender()
-	local results = {}
-	for i = 1, World_GetPlayerCount() do
-		local player = World_GetPlayerAt(i)
-		local team = Player_GetTeam(player)	
-		
-		results[team] = results[team] or { surrender_count = 0 }
-		
-		-- If any player on a team has surrendered, that team loses.
-		if Player_IsSurrendered(player) then
-			results[team].surrender_count = results[team].surrender_count + 1
+
+-- Called when Core_SetPlayerDefeated() is invoked. Signals that a player has been eliminated from play due to defeat.
+function Regicide_OnPlayerDefeated(player, reason)
+		-- If win was due to WR_ANNIHILATION
+	if reason == WR_ANNIHILATION then		
+		if Player_IsAlive(player.id) then
+			-- Kill player
+			World_KillPlayer(player.id, KPR_Lost)
 		end
+	end
+end
+
+function Regicide_IsTreaty(treaty)
+	_regicide.treaty_active = treaty
+end
+
+function WinCondition_CheckSurrender()
+	if _regicide.treaty_active then
+		return
 	end
 	
-	-- Check if any team has surrendered.
-	for team, result in pairs(results) do
-		if result.surrender_count > 0 then
-			Rule_RemoveAll()
-			
-			-- We have a winner!
-			local losingTeam = team
-			local winningTeam = Team_GetEnemyTeam(losingTeam)
-			
-			World_SetTeamWin(winningTeam, -1)
-		end
-	end
-end
-
-
---[[
-function Mod_WinCondition_CheckKing()
+	local living_count = 0
 	for i = 1, World_GetPlayerCount() do
 		local player = World_GetPlayerAt(i)
-		
-		
-		local num_squads = Player_GetEntityCountByUnitType(player, "king")
-		if num_squads <= 0 then
-			Core_SetPlayerDefeated(player, Annihilation_LoserPresentation, WR_ANNIHILATION)
+		if Player_IsAlive(player) then 
+			living_count = living_count + 1
 		end
+		--if Player_IsSurrendered(player) then
+		--	Core_SetPlayerDefeated(player.id, Annihilation_LoserPresentation, WR_ANNIHILATION)
+		--end
+	end
+	
+	local has_winner = 0
+	
+	for _, player in pairs(PLAYERS) do	
+		if Player_IsAlive(player.id) then
+			local living_friends = 0
+			for _, other_player in pairs(PLAYERS) do
+				if player.id ~= other_player.id and
+					Player_IsAlive(other_player.id) and 
+					Player_ObserveRelationship(player.id, other_player.id) == R_ALLY and
+					Player_ObserveRelationship(other_player.id, player.id) == R_ALLY then
+					living_friends = living_friends + 1
+				end
+			end
+			
+			if living_count == living_friends + 1 then
+				Core_SetPlayerVictorious(player.id, Annihilation_WinnerPresentation, WR_ANNIHILATION)
+				has_winner = 1				
+			end			
+		end		
+	end
+	
+	if has_winner == 1 then
+		Core_OnGameOver()
+		Rule_RemoveMe()
 	end
 end
-]]--
-
-

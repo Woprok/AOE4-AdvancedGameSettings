@@ -189,24 +189,24 @@
 190,,,,,,Win Conditions Settings
 191,,,,,,Game Simulation Speed
 192,,,,,,Game Simulation Speed
-193,,,,,,Alters game simulation speed.
+193,,,,,,Alters game simulation speed. WARNING: DO NOT USE HIGHER SPEEDS IN MULTIPLAYER. SERVER IS NOT ABLE TO KEEP UP FOR FLUENT GAMEPLAY.
 194,,,,,,Slowest
 195,,,,,,Slowest
 196,,,,,,Normal
 197,,,,,,Normal
-198,,,,,,Faster
+198,,,,,,Faster (SP)
 199,,,,,,Faster
 200,,,,,,Slower
 201,,,,,,Slower
 202,,,,,,Slow
 203,,,,,,Slow
-204,,,,,,Fast
+204,,,,,,Fast (SP)
 205,,,,,,Fast
-206,,,,,,Fastest
+206,,,,,,Fastest (SP)
 207,,,,,,Fastest
-208,,,,,,Turbo
+208,,,,,,Turbo (SP)
 209,,,,,,Turbo
-210,,,,,,Madness
+210,,,,,,Madness (SP)
 211,,,,,,Madness
 212,,,,,,0.75x
 213,,,,,,0.75x

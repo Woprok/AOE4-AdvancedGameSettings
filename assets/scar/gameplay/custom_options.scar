@@ -121,6 +121,7 @@ function InternalCustomOptions_CreateTreaty(_match, treaty_duration)
 	Religious_CanTick(false)
 	Wonder_CanTick(false)
 	Wonder_IsSoloVictory(true)
+	Regicide_IsTreaty(true)
 	-- start countdown
 	Rule_Add(InternalCustomOptions_TreatyStart_IncrementCounter)
 end
@@ -152,6 +153,7 @@ function InternalCustomOptions_TreatyStart_End()
 		Religious_CanTick(true)
 		Wonder_IsSoloVictory(false)
 		Wonder_CanTick(true)
+		Regicide_IsTreaty(false)
 	end
 end
 
@@ -532,6 +534,8 @@ function CustomOptions_SpawnKeeps()
 		elseif player_civ == "abbasid" then
 			ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_abb")			
 		end
+		local sp = Player_GetStartingPosition(player.id)
+		
 		
 		local spawn_position = Util_GetOffsetPosition(player.startingPos, 10, 20)
 		local entity = Entity_Create(ebp_building, player.id, spawn_position, false)
