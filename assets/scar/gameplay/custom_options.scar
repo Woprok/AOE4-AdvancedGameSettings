@@ -690,11 +690,11 @@ end
 
 function CustomOptions_ApplyStartingAgeUpgrades(_match)
 	local optionAgeStartKey
-	if winConditionOptions.section_starting_conditions 
-		and winConditionOptions.section_starting_conditions.option_start_age 
-		and winConditionOptions.section_starting_conditions.option_start_age.enum_items then 
-		for key, value in pairs(winConditionOptions.section_starting_conditions.option_start_age.enum_items) do
-			if (winConditionOptions.section_starting_conditions.option_start_age.enum_value == value) then
+	if _match.section_starting_conditions 
+		and _match.section_starting_conditions.option_start_age 
+		and _match.section_starting_conditions.option_start_age.enum_items then 
+		for key, value in pairs(_match.section_starting_conditions.option_start_age.enum_items) do
+			if (_match.section_starting_conditions.option_start_age.enum_value == value) then
 				optionAgeStartKey = key
 			end
 		end

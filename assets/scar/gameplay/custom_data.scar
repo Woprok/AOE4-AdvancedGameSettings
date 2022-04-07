@@ -818,8 +818,8 @@ end
 function CustomDataOptions_UpgradeByQualifierAndAge(playerID, typeName, ageName, table)
 	for i,v in ipairs(table[typeName][ageName]) do
 		local update = BP_GetUpgradeBlueprint(table[typeName][ageName][i])
-		if not Player_HasUpgrade(player.id, update) then
-			Player_CompleteUpgrade(player.id, update)				
+		if not Player_HasUpgrade(playerID, update) then
+			Player_CompleteUpgrade(playerID, update)				
 		end
 	end
 end
@@ -827,8 +827,8 @@ end
 function CustomDataOptions_UpgradeByRaceAndAge(playerID, raceName, ageName, table)
 	for i,v in ipairs(table[raceName][ageName]) do
 		local update = BP_GetUpgradeBlueprint(table[raceName][ageName][i])
-		if not Player_HasUpgrade(player.id, update) then
-			Player_CompleteUpgrade(player.id, update)				
+		if not Player_HasUpgrade(playerID, update) then
+			Player_CompleteUpgrade(playerID, update)				
 		end
 	end
 end

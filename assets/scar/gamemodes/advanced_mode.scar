@@ -13,7 +13,7 @@ import("cardinal.scar")
 
 Core_RegisterModule("AdvancedMode")		-- Call this before importing vision.scar so StandardMode_OnGameSetup() is called before Vision_OnGameSetup()   
 
-import("gameplay/custom_data.scar")
+--import("gameplay/custom_data.scar")
 import("gameplay/custom_options.scar")
 
 -- replay system
@@ -222,17 +222,17 @@ function AdvancedMode_PostInit()
 	if not _match.options.section_inner_win_conditions.option_win_condition_regicide then
 		
 		if _match.options.section_custom_conditions_2.spawn_king then
-			CustomOptions_SpawnKeeps()
+			CustomOptions_SpawnKings()		
 		end	
 	end	
 	-- Spawn keep if it was allowed
 	if _match.options.section_custom_conditions_2.spawn_keep then
-		CustomOptions_SpawnKings()		
+		CustomOptions_SpawnKeeps()
 	end
 
 	if _match.options.section_custom_conditions and
 		_match.options.section_custom_conditions.tech_level then
-		CustomDataOptions_ApplyTechnologyUpgrades(_match)
+		--CustomDataOptions_ApplyTechnologyUpgrades(_match)
 	end
 end
 
