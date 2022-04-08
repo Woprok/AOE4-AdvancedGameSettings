@@ -1,0 +1,451 @@
+-----------------------------------------------------------------------
+--
+-- Annihilation Win Condition 
+--
+-- A player is eliminated when they have no units remaining and either no buildings or 
+-- insufficient resources with which to produce any more units. 
+-- The last remaining player/team wins. 
+--
+-- (c) Relic Entertainment 2019
+--
+-----------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+-- Data
+-----------------------------------------------------------------------
+
+_annihilation = {
+	is_diplomacy_enabled = false,
+	is_tribute_enabled = true,
+	players_with_market = {},
+	type_map = {	-- Type map of building type to cheapest squad it can produce. Used to cache squad costs.
+		town_center 	= "villager",
+		barracks		= "spearman",
+		archery_range 	= "archer",
+		stable 			= "horseman",
+		siege_workshop 	= "springald",
+		monastery 		= "monk", 
+	},	
+	types = { -- Building types used to identify landmarks and wonders
+		landmark = "wonder",
+		wonder = "wonder_imperial_age",
+		building = "building", 
+	},
+	sfx = {
+		eliminated_player_ally = "Conquest_friendly_eliminated",
+		eliminated_enemy = "Conquest_enemy_eliminated",
+		victory = "mus_stinger_landmark_objective_complete_success",
+		defeat = "mus_stinger_landmark_objective_complete_fail",
+	},
+	cue = {						-- event cue shown when player is eliminated 
+		title = Loc_Empty(),
+		desc = Loc_Empty(),
+		sfx = "sfx_ui_event_queue_high_priority_play",
+		icon = "icons\\event_queue_high_priority_large",
+		template = "high_priority", 
+		style = ECV_Queue | ECV_Title,
+	},
+}
+-----------------------------------------------------------------------
+-- Scripting framework
+-----------------------------------------------------------------------
+
+Core_RegisterModule("Annihilation")
+
+-----------------------------------------------------------------------
+-- Callbacks
+-----------------------------------------------------------------------
+
+
+-- Callback invoked when Diplomacy is enabled (indicates whether win condition should be based on player instead of team).
+-- Invoked through game mode script's *_OnIntit() function.
+function Annihilation_DiplomacyEnabled(is_enabled)
+	_annihilation.is_diplomacy_enabled = is_enabled
+end
+
+
+-- Callback invoked to indicate whether sending of tribute is enabled.
+-- Invoked through game mode script's *_OnIntit() function. 
+function Annihilation_TributeEnabled(is_enabled)
+	_annihilation.is_tribute_enabled = is_enabled
+end
+
+-- Callback invoked by Core::OnInit()
+function Annihilation_OnInit()	
+	--Cache the cost of the cheapest unit that can be made from each type of building.
+	for i, player in pairs(PLAYERS) do
+		player._annihilation = {cheapest_squad_cost = {}}
+		for entity_type, squad_type in pairs(_annihilation.type_map) do 
+			local sbp = Cardinal_ConvertTypeToSquadBlueprint(squad_type, player.id)
+			if sbp == nil then
+				print(string.format("Annihilation_OnInit() - No squad blueprint found for %s %s", player.raceName, squad_type))
+			else
+				player._annihilation.cheapest_squad_cost[entity_type] = Player_GetSquadBPCost(player.id, sbp)
+			end
+		end
+	end	
+end
+
+
+function Annihilation_Start()
+	Rule_AddGlobalEvent(Annihilation_OnEntityKilled, GE_EntityKilled)
+	Rule_AddGlobalEvent(Annihilation_OnLandmarkDestroyed, GE_EntityLandmarkDestroyed)
+	if _annihilation.is_tribute_enabled then 
+		Rule_AddGlobalEvent(Annihilation_OnConstructionComplete, GE_ConstructionComplete)	
+	end
+end
+
+
+-- Callback invoked by Core_OnGameOver() 
+function Annihilation_OnGameOver()	
+	Rule_RemoveGlobalEvent(Annihilation_OnEntityKilled)
+	Rule_RemoveGlobalEvent(Annihilation_OnLandmarkDestroyed)
+	Rule_RemoveGlobalEvent(Annihilation_OnConstructionComplete)
+end
+
+
+-- Global event callback for GE_ConstructionComplete
+-- Tracks which players have built a market (and can therefore gift resources to allies).
+function Annihilation_OnConstructionComplete(context)	
+	if _annihilation ~= nil and Entity_IsOfType(context.entity, "market") then
+		local owner = context.player
+		for _, player in pairs(_annihilation.players_with_market) do
+			if player == owner then 
+				return	-- player already built a market
+			end
+		end
+		table.insert(_annihilation.players_with_market, owner)
+		if #_annihilation.players_with_market == #PLAYERS then 
+			Rule_RemoveGlobalEvent(Annihilation_OnConstructionComplete)
+		end
+	end
+end
+
+-- Global event callback for GE_EntityLandmarkDestroyed
+-- Evaluates whether the player whose unit/building was killed is eliminated.
+function Annihilation_OnLandmarkDestroyed(context)
+	Annihilation_CheckAnnihilationCondition(context.landmarkOwner)
+end
+
+-- Global event callback for GE_EntityKilled
+-- Evaluates whether the player whose unit/building was killed is eliminated.
+function Annihilation_OnEntityKilled(context)
+	Annihilation_CheckAnnihilationCondition(context.victimOwner)
+end
+
+-- Helper function that is called on EntityKilled and LandmarkDestroyed events. It checks if annhilation condition is met. 
+function Annihilation_CheckAnnihilationCondition(victimOwner)
+	if victimOwner ~= nil then
+		
+		local player = Core_GetPlayersTableEntry(victimOwner)
+		
+		if player ~= nil and not player.isEliminated then
+			-- This requires that all relevant squad entities are tagged with "annihilation_condition" unit_class 
+			local num_squads = Player_GetEntityCountByUnitType(player.id, "annihilation_condition")
+			
+			-- Check for annihiliation when player has no squads left
+			if num_squads == 0 then
+				
+				local food = Player_GetResource(player.id, RT_Food)
+				local wood = Player_GetResource(player.id, RT_Wood)
+				local gold = Player_GetResource(player.id, RT_Gold)
+				
+				local has_landmark_entity_with_queue = false
+				local has_production_entity_with_queue = false
+				local has_squads_in_queue = false
+				local has_resources_for_generic_production = false
+				local has_ally_with_resources = false
+				local entities = Player_GetEntities(player.id)
+				
+				-- Check if player has a unit in production or sufficient resources to produce something. 
+				for i = 1, EGroup_CountSpawned(entities) do
+					local entity = EGroup_GetEntityAt(entities, i)		
+					
+					-- Accounts for both packed Mongol buildings and finished buildings of other civs 
+					if Entity_IsOfType(entity, "mobile_building") or Entity_GetBuildingProgress(entity) >= 1.0 then		
+						
+						-- Check if this entity has a production queue that is not disabled
+						if Entity_IsProductionQueueAvailable(entity) then
+							
+							-- Track if player has a landmark that can produce units
+							if Entity_IsOfType(entity, _annihilation.types.landmark) then
+								has_landmark_entity_with_queue = true
+							-- Track if player has a production building
+							else
+								has_production_entity_with_queue = true
+							end
+							
+							-- Check if player has any units currently being produced
+							local num_items_in_queue = Entity_GetProductionQueueSize(entity)
+							for j = 0, (num_items_in_queue - 1) do
+								local prod_queue_item_type = Entity_GetProductionQueueItemType(entity, j)
+								if Entity_GetProductionQueueItemType(entity, j) == PITEM_Spawn then
+									has_squads_in_queue = true
+									break
+								end
+							end
+							
+							-- Check if player has resources to produce cheapest unit from generic buildings (does not include landmarks)
+							for entity_type, cost in pairs(player._annihilation.cheapest_squad_cost) do 
+								if Entity_IsOfType(entity, entity_type) then 									
+									if food >= cost.food and wood >= cost.wood and gold >= cost.gold then
+										has_resources_for_generic_production = true
+										break
+									end
+								end
+							end
+						end
+						
+						-- End entity loop if there is enough information to calculate annihilation
+						if has_landmark_entity_with_queue and has_production_entity_with_queue and has_squads_in_queue and has_resources_for_generic_production then
+							break
+						end
+					end
+				end
+				EGroup_Destroy(entities)
+				
+				-- Check whether player has an ally that can send resources to produce something
+				has_ally_with_resources = _annihilation.is_tribute_enabled and Annihilation_PlayerCanReceiveTribute(player.id)
+				
+				-- Player is annihilated if:
+				-- They have no units alive (validated with num_squads) AND
+				-- They have no units being produced AND
+				-- They have no Landmarks with production and they have no generic production building(s) OR
+				-- They have no Landmarks with production and they have generic production building(s) but they cannot afford generic production.
+				if not has_squads_in_queue and ((not has_landmark_entity_with_queue and not has_production_entity_with_queue) or (not has_landmark_entity_with_queue and has_production_entity_with_queue and not has_resources_for_generic_production and not has_ally_with_resources)) then
+					--print(string.format("Annihilation_OnEntityKilled() - Player %d (team %d) eliminated", player.index, player.team.index))
+					local localPlayer = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+					if not localPlayer.isEliminated then 
+						local cue = _annihilation.cue
+						local title = Loc_FormatText(11159062, player.playerName)				-- "%1PLAYER_NAME% eliminated"
+						
+						UI_CreateEventCue(title, Loc_Empty(), cue.template, cue.icon, "", cue.style)	
+						
+						-- If eliminated player is the local player
+						if player.id == localPlayer.id then
+							
+							-- Play eliminated sfx
+							Sound_Play2D(_annihilation.sfx.eliminated_player_ally)
+							
+						-- If eliminated player is on the local player's team
+						elseif Player_ObserveRelationship(localPlayer.id, player.id) == R_ALLY then
+							
+							-- Play eliminated sfx
+							Sound_Play2D(_annihilation.sfx.eliminated_player_ally)
+							
+						-- If eliminated player is an enemy
+						else
+							
+							-- Play eliminated sfx
+							Sound_Play2D(_annihilation.sfx.eliminated_enemy)
+							
+						end
+					end
+					
+					Core_SetPlayerDefeated(player.id, Annihilation_LoserPresentation, WR_ANNIHILATION)	
+				end
+			end			
+		end
+	end
+end
+
+-- Callback invoked by Core_SetPlayerDefeated() when a player is eliminated.
+function Annihilation_OnPlayerDefeated(player, reason)	
+	if reason == WR_ANNIHILATION then
+		
+		if Player_IsAlive(player.id) then
+			-- Kill player
+			World_KillPlayer(player.id, KPR_Lost)
+		end
+		
+		-- Check if any player victorious
+		Annihilation_CheckVictory()
+		
+	end
+end
+	
+
+-----------------------------------------------------------------------
+-- Private/Internal functions
+-----------------------------------------------------------------------
+
+function Annihilation_CheckVictory()
+	if _annihilation.is_diplomacy_enabled then 
+		local living_count = 0
+		local total_count = 0
+		for i, player in pairs(PLAYERS) do
+			total_count = total_count + 1
+			if Player_IsAlive(player.id) then 
+				living_count = living_count + 1
+			end
+		end
+		if living_count ~= total_count and living_count == 1 then
+			for i, player in pairs(PLAYERS) do
+				if Player_IsAlive(player.id) then 
+					Core_SetPlayerVictorious(player.id, Annihilation_WinnerPresentation, WR_ANNIHILATION)	
+				end
+			end
+			Core_OnGameOver()		
+		end
+		
+		Surrender_Human_Exists()
+		return
+	end
+	
+	
+	-- Track one of the surviving players
+	local winning_player = nil
+	
+	-- For all players
+	for i, player in pairs(PLAYERS) do
+		
+		-- If player is not eliminated
+		if not Core_IsPlayerEliminated(player.id) then 
+			
+			-- Get remaining enemies of player
+			local enemies_remaining = Annihilation_GetActiveEnemyCount(player)
+			
+			-- If no enemies remain
+			if enemies_remaining == 0 then
+				-- Track player
+				winning_player = player
+				break
+			end
+		end
+	end
+	
+	if winning_player ~= nil then
+		
+		-- For every player
+		for i, player in pairs(PLAYERS) do
+			
+			-- If player is winning player's ally
+			if Player_ObserveRelationship(player.id, winning_player.id) == R_ALLY then
+				Core_SetPlayerVictorious(player.id, Annihilation_WinnerPresentation, WR_ANNIHILATION)	
+			end
+		end
+	-- If a winning player was not found, check if no humans remain
+	else
+		Annihilation_Human_Exists()
+	end
+end
+
+
+function Annihilation_Human_Exists()
+	-- Track humans remaining
+	local humansRemaining = {}
+	for i, player in pairs(PLAYERS) do
+		if (not player.isEliminated) and Player_IsHuman(player.id) then
+			table.insert(humansRemaining, player)
+		end
+	end
+	
+	-- If no humans remain, resolve match as winnerless. This gracefully resolves matches where the last human player surrenders in an AI game with RelicLink.
+	if #humansRemaining == 0 then
+		Core_OnGameOver()
+		Core_WinnerlessGameOver(Annihilation_LoserPresentation, WR_ANNIHILATION)
+	end
+end
+
+-- Returns number of enemies remaining for a given player
+function Annihilation_GetActiveEnemyCount(player)
+	
+	-- Track enemies remaining
+	local enemies_remaining = {}
+	
+	-- For every other player
+	for i, player_other in pairs(PLAYERS) do
+		
+		-- If other player is not the given player, is an enemy, and is not eliminated
+		if player ~= player_other and not Core_IsPlayerEliminated(player_other.id) and Player_ObserveRelationship(player.id, player_other.id) == R_ENEMY then 
+			
+			-- Add enemy player to table
+			table.insert(enemies_remaining, player_other)
+		end
+	end
+	
+	-- Return number of enemies remaining
+	return #enemies_remaining
+end
+
+function Annihilation_IsACapital(entity)		
+	return Entity_GetStateModelBool(entity, "town_center_is_capital") or Entity_IsOfType(entity, "town_center_capital")
+end
+
+
+function Annihilation_IsALandmark(entity)		
+	return Entity_IsOfType(entity, _annihilation.types.landmark) and not Entity_IsOfType(entity, _annihilation.types.wonder)	
+end
+
+-- Returns true if player can receive tribute (i.e. has an ally with a market).
+function Annihilation_PlayerCanReceiveTribute(player_id)
+
+	-- Returns true if player can send tribute (i.e. has built a market).	
+	local PlayerCanSendTribute = function (player_id)
+		for _, id in pairs(_annihilation.players_with_market) do
+			if id == player_id then
+				return true
+			end
+		end
+	end	
+	
+	for _, other_player in pairs(PLAYERS) do
+		if other_player.id ~= player_id
+			and not other_player.isEliminated 
+			and Player_ObserveRelationship(other_player.id, player_id) == R_ALLY
+			and PlayerCanSendTribute(other_player.id) then 
+			return true
+		end
+	end
+	return false
+end
+
+-- Winner presentation
+function Annihilation_WinnerPresentation(playerID)
+	if playerID == Game_GetLocalPlayer() then
+		
+		Rule_AddOneShot(_gameOver_message, 
+			GAMEOVER_OBJECTIVE_TIME, { 
+			_playerID = playerID, 
+			_icon = nil,											-- Unused 
+			_endType = Loc_GetString(11161277), 					-- "VICTORY"  
+			_message = Loc_Empty(),									-- Unused 
+			_sound = _annihilation.sfx.victory, 
+			_videoURI = "stinger_victory" 
+		})
+
+	end
+end
+
+
+-- Loser presentation
+function Annihilation_LoserPresentation(playerID)
+	if playerID == Game_GetLocalPlayer() then
+		
+		local title = Loc_GetString(11165094)			-- "DEFEAT"
+		local video = "stinger_defeat"
+		
+		-- Use 'eliminated' instead of 'defeat' if at least one ally remaining
+		if not _annihilation.is_diplomacy_enabled then
+			local player_local = Core_GetPlayersTableEntry(playerID)
+			for _, player in pairs(PLAYERS) do 
+				if not player.isLocal and not player.isEliminated and Player_ObserveRelationship(player_local.id, player.id) == R_ALLY then
+					title = Loc_GetString(11165821)		-- "ELIMINATED"
+					video = "stinger_eliminated"
+					break
+				end
+			end
+		end
+		
+		Rule_AddOneShot(_gameOver_message, 
+			GAMEOVER_OBJECTIVE_TIME, {
+			_playerID = playerID, 
+			_icon = nil,											-- Unused 
+			_endType = title,
+			_message = Loc_Empty(),									-- Unused
+			_sound = _annihilation.sfx.defeat, 
+			_videoURI = video
+		})
+	end
+end

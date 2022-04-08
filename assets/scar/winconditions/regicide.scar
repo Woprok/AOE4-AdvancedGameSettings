@@ -40,6 +40,12 @@ Core_RegisterModule(_regicide.module)
 -- Callbacks
 -----------------------------------------------------------------------
 
+-- Callback invoked when Diplomacy is enabled (indicates whether win condition should be based on player instead of team).
+-- Invoked through game mode script's *_OnIntit() function.
+function Regicide_DiplomacyEnabled(is_enabled)
+	_regicide.last_man_standing = is_enabled
+end
+
 -- Called during load as part of the game setup sequence
 function Regicide_OnGameSetup()
 	
@@ -177,6 +183,29 @@ function WinCondition_CheckSurrender()
 	if _regicide.treaty_active then
 		return
 	end
+	
+	if _regicide.lastManStanding then 
+		local living_count = 0
+		local total_count = 0
+		for i, player in pairs(PLAYERS) do
+			total_count = total_count + 1
+			if Player_IsAlive(player.id) then 
+				living_count = living_count + 1
+			end
+		end
+		if living_count ~= total_count and living_count == 1 then
+			for i, player in pairs(PLAYERS) do
+				if Player_IsAlive(player.id) then 
+				Core_SetPlayerVictorious(player.id, Annihilation_WinnerPresentation, WR_ANNIHILATION)
+				end
+			end		
+			Core_OnGameOver()		
+		end
+		
+		return
+	end
+	
+	
 	
 	local living_count = 0
 	for i = 1, World_GetPlayerCount() do

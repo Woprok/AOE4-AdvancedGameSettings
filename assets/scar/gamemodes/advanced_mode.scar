@@ -33,9 +33,12 @@ import("gameplay/cheat.scar")
 --import("startconditions/nomad_start.scar")
 
 -- win conditions
-import("winconditions/annihilation.scar")	-- When conquest, religious, and wonder are all unselected in match options
-import("winconditions/elimination.scar")	-- For players who quit or drop (through pause menu or disconnection)
-import("winconditions/surrender.scar")		-- For players who surrender (through pause menu)
+--import("winconditions/annihilation.scar")			-- When conquest, religious, and wonder are all unselected in match options
+--import("winconditions/elimination.scar")			-- For players who quit or drop (through pause menu or disconnection)
+--import("winconditions/surrender.scar")			-- For players who surrender (through pause menu)
+import("winconditions/annihilation_reworked.scar")	
+import("winconditions/elimination_reworked.scar")	
+import("winconditions/surrender_reworked.scar")		
 import("winconditions/conquest.scar")
 --import("winconditions/wonder.scar")
 --import("winconditions/religious.scar")
