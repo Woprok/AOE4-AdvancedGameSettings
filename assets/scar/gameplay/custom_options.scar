@@ -562,13 +562,13 @@ function CustomOptions_SpawnInitialSquads()
 		local player_civ = Player_GetRaceName(player.id)
 		
 		local vil = InternalCustomOptions_GetVillager(player_civ)
-		InternalCustomOptions_SpawnUnitAtStartPosition(player, vil, "villager", 6, 20, 10)
+		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, vil, -10, 0, -10, "villager", 6)
 		
 		local sco = InternalCustomOptions_GetScout(player_civ)
-		InternalCustomOptions_SpawnUnitAtStartPosition(player, sco, "scout", 1, 20, 10)
+		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, sco, -12, 0, -12, "scout", 1)
 		
 		local shp = InternalCustomOptions_GetSheep(player_civ)
-		InternalCustomOptions_SpawnUnitAtStartPosition(player, shp, "sheep", 1, 20, 10)
+		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, shp, -9, 0, -9, "sheep", 1)
 	end
 end
 
@@ -590,14 +590,18 @@ function InternalCustomOptions_SpawnEntityAtSpawnOffset(player, entity_bp, ox, o
 	return e	
 end
 
-function InternalCustomOptions_SpawnUnitAtStartPosition(player, sbp_unitbp, category, count, offset, distance)
-	local spawn_position = Util_GetOffsetPosition(player.startingPos, offset, distance)
-	local sgroup_name = "sg_player_" .. category .. "_" .. tostring(player.id)
+function InternalCustomOptions_SpawnUnitAtSpawnOffset(player, unit_bp, ox, oy, oz, category, count)
+	--local player = World_GetPlayerAt(1)
+	local ps = Player_GetStartingPosition(player)
+	-- proper rotation
+	local nx = 5 * math.floor(math.floor(ps.x) / 5)
+	local ny = 5 * math.floor(math.floor(ps.y) / 5)
+	local nz = 5 * math.floor(math.floor(ps.z) / 5)
+	local psx = World_Pos(nx + ox, ny + oy, nz + oz)
+	-- finally spawn it	
+	local sgroup_name = "sg_player_" .. category .. "_" .. tostring(player)
 	local sg_units = SGroup_CreateIfNotFound(sgroup_name)
-	UnitEntry_DeploySquads(player.id, sg_units, {{sbp = sbp_unitbp, numSquads = count }}, spawn_position)
-	--local move_position = Util_GetOffsetPosition(player.startingPos, 20, 15)
-	--Cmd_Ability(sg_units, BP_GetAbilityBlueprint("core_formation_line"))
-	--Cmd_FormationMove(sg_units, move_position, false)
+	UnitEntry_DeploySquads(player, sg_units, {{sbp = unit_bp, numSquads = count }}, psx)
 end
 
 function InternalCustomOptions_GetKeep(player_civ)

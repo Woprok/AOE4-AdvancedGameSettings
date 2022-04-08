@@ -3,42 +3,81 @@
 -----------------------------------------------------------------------
 -- Data
 -----------------------------------------------------------------------
-
+_custom_data_remove = {
+	english = {
+		
+	},
+	chinese = {
+		
+	},
+	french = {
+		"upgrade_tech_university_biology",
+	},
+	hre = {
+		"upgrade_unit_religious_herbal_medicine_4",
+		"upgrade_unit_religious_piety_4",		
+	},
+	rus = {
+		"upgrade_naval_forecastle",
+		"upgrade_naval_galley_cannon",		
+	},
+	abbasid = {
+		"upgrade_naval_forecastle",		
+	},
+	mongol = {
+		"upgrade_unit_town_center_wheelbarrow_1",
+		"upgrade_econ_resource_wood_fell_rate_1",	
+		"upgrade_econ_villager_hunting_gear_1",
+		"upgrade_unit_town_center_wheelbarrow_1",
+		"upgrade_econ_resource_gold_harvest_rate_2",		
+		"upgrade_econ_resource_gold_harvest_rate_3",
+		"upgrade_siege_weapon_speed",		
+		"upgrade_econ_resource_gold_harvest_rate_4",
+		"upgrade_unit_religious_piety_4",
+		"upgrade_unit_religious_tithe_barn_4",
+		"upgrade_siege_adjustable_crossbar",
+		"upgrade_siege_roller_trigger",
+		"upgrade_manatarms_elite_army_tactics",
+		"upgrade_tech_university_biology",
+		"upgrade_tech_university_architecture_4",
+		"upgrade_ranged_incendiary",
+		"upgrade_siege_chemistry",
+		"upgrade_siege_works",		
+	},
+	sultanate = {
+		-- this faction uses if to not get any
+	},
+	normans = {
+		
+	},
+}
 
 _custom_data_uniques = {
 	english = {
 		AGE_DARK = {
 			--"upgrade_market_settlement_inf_adj_eng",
-			--"upgrade_camp_incendiary_eng",
-			
+			--"upgrade_camp_incendiary_eng",			
 		},
 		AGE_FEUDAL = {
-			"upgrade_naval_shipwrights_eng",
-			
-			"upgrade_longbow_make_camp_eng",
-			
+			"upgrade_naval_shipwrights_eng",			
+			"upgrade_longbow_make_camp_eng",			
 			"upgrade_unit_manatarms_2_eng",
 		},
 		AGE_CASTLE = {
+			--"upgrade_keep_production_eng",
+			--"upgrade_ranged_longbow_armor_pen_eng",
+			--"upgrade_ranged_palings_eng",
 			"upgrade_armor_clad_eng",
-			"upgrade_keep_production_eng",
-			"upgrade_network_of_citadels_eng",
-			
-			"upgrade_ranged_longbow_armor_pen_eng",
-			"upgrade_ranged_palings_eng",
-			
+			"upgrade_network_of_citadels_eng",				
 			"upgrade_unit_archer_3_eng",
 			"upgrade_unit_manatarms_3_eng",
 			"upgrade_unit_spearman_3_eng",
 		},
 		AGE_IMPERIAL = {
-			"upgrade_farm_improved_enclosures_eng",
-			
-			"upgrade_ranged_longbow_arrow_volley_eng",
 			--"upgrade_ranged_longbow_damage_eng",
-			
-			"upgrade_trebuchet_aoe_eng",
-			
+			"upgrade_farm_improved_enclosures_eng",			
+			"upgrade_ranged_longbow_arrow_volley_eng",			
+			"upgrade_trebuchet_aoe_eng",			
 			"upgrade_unit_archer_4_eng",
 			"upgrade_unit_manatarms_4_eng",
 			"upgrade_unit_spearman_4_eng",
@@ -49,24 +88,21 @@ _custom_data_uniques = {
 			--"player_dynasty0_chi",
 			--"player_dynasty1_chi",
 			--"player_dynasty2_chi",
-			--"player_dynasty3_chi",
-			
+			--"player_dynasty3_chi",			
 			--"upgrade_manatarms_aoe_chi",
 			--"upgrade_supervise_chi",
 		},
 		AGE_FEUDAL = {
-			"upgrade_advanced_build_materials_chi",
-			"upgrade_architecture_chi",
-			"upgrade_imperial_examinations_chi",
-			
+			--"upgrade_advanced_build_materials_chi",
+			--"upgrade_architecture_chi",
 			--"upgrade_keep_handcannonslits_chi",
 			--"upgrade_outpost_handcannonslits_chi",
 			--"upgrade_tower_handcannonslits_chi",
+			"upgrade_imperial_examinations_chi",			
 		},
 		AGE_CASTLE = {
 			"upgrade_naval_hammocks_chi",
-			"upgrade_wall_repair_chi",
-			
+			"upgrade_wall_repair_chi",			
 			"upgrade_unit_repeater_crossbow_3_chi",
 		},
 		AGE_IMPERIAL = {
@@ -74,8 +110,7 @@ _custom_data_uniques = {
 			"upgrade_gunpowder_cost_chi",
 			"upgrade_gunpowder_damage_chi",
 			"upgrade_manatarms_battle_hardened_chi",
-			"upgrade_reload_drills_chi",
-			
+			"upgrade_reload_drills_chi",			
 			"upgrade_unit_firelancer_4_chi",
 			"upgrade_unit_manatarms_4_chi",
 			"upgrade_unit_repeater_crossbow_4_chi",
@@ -84,44 +119,34 @@ _custom_data_uniques = {
 	french = {
 		AGE_DARK = {
 			--"upgrade_tech_school_of_cavalry",
-			--"upgrade_trait_upgrade_costs_on_dropoffs",
-			
+			--"upgrade_trait_upgrade_costs_on_dropoffs",			
 			--"upgrade_reliable_supplies_fre", --Campaign
 			--"upgrade_shipworthy_timber_fre", --Campaign
 			--"upgrade_surplus_iron_fre", --Campaign
 		},
 		AGE_FEUDAL = {
-			"upgrade_cavalry_chivalry_fre",
-			
+			"upgrade_cavalry_chivalry_fre",			
 		},
 		AGE_CASTLE = {
-			"upgrade_naval_long_guns_fre",
-			
-			"upgrade_cavalry_cantled_saddle_fre",
-			
-			"upgrade_landmark_cavalry_bloodline_fre",
-			"upgrade_landmark_cavalry_cantled_saddle_fre",
-			"upgrade_landmark_cavalry_chivalry_fre",
-			"upgrade_landmark_enlistment_incentives_fre",
-			"upgrade_landmark_ranged_crossbow_drills_fre",
-			"upgrade_landmark_ranged_crossbow_stirrups_fre",
-			
-			"upgrade_ranged_crossbow_drills_fre",
-			"upgrade_ranged_incendiary_fre",
-			
+			--"upgrade_landmark_cavalry_bloodline_fre",
+			--"upgrade_landmark_cavalry_cantled_saddle_fre",
+			--"upgrade_landmark_cavalry_chivalry_fre",
+			--"upgrade_landmark_enlistment_incentives_fre",
+			--"upgrade_landmark_ranged_crossbow_drills_fre",
+			--"upgrade_landmark_ranged_crossbow_stirrups_fre",
+			--"upgrade_ranged_incendiary_fre",
+			"upgrade_naval_long_guns_fre",			
+			"upgrade_cavalry_cantled_saddle_fre",				
+			"upgrade_ranged_crossbow_drills_fre",			
 			"upgrade_unit_knight_3_fre",
 		},
 		AGE_IMPERIAL = {
-			--"upgrade_workshop_to_college", -- Campaign
-			
-			"upgrade_cavalry_bloodline_fre",
-			"upgrade_cavalry_grapered_lance_fre",
-			
-			"upgrade_enlistment_incentives_fre",
-			
-			"upgrade_ranged_crossbow_cranequin_fre",
-			"upgrade_ranged_crossbow_stirrups_fre",
-			
+			--"upgrade_workshop_to_college", -- Campaign		
+			--"upgrade_cavalry_grapered_lance_fre",			
+			--"upgrade_ranged_crossbow_cranequin_fre",	
+			"upgrade_cavalry_bloodline_fre",	
+			"upgrade_enlistment_incentives_fre",		
+			"upgrade_ranged_crossbow_stirrups_fre",			
 			"upgrade_unit_crossbowman_4_fre",
 			"upgrade_unit_knight_4_fre",
 		},
@@ -141,29 +166,24 @@ _custom_data_uniques = {
 			"upgrade_infantry_marching_drills_hre",
 		},
 		AGE_CASTLE = {
+			--"upgrade_royal_edict_hre",
 			"upgrade_benediction_hre",
-			"upgrade_building_fire_armor_hre",
-			"upgrade_devoutness_hre",
-			
 			"upgrade_inspired_infantry_hre",
-			
+			"upgrade_devoutness_hre",
+			"upgrade_building_fire_armor_hre",
 			"upgrade_man_at_arms_maces_hre",
 			"upgrade_man_at_arms_two_handed_hre",
-			
-			"upgrade_royal_edict_hre",
-			
-			"upgrade_unit_religious_herbal_medicine_4_hre",
 			"upgrade_unit_manatarms_3_hre",
+			"upgrade_unit_religious_herbal_medicine_4_hre",
 		},
 		AGE_IMPERIAL = {
-			"upgrade_enlistment_incentives_hre",
-			"upgrade_gothic_plate_armour_hre",
+			--"upgrade_enlistment_incentives_hre",
+			--"upgrade_gothic_plate_armour_hre",
 			"upgrade_reinforced_defenses_hre",
 			"upgrade_riveted_chain_armour_hre",
-			
-			"upgrade_unit_religious_piety_4_hre",
 			"upgrade_unit_landsknecht_4_hre",
 			"upgrade_unit_manatarms_4_hre",
+			"upgrade_unit_religious_piety_4_hre",
 		},
 	},
 	rus = {
@@ -172,22 +192,12 @@ _custom_data_uniques = {
 			--"upgrade_naval_role_lodya_fishingship_rus",
 			--"upgrade_naval_role_lodya_fishingship_to_transport_rus",
 			--"upgrade_naval_role_lodya_trasnport_to_fishingship_rus",
-			
-			"upgrade_econ_villager_hunting_gear_rus",
-			
-			"upgrade_saints_blessing_duration_rus",
-			
-			"upgrade_warrior_monk_armor_rus",
-			
 			--"upgrade_wooden_castle_turret_rus",
 			--"upgrade_wooden_castle_watch_rus",
+			--"upgrade_econ_villager_hunting_gear_rus",				
+			--"upgrade_warrior_monk_armor_rus",			
 		},
 		AGE_FEUDAL = {
-			"upgrade_naval_role_addsails_rus",
-			"upgrade_naval_role_firestation_rus",
-			"upgrade_naval_role_navigator_rus",
-			"upgrade_naval_role_repairstation_rus",
-			
 			--"upgrade_naval_role_lodya_combatship_rus",
 			--"upgrade_naval_role_lodya_combatship_to_tradeship_rus",
 			--"upgrade_naval_role_lodya_fireship_to_tradeship_rus",
@@ -198,203 +208,71 @@ _custom_data_uniques = {
 			--"upgrade_naval_role_lodya_transport_rus",
 			--"upgrade_naval_role_lodya_transport_to_combatship_rus",
 			--"upgrade_naval_role_lodya_transport_to_tradeship_rus",
-			
-			"upgrade_scout_forester_rus",
-			
 			--"upgrade_wooden_castle_arrowslits_rus",
+			--"upgrade_naval_role_addsails_rus",
+			--"upgrade_naval_role_firestation_rus",
+			--"upgrade_naval_role_navigator_rus",
+			--"upgrade_naval_role_repairstation_rus",				
+			--"upgrade_scout_forester_rus",			
 		},
 		AGE_CASTLE = {
-			"upgrade_naval_advanced_clinker_rus",
-			"upgrade_naval_forecastle_rus",
-			"upgrade_naval_role_firearrows_rus",
-			
 			--"upgrade_naval_role_lodya_combatship_to_fireship_rus",
 			--"upgrade_naval_role_lodya_fireship_rus",
 			--"upgrade_naval_role_lodya_fishingship_to_fireship_rus",
-			--"upgrade_naval_role_lodya_transport_to_fireship_rus",		
-			
-			"upgrade_cavalry_hp_rus",
-			
+			--"upgrade_naval_role_lodya_transport_to_fireship_rus",	
+			--"upgrade_wooden_castle_springald_rus",	
+			--"upgrade_naval_forecastle_rus",
+			--"upgrade_naval_role_firearrows_rus",
+			"upgrade_saints_blessing_duration_rus",
 			"upgrade_saints_blessing_buff_effect_rus",
 			"upgrade_saints_blessing_range_rus",	
-			
-			--"upgrade_wooden_castle_springald_rus",	
-			
-			"upgrade_unit_knight_3_rus",
+			"upgrade_naval_advanced_clinker_rus",
+			"upgrade_cavalry_hp_rus",
+			"upgrade_unit_knight_3_rus",										
 		},
 		AGE_IMPERIAL = {
-			"upgrade_naval_cedar_hulls_rus",
-			"upgrade_naval_role_chainshot_rus",
-			
+			--"upgrade_naval_role_chainshot_rus",
+			--"upgrade_streltsy_armour_penetration_rus",
+			--"upgrade_streltsy_regiment_rus",
 			"upgrade_cavalry_melee_damage_rus",
-			
+			"upgrade_naval_cedar_hulls_rus",
+			"upgrade_unit_horsearcher_4_rus",
+			"upgrade_unit_knight_4_rus",			
 			"upgrade_siege_crew_training_rus",
 			"upgrade_siege_fined_tuned_guns_rus",
-			"upgrade_siege_improvements_rus",
-			
+			"upgrade_siege_improvements_rus",			
 			"upgrade_springald_range_rus",
-			
-			"upgrade_streltsy_armour_penetration_rus",
 			"upgrade_streltsy_double_time_rus",
-			"upgrade_streltsy_regiment_rus",
-			"upgrade_streltsy_weapon_percision_rus",
-			
-			"upgrade_unit_horsearcher_4_rus",
-			"upgrade_unit_knight_4_rus",
-		},
-	},
-	sultanate = {
-		AGE_DARK = {
-			--"upgrade_district_fire_resist_sul",
-			--"upgrade_district_population_sul",
-			--"upgrade_district_sight_sul",
-			
-			"upgrade_econ_resource_wood_fell_rate_1_sul",
-			"upgrade_econ_villager_hunting_gear_1_sul",
-			"upgrade_tech_university_influence_4_sul",
-			"upgrade_tech_university_supply_line_4_sul",
-			"upgrade_age1_infantry_construction_sul",
-			"upgrade_age1_stone_cost_sul",
-			"upgrade_age2_keep_town_center_sul",
-			"upgrade_age2_scholar_military_production_sul",
-			"upgrade_age3_travelling_scholar",
-			"upgrade_landmark_bijay_mandal_palace_sul",
-			"upgrade_landmark_qutab_minar_sul",
-			"upgrade_landmark_monk_cost_sul",
-			"upgrade_unit_religious_piety_4_sul",
-			"upgrade_unit_town_center_wheelbarrow_1_sul",
-			"upgrade_keep_wheelbarrow_sul",
-			"upgrade_landmark_elephant_caravan_sul",
-			"upgrade_landmark_fire_siege_armor_sul",
-			"upgrade_landmark_madrasa_popcap_sul",
-		},
-		AGE_FEUDAL = {
-			"upgrade_econ_extended_lines_sul",
-			"upgrade_econ_resource_food_harvest_rate_2_sul",
-			"upgrade_econ_resource_gold_harvest_rate_2_sul",
-			"upgrade_econ_resource_stone_harvest_rate_2_sul",
-			"upgrade_econ_resource_wood_harvest_rate_2_sul",
-			"upgrade_naval_patchwork_repairs_sul",
-			"upgrade_unit_religious_sanctity_4_sul",
-			"upgrade_keep_resource_wood_fell_rate_sul",
-			"upgrade_keep_scout_forester_sul",
-			"upgrade_landmark_scholar_sight_range_sul",
-			"upgrade_melee_armor_i_sul",
-			"upgrade_melee_damage_i_sul",
-			"upgrade_ranged_armor_i_sul",
-			"upgrade_ranged_bodkin_sul",
-			"upgrade_ranged_damage_i_sul",
-			"upgrade_scout_forester_sul",
-			"upgrade_siege_engineers_sul",
-			"upgrade_villager_health_sul",
-			"upgrade_unit_spearman_2_sul",
-		},
-		AGE_CASTLE = {
-			"upgrade_econ_drift_nets_sul",
-			"upgrade_econ_resource_food_harvest_rate_3_sul",
-			"upgrade_econ_resource_gold_harvest_rate_3_sul",
-			"upgrade_econ_resource_stone_harvest_rate_3_sul",
-			"upgrade_econ_resource_wood_harvest_rate_3_sul",
-			"upgrade_tech_military_academy_sul",
-			"upgrade_tech_university_murder_holes_4_sul",
-			"upgrade_landmark_house_popcap_sul",
-			"upgrade_naval_armored_hull_sul",
-			"upgrade_naval_navigator_sul",
-			"upgrade_unit_religious_herbal_medicine_4_sul",
-			"upgrade_improved_swords_sul",
-			"upgrade_landmark_force_march_sul",
-			"upgrade_landmark_mosque_heal_sul",
-			"upgrade_landmark_scholar_speed_sul",
-			"upgrade_melee_armor_ii_sul",
-			"upgrade_melee_damage_ii_sul",
-			"upgrade_outpost_lookout_tower_sul",
-			"upgrade_ranged_archer_quivver_sul",
-			"upgrade_ranged_archer_silkstring_sul",
-			"upgrade_ranged_armor_ii_sul",
-			"upgrade_ranged_crossbow_belthook_sul",
-			"upgrade_ranged_damage_ii_sul",
-			"upgrade_siege_steel_bore_sul",
-			"upgrade_siege_weapon_speed_sul",
-			"upgrade_unit_archer_3_sul",
-			"upgrade_unit_horseman_3_sul",
-			"upgrade_unit_spearman_3_sul",
-		},
-		AGE_IMPERIAL = {
-			"upgrade_econ_resource_food_harvest_rate_4_sul",
-			"upgrade_econ_resource_gold_harvest_rate_4_sul",
-			"upgrade_econ_resource_stone_harvest_rate_4_sul",
-			"upgrade_econ_resource_wood_harvest_rate_4_sul",
-			"upgrade_tech_university_architecture_4_sul",
-			"upgrade_tech_university_biology_sul",
-			"upgrade_age3_war_elephant_elite_sul",
-			"upgrade_landmark_hearty_rations_sul",
-			"upgrade_naval_explosives_sul",
-			"upgrade_naval_galley_cannon_sul",
-			"upgrade_unit_religious_tithe_barn_4_sul",
-			"upgrade_unit_religious_zealous_4_sul",
-			"upgrade_cavalry_barding_sul",
-			"upgrade_cavalry_grapered_lance_sul",
-			"upgrade_landmark_keep_defense_sul",
-			"upgrade_landmark_siege_elephant_sul",
-			"upgrade_manatarms_elite_army_tactics_sul",
-			"upgrade_melee_armor_iii_sul",
-			"upgrade_melee_damage_iii_sul",
-			"upgrade_ranged_armor_iii_sul",
-			"upgrade_ranged_crossbow_cranequin_sul",
-			"upgrade_ranged_damage_iii_sul",
-			"upgrade_ranged_incendiary_sul",
-			"upgrade_siege_adjustable_crossbar_sul",
-			"upgrade_siege_chemistry_sul",
-			"upgrade_siege_corned_gunpowder_sul",
-			"upgrade_siege_counterweight_sul",
-			"upgrade_siege_mathematics_sul",
-			"upgrade_siege_roller_trigger_sul",
-			"upgrade_siege_works_sul",
-			"upgrade_spearman_elite_spear_tactics_sul",
-			"upgrade_transport_construction_speed_sul",
-			"upgrade_transport_doused_armor_sul",
-			"upgrade_unit_archer_4_sul",
-			"upgrade_unit_crossbowman_4_sul",
-			"upgrade_unit_horseman_4_sul",
-			"upgrade_unit_knight_4_sul",
-			"upgrade_unit_manatarms_4_sul",
-			"upgrade_unit_spearman_4_sul",
+			"upgrade_streltsy_weapon_percision_rus",			
 		},
 	},
 	abbasid = {
-		AGE_DARK = {
-			
+		AGE_DARK = {			
 		},
 		AGE_FEUDAL = {
 			--"upgrade_add_culture_wing",
 			--"upgrade_add_economy_wing",
 			--"upgrade_add_military_wing",
 			--"upgrade_add_trade_wing",
-			
-			"upgrade_naval_teak_masts_abb",
-			
-			"upgrade_camel_archer_comp_bow_abb",
-			
 			"upgrade_cul_cheaper_research_abb",
 			"upgrade_econ_improved_carry_capacity_abb",
 			"upgrade_mil_camel_archers_improved_weapon_abb",
-			"upgrade_trade_commodity_trade_abb",
+			"upgrade_trade_commodity_trade_abb",			
+			"upgrade_naval_teak_masts_abb",
+			"upgrade_camel_archer_comp_bow_abb", -- phalanx ??? really	
 		},
 		AGE_CASTLE = {
 			--"upgrade_add_culture_wing_feudal",
 			--"upgrade_add_economy_wing_feudal",
 			--"upgrade_add_military_wing_feudal",
 			--"upgrade_add_trade_wing_feudal",
-			
-			"upgrade_camel_speed_boost_abb",
-			
+			--"upgrade_unit_religious_herbal_medicine_4_abb",
 			"upgrade_cul_medical_centers_abb",
 			"upgrade_econ_agriculture_abb",
 			"upgrade_mil_mameluke_shields_abb",
 			"upgrade_trade_trader_armor_abb",
-			
-			"upgrade_unit_religious_herbal_medicine_4_abb",
 			"upgrade_unit_camel_archer_3_abb",
+			"upgrade_camel_speed_boost_abb",			
 		},
 		AGE_IMPERIAL = {
 			--"upgrade_add_culture_wing_castle",
@@ -405,190 +283,266 @@ _custom_data_uniques = {
 			--"upgrade_add_military_wing_imperial",
 			--"upgrade_add_trade_wing_castle",
 			--"upgrade_add_trade_wing_imperial",
-			
-			
-			"upgrade_camel_armor_abb",
-			"upgrade_mameluke_damage_abb",
-			
+			--"upgrade_unit_religious_piety_4_abb",
 			"upgrade_cul_conversion_invuln_abb",
 			"upgrade_econ_improved_processing_abb",
 			"upgrade_mil_camel_support_abb",
 			"upgrade_trade_gold_income_abb",
-			
-			"upgrade_unit_religious_piety_4_abb",
 			"upgrade_unit_camel_archer_4_abb",
 			"upgrade_unit_camel_rider_4_abb",
+			"upgrade_camel_armor_abb",		
+			"upgrade_mameluke_damage_abb", -- reload ??? really			
 		},
 	},
 	mongol = {
 		AGE_DARK = {
-			"upgrade_burn_building_bonus_cooldown_mon",
-			"upgrade_military_building_heal_aura_mon",
-			"upgrade_monastery_ovoo_spec_mon",
-			
+			--"upgrade_burn_building_bonus_cooldown_mon",
+			--"upgrade_military_building_heal_aura_mon",
+			--"upgrade_monastery_ovoo_spec_mon",
+			--"upgrade_unit_religious_sanctity_4_improved_mon",
+			--"upgrade_unit_town_center_wheelbarrow_1_mon",
+			--"upgrade_scout_khan_vision_mon",
+			--"upgrade_scout_khan_vision_improved_mon",
+			"upgrade_unit_town_center_faster_packing_1_mon",			
 			"upgrade_econ_resource_wood_fell_rate_1_mon",
-			"upgrade_econ_resource_wood_fell_rate_1_improved_mon",
-			
+			"upgrade_econ_resource_wood_fell_rate_1_improved_mon",			
 			"upgrade_econ_villager_hunting_gear_1_mon",
 			"upgrade_econ_villager_hunting_gear_1_improved_mon",
-			
-			"upgrade_ovoo_castle",
-			"upgrade_ovoo_feudal",
-			"upgrade_ovoo_imperial",
-			
-			"upgrade_scout_khan_vision_mon",
-			"upgrade_scout_khan_vision_improved_mon",
-			
-			"upgrade_unit_religious_sanctity_4_improved_mon",
-			
-			"upgrade_unit_town_center_faster_packing_1_mon",
-			"upgrade_unit_town_center_wheelbarrow_1_mon",
-			
 			"upgrade_unit_wheelbarrow_1_mon",
 			"upgrade_unit_wheelbarrow_1_improved_mon",
 		},
 		AGE_FEUDAL = {
-			"upgrade_econ_resource_food_harvest_rate_2_improved_mon",
-			"upgrade_econ_resource_gold_harvest_rate_2_mon",
-			"upgrade_econ_resource_gold_harvest_rate_2_improved_mon",
-			"upgrade_econ_resource_wood_harvest_rate_2_improved_mon",
-			
-			"upgrade_naval_piracy_mon",
-			
-			"upgrade_khan_signal_arrow_mon",
-			"upgrade_khan_signal_arrow_improved_mon",
-			
-			"upgrade_raid_bounty_mon",
-			"upgrade_raid_bounty_improved_mon",
-			
-			"upgrade_improved_siege_engineers_mon",
-			
+			--"upgrade_ovoo_feudal",
 			--"upgrade_melee_armor_i_improved_mon",
 			--"upgrade_melee_damage_i_improved_mon",
 			--"upgrade_ranged_armor_i_improved_mon",
 			--"upgrade_ranged_damage_i_improved_mon",
-			
-			--"upgrade_outpost_arrowslits_mon",
-			
-			"upgrade_ranged_bodkin_mon",
-			
+			--"upgrade_outpost_arrowslits_mon",			
+			--"upgrade_ranged_bodkin_mon",
+			"upgrade_econ_resource_food_harvest_rate_2_improved_mon",
+			"upgrade_econ_resource_gold_harvest_rate_2_mon",
+			"upgrade_econ_resource_gold_harvest_rate_2_improved_mon",
+			"upgrade_econ_resource_wood_harvest_rate_2_improved_mon",
 			"upgrade_scout_forester_mon",
-			"upgrade_scout_forester_improved_mon",
-			
+			"upgrade_scout_forester_improved_mon",	
 			"upgrade_unit_horseman_2_mon",
 			"upgrade_unit_spearman_2_mon",
+			"upgrade_naval_piracy_mon",
+			"upgrade_khan_signal_arrow_mon",
+			"upgrade_khan_signal_arrow_improved_mon",
+			"upgrade_raid_bounty_mon",
+			"upgrade_raid_bounty_improved_mon",
+			"upgrade_improved_siege_engineers_mon",
 		},
 		AGE_CASTLE = {
-			"upgrade_econ_resource_food_harvest_rate_3_improved_mon",
-			"upgrade_econ_resource_gold_harvest_rate_3_mon",
-			"upgrade_econ_resource_gold_harvest_rate_3_improved_mon",
-			"upgrade_econ_resource_wood_harvest_rate_3_improved_mon",
+			--"upgrade_ovoo_castle",
 			--"upgrade_econ_resource_pasture_spawn_rate_mon",
 			--"upgrade_econ_resource_pasture_spawn_rate_improved_mon",
-			
-			"upgrade_tech_military_academy_improved_mon",
-			
-			"upgrade_mangudai_weapon_damage_mon",
-			"upgrade_mangudai_weapon_damage_improved_mon",
-			
-			"upgrade_ortoo_all_units_mon",
-			
-			"upgrade_weapon_fire_damage_mon",
-			"upgrade_weapon_fire_damage_improved_mon",
-			
-			--"upgrade_outpost_springald_mon",
-			
-			"upgrade_ranged_archer_quivver_mon",
-			"upgrade_ranged_archer_silkstring_improved_mon",
-			
+			--"upgrade_ranged_archer_quivver_mon",
+			--"upgrade_ranged_archer_silkstring_improved_mon",
 			--"upgrade_melee_armor_ii_improved_mon",
 			--"upgrade_melee_damage_ii_improved_mon",
 			--"upgrade_ranged_armor_ii_improved_mon",
 			--"upgrade_ranged_damage_ii_improved_mon",
-			
-			"upgrade_siege_weapon_speed_improved_mon",
-			"upgrade_siege_weapon_speed_mon",
-			
-			"upgrade_villager_health_improved_mon",
-			
-			"upgrade_unit_religious_herbal_medicine_4_improved_mon",
+			--"upgrade_outpost_springald_mon",
+			--"upgrade_unit_knight_3_mon",
+			"upgrade_econ_resource_gold_harvest_rate_3_mon",
+			"upgrade_econ_resource_food_harvest_rate_3_improved_mon",
+			"upgrade_econ_resource_gold_harvest_rate_3_improved_mon",
+			"upgrade_econ_resource_wood_harvest_rate_3_improved_mon",
+			"upgrade_villager_health_improved_mon",			
+			"upgrade_tech_military_academy_improved_mon",
+			"upgrade_mangudai_weapon_damage_mon",
+			"upgrade_mangudai_weapon_damage_improved_mon",
+			"upgrade_ortoo_all_units_mon",
 			"upgrade_unit_archer_3_mon",
 			"upgrade_unit_horsearcher_3_mon",
 			"upgrade_unit_horseman_3_mon",
-			"upgrade_unit_knight_3_mon",
 			"upgrade_unit_spearman_3_mon",
+			"upgrade_unit_religious_herbal_medicine_4_improved_mon",
+			"upgrade_weapon_fire_damage_mon",
+			"upgrade_weapon_fire_damage_improved_mon",
+			"upgrade_siege_weapon_speed_improved_mon",
+			"upgrade_siege_weapon_speed_mon",		
 		},
 		AGE_IMPERIAL = {
-			"upgrade_econ_resource_food_harvest_rate_4_mon",
-			"upgrade_econ_resource_food_harvest_rate_4_improved_mon",
+			--"upgrade_ovoo_imperial",
+			--"upgrade_econ_resource_food_harvest_rate_4_mon",
+			--"upgrade_econ_resource_wood_harvest_rate_4_mon",
+			--"upgrade_melee_armor_iii_improved_mon",
+			--"upgrade_melee_damage_iii_improved_mon",
+			--"upgrade_ranged_armor_iii_improved_mon",
+			--"upgrade_ranged_damage_iii_improved_mon",
+			--"upgrade_outpost_cannon_mon",
+			--"upgrade_cavalry_barding_mon",
+			--"upgrade_cavalry_barding_improved_mon",			
+			--"upgrade_cavalry_grapered_lance_mon",
+			--"upgrade_cavalry_grapered_lance_improved_mon",
+			--"upgrade_unit_religious_zealous_4_mon",
+			--"upgrade_unit_religious_zealous_4_improved_mon",
+			--"upgrade_unit_mangonel_4_mon",
+			--"upgrade_unit_scorpion_4_mon",
+			--"upgrade_ranged_crossbow_cranequin_mon",
+			--"upgrade_ranged_crossbow_cranequin_improved_mon",
+			--"upgrade_transport_doused_armor_mon",
+			--"upgrade_siege_corned_gunpowder_improved_mon",
+			--"upgrade_siege_corned_gunpowder_mon",
+			--"upgrade_siege_counterweight_mon",
+			--"upgrade_spearman_elite_spear_tactics_mon",
+			--"upgrade_spearman_elite_spear_tactics_improved_mon",
 			"upgrade_econ_resource_gold_harvest_rate_4_mon",
+			"upgrade_econ_resource_food_harvest_rate_4_improved_mon",
 			"upgrade_econ_resource_gold_harvest_rate_4_improved_mon",
-			"upgrade_econ_resource_wood_harvest_rate_4_mon",
-			"upgrade_econ_resource_wood_harvest_rate_4_improved_mon",
-						
+			"upgrade_econ_resource_wood_harvest_rate_4_improved_mon",						
 			"upgrade_raid_stone_bounty_mon",
-			"upgrade_raid_stone_bounty_improved_mon",
-			
+			"upgrade_raid_stone_bounty_improved_mon",			
 			"upgrade_trader_silkroad_stone_mon",
 			"upgrade_trader_silkroad_stone_improved_mon",
-			
-			"upgrade_cavalry_barding_mon",
-			"upgrade_cavalry_barding_improved_mon",
-			
-			"upgrade_cavalry_grapered_lance_mon",
-			"upgrade_cavalry_grapered_lance_improved_mon",
-			
 			"upgrade_melee_armor_iii_mon",
-			--"upgrade_melee_armor_iii_improved_mon",
 			"upgrade_melee_damage_iii_mon",
-			--"upgrade_melee_damage_iii_improved_mon",
 			"upgrade_ranged_armor_iii_mon",
-			--"upgrade_ranged_armor_iii_improved_mon",
 			"upgrade_ranged_damage_iii_mon",
-			--"upgrade_ranged_damage_iii_improved_mon",
-			
-			--"upgrade_outpost_cannon_mon",
-			"upgrade_ranged_crossbow_cranequin_mon",
-			"upgrade_ranged_crossbow_cranequin_improved_mon",
-			"upgrade_ranged_incendiary_mon",
-			
 			"upgrade_religious_monastery_ovoo_mon",
-			
-			"upgrade_siege_adjustable_crossbar_improved_mon",
-			"upgrade_siege_adjustable_crossbar_mon",
+			"upgrade_ranged_incendiary_mon",
 			"upgrade_siege_chemistry_mon",
-			"upgrade_siege_corned_gunpowder_improved_mon",
-			"upgrade_siege_corned_gunpowder_mon",
-			"upgrade_siege_counterweight_mon",
-			"upgrade_siege_roller_trigger_improved_mon",
-			"upgrade_siege_roller_trigger_mon",
-			"upgrade_siege_works_improved_mon",
-			"upgrade_siege_works_mon",
-			
-			"upgrade_spearman_elite_spear_tactics_mon",
-			"upgrade_spearman_elite_spear_tactics_improved_mon",
-			"upgrade_manatarms_elite_army_tactics_mon",
-			"upgrade_manatarms_elite_army_tactics_improved_mon",
-			"upgrade_tech_university_biology_mon",
-			"upgrade_tech_university_biology_improved_mon",
-			
-			"upgrade_transport_doused_armor_mon",
-			
 			"upgrade_unit_religious_piety_4_mon",
 			"upgrade_unit_religious_piety_4_improved_mon",
 			"upgrade_unit_religious_tithe_barn_4_mon",
 			"upgrade_unit_religious_tithe_barn_4_improved_mon",
-			"upgrade_unit_religious_zealous_4_mon",
-			"upgrade_unit_religious_zealous_4_improved_mon",
 			"upgrade_unit_archer_4_mon",
 			"upgrade_unit_crossbowman_4_mon",
 			"upgrade_unit_horsearcher_4_mon",
 			"upgrade_unit_horseman_4_mon",
 			"upgrade_unit_knight_4_mon",
 			"upgrade_unit_manatarms_4_mon",
-			"upgrade_unit_mangonel_4_mon",
-			"upgrade_unit_scorpion_4_mon",
 			"upgrade_unit_spearman_4_mon",
+			"upgrade_siege_adjustable_crossbar_mon",
+			"upgrade_siege_adjustable_crossbar_improved_mon",
+			"upgrade_siege_roller_trigger_mon",
+			"upgrade_siege_roller_trigger_improved_mon",
+			"upgrade_siege_works_mon",		
+			"upgrade_siege_works_improved_mon",	
+			"upgrade_manatarms_elite_army_tactics_mon",
+			"upgrade_manatarms_elite_army_tactics_improved_mon",
+			"upgrade_tech_university_biology_mon",
+			"upgrade_tech_university_biology_improved_mon",
+		},
+	},
+	sultanate = {
+		AGE_DARK = {
+			--"upgrade_district_fire_resist_sul",
+			--"upgrade_district_population_sul",
+			--"upgrade_district_sight_sul",	
+			--"upgrade_keep_wheelbarrow_sul",	
+			--"upgrade_tech_university_influence_4_sul",
+			--"upgrade_tech_university_supply_line_4_sul",
+			--"upgrade_age1_infantry_construction_sul",
+			--"upgrade_age1_stone_cost_sul",
+			--"upgrade_age3_travelling_scholar",
+			--"upgrade_landmark_bijay_mandal_palace_sul",
+			--"upgrade_landmark_qutab_minar_sul",
+			--"upgrade_landmark_monk_cost_sul",
+			--"upgrade_landmark_elephant_caravan_sul",
+			--"upgrade_landmark_fire_siege_armor_sul",
+			--"upgrade_landmark_madrasa_popcap_sul",	
+			"upgrade_econ_resource_wood_fell_rate_1_sul",
+			"upgrade_econ_villager_hunting_gear_1_sul",
+			"upgrade_unit_town_center_wheelbarrow_1_sul",
+			"upgrade_unit_religious_piety_4_sul",
+			"upgrade_age2_scholar_military_production_sul",			
+		},
+		AGE_FEUDAL = {
+			--"upgrade_econ_resource_stone_harvest_rate_2_sul",
+			--"upgrade_keep_resource_wood_fell_rate_sul",
+			--"upgrade_keep_scout_forester_sul",
+			--"upgrade_ranged_bodkin_sul",
+			"upgrade_econ_extended_lines_sul",
+			"upgrade_econ_resource_food_harvest_rate_2_sul",
+			"upgrade_econ_resource_gold_harvest_rate_2_sul",
+			"upgrade_econ_resource_wood_harvest_rate_2_sul",
+			"upgrade_naval_patchwork_repairs_sul",
+			"upgrade_scout_forester_sul",
+			"upgrade_villager_health_sul",
+			"upgrade_unit_religious_sanctity_4_sul",
+			"upgrade_landmark_scholar_sight_range_sul",			
+			"upgrade_melee_armor_i_sul",
+			"upgrade_melee_damage_i_sul",
+			"upgrade_ranged_armor_i_sul",
+			"upgrade_ranged_damage_i_sul",
+			"upgrade_siege_engineers_sul",
+			"upgrade_unit_spearman_2_sul",
+		},
+		AGE_CASTLE = {
+			--"upgrade_econ_resource_stone_harvest_rate_3_sul",
+			--"upgrade_ranged_archer_quivver_sul",
+			--"upgrade_ranged_archer_silkstring_sul",
+			--"upgrade_ranged_crossbow_belthook_sul",
+			--"upgrade_siege_steel_bore_sul",
+			"upgrade_econ_drift_nets_sul",
+			"upgrade_econ_resource_food_harvest_rate_3_sul",
+			"upgrade_econ_resource_gold_harvest_rate_3_sul",
+			"upgrade_econ_resource_wood_harvest_rate_3_sul",
+			"upgrade_unit_archer_3_sul",
+			"upgrade_unit_horseman_3_sul",
+			"upgrade_unit_spearman_3_sul",
+			"upgrade_naval_armored_hull_sul",
+			"upgrade_naval_navigator_sul",
+			"upgrade_melee_armor_ii_sul",
+			"upgrade_melee_damage_ii_sul",
+			"upgrade_ranged_armor_ii_sul",
+			"upgrade_ranged_damage_ii_sul",
+			"upgrade_landmark_force_march_sul",
+			"upgrade_tech_military_academy_sul",
+			"upgrade_tech_university_murder_holes_4_sul",
+			"upgrade_unit_religious_herbal_medicine_4_sul",
+			"upgrade_landmark_scholar_speed_sul",
+			"upgrade_landmark_house_popcap_sul",
+			"upgrade_improved_swords_sul",
+			"upgrade_outpost_lookout_tower_sul", --landmark outpost improvement
+			"upgrade_landmark_mosque_heal_sul",
+			"upgrade_siege_weapon_speed_sul",
+			"upgrade_age2_keep_town_center_sul", -- keep as TC
+		},
+		AGE_IMPERIAL = {
+			--"upgrade_econ_resource_stone_harvest_rate_4_sul",
+			--"upgrade_transport_construction_speed_sul",
+			--"upgrade_transport_doused_armor_sul",
+			--"upgrade_ranged_crossbow_cranequin_sul",
+			--"upgrade_siege_corned_gunpowder_sul",
+			--"upgrade_spearman_elite_spear_tactics_sul",
+			--"upgrade_siege_counterweight_sul",
+			--"upgrade_cavalry_barding_sul",
+			--"upgrade_cavalry_grapered_lance_sul",
+			"upgrade_econ_resource_food_harvest_rate_4_sul",
+			"upgrade_econ_resource_gold_harvest_rate_4_sul",
+			"upgrade_econ_resource_wood_harvest_rate_4_sul",
+			"upgrade_melee_armor_iii_sul",
+			"upgrade_melee_damage_iii_sul",
+			"upgrade_ranged_armor_iii_sul",
+			"upgrade_ranged_damage_iii_sul",
+			"upgrade_landmark_hearty_rations_sul",
+			"upgrade_unit_archer_4_sul",
+			"upgrade_unit_crossbowman_4_sul",
+			"upgrade_unit_horseman_4_sul",
+			"upgrade_unit_knight_4_sul",
+			"upgrade_unit_manatarms_4_sul",
+			"upgrade_unit_spearman_4_sul",
+			"upgrade_naval_explosives_sul",
+			"upgrade_naval_galley_cannon_sul",
+			"upgrade_unit_religious_tithe_barn_4_sul",
+			"upgrade_unit_religious_zealous_4_sul",
+			"upgrade_siege_adjustable_crossbar_sul",
+			"upgrade_siege_mathematics_sul",
+			"upgrade_siege_roller_trigger_sul",			
+			"upgrade_manatarms_elite_army_tactics_sul",
+			"upgrade_siege_chemistry_sul",
+			"upgrade_ranged_incendiary_sul",
+			"upgrade_tech_university_architecture_4_sul",
+			"upgrade_tech_university_biology_sul",
+			"upgrade_siege_works_sul",			
+			"upgrade_age3_war_elephant_elite_sul",
+			"upgrade_landmark_keep_defense_sul",
+			"upgrade_landmark_siege_elephant_sul",
 		},
 	},
 	normans = {
@@ -622,139 +576,64 @@ _custom_data_uniques = {
 
 _custom_data_nonciv = {
 	COMMON = {
-		AGE_DARK = {
-			--"upgrade_add_cheer_ability",
-			--"upgrade_add_pickup_resource_ability",
-			--"upgrade_revive_leader",
-			
-			--"upgrade_district_fire_resist",
-			--"upgrade_district_population",
-			--"upgrade_district_sight",
-			
+		AGE_DARK = {			
 			"upgrade_econ_resource_wood_fell_rate_1",
 			"upgrade_econ_villager_hunting_gear_1",
 			"upgrade_unit_town_center_wheelbarrow_1",
 		},
-		AGE_FEUDAL = {
-			--"torch_feudal_age",
-			--"story_mode_health_bonus",
-			
+		AGE_FEUDAL = {			
 			"upgrade_econ_extended_lines",
 			"upgrade_econ_resource_food_harvest_rate_2",
 			"upgrade_econ_resource_gold_harvest_rate_2",
-			"upgrade_econ_resource_stone_harvest_rate_2",
 			"upgrade_econ_resource_wood_harvest_rate_2",
+			"upgrade_scout_forester",
+			"upgrade_villager_health",
 			
-			"upgrade_naval_addsails",
-			"upgrade_naval_role_firestation",
-			"upgrade_naval_role_repairstation",
-			
-			--"upgrade_keep_arrowslits",
-			--"upgrade_outpost_arrowslits",
-			--"upgrade_outpost_stone",
-			--"upgrade_tower_arrowslits",
+			"upgrade_naval_addsails",			
 			
 			"upgrade_melee_armor_i",
 			"upgrade_melee_damage_i",
 			"upgrade_ranged_armor_i",
 			"upgrade_ranged_damage_i",
-			
-			"upgrade_ranged_bodkin",
-			
-			"upgrade_siege_engineers",
-			
-			"upgrade_scout_forester",
-			"upgrade_villager_health",
+			"upgrade_siege_engineers",				
 			
 			"upgrade_unit_horsearcher_2",
 			"upgrade_unit_spearman_2",
 		},
-		AGE_CASTLE = {
-			--"torch_castle_age",
-			
+		AGE_CASTLE = {			
 			"upgrade_econ_drift_nets",
 			"upgrade_econ_resource_food_harvest_rate_3",
 			"upgrade_econ_resource_gold_harvest_rate_3",
-			"upgrade_econ_resource_stone_harvest_rate_3",
 			"upgrade_econ_resource_wood_harvest_rate_3",
-			
-			"upgrade_tech_military_academy",
-			"upgrade_tech_university_biology",
-			"upgrade_tech_university_murder_holes_4",
-			
-			"upgrade_naval_armored_hull",
-			"upgrade_naval_forecastle",
-			"upgrade_naval_navigator",
-			"upgrade_naval_role_firearrows",
-			
-			--"upgrade_keep_springald",
-			--"upgrade_outpost_springald",
-			--"upgrade_tower_springald",
 			
 			"upgrade_melee_armor_ii",
 			"upgrade_melee_damage_ii",
 			"upgrade_ranged_armor_ii",
 			"upgrade_ranged_damage_ii",
+			"upgrade_tech_military_academy",
 			
-			"upgrade_ranged_archer_quivver",
-			"upgrade_ranged_archer_silkstring",
-			"upgrade_ranged_crossbow_belthook",
+			"upgrade_naval_armored_hull",
+			"upgrade_naval_forecastle",
+			"upgrade_naval_navigator",
 			
-			"upgrade_siege_steel_bore",
 			"upgrade_siege_weapon_speed",
+			"upgrade_tech_university_murder_holes_4",
 			
 			"upgrade_unit_religious_herbal_medicine_4",
-			"upgrade_unit_religious_sanctity_4",
-			"upgrade_unit_religious_zealous_4",
 			"upgrade_unit_archer_3",
 			"upgrade_unit_horsearcher_3",
 			"upgrade_unit_horseman_3",
 			"upgrade_unit_spearman_3",			
 		},
-		AGE_IMPERIAL = {
-			--"torch_imperial_age",
-			
+		AGE_IMPERIAL = {			
 			"upgrade_econ_resource_food_harvest_rate_4",
 			"upgrade_econ_resource_gold_harvest_rate_4",
-			"upgrade_econ_resource_stone_harvest_rate_4",
 			"upgrade_econ_resource_wood_harvest_rate_4",
-			
-			"upgrade_tech_university_architecture_4",
-			"upgrade_tech_university_biology",
-			
-			"upgrade_naval_explosives",
-			"upgrade_naval_galley_cannon",
-			"upgrade_naval_mounted_guns",
-			"upgrade_naval_role_chainshot",
-			
-			--"upgrade_keep_cannon",
-			--"upgrade_outpost_cannon",
-			--"upgrade_tower_cannon",
-			
-			"upgrade_manatarms_elite_army_tactics",
-			"upgrade_spearman_elite_spear_tactics",
 			
 			"upgrade_melee_armor_iii",
 			"upgrade_melee_damage_iii",			
 			"upgrade_ranged_armor_iii",
 			"upgrade_ranged_damage_iii",
-						
-			"upgrade_cavalry_barding",
-			"upgrade_cavalry_grapered_lance",
-			
-			"upgrade_ranged_crossbow_cranequin",
-			"upgrade_ranged_incendiary",
-			
-			"upgrade_siege_adjustable_crossbar",
-			"upgrade_siege_chemistry",
-			"upgrade_siege_corned_gunpowder",
-			"upgrade_siege_counterweight",
-			"upgrade_siege_mathematics",
-			"upgrade_siege_roller_trigger",
-			"upgrade_siege_works",
-			
-			"upgrade_transport_construction_speed",
-			"upgrade_transport_doused_armor",
 			
 			"upgrade_unit_religious_piety_4",
 			"upgrade_unit_religious_tithe_barn_4",
@@ -765,20 +644,75 @@ _custom_data_nonciv = {
 			"upgrade_unit_knight_4",
 			"upgrade_unit_manatarms_4",
 			"upgrade_unit_spearman_4",
+						
+			"upgrade_manatarms_elite_army_tactics",
+			"upgrade_ranged_incendiary",			
+			"upgrade_tech_university_architecture_4",
+			"upgrade_tech_university_biology",
+			"upgrade_siege_chemistry",
+			"upgrade_siege_works",
+			
+			"upgrade_siege_roller_trigger",
+			"upgrade_siege_adjustable_crossbar",
+			"upgrade_siege_mathematics",
+			
+			"upgrade_naval_explosives",
+			"upgrade_naval_galley_cannon",
 		},
 	},
 	OTHER = {
-		AGE_DARK = {
+		AGE_DARK = {			
+			--"upgrade_add_cheer_ability", KO
+			--"upgrade_district_fire_resist", KO
+			--"upgrade_district_population", KO
+			--"upgrade_district_sight", KO
 			
+			--"upgrade_add_pickup_resource_ability", KO Might required pickable resources on map
+			--"upgrade_revive_leader",	REVIVE ABILITY	
 		},
 		AGE_FEUDAL = {
-			
+			--"torch_feudal_age", KO
+			--"story_mode_health_bonus", 	BONUS HP
+			--"upgrade_keep_arrowslits",
+			--"upgrade_outpost_arrowslits",
+			--"upgrade_outpost_stone",
+			--"upgrade_tower_arrowslits",
+			--"upgrade_econ_resource_stone_harvest_rate_2", KO
+			--"upgrade_naval_role_firestation", KO
+			--"upgrade_naval_role_repairstation", KO
+			--"upgrade_ranged_bodkin", KO			
 		},
 		AGE_CASTLE = {
-			
+			--"torch_castle_age", KO
+			--"upgrade_keep_springald",
+			--"upgrade_outpost_springald",
+			--"upgrade_tower_springald",
+			--"upgrade_econ_resource_stone_harvest_rate_3", KO
+			--"upgrade_naval_role_firearrows", KO
+			--"upgrade_siege_steel_bore", KO
+			--"upgrade_ranged_archer_quivver",
+			--"upgrade_ranged_archer_silkstring",
+			--"upgrade_ranged_crossbow_belthook",
+			--"upgrade_tech_university_biology",
+			--"upgrade_unit_religious_sanctity_4",
+			--"upgrade_unit_religious_zealous_4",			
 		},
 		AGE_IMPERIAL = {
-			
+			--"torch_imperial_age",
+			--"upgrade_keep_cannon",
+			--"upgrade_outpost_cannon",
+			--"upgrade_tower_cannon",
+			--"upgrade_econ_resource_stone_harvest_rate_4",
+			--"upgrade_spearman_elite_spear_tactics",
+			--"upgrade_naval_mounted_guns",			
+			--"upgrade_naval_role_chainshot",
+			--"upgrade_cavalry_barding",
+			--"upgrade_cavalry_grapered_lance",			
+			--"upgrade_ranged_crossbow_cranequin",			
+			--"upgrade_siege_counterweight",
+			--"upgrade_siege_corned_gunpowder",
+			--"upgrade_transport_construction_speed",
+			--"upgrade_transport_doused_armor",			
 		},
 	},
 }
@@ -798,24 +732,28 @@ end
 
 function CustomDataOptions_LearnAllResearchByAge(playerID, race, desiredAge)
 	if desiredAge >= 1 then --all dark age
-		CustomDataOptions_UpgradeByQualifierAndAge(playerID, "COMMON", "AGE_DARK", _custom_data_nonciv)
-		CustomDataOptions_UpgradeByRaceAndAge(playerID, race, "AGE_DARK", _custom_data_uniques)
+		CustomDataOptions_UpgradeByQualifierAndAge(playerID, race, "COMMON", "AGE_DARK", _custom_data_nonciv)
+		CustomDataOptions_UpgradeByRaceAndAge(playerID, race, "AGE_DARK", _custom_data_uniques, _custom_data_remove)
 	end
 	if desiredAge >= 2 then --all feudal age
-		CustomDataOptions_UpgradeByQualifierAndAge(playerID, "COMMON", "AGE_FEUDAL", _custom_data_nonciv)
-		CustomDataOptions_UpgradeByRaceAndAge(playerID, race, "AGE_FEUDAL", _custom_data_uniques)
+		CustomDataOptions_UpgradeByQualifierAndAge(playerID, race, "COMMON", "AGE_FEUDAL", _custom_data_nonciv)
+		CustomDataOptions_UpgradeByRaceAndAge(playerID, race, "AGE_FEUDAL", _custom_data_uniques, _custom_data_remove)
 	end
 	if desiredAge >= 3 then --all castle age
-		CustomDataOptions_UpgradeByQualifierAndAge(playerID, "COMMON", "AGE_CASTLE", _custom_data_nonciv)
-		CustomDataOptions_UpgradeByRaceAndAge(playerID, race, "AGE_CASTLE", _custom_data_uniques)
+		CustomDataOptions_UpgradeByQualifierAndAge(playerID, race, "COMMON", "AGE_CASTLE", _custom_data_nonciv)
+		CustomDataOptions_UpgradeByRaceAndAge(playerID, race, "AGE_CASTLE", _custom_data_uniques, _custom_data_remove)
 	end
 	if desiredAge >= 4 then --all imperial age
-		CustomDataOptions_UpgradeByQualifierAndAge(playerID, "COMMON", "AGE_IMPERIAL", _custom_data_nonciv)
-		CustomDataOptions_UpgradeByRaceAndAge(playerID, race, "AGE_IMPERIAL", _custom_data_uniques)
+		CustomDataOptions_UpgradeByQualifierAndAge(playerID, race, "COMMON", "AGE_IMPERIAL", _custom_data_nonciv)
+		CustomDataOptions_UpgradeByRaceAndAge(playerID, race, "AGE_IMPERIAL", _custom_data_uniques, _custom_data_remove)
 	end
 end
 
-function CustomDataOptions_UpgradeByQualifierAndAge(playerID, typeName, ageName, table)
+function CustomDataOptions_UpgradeByQualifierAndAge(playerID, race, typeName, ageName, table)
+	if race == "sultanate" then 
+		return
+	end
+	
 	for i,v in ipairs(table[typeName][ageName]) do
 		local update = BP_GetUpgradeBlueprint(table[typeName][ageName][i])
 		if not Player_HasUpgrade(playerID, update) then
@@ -824,7 +762,16 @@ function CustomDataOptions_UpgradeByQualifierAndAge(playerID, typeName, ageName,
 	end
 end
 
-function CustomDataOptions_UpgradeByRaceAndAge(playerID, raceName, ageName, table)
+function CustomDataOptions_UpgradeByRaceAndAge(playerID, raceName, ageName, table, removetable)
+	for i,v in ipairs(removetable[raceName]) do 
+		--civs cant have certain researches twice same update
+		--some are fine like veterancy as these do not affect unit twice
+		local update = BP_GetUpgradeBlueprint(removetable[raceName][i])
+		if not Player_HasUpgrade(playerID, update) then
+			Player_RemoveUpgrade(playerID, update)				
+		end
+	end
+	
 	for i,v in ipairs(table[raceName][ageName]) do
 		local update = BP_GetUpgradeBlueprint(table[raceName][ageName][i])
 		if not Player_HasUpgrade(playerID, update) then
