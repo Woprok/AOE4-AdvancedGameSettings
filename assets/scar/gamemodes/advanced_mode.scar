@@ -13,6 +13,8 @@ import("cardinal.scar")
 
 Core_RegisterModule("AdvancedMode")		-- Call this before importing vision.scar so StandardMode_OnGameSetup() is called before Vision_OnGameSetup()   
 
+import("helpers/custom_helpers.scar")
+import("startconditions/custom_startconditions.scar")
 import("gameplay/custom_data.scar")
 import("gameplay/custom_options.scar")
 
@@ -218,9 +220,9 @@ end
 
 function AdvancedMode_PostInit()
 	-- Spawn TC or Nomad
-	CustomOptions_HandleStartPosition(_match)
-	-- Spawn each civilization squad
-	CustomOptions_SpawnInitialSquads()
+	CustomStartConditions_HandleStartPosition(_match)
+	-- Complete standard procedures after determining start such as vision and age ? (actually did I ever test if age thing does something ?)
+	CustomOptions_ApplyStartingAgeUpgrades(_match)		
 	-- Spawn king even if regicide is disabled for players that choose this option
 	if not _match.options.section_inner_win_conditions.option_win_condition_regicide then
 		
@@ -240,19 +242,22 @@ function AdvancedMode_PostInit()
 end
 
 function AdvancedMode_Start()
-	if _match.options.section_custom_conditions and 
-		_match.options.section_custom_conditions.option_start_nomad then 
-		-- nomad
-		CustomOptions_NomadStartInit(_match)
-	end
+	-- Spawn aftermath, currently only for slow nomad.
+	CustomStartConditions_OnStartContinuation(_match)
+	
 	CustomOptions_SetFOW(_match)
 	CustomOptions_EnableScore(_match)
 	
 	--  Try to start treaty timer etc.
 	CustomOptions_TrySetTreaty(_match)
 	CustomOptions_SetSimulationSpeed(_match)
+	
+	-- this is seriously just a joke
+	Ding_Start()
 end
 
 function AdvancedMode_OnGameOver()
 	CustomOptions_RemoveGameSpeedRule()
+	
+	Ding_DeQueue()
 end

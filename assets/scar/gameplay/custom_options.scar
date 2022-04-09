@@ -1,5 +1,7 @@
 _custom = {
 	setspeed = 1,
+	starting_villagers = 6, -- ToDo customizable vill count
+	scattered_villagers = 3,
 	nomad = {
 		timeStarted = 0,
 		timeThreshold = 0,
@@ -526,49 +528,12 @@ function CustomOptions_SpawnKings()
 	for i, player in pairs(PLAYERS) do
 		local player_civ = Player_GetRaceName(player.id)
 		
-		local sbp_king
-		if player_civ == "english" then
-			sbp_king = BP_GetSquadBlueprint("unit_king_1_eng")
-		elseif player_civ == "chinese" then
-			sbp_king = BP_GetSquadBlueprint("unit_king_1_chi")
-		elseif player_civ == "french" then
-			sbp_king = BP_GetSquadBlueprint("unit_king_1_fre")
-		elseif player_civ == "hre" then
-			sbp_king = BP_GetSquadBlueprint("unit_king_1_hre")
-		elseif player_civ == "mongol" then
-			sbp_king = BP_GetSquadBlueprint("unit_king_1_mon")
-		elseif player_civ == "rus" then
-			sbp_king = BP_GetSquadBlueprint("unit_king_1_rus")
-		elseif player_civ == "sultanate" then
-			sbp_king = BP_GetSquadBlueprint("unit_king_1_sul")
-		elseif player_civ == "abbasid" then
-			sbp_king = BP_GetSquadBlueprint("unit_king_1_abb")
-			
-		end
+		local sbp_king = InternalCustomOptions_GetKing(player_civ)
 		
-		local spawn_position = Util_GetOffsetPosition(player.startingPos, 20, 10)
-		local sgroup_name = "sg_player_king_" .. tostring(player.id)
-		local sg_player_king = SGroup_CreateIfNotFound(sgroup_name)
-		UnitEntry_DeploySquads(player.id, sg_player_king, {{sbp = sbp_king, numSquads = 1 }}, spawn_position)
-		local move_position = Util_GetOffsetPosition(player.startingPos, 20, 15)
-		Cmd_Ability(sg_player_king, BP_GetAbilityBlueprint("core_formation_line"))
-		Cmd_FormationMove(sg_player_king, move_position, false)
-		
-	end
-end
-
-function CustomOptions_SpawnInitialSquads()
-	for i, player in pairs(PLAYERS) do
-		local player_civ = Player_GetRaceName(player.id)
-		
-		local vil = InternalCustomOptions_GetVillager(player_civ)
-		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, vil, -10, 0, -10, "villager", 6)
-		
-		local sco = InternalCustomOptions_GetScout(player_civ)
-		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, sco, -12, 0, -12, "scout", 1)
-		
-		local shp = InternalCustomOptions_GetSheep(player_civ)
-		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, shp, -9, 0, -9, "sheep", 1)
+		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, sbp_king, -13, 0, -13, "king", 1)		
+		--local move_position = Util_GetOffsetPosition(player.startingPos, 20, 15)
+		--Cmd_Ability(sg_player_king, BP_GetAbilityBlueprint("core_formation_line"))
+		--Cmd_FormationMove(sg_player_king, move_position, false)		
 	end
 end
 
@@ -604,114 +569,6 @@ function InternalCustomOptions_SpawnUnitAtSpawnOffset(player, unit_bp, ox, oy, o
 	UnitEntry_DeploySquads(player, sg_units, {{sbp = unit_bp, numSquads = count }}, psx)
 end
 
-function InternalCustomOptions_GetKeep(player_civ)
-	local ebp_building
-	if player_civ == "english" then
-		ebp_building = BP_GetEntityBlueprint("building_defense_keep_eng")			
-	elseif player_civ == "chinese" then
-		ebp_building = BP_GetEntityBlueprint("building_defense_keep_chi")			
-	elseif player_civ == "french" then
-		ebp_building = BP_GetEntityBlueprint("building_defense_keep_fre")			
-	elseif player_civ == "hre" then
-		ebp_building = BP_GetEntityBlueprint("building_defense_keep_hre")			
-	elseif player_civ == "mongol" then
-		ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_nov")			
-	elseif player_civ == "rus" then
-		ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_rus")			
-	elseif player_civ == "sultanate" then
-		ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_sul")			
-	elseif player_civ == "abbasid" then
-		ebp_building = BP_GetEntityBlueprint("building_defense_keep_control_abb")			
-	end		
-	return ebp_building
-end
-function InternalCustomOptions_GetTownCenterCapital(player_civ)
-	local ebp_building
-	if player_civ == "english" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_eng")			
-	elseif player_civ == "chinese" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_chi")			
-	elseif player_civ == "french" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_fre")			
-	elseif player_civ == "hre" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_hre")			
-	elseif player_civ == "mongol" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_mon")			
-	elseif player_civ == "rus" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_rus")			
-	elseif player_civ == "sultanate" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_sul")			
-	elseif player_civ == "abbasid" then
-		ebp_building = BP_GetEntityBlueprint("building_town_center_capital_abb")			
-	end
-	return ebp_building
-end
-function InternalCustomOptions_GetVillager(player_civ)
-	local sbp_unit
-	if player_civ == "english" then
-		sbp_unit = BP_GetSquadBlueprint("unit_villager_1_eng")
-	elseif player_civ == "chinese" then
-		sbp_unit = BP_GetSquadBlueprint("unit_villager_1_chi")
-	elseif player_civ == "french" then
-		sbp_unit = BP_GetSquadBlueprint("unit_villager_1_fre")
-	elseif player_civ == "hre" then
-		sbp_unit = BP_GetSquadBlueprint("unit_villager_1_hre")
-	elseif player_civ == "mongol" then
-		sbp_unit = BP_GetSquadBlueprint("unit_villager_1_mon")
-	elseif player_civ == "rus" then
-		sbp_unit = BP_GetSquadBlueprint("unit_villager_1_rus")
-	elseif player_civ == "sultanate" then
-		sbp_unit = BP_GetSquadBlueprint("unit_villager_1_sul")
-	elseif player_civ == "abbasid" then
-		sbp_unit = BP_GetSquadBlueprint("unit_villager_1_abb")
-	end
-	return sbp_unit
-end
-function InternalCustomOptions_GetScout(player_civ)
-	local sbp_unit
-	if player_civ == "english" then
-		sbp_unit = BP_GetSquadBlueprint("unit_scout_1_eng")
-	elseif player_civ == "chinese" then
-		sbp_unit = BP_GetSquadBlueprint("unit_scout_1_chi")
-	elseif player_civ == "french" then
-		sbp_unit = BP_GetSquadBlueprint("unit_scout_1_fre")
-	elseif player_civ == "hre" then
-		sbp_unit = BP_GetSquadBlueprint("unit_scout_1_hre")
-	elseif player_civ == "mongol" then
-		sbp_unit = BP_GetSquadBlueprint("unit_khan_1_mon")
-	elseif player_civ == "rus" then
-		sbp_unit = BP_GetSquadBlueprint("unit_scout_1_rus")
-	elseif player_civ == "sultanate" then
-		sbp_unit = BP_GetSquadBlueprint("unit_scout_1_sul")
-	elseif player_civ == "abbasid" then
-		sbp_unit = BP_GetSquadBlueprint("unit_scout_1_abb")
-	end
-	return sbp_unit
-end
-function InternalCustomOptions_GetSheep(player_civ)
-	return BP_GetSquadBlueprint("gaia_herdable_sheep")
-end
-function InternalCustomOptions_GetOther(player_civ)
-	if player_civ == "mongol" then
-		sbp_unit = BP_GetSquadBlueprint("building_town_center_capital_moving_mon")
-	end
-end
-
-
-function CustomOptions_HandleStartPosition(_match)
-	--Starting type
-	if _match.options.section_custom_conditions and 
-	_match.options.section_custom_conditions.option_start_nomad then 
-	-- nomad
-		CustomOptions_NomadStart(_match)
-	else 
-	-- standard
-		CustomOptions_SpawnTowns(_match)
-	end
-	CustomOptions_ApplyStartingAgeUpgrades(_match)		
-	CustomOptions_RevealInitialMapArea(_match)
-end
-
 function CustomOptions_ApplyStartingAgeUpgrades(_match)
 	local optionAgeStartKey
 	if _match.section_starting_conditions 
@@ -741,168 +598,6 @@ function CustomOptions_ApplyStartingAgeUpgrades(_match)
 		end 
 	end
 end
-
-function CustomOptions_RevealInitialMapArea(_match)		
-	-- Reveal fog of war
-	for i, player in pairs(PLAYERS) do	
-		if _match.FOWRevealRadius ~= nil then
-			FOW_PlayerRevealArea(player.id, player.startingPos, _match.FOWRevealRadius, 0.25)		
-		end
-	end
-end
-
-function CustomOptions_SpawnTowns(_match)
-	for i, player in pairs(PLAYERS) do			
-		-- chinese dont work with this, most likely due to missing value in table for their capital TC
-		--local townCenterEBP = Cardinal_ConvertTypeToEntityBlueprint({_match.types.townCenter, _match.types.landmark}, player.id)				
-		
-		local player_civ = Player_GetRaceName(player.id)
-		
-		local townCenterEBP = InternalCustomOptions_GetTownCenterCapital(player_civ)
-		
-		if (player_civ == "mongol") then
-			local sqTownCenter = Player_GetSquadsFromType(player.id, _match.types.townCenter)
-			if SGroup_Count(sqTownCenter) == 0 then	
-				local moveableTownCenter = BP_GetSquadBlueprint("building_town_center_capital_moving_mon")
-				local sgroup_name = "sg_player_town_center_" .. tostring(player.id)
-				local sg_units = SGroup_CreateIfNotFound(sgroup_name)
-				UnitEntry_DeploySquads(player.id, sg_units, {{sbp = moveableTownCenter, numSquads = 1 }}, player.startingPos)
-				--SGroup_Add(sqTownCenter, moveableTownCenter)
-			end
-		else
-			-- Create the initial (capital) town center, if necessary		
-			local egTownCenter = Player_GetEntitiesFromType(player.id, _match.types.townCenter) 
-			if EGroup_Count(egTownCenter) == 0 then			
-				local townCenter = InternalCustomOptions_SpawnEntityAtSpawnOffset(player.id, townCenterEBP, 0, 0, 0)	
-				EGroup_Add(egTownCenter, townCenter)
-			end	
-			-- Send event (conquest win condition relies on this)
-			Core_CallDelegateFunctions("OnConstructionComplete", {pbg = townCenterEBP, player = player.id, entity = EGroup_GetEntityAt(egTownCenter, 1)})			
-		end		
-	end
-end
-
-
-
-function CustomOptions_NomadStart(_match)
-	-- There will be no initial buildings for player ?
-	for i, player in pairs(PLAYERS) do		
-		local player_civ = Player_GetRaceName(player.id)
-		--this effectively removes mongol TC, but does not give them option to built it
-		--if player_civ == "mongol" then
-			-- remove any existing TC for nomad
-			--local egTownCenter = Player_GetEntitiesFromType(player.id, _match.types.townCenter) 
-			--EGroup_DestroyAllEntities(egTownCenter)
-			--local sqTownCenter = Player_GetSquadsFromType(player.id, _match.types.townCenter) 
-			--SGroup_DestroyAllSquads(sqTownCenter)
-		--end
-		Player_SetStateModelFloat(player.id, "has_capital", 0)
-		-- Player should not build structures
-		Player_SetStateModelBool(player.id, "player_can_construct_structures", false)
-	end
-end
-
-
-function CustomOptions_NomadStartInit(_match)
-	-- time tracking data
-	_custom.nomad.timeStarted = World_GetGameTime()
-	_custom.nomad.timeThreshold = 0
-	_custom.nomad.timeInterval = _custom.nomad.duration / _match.nomad.wood	
-	
-	InternalCustomOptions_NomadStart_ResetResources(_match)
-end
-
-
-function InternalCustomOptions_NomadStart_ResetResources(_match)
-	
-	for i, player in pairs(PLAYERS) do	
-		
-		-- Track resources remaining to provide
-		player._nomadStart = { resources = {} }
-		player._nomadStart.resources["Food"] = Player_GetResource(player.id, RT_Food)
-		player._nomadStart.resources["Wood"] = Player_GetResource(player.id, RT_Wood)
-		player._nomadStart.resources["Stone"] = Player_GetResource(player.id, RT_Stone)
-		player._nomadStart.resources["Gold"] = Player_GetResource(player.id, RT_Gold)
-		
-		-- Adjust the difference needed for TC
-		local player_civ = Player_GetRaceName(player.id)
-		if player_civ == "mongol" then
-			player._nomadStart.resources["Wood"] = player._nomadStart.resources["Wood"] + _match.nomad.wood
-		else
-			player._nomadStart.resources["Wood"] = player._nomadStart.resources["Wood"] + _match.nomad.wood
-			player._nomadStart.resources["Stone"] = player._nomadStart.resources["Stone"] + _match.nomad.stone
-		end
-		
-		-- Reset resources
-		Player_ResetResource(player.id, RT_Food)
-		Player_ResetResource(player.id, RT_Wood)
-		Player_ResetResource(player.id, RT_Stone)
-		Player_ResetResource(player.id, RT_Gold)									
-	end
-	
-	Rule_Add(InternalCustomOptions_NomadStart_IncrementResources)
-end
-
-
--- Rule that incrementally returns initial resources to players over time.
-function InternalCustomOptions_NomadStart_IncrementResources()	
-	
-	if World_GetGameTime() - _custom.nomad.timeStarted >= _custom.nomad.timeThreshold then
-		local allResourcesReceived = true
-		
-		for i, player in pairs(PLAYERS) do
-		
-			local _IncrementResource = function(resIndex, resType) 				
-				if player._nomadStart.resources[resIndex] > 0 then
-					if player._nomadStart.resources[resIndex] == 1 then
-						Player_AddResource(player.id, resType, 1)
-						player._nomadStart.resources[resIndex] = 0
-					else
-						Player_AddResource(player.id, resType, 1)
-						player._nomadStart.resources[resIndex] = player._nomadStart.resources[resIndex] - 1						
-					end
-				end
-			end
-			
-			_IncrementResource("Food", RT_Food)
-			_IncrementResource("Wood", RT_Wood)
-			_IncrementResource("Stone", RT_Stone)
-			_IncrementResource("Gold", RT_Gold)	
-			
-			-- Stop when player has received all resources
-			for k,v in pairs(player._nomadStart.resources) do
-				if player._nomadStart.resources[k] > 0 then
-					allResourcesReceived = false
-				end
-			end
-		end		
-		
-		if allResourcesReceived then		
-			InternalCustomOptions_NomadStart_End()
-		else
-			_custom.nomad.timeThreshold = _custom.nomad.timeThreshold + _custom.nomad.timeInterval
-		end		
-	end	
-end
-
-
--- Ends nomad start's incremental resource accumulation. Gives players remaining resources, if any.
-function InternalCustomOptions_NomadStart_End()
-
-	if Rule_Exists(InternalCustomOptions_NomadStart_IncrementResources) then	
-	
-		Rule_Remove(InternalCustomOptions_NomadStart_IncrementResources)								
-		
-		for i, player in pairs(PLAYERS) do		
-			Player_AddResource(player.id, RT_Food, player._nomadStart.resources["Food"])
-			Player_AddResource(player.id, RT_Wood, player._nomadStart.resources["Wood"])
-			Player_AddResource(player.id, RT_Stone, player._nomadStart.resources["Stone"])
-			Player_AddResource(player.id, RT_Gold, player._nomadStart.resources["Gold"])
-			player._nomadStart = nil	
-		end					
-	end
-end
-
 
 -- Alter game simulation speed, e.g. make everything faster/slower, this should also break all timers to be slower or faster
 function CustomOptions_SetSimulationSpeed(_match)
@@ -943,5 +638,43 @@ function CustomOptions_SetSimulationSpeed(_match)
 		local old_rate = Game_GetSimRate()
 		local new_rate = old_rate * sim_speed_multi
 		Game_SetSimRate(new_rate)
+	end
+end
+
+
+-- might be revisited later as this is only here as joke option.
+function Ding_Start()
+	if 	_match.options.section_custom_conditions_2.can_ding then
+		--figure out how to get real selection event, e.g. definitely not GE_SubselectionChanged, GE_EntitySelectionVisualChanged, GE_SelectionChanged
+		Ding_Queue()
+	end	
+end
+
+function Ding_Queue()
+	-- Each frame check
+	Rule_AddInterval(Ding_Execute, 1)
+end
+
+function Ding_Execute()	
+	-- Remove to not create overflow of DINGS
+	Rule_Remove(Ding_Execute)	
+	
+	local egroup = Player_GetEntitiesFromType(Game_GetLocalPlayer(), _match.types.townCenter)
+	local egroup_vil = Player_GetEntitiesFromType(Game_GetLocalPlayer(), "villager")
+	if Misc_IsEGroupSelected(egroup, false) then
+		Util_StartQuickIntel(ACTOR.NARR, "DING DING DING DING DING DING DING DING DING DING")
+	elseif Misc_IsEGroupSelected(egroup_vil, false) then
+		Util_StartQuickIntel(ACTOR.NARR,"Yes, milord? What is it? More work? What?")
+	end
+	-- Do next in 15 secs, 
+	Rule_AddOneShot(Ding_Queue, 15)
+end
+
+function Ding_DeQueue()
+	if Rule_Exists(Ding_Execute) then
+		Rule_Remove(Ding_Execute)
+	end
+	if Rule_Exists(Ding_Queue) then
+		Rule_Remove(Ding_Queue)
 	end
 end

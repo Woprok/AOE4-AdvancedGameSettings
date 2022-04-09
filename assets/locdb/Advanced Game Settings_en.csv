@@ -55,9 +55,9 @@
 54,,,,,,Regicide
 55,,,,,,Regicide
 56,,,,,,Kill all the enemy Kings
-57,,,,,,Nomad
-58,,,,,,Nomad
-59,,,,,,All players start without town center.
+57,,,,,,Start Type
+58,,,,,,Start Type
+59,,,,,,Defines if player start with Town Center or they are left with only villagers. Settled option starts players with built town center. Slow Nomad provides players time to choose perfect location before settling in. Scattered Villagers places all villagers randomly on the map.
 60,,,,,,Last Age
 61,,,,,,Last Age
 62,,,,,,Set max age allowed for each player
@@ -225,3 +225,13 @@
 226,,,,,,Previous Age
 227,,,,,,Current Age
 228,,,,,,Current Age
+229,,,,,,Ding
+230,,,,,,Ding
+231,,,,,,Ding
+232,,,,,,
+233,,,,,,Settled
+234,,,,,,Settled
+235,,,,,,Slow Nomad
+236,,,,,,Slow Nomad
+237,,,,,,Scattered Villagers
+238,,,,,,Scattered Villagers
