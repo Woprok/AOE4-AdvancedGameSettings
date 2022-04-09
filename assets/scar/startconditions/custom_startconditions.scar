@@ -89,9 +89,10 @@ function InternalCustomStartConditions_SlowNomadStart(_match)
 		-- There will be no initial buildings for player ?
 		Player_SetStateModelFloat(player.id, "has_capital", 0)
 		-- Player should not build structures
-		Player_SetStateModelBool(player.id, "player_can_construct_structures", false)
+		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)
 	end
 end
+
 -- Setup timers.
 function InternalCustomStartConditions_SlowNomadOnStart(_match)
 	-- time tracking data
@@ -99,10 +100,11 @@ function InternalCustomStartConditions_SlowNomadOnStart(_match)
 	_custom.nomad.timeThreshold = 0
 	_custom.nomad.timeInterval = _custom.nomad.duration / _match.nomad.wood	
 	
-	InternalCustomStartConditions_SlowNomadOnStart_ResetResources(_match)
+	InternalCustomStartConditions_ResetResources(_match)
 end
+
 -- Clear resources and continue with slow trickle.
-function InternalCustomStartConditions_SlowNomadOnStart_ResetResources(_match)
+function InternalCustomStartConditions_ResetResources(_match)
 	
 	for i, player in pairs(PLAYERS) do	
 		
@@ -129,10 +131,11 @@ function InternalCustomStartConditions_SlowNomadOnStart_ResetResources(_match)
 		Player_ResetResource(player.id, RT_Gold)									
 	end
 	
-	Rule_Add(InternalCustomStartConditions_SlowNomadOnStart_IncrementResources)
+	Rule_Add(InternalCustomStartConditions_IncrementResources)
 end
+
 -- Rule that incrementally returns initial resources to players over time.
-function InternalCustomStartConditions_SlowNomadOnStart_IncrementResources()	
+function InternalCustomStartConditions_IncrementResources()	
 	
 	if World_GetGameTime() - _custom.nomad.timeStarted >= _custom.nomad.timeThreshold then
 		local allResourcesReceived = true
@@ -165,18 +168,19 @@ function InternalCustomStartConditions_SlowNomadOnStart_IncrementResources()
 		end		
 		
 		if allResourcesReceived then		
-			InternalCustomStartConditions_SlowNomadOnStart_Finished()
+			InternalCustomStartConditions_ResourcesFinished()
 		else
 			_custom.nomad.timeThreshold = _custom.nomad.timeThreshold + _custom.nomad.timeInterval
 		end		
 	end	
 end
--- Ends nomad start's incremental resource accumulation. Gives players remaining resources, if any.
-function InternalCustomStartConditions_SlowNomadOnStart_Finished()
 
-	if Rule_Exists(InternalCustomStartConditions_SlowNomadOnStart_IncrementResources) then	
+-- Ends nomad start's incremental resource accumulation. Gives players remaining resources, if any.
+function InternalCustomStartConditions_ResourcesFinished()
+
+	if Rule_Exists(InternalCustomStartConditions_IncrementResources) then	
 	
-		Rule_Remove(InternalCustomStartConditions_SlowNomadOnStart_IncrementResources)								
+		Rule_Remove(InternalCustomStartConditions_IncrementResources)								
 		
 		for i, player in pairs(PLAYERS) do		
 			Player_AddResource(player.id, RT_Food, player._nomadStart.resources["Food"])

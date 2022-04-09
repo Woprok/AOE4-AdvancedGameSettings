@@ -519,7 +519,10 @@ function CustomOptions_SpawnKeeps()
 		
 		local ebp_building = InternalCustomOptions_GetKeep(player_civ)
 		
-		InternalCustomOptions_SpawnEntityAtSpawnOffset(player.id, ebp_building, 15, 0, 0)
+		local keep = InternalCustomOptions_SpawnEntityAtSpawnOffset(player.id, ebp_building, 15, 0, 0)
+		-- mod keep has special ID for fast garrison		
+		local egKeep = EGroup_CreateIfNotFound("keep_" .. tostring(player)) 
+		EGroup_Add(egKeep, keep)
 	end
 end
 
@@ -530,10 +533,26 @@ function CustomOptions_SpawnKings()
 		
 		local sbp_king = InternalCustomOptions_GetKing(player_civ)
 		
-		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, sbp_king, -13, 0, -13, "king", 1)		
-		--local move_position = Util_GetOffsetPosition(player.startingPos, 20, 15)
-		--Cmd_Ability(sg_player_king, BP_GetAbilityBlueprint("core_formation_line"))
-		--Cmd_FormationMove(sg_player_king, move_position, false)		
+		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, sbp_king, -13, 0, -13, "king", 1)
+	end
+end
+
+function CustomOptions_RunKing()
+	for i, player in pairs(PLAYERS) do 
+		local sqKing = Player_GetSquadsFromType(player.id, "king")
+		if SGroup_Count(sqKing) == 1 then
+			if (EGroup_Exists("keep_" .. tostring(player))) then
+				local ekeep = EGroup_FromName("keep_" .. tostring(player))
+				Cmd_Garrison(sqKing, ekeep, false, false, true)			
+			elseif EGroup_Count(Player_GetEntitiesFromType(player.id, "town_center")) ~= 0 then
+				local etc = Player_GetEntitiesFromType(player.id, "town_center")
+				Cmd_Garrison(sqKing, etc, false, false, true)			
+			else
+				local move_position = Util_GetOffsetPosition(player.startingPos, 20, 15)
+				Cmd_Ability(sqKing, BP_GetAbilityBlueprint("core_formation_line"))
+				Cmd_FormationMove(sqKing, move_position, false)				
+			end
+		end		
 	end
 end
 
@@ -567,6 +586,7 @@ function InternalCustomOptions_SpawnUnitAtSpawnOffset(player, unit_bp, ox, oy, o
 	local sgroup_name = "sg_player_" .. category .. "_" .. tostring(player)
 	local sg_units = SGroup_CreateIfNotFound(sgroup_name)
 	UnitEntry_DeploySquads(player, sg_units, {{sbp = unit_bp, numSquads = count }}, psx)
+	return sg_units
 end
 
 function CustomOptions_ApplyStartingAgeUpgrades(_match)
@@ -656,18 +676,22 @@ function Ding_Queue()
 end
 
 function Ding_Execute()	
-	-- Remove to not create overflow of DINGS
-	Rule_Remove(Ding_Execute)	
 	
 	local egroup = Player_GetEntitiesFromType(Game_GetLocalPlayer(), _match.types.townCenter)
-	local egroup_vil = Player_GetEntitiesFromType(Game_GetLocalPlayer(), "villager")
+	local sgroup_vil = Player_GetSquadsFromType(Game_GetLocalPlayer(), "villager")
 	if Misc_IsEGroupSelected(egroup, false) then
+		-- Remove to not create overflow of DINGS
+		Rule_Remove(Ding_Execute)	
 		Util_StartQuickIntel(ACTOR.NARR, "DING DING DING DING DING DING DING DING DING DING")
-	elseif Misc_IsEGroupSelected(egroup_vil, false) then
+		-- Do next in 15 secs, 
+		Rule_AddOneShot(Ding_Queue, 15)
+	elseif Misc_IsSGroupSelected(sgroup_vil, false) then
+		-- Remove to not create overflow of SAYS
+		Rule_Remove(Ding_Execute)	
 		Util_StartQuickIntel(ACTOR.NARR,"Yes, milord? What is it? More work? What?")
+		-- Do next in 15 secs, 
+		Rule_AddOneShot(Ding_Queue, 15)
 	end
-	-- Do next in 15 secs, 
-	Rule_AddOneShot(Ding_Queue, 15)
 end
 
 function Ding_DeQueue()

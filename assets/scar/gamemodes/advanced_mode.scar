@@ -252,6 +252,8 @@ function AdvancedMode_Start()
 	CustomOptions_TrySetTreaty(_match)
 	CustomOptions_SetSimulationSpeed(_match)
 	
+	
+	CustomOptions_RunKing()
 	-- this is seriously just a joke
 	Ding_Start()
 end
