@@ -209,7 +209,7 @@ function AdvancedMode_OnInit()
 	Core_CallDelegateFunctions("DiplomacyEnabled", _match.is_diplomacy_enabled)
 	Core_CallDelegateFunctions("TributeEnabled", _match.is_tribute_enabled)
 	
-	if (_match.is_diplomacy_enabled) then
+	if _match.is_diplomacy_enabled then
 		Diplomacy_AllPlayer_DestroyTeams()
 	end
 		
@@ -225,6 +225,11 @@ function AdvancedMode_OnInit()
 end
 
 function AdvancedMode_PostInit()
+	
+	if _match.is_diplomacy_enabled then
+		Diplomacy_AllPlayer_DestroyTeamsFinalize()
+	end
+	
 	-- Spawn TC or Nomad
 	CustomStartConditions_HandleStartPosition(_match)
 	-- Complete standard procedures after determining start such as vision and age ? (actually did I ever test if age thing does something ?)

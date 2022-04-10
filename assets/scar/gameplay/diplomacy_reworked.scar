@@ -113,21 +113,35 @@ end
 
 -- Call before anything related to Save&Load is done
 function Diplomacy_AllPlayer_DestroyTeams()
-	for _, context_player in pairs(_diplomacy.data_context.players) do				
-		local player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)			
-		Core_AddPlayerToTeam(player.id, nil)	
-		Diplomacy_UpdateTeam(context_player, player.team.index)
-	end	
-		
-	for _, context_player in pairs(_diplomacy.data_context.players) do		
-		for _, target_player in pairs(PLAYERS) do
-			Player_SetRelationship(context_player.id, target_player.id, R_ENEMY)
-			Player_SetRelationship(target_player.id, context_player.id, R_ENEMY)
+		-- destroy vision relations as teams no longer exists but original vision might be provided
+	for _, player in pairs(PLAYERS) do	
+		Core_AddPlayerToTeam(player.id, nil)		
+		for _, other_player in pairs(PLAYERS) do
+			if player.id ~= other_player.id then
+				Player_SetRelationship(player.id, other_player.id, R_ENEMY)
+			end
 		end
 	end	
 	
+	for _, context_player in pairs(_diplomacy.data_context.players) do				
+		local player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)			
+		Diplomacy_UpdateTeam(context_player, player.team.index)
+	end	
+			
 	Diplomacy_UpdateRelationContext()
 	Diplomacy_UpdateDataContext()
+end
+
+
+function Diplomacy_AllPlayer_DestroyTeamsFinalize()
+	-- destroy vision relations as teams no longer exists but original vision might be provided
+	for _, player in pairs(PLAYERS) do		
+		for _, other_player in pairs(PLAYERS) do
+			if player.id ~= other_player.id then
+				Core_CallDelegateFunctions("OnRelationshipChanged", player.id, other_player.id)
+			end
+		end
+	end	
 end
 
 -- Update team from player (PLAYERS) to local copy of context_player

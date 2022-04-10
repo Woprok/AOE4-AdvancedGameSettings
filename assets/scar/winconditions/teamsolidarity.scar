@@ -5,6 +5,7 @@
 -- Global data table that can be referenced in script functions (e.g. _mod.module = "Mod")
 _teamsolidarity = {
 	last_man_standing = false,
+	treaty_active = false,
 	module = "TeamSolidarity",
 	cue = {			-- event cue shown when player or team surrenders 
 		lifetime = 10.0,		-- should match the defaults set in AE under tuning.ui.event_cues
@@ -30,6 +31,10 @@ function TeamSolidarity_DiplomacyEnabled(is_enabled)
 	_teamsolidarity.last_man_standing = is_enabled
 end
 
+function TeamSolidarity_IsTreaty(treaty)
+	_teamsolidarity.treaty_active = treaty
+end
+
 -- Called during load as part of the game setup sequence
 function TeamSolidarity_OnGameSetup()	
 end
@@ -48,6 +53,11 @@ end
 
 -- Called when Core_SetPlayerDefeated() is invoked. Signals that a player has been eliminated from play due to defeat.
 function TeamSolidarity_OnPlayerDefeated(player, reason)
+	-- We will not defeat all players in FFA before they have chance to fight.
+	if _teamsolidarity.treaty_active and _teamsolidarity.last_man_standing then 
+		return	
+	end
+	
 	-- Ignore reason as we dont have clear indicator for that
 	for i, other_player in pairs(PLAYERS) do
 		-- if player is not the one that was defeated (defeated was already handled by something else)
