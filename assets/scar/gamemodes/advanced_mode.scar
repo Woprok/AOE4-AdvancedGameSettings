@@ -47,6 +47,7 @@ import("winconditions/conquest.scar")
 import("winconditions/wonder_reworked.scar")
 import("winconditions/religious_reworked.scar")
 import("winconditions/regicide.scar")
+import("winconditions/teamsolidarity.scar")
 
 -- training
 import("training/coretraininggoals.scar")
@@ -166,6 +167,11 @@ function AdvancedMode_OnGameSetup()
 		if not _match.options.section_inner_win_conditions.option_win_condition_regicide then
 			Core_UnregisterModule("Regicide")
 		end	
+	end
+	
+	if _match.options.section_outer_win_conditions and
+		not _match.options.section_outer_win_conditions.option_team_solidarity then
+		Core_UnregisterModule("TeamSolidarity")
 	end
 
 	--Starting age

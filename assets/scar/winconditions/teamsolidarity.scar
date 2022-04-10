@@ -1,0 +1,100 @@
+-----------------------------------------------------------------------
+-- Data
+-----------------------------------------------------------------------
+
+-- Global data table that can be referenced in script functions (e.g. _mod.module = "Mod")
+_teamsolidarity = {
+	last_man_standing = false,
+	module = "TeamSolidarity",
+	cue = {			-- event cue shown when player or team surrenders 
+		lifetime = 10.0,		-- should match the defaults set in AE under tuning.ui.event_cues
+		repeatTime = 30.0,		-- should match the defaults set in AE under tuning.ui.event_cues
+		title = Loc_Empty(),
+		desc = Loc_Empty(),
+		sfx = "sfx_ui_surrendered_notification_play",
+		icon = "icons\\event_queue_high_priority_large",
+		color = {r = 255, g = 255, b = 255, a = 255},
+		template = "high_priority", 
+		style = ECV_Queue | ECV_Title,
+	},	
+}
+
+-- Register the win condition (Some functions can be prepended with "Mod_" to be called automatically as part of the scripting framework)
+Core_RegisterModule(_teamsolidarity.module)
+
+-----------------------------------------------------------------------
+-- Scripting framework 
+-----------------------------------------------------------------------
+
+function TeamSolidarity_DiplomacyEnabled(is_enabled)
+	_teamsolidarity.last_man_standing = is_enabled
+end
+
+-- Called during load as part of the game setup sequence
+function TeamSolidarity_OnGameSetup()	
+end
+
+-- Called before initialization, preceding other module OnInit functions
+function TeamSolidarity_PreInit()	
+end
+
+-- Called on match initialization before handing control to the player
+function TeamSolidarity_OnInit()	
+end
+
+-- Called after initialization is done when game is fading up from black
+function TeamSolidarity_Start()
+end
+
+-- Called when Core_SetPlayerDefeated() is invoked. Signals that a player has been eliminated from play due to defeat.
+function TeamSolidarity_OnPlayerDefeated(player, reason)
+	-- Ignore reason as we dont have clear indicator for that
+	for i, other_player in pairs(PLAYERS) do
+		-- if player is not the one that was defeated (defeated was already handled by something else)
+		-- we will eliminate him from the game if he is allied to defeated player in both way relation.
+		-- elimination will be done by calling surrender version of defeat as its closest to solidarity.
+		if player.id ~= other_player.id and
+			Player_IsAlive(other_player.id) and 
+			Player_ObserveRelationship(player.id, other_player.id) == R_ALLY and
+			Player_ObserveRelationship(other_player.id, player.id) == R_ALLY then
+			-- Kill player
+			--World_KillPlayer(other_player.id, KPR_Lost)
+			TeamSolidarity_Notify(other_player)
+		end
+	end	
+end
+
+-- When a victory condition is met, a module must call Core_OnGameOver() in order to invoke this delegate and notify all modules that the match is about to end. Generally used for clean up (removal of rules, objectives, and UI elements specific to the module).
+function TeamSolidarity_OnGameOver()	
+end
+
+function TeamSolidarity_Notify(player)				
+	if not player.isEliminated then		
+		local localPlayer = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+		if not localPlayer.isEliminated then 
+			local cue = _teamsolidarity.cue			
+			local title = Loc_FormatText(11161289, player.playerName) -- "%1PLAYER_NAME% surrendered"			
+			UI_CreateEventCueClickable(-1, cue.lifetime, 0, cue.repeatTime, title, cue.desc, cue.template, cue.icon, cue.sfx, cue.color.r, cue.color.g, cue.color.b, cue.color.a, cue.style, nothing)	
+		end
+		
+		Core_SetPlayerDefeated(player.id, TeamSolidarity_LoserPresentation, WR_SURRENDER)
+	end
+end
+
+function TeamSolidarity_LoserPresentation(playerID)
+	if playerID == Game_GetLocalPlayer() then
+
+		local title = Loc_GetString(11165094)			-- "DEFEAT"
+		local video = "stinger_defeat"
+		
+		Rule_AddOneShot(_gameOver_message, 
+			GAMEOVER_OBJECTIVE_TIME, {
+			_playerID = playerID, 
+			_icon = nil,						-- unused
+			_endType = title, 
+			_message = Loc_Empty(), 			-- unused 
+			_sound = "ConquestDefeatEvent", 
+			_videoURI = video
+		})
+	end
+end

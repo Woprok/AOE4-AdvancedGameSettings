@@ -118,6 +118,14 @@ function Diplomacy_AllPlayer_DestroyTeams()
 		Core_AddPlayerToTeam(player.id, nil)	
 		Diplomacy_UpdateTeam(context_player, player.team.index)
 	end	
+		
+	for _, context_player in pairs(_diplomacy.data_context.players) do		
+		for _, target_player in pairs(PLAYERS) do
+			Player_SetRelationship(context_player.id, target_player.id, R_ENEMY)
+			Player_SetRelationship(target_player.id, context_player.id, R_ENEMY)
+		end
+	end	
+	
 	Diplomacy_UpdateRelationContext()
 	Diplomacy_UpdateDataContext()
 end
@@ -514,15 +522,15 @@ function Diplomacy_UpdateDataContext()
 		end		
 		
 		if context_player.is_tribute_visible_override ~= nil then 
-			context_player.is_tribute_visible = not context_player.is_local and context_player.is_tribute_visible_override
+			context_player.is_tribute_visible = not context_player.is_local and not context_player.is_eliminated and context_player.is_tribute_visible_override
 		else
-			context_player.is_tribute_visible = not context_player.is_local
+			context_player.is_tribute_visible = not context_player.is_local and not context_player.is_eliminated
 		end
 			
 		if context_player.is_diplomacy_visible_override ~= nil then 
-			context_player.is_diplomacy_visible = not context_player.is_local and context_player.is_diplomacy_visible_override
+			context_player.is_diplomacy_visible = not context_player.is_local and not context_player.is_eliminated and context_player.is_diplomacy_visible_override
 		else
-			context_player.is_diplomacy_visible = not context_player.is_local
+			context_player.is_diplomacy_visible = not context_player.is_local and not context_player.is_eliminated 
 		end
 		
 		
