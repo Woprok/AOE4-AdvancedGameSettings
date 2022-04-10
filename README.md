@@ -13,3 +13,4 @@ Game mode that allows more customization over standard game rules in Age of Empi
 - Game Rates -> Change how fast are resources gathered, buildings build, research researched, units produced.  
 - Game Simulation Speed -> Change how fast is everything in the game.
 - Optional checks to spawn Castle and King in game without Regicide win condition.   
+- Tech Level -> Starting with technologies already researched.
