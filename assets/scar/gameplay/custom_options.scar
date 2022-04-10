@@ -585,7 +585,8 @@ function InternalCustomOptions_SpawnUnitAtSpawnOffset(player, unit_bp, ox, oy, o
 	local nz = 5 * math.floor(math.floor(ps.z) / 5)
 	local psx = World_Pos(nx + ox, ny + oy, nz + oz)
 	-- finally spawn it	
-	local sgroup_name = "sg_player_" .. category .. "_" .. tostring(player)
+	--local sgroup_name = "sg_player_" .. category .. "_" .. tostring(player)
+	local sgroup_name = category
 	local sg_units = SGroup_CreateIfNotFound(sgroup_name)
 	UnitEntry_DeploySquads(player, sg_units, {{sbp = unit_bp, numSquads = count }}, psx)
 	return sg_units
