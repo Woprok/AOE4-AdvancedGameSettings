@@ -14,3 +14,7 @@ Game mode that allows more customization over standard game rules in Age of Empi
 - Game Simulation Speed -> Change how fast is everything in the game.
 - Optional checks to spawn Castle and King in game without Regicide win condition.   
 - Tech Level -> Starting with technologies already researched.
+
+# Contribution:
+Everyone is free to contribute to this mod and add more options to it via pull requests.
+Be free to also provide ideas or requests via issues/tickets.
