@@ -22,12 +22,13 @@ function CustomStartConditions_HandleStartPosition(_match)
 			InternalCustomStartConditions_SpawnInitialSquads()
 		-- slow nomad
 		elseif _match.options.section_custom_conditions.option_start_type.enum_value == _match.options.section_custom_conditions.option_start_type.enum_items.slow_nomad then
-			InternalCustomStartConditions_SlowNomadStart(_match)
+			InternalCustomStartConditions_SetupNomadStart(_match)
 			-- Spawn each civilization squad
 			InternalCustomStartConditions_SpawnInitialSquads()
 		-- scattered villagers
 		elseif _match.options.section_custom_conditions.option_start_type.enum_value == _match.options.section_custom_conditions.option_start_type.enum_items.scattered_villagers then
-			InternalCustomStartConditions_ScatteredVillagersStart()		
+			InternalCustomStartConditions_SetupNomadStart(_match)
+			InternalCustomStartConditions_ScatteredVillagersStart()	
 		end		
 	end
 end
@@ -50,26 +51,25 @@ function InternalCustomStartConditions_StandardStart(_match)
 		
 		local player_civ = Player_GetRaceName(player.id)
 		
-		local townCenterEBP = InternalCustomOptions_GetTownCenterCapital(player_civ)
 		
-		if (player_civ == "mongol") then
-			local sqTownCenter = Player_GetSquadsFromType(player.id, _match.types.townCenter)
+		-- this can be naive ??? for now we will pretend to be serious
+		if player_civ == "mongol" then
+			local sqTownCenter = Player_GetSquadsFromType(player.id, _custom.townCenter)
 			if SGroup_Count(sqTownCenter) == 0 then	
-				local moveableTownCenter = BP_GetSquadBlueprint("building_town_center_capital_moving_mon")
-				local sgroup_name = "sg_player_town_center_" .. tostring(player.id)
-				local sg_units = SGroup_CreateIfNotFound(sgroup_name)
-				UnitEntry_DeploySquads(player.id, sg_units, {{sbp = moveableTownCenter, numSquads = 1 }}, player.startingPos)
-				--SGroup_Add(sqTownCenter, moveableTownCenter)
+				local sbp_tc = BP_GetSquadBlueprint("building_town_center_capital_moving_mon")
+				local snameTC = InternalCustomOptions_SquadGroupName(player.id, _custom.town_center)
+				local sg_tc = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameTC, sbp_tc, 0, 0, 0, 1)
 			end
-		else
-			-- Create the initial (capital) town center, if necessary		
+		-- Create the initial (capital) town center, if necessary	
+		else	
 			local egTownCenter = Player_GetEntitiesFromType(player.id, _match.types.townCenter) 
-			if EGroup_Count(egTownCenter) == 0 then			
-				local townCenter = InternalCustomOptions_SpawnEntityAtSpawnOffset(player.id, townCenterEBP, 0, 0, 0)	
-				EGroup_Add(egTownCenter, townCenter)
-			end	
-			-- Send event (conquest win condition relies on this)
-			Core_CallDelegateFunctions("OnConstructionComplete", {pbg = townCenterEBP, player = player.id, entity = EGroup_GetEntityAt(egTownCenter, 1)})			
+			if EGroup_Count(egTownCenter) == 0 then	
+				local ebp_tc = InternalCustomOptions_GetTownCenterCapital(player_civ)		
+				local enameTC = InternalCustomOptions_EntityGroupName(player.id, _custom.town_center)
+				local eg_tc = InternalCustomOptions_SpawnEntityAtSpawnOffset(player.id, enameTC, ebp_tc, 0, 0, 0)
+				-- Send event (conquest win condition relies on this)
+				Core_CallDelegateFunctions("OnConstructionComplete", {pbg = ebp_tc, player = player.id, entity = eg_tc})	
+			end			
 		end		
 	end
 end
@@ -83,13 +83,15 @@ function InternalCustomStartConditions_RevealInitialMapArea(_match)
 	end
 end
 -- Setup for some edge cases, this might be actually obsolate and could go.
-function InternalCustomStartConditions_SlowNomadStart(_match)
+function InternalCustomStartConditions_SetupNomadStart(_match)
 	for i, player in pairs(PLAYERS) do		
 		local player_civ = Player_GetRaceName(player.id)
 		-- There will be no initial buildings for player ?
 		Player_SetStateModelFloat(player.id, "has_capital", 0)
 		-- Player should not build structures
-		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)
+		if not AI_IsAIPlayer(player.id) then
+			Player_SetStateModelBool(player.id, "player_can_construct_structures", true)
+		end
 	end
 end
 
@@ -119,6 +121,9 @@ function InternalCustomStartConditions_ResetResources(_match)
 		local player_civ = Player_GetRaceName(player.id)
 		if player_civ == "mongol" then
 			player._nomadStart.resources["Wood"] = player._nomadStart.resources["Wood"] + _match.nomad.wood
+		elseif player_civ == "chinese" and AI_IsAIPlayer(player.id) then
+			player._nomadStart.resources["Wood"] = player._nomadStart.resources["Wood"] + _match.nomad.wood + 375
+			player._nomadStart.resources["Stone"] = player._nomadStart.resources["Stone"] + _match.nomad.stone
 		else
 			player._nomadStart.resources["Wood"] = player._nomadStart.resources["Wood"] + _match.nomad.wood
 			player._nomadStart.resources["Stone"] = player._nomadStart.resources["Stone"] + _match.nomad.stone
@@ -197,54 +202,67 @@ function InternalCustomStartConditions_SpawnInitialSquads()
 	for i, player in pairs(PLAYERS) do
 		local player_civ = Player_GetRaceName(player.id)
 		
-		local vil = InternalCustomOptions_GetVillager(player_civ)
-		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, vil, -10, 0, -10, "villager", 6)
+		local sbp_vil = InternalCustomOptions_GetVillager(player_civ)
+		local snameVIL = InternalCustomOptions_SquadGroupName(player.id, _custom.villager)
+		local sg_vil = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameVIL, sbp_vil, -10, 0, -10, _custom.starting_villagers)
+		CustomOptions_AssignAIToPosition(player.id, nil, sg_vil)
 		
-		local sco = InternalCustomOptions_GetScout(player_civ)
-		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, sco, -12, 0, -12, "scout", 1)
+		local sbp_sco = InternalCustomOptions_GetScout(player_civ)
+		local snameSCO = InternalCustomOptions_SquadGroupName(player.id, _custom.scout)
+		local sg_sco = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSCO, sbp_sco, -12, 0, -12, 1)
+		--CustomOptions_AssignAIToPosition(player.id, nil, sg_sco)
 		
-		local shp = InternalCustomOptions_GetSheep(player_civ)
-		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, shp, -9, 0, -9, "sheep", 1)
+		local sbp_shp = InternalCustomOptions_GetSheep(player_civ)
+		local snameSHP = InternalCustomOptions_SquadGroupName(player.id, _custom.sheep)
+		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 1)
+		--CustomOptions_AssignAIToPosition(player.id, nil, sg_shp)
 	end
 end
 
 
 -- Called on match initialization before handing control to the player
 function InternalCustomStartConditions_ScatteredVillagersStart()	
+	_custom.radius = math.max(World_GetWidth(), World_GetLength())/1.8 -- 1.8 to try and tune villager spawn out from the middle of the map	
+	
 	for i, player in pairs(PLAYERS) do		
-		player_civ = Player_GetRaceName(player.id)
-		
+		player_civ = Player_GetRaceName(player.id)		
 		-- Increase starting resources to cover building a TC
 		if player_civ == "mongol" then
 			Player_GiftResource(player.id, RT_Wood, 400)
+		elseif player_civ == "chinese" and AI_IsAIPlayer(player.id) then
+			Player_GiftResource(player.id, RT_Wood, 775)
+			Player_GiftResource(player.id, RT_Stone, 300)
 		else
 			Player_GiftResource(player.id, RT_Wood, 400)
 			Player_GiftResource(player.id, RT_Stone, 300)
 		end
 		
-		-- Get Villager BP based on civ
-		local sbp_villager = InternalCustomOptions_GetVillager(player_civ)
+		-- Get Villager BP and spawn them at single location, before spreading them out to create artificial home for AI.
+		local sbp_vil = InternalCustomOptions_GetVillager(player_civ)		
+		local snameVIL = InternalCustomOptions_SquadGroupName(player.id, _custom.villager)
 		
-		-- Get spawn dimensions
-		local radius = math.max(World_GetWidth(), World_GetLength())/1.8 -- 1.8 to try and tune villager spawn out from the middle of the map
-		local map_center = World_Pos(0, 0, 0)
+		-- Get spawn dimensions and initial squad location
+		local map_center = World_Pos(0, 0, 0)	
 		
-		-- Generate random location and spawn vils 
-		local i = 0
-		while i < _custom.scattered_villagers do
-			-- Generate random spawn location
-			
-			local randx = World_GetRand(0-radius, radius)
-			local randz = World_GetRand(0-radius, radius)
-			
-			--local rand_pos = Util_GetRandomPosition(map_center, radius, true)
-			local height = World_GetHeightAt(randx, randz)
-			local spawn_pos = World_Pos(randx, height, randz)
-			-- Create villager squad and spawn at random location
-			local sg_villager = SGroup_CreateIfNotFound("sg_villager" .. i .. tostring(player.id))
-			UnitEntry_DeploySquads(player.id, sg_villager, {{sbp = sbp_villager, numSquads = 1 }}, spawn_pos)
-			
-			i = i + 1
-		end		
+		local _f_random_position = function()
+			local x = World_GetRand(0 - _custom.radius, _custom.radius)
+			local z = World_GetRand(0 - _custom.radius, _custom.radius)
+			local y = World_GetHeightAt(x, z)
+			return World_Pos(x, y, z)
+		end
+		
+		local spawn_pos = _f_random_position()
+		-- Finish squad spawn and assign it to AI if required.
+		local sg_vil = InternalCustomOptions_SpawnSquadsAtPosition(player.id, snameVIL, sbp_vil, spawn_pos, _custom.scattered_villagers)	
+		LocalCommand_Squad(player.id, sg_vil, SCMD_Stop, false)	
+		CustomOptions_AssignAIToPosition(player.id, spawn_pos, sg_vil)	
+		
+		
+		local _f_randomize_unit = function(gid, idx, sid)
+			Squad_WarpToPos(sid, _f_random_position())
+		end
+		
+		--Randomize all members location. 
+		SGroup_ForEach(sg_vil, _f_randomize_unit)
 	end
 end	

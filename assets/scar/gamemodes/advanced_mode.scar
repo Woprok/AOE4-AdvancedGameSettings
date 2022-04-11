@@ -201,6 +201,7 @@ function AdvancedMode_OnGameSetup()
 		allow_spectators = _match.options.section_endgame.option_allow_spectators
 	end
 	
+	CustomOptions_UpdateStartingVillagers(_match)
 end
 
 function AdvancedMode_OnInit()

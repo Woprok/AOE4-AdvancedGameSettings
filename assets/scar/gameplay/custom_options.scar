@@ -1,6 +1,13 @@
 _custom = {
 	setspeed = 1,
-	starting_villagers = 6, -- ToDo customizable vill count
+	keep = "defense_keep",
+	town_center = "town_center",
+	king = "king",
+	villager = "villager",
+	scout = "scout",
+	sheep = "sheep",
+	radius = 1,
+	starting_villagers = 6, 
 	scattered_villagers = 3,
 	nomad = {
 		timeStarted = 0,
@@ -519,12 +526,10 @@ function CustomOptions_SpawnKeeps()
 	for i, player in pairs(PLAYERS) do
 		local player_civ = Player_GetRaceName(player.id)
 		
-		local ebp_building = InternalCustomOptions_GetKeep(player_civ)
+		local ebp_building = InternalCustomOptions_GetKeep(player_civ)		
+		local ename = InternalCustomOptions_EntityGroupName(player.id, _custom.keep)
 		
-		local keep = InternalCustomOptions_SpawnEntityAtSpawnOffset(player.id, ebp_building, 15, 0, 0)
-		-- mod keep has special ID for fast garrison		
-		local egKeep = EGroup_CreateIfNotFound("keep_" .. tostring(player)) 
-		EGroup_Add(egKeep, keep)
+		InternalCustomOptions_SpawnEntityAtSpawnOffset(player.id, ename, ebp_building, 15, 0, 0)
 	end
 end
 
@@ -534,21 +539,43 @@ function CustomOptions_SpawnKings()
 		local player_civ = Player_GetRaceName(player.id)
 		
 		local sbp_king = InternalCustomOptions_GetKing(player_civ)
+		local sname = InternalCustomOptions_SquadGroupName(player.id, _custom.king)
 		
-		InternalCustomOptions_SpawnUnitAtSpawnOffset(player.id, sbp_king, -13, 0, -13, "king", 1)
+		local sg_king = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, sname, sbp_king, -13, 0, -13, 1)
+
+		CustomOptions_AssignAIToPosition(player.id, nil, sg_king)
 	end
+end
+
+-- position or nil
+-- properly assigns spawned AI unit to location to prevent odd behaviour
+function CustomOptions_AssignAIToPosition(playerId, position, sqroup)
+	if not AI_IsAIPlayer(playerId) then
+		return
+	end
+	if position == nil then 
+		position = Player_GetStartingPosition(playerId)
+	end
+	
+	local aiPlayer = AIPlayer_GetLocalFromPlayer(playerId)
+	local homeBaseID = AIPlayer_GetOrCreateHomebase(aiPlayer, position)
+	AIPlayer_SetSquadHomebase(aiPlayer, sqroup, homeBaseID)	
+	-- if ever lost search for function like AIPlayer
+	--AIPlayer_SetAllowResourceGatheringOutsideLeash(aiPlayer, homeBaseID, true)
+	--AIPlayer_SetRequiresStatsUpdate(aiPlayer)
 end
 
 function CustomOptions_RunKing()
 	for i, player in pairs(PLAYERS) do 
-		local sqKing = Player_GetSquadsFromType(player.id, "king")
+		local sqKing = Player_GetSquadsFromType(player.id, _custom.king)
 		if SGroup_Count(sqKing) == 1 then
-			if (EGroup_Exists("keep_" .. tostring(player))) then
-				local ekeep = EGroup_FromName("keep_" .. tostring(player))
-				Cmd_Garrison(sqKing, ekeep, false, false, true)			
-			elseif EGroup_Count(Player_GetEntitiesFromType(player.id, "town_center")) ~= 0 then
-				local etc = Player_GetEntitiesFromType(player.id, "town_center")
-				Cmd_Garrison(sqKing, etc, false, false, true)			
+			local ekeep = InternalCustomOptions_EntityGroupName(player.id, _custom.keep)			
+			if (EGroup_Exists(ekeep)) then
+				local egkeep = EGroup_FromName(ekeep)
+				Cmd_Garrison(sqKing, egkeep, false, false, true)			
+			elseif EGroup_Count(Player_GetEntitiesFromType(player.id, _custom.town_center)) ~= 0 then
+				local egtc = Player_GetEntitiesFromType(player.id, _custom.town_center)
+				Cmd_Garrison(sqKing, egtc, false, false, true)			
 			else
 				local move_position = Util_GetOffsetPosition(player.startingPos, 20, 15)
 				Cmd_Ability(sqKing, BP_GetAbilityBlueprint("core_formation_line"))
@@ -559,9 +586,8 @@ function CustomOptions_RunKing()
 end
 
 -- ox,oy,oz must be multiples of 5
-function InternalCustomOptions_SpawnEntityAtSpawnOffset(player, entity_bp, ox, oy, oz)
-	--local player = World_GetPlayerAt(1)
-	local ps = Player_GetStartingPosition(player)
+function InternalCustomOptions_SpawnEntityAtSpawnOffset(playerId, ename, entity_bp, ox, oy, oz)
+	local ps = Player_GetStartingPosition(playerId)
 	-- proper rotation
 	local nx = 5 * math.floor(math.floor(ps.x) / 5)
 	local ny = 5 * math.floor(math.floor(ps.y) / 5)
@@ -569,28 +595,63 @@ function InternalCustomOptions_SpawnEntityAtSpawnOffset(player, entity_bp, ox, o
 	local psx = World_Pos(nx + ox, ny + oy, nz + oz)
 	local pst = World_Pos(nx + ox, ny + oy, nz + oz + 5)
 	-- finally spawn it
-	local e = Entity_CreateFacing(entity_bp, player, psx, pst, true)
+	local e = Entity_CreateFacing(entity_bp, playerId, psx, pst, true)
 	Entity_Spawn(e)
 	Entity_ForceConstruct(e)
 	Entity_SnapToGridAndGround(e, false)
+	local eg = EGroup_CreateIfNotFound(ename) 
+	EGroup_Add(eg, e)
 	return e	
 end
 
-function InternalCustomOptions_SpawnUnitAtSpawnOffset(player, unit_bp, ox, oy, oz, category, count)
-	--local player = World_GetPlayerAt(1)
-	local ps = Player_GetStartingPosition(player)
-	-- proper rotation
+function InternalCustomOptions_SpawnSquadsAtPosition(playerId, sgroup, sbp_unit, position, count)
+	-- proper position and facing
+	local ps = position
 	local nx = 5 * math.floor(math.floor(ps.x) / 5)
 	local ny = 5 * math.floor(math.floor(ps.y) / 5)
 	local nz = 5 * math.floor(math.floor(ps.z) / 5)
-	local psx = World_Pos(nx + ox, ny + oy, nz + oz)
-	-- finally spawn it	
-	local sgroup_name = "sg_player_" .. category .. "_" .. tostring(player)
-	--local sgroup_name = category
-	local sg_units = SGroup_CreateIfNotFound(sgroup_name)
-	UnitEntry_DeploySquads(player, sg_units, {{sbp = unit_bp, numSquads = count }}, psx)
-	return sg_units
+	local initPos = World_Pos(nx, ny, nz)
+	local facePos = World_Pos(nx, ny, nz - 1)
+	-- final spawn procedure
+	local sqnew = Util_CreateSquads(playerId, sgroup, sbp_unit, initPos, initPos, count, nil, false, facePos, nil, facePos, nil, nil, nil, nil, false)	
+	return sqnew	
 end
+
+function InternalCustomOptions_SpawnSquadsAtSpawnOffset(playerId, sgroup, sbp_unit, ox, oy, oz, count)
+	-- proper position and facing
+	local ps = Player_GetStartingPosition(playerId)
+	local nx = 5 * math.floor(math.floor(ps.x) / 5)
+	local ny = 5 * math.floor(math.floor(ps.y) / 5)
+	local nz = 5 * math.floor(math.floor(ps.z) / 5)
+	local initPos = World_Pos(nx + ox, ny + oy, nz + oz)
+	local facePos = World_Pos(nx + ox, ny + oy, nz + oz - 1)
+	-- final spawn procedure
+	local sqnew = Util_CreateSquads(playerId, sgroup, sbp_unit, initPos, initPos, count, nil, false, facePos, nil, facePos, nil, nil, nil, nil, false)	
+	return sqnew	
+end
+
+function InternalCustomOptions_SquadGroupName(playerId, unit_category)
+	return "sg_player_" .. unit_category .. "_" .. tostring(playerId)
+end
+function InternalCustomOptions_EntityGroupName(playerId, building_category)
+	return "eg_player_" .. building_category .. "_" .. tostring(playerId)
+end
+
+--function InternalCustomOptions_SpawnUnitAtSpawnOffset(player, unit_bp, ox, oy, oz, category, count)
+--	--local player = World_GetPlayerAt(1)
+--	local ps = Player_GetStartingPosition(player)
+--	-- proper rotation
+--	local nx = 5 * math.floor(math.floor(ps.x) / 5)
+--	local ny = 5 * math.floor(math.floor(ps.y) / 5)
+--	local nz = 5 * math.floor(math.floor(ps.z) / 5)
+--	local psx = World_Pos(nx + ox, ny + oy, nz + oz)
+--	-- finally spawn it	
+--	local sgroup_name = "sg_player_" .. category .. "_" .. tostring(player)
+--	--local sgroup_name = category
+--	local sg_units = SGroup_CreateIfNotFound(sgroup_name)
+--	UnitEntry_DeploySquads(player, sg_units, {{sbp = unit_bp, numSquads = count }}, psx)
+--	return sg_units
+--end
 
 function CustomOptions_ApplyStartingAgeUpgrades(_match)
 	local optionAgeStartKey
@@ -664,10 +725,80 @@ function CustomOptions_SetSimulationSpeed(_match)
 	end
 end
 
+function CustomOptions_UpdateStartingVillagers(_match)
+	local start_count = 6
+	if _match.options.section_custom_conditions_2 and 
+		_match.options.section_custom_conditions_2.spawn_villager then
+		if
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_1 then
+			start_count = 1
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_2 then
+			start_count = 2
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_3 then
+			start_count = 3
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_4 then
+			start_count = 4
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_5 then
+			start_count = 5
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_6 then
+			start_count = 6
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_7 then
+			start_count = 7
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_8 then
+			start_count = 8
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_9 then
+			start_count = 9
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_10 then
+			start_count = 10
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_20 then
+			start_count = 20
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_30 then
+			start_count = 30
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_40 then
+			start_count = 40
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_50 then
+			start_count = 50
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_75 then
+			start_count = 75
+		elseif
+			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_100 then
+			start_count = 100
+		end
+	end
+
+	_custom.starting_villagers = start_count -- customizable vill count
+	_custom.scattered_villagers = start_count
+end
+
+
+
+
+
+
+
+
+
+
+
+
 
 -- might be revisited later as this is only here as joke option.
 function Ding_Start()
-	if 	_match.options.section_custom_conditions_2.can_ding then
+	if 	_match.options.section_custom_other.can_ding then
 		--figure out how to get real selection event, e.g. definitely not GE_SubselectionChanged, GE_EntitySelectionVisualChanged, GE_SelectionChanged
 		Ding_Queue()
 	end	
