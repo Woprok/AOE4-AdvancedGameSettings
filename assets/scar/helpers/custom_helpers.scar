@@ -40,6 +40,48 @@ function InternalCustomOptions_GetTownCenterCapital(player_civ)
 	end
 	return ebp_building
 end
+function InternalCustomOptions_GetTownCenter(player_civ)
+	local ebp_building
+	if player_civ == "english" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_eng")			
+	elseif player_civ == "chinese" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_chi")			
+	elseif player_civ == "french" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_fre")			
+	elseif player_civ == "hre" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_hre")			
+	elseif player_civ == "mongol" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_mon")			
+	elseif player_civ == "rus" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_rus")			
+	elseif player_civ == "sultanate" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_sul")			
+	elseif player_civ == "abbasid" then
+		ebp_building = BP_GetEntityBlueprint("building_town_center_abb")			
+	end
+	return ebp_building
+end
+function InternalCustomOptions_GetMarket(player_civ)
+	local ebp_building
+	if player_civ == "english" then
+		ebp_building = BP_GetEntityBlueprint("building_econ_market_control_eng")			
+	elseif player_civ == "chinese" then
+		ebp_building = BP_GetEntityBlueprint("building_econ_market_control_chi")			
+	elseif player_civ == "french" then
+		ebp_building = BP_GetEntityBlueprint("building_econ_market_control_fre")			
+	elseif player_civ == "hre" then
+		ebp_building = BP_GetEntityBlueprint("building_econ_market_control_hre")			
+	elseif player_civ == "mongol" then
+		ebp_building = BP_GetEntityBlueprint("building_econ_market_mon")			
+	elseif player_civ == "rus" then
+		ebp_building = BP_GetEntityBlueprint("building_econ_market_control_rus")			
+	elseif player_civ == "sultanate" then
+		ebp_building = BP_GetEntityBlueprint("building_econ_market_control_sul")			
+	elseif player_civ == "abbasid" then
+		ebp_building = BP_GetEntityBlueprint("building_econ_market_control_abb")			
+	end
+	return ebp_building
+end
 function InternalCustomOptions_GetVillager(player_civ)
 	local sbp_unit
 	if player_civ == "english" then

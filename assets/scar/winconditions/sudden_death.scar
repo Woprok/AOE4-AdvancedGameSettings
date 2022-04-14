@@ -1,0 +1,777 @@
+-----------------------------------------------------------------------
+--
+-- Sudden Death Win Condition 
+--
+-- A team is eliminated when all of its players have lost capital town center landmark.
+-- The last team remaining is the victor.
+--
+-----------------------------------------------------------------------
+
+-- Provide data to replay system through this script
+import("replay/replaystatviewer.scar")
+
+-----------------------------------------------------------------------
+-- Data
+-----------------------------------------------------------------------
+
+if _sudden_death==nil then
+
+	_sudden_death = {
+	module = "SuddenDeath",
+	last_man_standing = false, -- false = fixed teams, true = dynamic diplomacy (i.e. only 1 player can win).
+		
+	icons = {
+		objective = "icons\\races\\common\\victory_conditions\\victory_condition_settlements",
+		alert = "icons\\event_queue_high_priority_large",
+	},	
+	types = {
+		landmark = "wonder",
+		wonder = "wonder_imperial_age",
+		building = "building", 
+	},
+	objective_title = Loc_Empty(),
+	damage_interval = 30.0,
+	event_cue_delay = 2.0,
+	presentation_delay = 2.0,
+	sfx = {
+		landmark_damaged_player = "mus_stinger_landmark_building_damaged",
+		landmark_destroyed_player = "mus_stinger_players_landmark_destroyed",
+		landmark_destroyed_ally = "mus_stinger_ally_landmark_destroyed",
+		landmark_destroyed_enemy = "mus_stinger_enemy_landmark_destroyed",
+		eliminated_player_ally = "SuddenDeath_friendly_eliminated",
+		eliminated_enemy = "SuddenDeath_enemy_eliminated",
+		victory = "mus_stinger_landmark_objective_complete_success",
+		defeat = "mus_stinger_landmark_objective_complete_fail",
+	},
+	cue_damaged = {				-- event cue shown when capital or landmark is damaged
+		title = Loc_Empty(),
+		desc = Loc_Empty(),
+		sfx = "mus_stinger_landmark_building_damaged",
+		icon = "icons\\event_queue_high_priority_large",
+		template = "high_priority",
+		style = ECV_Queue | ECV_Title,
+	},
+	cue_destroyed = {			-- event cue shown when capital or landmark is destroyed 
+		title = Loc_Empty(),
+		desc = Loc_Empty(),
+		icon = "icons\\event_queue_high_priority_large",
+		template = "high_priority", 
+		style = ECV_Queue | ECV_Title,
+	},	
+	cue_eliminated = {			-- event cue shown when player is eliminated 
+		title = Loc_Empty(),
+		desc = Loc_Empty(),
+		icon = "",
+		template = "high_priority", 
+		style = ECV_Queue,
+	},
+}
+
+end
+
+-----------------------------------------------------------------------
+-- Scripting framework 
+-----------------------------------------------------------------------
+
+Core_RegisterModule(_sudden_death.module)
+
+-----------------------------------------------------------------------
+-- Callbacks
+-----------------------------------------------------------------------
+
+-- Callback invoked when Diplomacy is enabled (indicates win condition should be based on player instead of team).
+function SuddenDeath_DiplomacyEnabled(isEnabled)
+	_sudden_death.last_man_standing = isEnabled
+end
+
+
+-- Callback invoked by Core::OnInit()
+function SuddenDeath_OnInit()
+	-- Get local player
+	player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+	Rule_AddGlobalEvent(SuddenDeath_OnLocalPlayerChanged, GE_LocalPlayerChanged)
+	
+	-- If there is only one player
+	if  #PLAYERS <= 1 then		
+		-- Remove Sudden Death objective
+		Core_UnregisterModule(_sudden_death.module)
+	-- If there is more than one player
+	else		
+		-- For every player
+		for _, player in pairs(PLAYERS) do			
+			-- Track capital_tc
+			player.capital_tc = {}
+			
+			-- Get all player entities
+			local eg_player_capital_tc = Player_GetAllEntities(player.id)
+			-- Filter out all entities except for capital TC's and capital_tc
+			EGroup_Filter(eg_player_capital_tc, "landmark", FILTER_KEEP)
+			
+			local _TrackLandmark = function(gid, idx, eid)
+				
+				-- Get entity ID
+				local entity_id = Entity_GetID(eid)
+				
+				-- If entity is a Landmark Capital
+				if SuddenDeath_IsACapital(eid) and player.capital_tc[entity_id] == nil  then
+					
+					-- Track entity IDs since Mongol structures trigger a GE_ConstructionComplete event when unpacked as well as when constructed.
+					player.capital_tc[entity_id] = {
+						entity = eid,
+					 	last_health = Entity_GetHealth(eid),
+						damage_timer = string.format("sudden_death.landmark_damage_timer_%d", entity_id),
+						landmark_active = Entity_IsValid(entity_id) and Entity_GetStateModelBool(eid, "landmark_active"),
+						is_a_capital = SuddenDeath_IsACapital(eid),
+						last_attacker = nil
+					}
+					
+				end		
+			end
+			
+			-- For every Landmark found
+			EGroup_ForEach(eg_player_capital_tc, _TrackLandmark)
+
+			InternalCustomOptions_LockAdditionalTownCenters(player)
+		end			
+		
+		-- Listen for construction completion
+		Rule_AddGlobalEvent(SuddenDeath_OnConstructionComplete, GE_ConstructionComplete) 
+		-- Listen for damage received
+		Rule_AddGlobalEvent(SuddenDeath_OnDamageReceived, GE_DamageReceived)
+		
+		-- Replay stats
+		-- ReplayStatViewer_PopulateReplayStatTabs({"SuddenDeathTrackerTemplate"})
+		-- ReplayStatViewer_RegisterPlayerDataContextUpdater(SuddenDeath_UpdatePlayerStats)
+	end
+end
+
+-- Start function
+function SuddenDeath_Start()	
+	-- Add sudden death objectives
+	SuddenDeath_AddObjective()
+	-- Update objectives
+	SuddenDeath_UpdateObjective()
+	-- Add rule to check for elimination
+	Rule_AddInterval(SuddenDeath_CheckElimination, 1.0)	
+	
+end
+
+-- Callback invoked by Core_OnGameOver() 
+function SuddenDeath_OnGameOver()	
+	-- Remove rules on game over
+	Rule_RemoveGlobalEvent(SuddenDeath_OnConstructionComplete)
+	Rule_RemoveGlobalEvent(SuddenDeath_OnDamageReceived)
+	Rule_RemoveGlobalEvent(SuddenDeath_OnLocalPlayerChanged)
+	Rule_Remove(SuddenDeath_CheckElimination)	
+end
+
+-- Callback invoked by Core_AddPlayerToTeam()
+function SuddenDeath_OnPlayerJoinedTeam(playerData)	
+	-- Update objectives when player added to team
+	SuddenDeath_UpdateObjective()
+end
+
+-- Global event callback for GE_ConstructionComplete
+function SuddenDeath_OnConstructionComplete(context)	
+	-- Delay processing this event by two frames so deferred data model updates can complete. 
+	-- Pass context of this event as the data for SuddenDeath_PostConstructionComplete() 
+	Rule_AddOneShot(SuddenDeath_PostConstructionComplete, 0.25, context)
+end
+
+
+-- Delayed handler for global event GE_ConstructionComplete
+function SuddenDeath_PostConstructionComplete(context, data)
+
+	-- Get player constructing
+	local player = Core_GetPlayersTableEntry(data.player)
+	-- Get constructed entity
+	local entity = data.entity
+		
+	-- If player is valid and has not been eliminated
+	if player ~= nil and entity ~= nil and not Core_IsPlayerEliminated(player.id) then
+		
+		--print(string.format("SuddenDeath_PostConstructionComplete() - Player %d (team %d) built %s", player.index, player.team.index, BP_GetName(data.pbg)))		
+		
+		-- Get entity ID
+		local entity_id = Entity_GetID(entity)  
+		
+		-- If constructed entity is a Landmark Capital
+		if SuddenDeath_IsACapital(entity) and player.capital_tc[entity_id] == nil  then
+			
+			-- Track entity IDs since Mongol structures trigger a GE_ConstructionComplete event when unpacked as well as when constructed.
+			player.capital_tc[entity_id] = {
+				entity = entity,
+			 	last_health = Entity_GetHealth(entity),
+				damage_timer = string.format("sudden_death.landmark_damage_timer_%d", entity_id),
+				landmark_active = Entity_IsValid(entity_id) and Entity_GetStateModelBool(entity, "landmark_active"),
+				is_a_capital = SuddenDeath_IsACapital(entity),
+				last_attacker = nil
+			}
+			
+			-- Update sudden death objective
+			SuddenDeath_UpdateObjective()				
+		end			
+	end	
+end
+
+
+-- Global event callback for GE_DamageReceived
+function SuddenDeath_OnDamageReceived(context)
+	
+	-- If there is an attacker (excludes razing buildings)
+	if context.attacker then
+		
+		-- If building/attacker are not world-owned and building is a Capital Town Center Landmark
+		if not World_OwnsEntity(context.victim) and not World_OwnsEntity(context.attacker) and SuddenDeath_IsACapital(context.victim) then 
+			
+			-- Exclude scuttling of incomplete buildings		
+			if not Entity_IsBuilding(context.victim) or Entity_GetBuildingProgress(context.victim) >= 1.0 then				
+				-- Get building ID and owner
+				local id = Entity_GetID(context.victim)
+				local owner = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(context.victim))				
+				-- If Landmark is being repaired (also triggers OnDamageReceived)
+				if context.isRepairing then					
+					-- If inactive Landmark is fully repaired
+					if Entity_GetHealthPercentage(context.victim) == 1 and owner.capital_tc[id].landmark_active == false then						
+						-- Track Landmark as active
+						owner.capital_tc[id].landmark_active = true						
+					end					
+					return					
+				end
+				
+				-- If owner has capital_tc
+				if owner.capital_tc[id] ~= nil then					
+					-- Create a cue cooldown timer
+					local show_cue = not Timer_Exists(owner.capital_tc[id].damage_timer) or Timer_GetRemaining(owner.capital_tc[id].damage_timer) == 0.0		
+					Timer_Start(owner.capital_tc[id].damage_timer, _sudden_death.damage_interval)					
+					-- If no cue cooldown timer is active, Landmark owner is not eliminated, and local player is not eliminated
+					if show_cue 
+						and not Core_IsPlayerEliminated(owner.id) 
+						and not Core_IsPlayerEliminated(player_local.id) 
+						and Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then						
+						-- Get damaged cue data
+						local cue = _sudden_death.cue_damaged						
+						-- Store last attacker in landmark data
+						owner.capital_tc[id].last_attacker = Entity_GetPlayerOwner(context.attacker)						
+						-- Get attacking player's colour
+						local uiColour = Player_GetUIColour(owner.capital_tc[id].last_attacker)						
+						-- If attacking player is local player
+						if owner.capital_tc[id].last_attacker.isLocal then								
+							-- Do nothing							
+							-- If attacking player is local player's ally
+						elseif Player_ObserveRelationship(player_local.id, owner.capital_tc[id].last_attacker) == R_ALLY then								
+							-- Do nothing							
+							-- If local player owns Landmark
+						elseif owner.isLocal then							
+							-- Create cue title
+							local cue_title = 11198265	 -- Enemy attacking Landmark							
+							--Notify local player that Landmark is under attack
+							Rule_AddOneShot(SuddenDeath_CreateEventCue, _sudden_death.event_cue_delay, { title = cue_title, queue_icon = "icons\\event_queue_high_priority", sfx = _sudden_death.sfx.landmark_damaged_player, uiColour = uiColour, highPriority =  true})							
+							-- If local player's ally owns Landmark
+						elseif Player_ObserveRelationship(player_local.id, owner.id) == R_ALLY then							
+							-- Create cue title
+							local cue_title = Loc_FormatText(11198266, owner.playerName)	--"Enemy attacking %1PLAYER_NAME%'s Landmark"							
+							--Notify local player that Landmark is under attack
+							Rule_AddOneShot(SuddenDeath_CreateEventCue, _sudden_death.event_cue_delay, { title = cue_title, queue_icon = "icons\\event_queue_high_priority", sfx = _sudden_death.sfx.landmark_damaged_player, uiColour = uiColour, highPriority =  false})
+						end
+					end
+				end
+			end	
+		end
+	end
+end
+
+-- Callback invoked by Core_SetPlayerDefeated() when a player is eliminated.
+function SuddenDeath_OnPlayerDefeated(defeatedPlayer, reason)	
+	-- If win was due to sudden death conquest ?
+	if reason == WR_CONQUEST then		
+		if Player_IsAlive(defeatedPlayer.id) then
+			-- Kill player
+			World_KillPlayer(defeatedPlayer.id, KPR_Lost)
+		end
+		
+		-- Check for victory
+		SuddenDeath_CheckVictory()		
+		if defeatedPlayer == player_local and Core_RevealFOWOnEliminationEnabled() then
+			FOW_UIRevealAll()
+		end
+	end
+end
+
+-- Called when local player is changed
+function SuddenDeath_OnLocalPlayerChanged(context)	
+	player_local = Core_GetPlayersTableEntry(context.player)	
+end
+
+-- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
+function SuddenDeath_UpdatePlayerStats(player, scarModel)
+	local capital_tc_built = 0
+	local capital_tc_remaining = 0
+	
+	for id, landmark in pairs(player.capital_tc) do
+		capital_tc_built = capital_tc_built + 1
+		if Entity_IsValid(id) and Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then 
+			capital_tc_remaining = capital_tc_remaining + 1
+		end
+	end
+		
+	scarModel.SuddenDeath_Target = capital_tc_built
+	scarModel.SuddenDeath_Current = capital_tc_remaining
+end
+
+-----------------------------------------------------------------------
+-- Rules
+-----------------------------------------------------------------------
+
+-- Eliminates player/team when they have lost all capital_tc 
+function SuddenDeath_CheckElimination()
+ 
+	SuddenDeath_UpdateObjective()
+			
+	--[[Player Elimination Check]]--
+				
+	-- For every player
+	for j, player in pairs(PLAYERS) do		
+		-- If player is not eliminated
+		if not Core_IsPlayerEliminated(player.id) then			
+			-- Get player capital_tc built vs remaining
+			local player_capital_tc = SuddenDeath_GetPlayerLandmarkCount(player)			
+			-- If all Player capital_tc are destroyed
+			if player_capital_tc.built > 0 and player_capital_tc.remaining == 0 then  				
+				-- Hides repair UI for eliminated player
+				Player_SetStateModelBool(player.id, "disable_landmark_rebuild", true)
+				-- Fully destroy player's TC/capital_tc to disable ally repair
+				SuddenDeath_Destroycapital_tc(player)				
+				Core_SetPlayerDefeated(player.id, SuddenDeath_LoserPresentation, WR_CONQUEST)																	
+				--print(string.format("SuddenDeath_CheckElimination() - Player %d (team %d) eliminated.", player.index, player.team.index))
+			end
+		end
+	end
+			
+	-- For every player
+	for j, player in pairs(PLAYERS) do
+		
+		-- For every player Landmark
+		for id, landmark in pairs(player.capital_tc) do
+			
+			-- If Landmark is still considered active but is destroyed or in deactivated state
+			if landmark.landmark_active and (not Entity_IsValid(id) or not Entity_GetStateModelBool(Entity_FromID(id), "landmark_active")) then				
+				-- Track deactivated Landmark
+				landmark.landmark_active = false				
+				-- Get player capital_tc built vs remaining
+				local player_capital_tc = SuddenDeath_GetPlayerLandmarkCount(player)
+				-- Get Ally capital_tc built/remaining
+				local ally_capital_tc = SuddenDeath_GetAllyLandmarkCount(player)
+				
+				-- If local player is not eliminated and sudden death objective is active, also checks that last attacker is not null
+				if not Core_IsPlayerEliminated(Game_GetLocalPlayer()) and _sudden_death.objective ~= nil and landmark.last_attacker then 	
+					-- Get destroyed cue
+					local cue = _sudden_death.cue_destroyed						
+					-- Get attacking player's colour
+					local uiColour = Player_GetUIColour(landmark.last_attacker)						
+					-- If owner is local
+					if player.isLocal then
+						-- Set cue title
+						cue.title = 11198267 										-- "Enemy destroyed Landmark"
+						
+						-- If player's last remaining Landmark
+						if player_capital_tc.built > 0 and player_capital_tc.remaining == 0 then							
+							-- If not player or ally's last remaining Landmark (otherwise, failed objective sfx plays)
+							if ally_capital_tc.built > 0 and ally_capital_tc.remaining > 0 then								
+								-- Set cue sfx
+								cue.sfx = _sudden_death.sfx.eliminated_player_ally								
+							end							
+						-- If not player's last remaining Landmark
+						else							
+							-- Set cue sfx
+							cue.sfx = _sudden_death.sfx.landmark_destroyed_player							
+						end
+						
+						--Notify local player (the owner) that Landmark is destroyed
+						Rule_AddOneShot(SuddenDeath_CreateEventCue, _sudden_death.event_cue_delay, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})
+						
+					else						
+						-- If owner is local player's ally
+						if Player_ObserveRelationship(player_local.id, player.id) == R_ALLY then					
+							-- Set cue title
+							cue.title = Loc_FormatText(11198268, player.playerName)		-- Enemy destroyed %1PLAYER_NAME%'s Landmark							
+							-- If player's last remaining Landmark
+							if player_capital_tc.built > 0 and player_capital_tc.remaining == 0 then								
+								-- If not player or ally's last remaining Landmark (otherwise, failed objective sfx plays)
+								if ally_capital_tc.built > 0 and ally_capital_tc.remaining > 0 then									
+									-- Play eliminated sfx
+									cue.sfx = _sudden_death.sfx.eliminated_player_ally									
+								end								
+							-- If not player's last remaining Landmark
+							else								
+								-- Set cue sfx
+								cue.sfx = _sudden_death.sfx.landmark_destroyed_ally								
+							end
+							
+							--Notify local player that ally's Landmark is destroyed
+							Rule_AddOneShot(SuddenDeath_CreateEventCue, _sudden_death.event_cue_delay, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})						
+						-- If the owner is an enemy
+						else							
+							-- If attacking player is the local player
+							if landmark.last_attacker == player_local.id then								
+								-- Set cue title
+								cue.title = Loc_FormatText(11198590, player.playerName)		-- Destroyed %1PLAYER_NAME%'s landmark								
+							-- If attacking player is local player's ally
+							elseif Player_ObserveRelationship(player_local.id, landmark.last_attacker) == R_ALLY then
+								-- Set cue title
+								cue.title = Loc_FormatText(11198591, player.playerName)		-- Ally destroyed %1PLAYER_NAME%'s landmark								
+							-- If attacking player is an enemy
+							else								
+								-- Set cue title
+								cue.title = Loc_FormatText(11201826, player.playerName)		-- Enemy destroyed %1PLAYER_NAME%'s landmark								
+							end							
+							-- Get number of enemies remaining
+							local enemies_remaining = SuddenDeath_GetActiveEnemyCount(player_local)							
+							-- If player's last remaining Landmark and at least 1 enemy remains (otherwise, objective sfx plays)
+							if player_capital_tc.built > 0 and player_capital_tc.remaining == 0 and enemies_remaining > 0 then								
+								-- Set cue sfx
+								cue.sfx = _sudden_death.sfx.eliminated_enemy								
+							-- If not player's last remaining Landmark
+							else								
+								-- Set cue sfx
+								cue.sfx = _sudden_death.sfx.landmark_destroyed_enemy								
+							end
+							
+							-- Notify that enemy Landmark is destroyed
+							Rule_AddOneShot(SuddenDeath_CreateEventCue, _sudden_death.event_cue_delay, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
+							
+						end
+					end
+				end							
+			end
+		end
+	end
+end
+
+-----------------------------------------------------------------------
+-- Private/Internal functions
+-----------------------------------------------------------------------
+
+function SuddenDeath_CheckVictory()
+	
+	-- Track one of the surviving players
+	local winning_player = nil
+	
+	-- For all players
+	for i, player in pairs(PLAYERS) do		
+		-- If player is not eliminated
+		if not Core_IsPlayerEliminated(player.id) then 			
+			-- Get remaining enemies of player
+			local enemies_remaining = SuddenDeath_GetActiveEnemyCount(player)			
+			-- If no enemies remain
+			if enemies_remaining == 0 then
+				-- Track player
+				winning_player = player
+				break
+			end
+		end
+	end
+	
+	if winning_player ~= nil then		
+		-- For every player
+		for i, player in pairs(PLAYERS) do			
+			-- If player is winning player's ally
+			if Player_ObserveRelationship(player.id, winning_player.id) == R_ALLY then
+				Core_SetPlayerVictorious(player.id, SuddenDeath_WinnerPresentation, WR_CONQUEST)	
+			end
+		end
+	-- If a winning player was not found, check if no humans remain
+	else		
+		-- Track humans remaining
+		local humansRemaining = {}
+		for i, player in pairs(PLAYERS) do
+			if (not player.isEliminated) and Player_IsHuman(player.id) then
+				table.insert(humansRemaining, player)
+			end
+		end		
+		-- If no humans remain, resolve match as winnerless. This gracefully resolves matches where the last human player surrenders in an AI game with RelicLink.
+		if #humansRemaining == 0 then
+			Core_OnGameOver()
+			Core_WinnerlessGameOver(Annihilation_LoserPresentation, WR_ANNIHILATION)
+		end
+	end
+end
+
+
+function SuddenDeath_IsACapital(entity)		
+	return Entity_GetStateModelBool(entity, "town_center_is_capital") or Entity_IsOfType(entity, "town_center_capital")
+end
+
+-- Returns number of capital_tc a player has built/remaining
+function SuddenDeath_GetPlayerLandmarkCount(player)
+	
+	-- Track capital_tc
+	local player_capital_tc = {
+		built = 0,
+		remaining = 0,
+	}
+	
+	-- For every player Landmark
+	for id, landmark in pairs(player.capital_tc) do		
+		-- Increment Landmark count
+		player_capital_tc.built = player_capital_tc.built + 1		
+		-- If Landmark is not destroyed
+		if Entity_IsValid(id) and Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then 			
+			-- Incremement capital_tc remaining
+			player_capital_tc.remaining = player_capital_tc.remaining + 1
+		end		
+	end
+	
+	-- Return Landmark data
+	return player_capital_tc
+	
+end
+
+-- Returns number of Allied capital_tc standing for a given player (including given player)
+function SuddenDeath_GetAllyLandmarkCount(player)
+	
+	local ally_capital_tc = {
+		built = 0,
+		remaining = 0,
+	}
+	
+	-- For every player
+	for j, player_other in pairs(PLAYERS) do		
+		-- If players are Allies
+		if Player_ObserveRelationship(player.id, player_other.id) == R_ALLY then			
+			-- For every player Landmark
+			for id, landmark in pairs(player_other.capital_tc) do			
+				-- Increment Landmark count
+				ally_capital_tc.built = ally_capital_tc.built + 1				
+				-- If Landmark is not destroyed
+				if Entity_IsValid(id) and Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then 					
+					-- Incremement capital_tc remaining
+					ally_capital_tc.remaining = ally_capital_tc.remaining + 1
+				end
+			end
+		end
+	end
+	
+	-- Return Landmark data
+	return ally_capital_tc
+	
+end
+
+-- Returns number of Enemy capital_tc standing for a given player
+function SuddenDeath_GetEnemyLandmarkCount(player)
+	
+	local enemy_capital_tc = {
+		built = 0,
+		remaining = 0,
+	}
+	
+	-- For every player
+	for j, player_other in pairs(PLAYERS) do		
+		-- If players are Enemies
+		if Player_ObserveRelationship(player.id, player_other.id) == R_ENEMY then			
+			-- For every player Landmark
+			for id, landmark in pairs(player_other.capital_tc) do			
+				-- Increment Landmark count
+				enemy_capital_tc.built = enemy_capital_tc.built + 1				
+				-- If Landmark is not destroyed
+				if Entity_IsValid(id) and Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then 					
+					-- Incremement capital_tc remaining
+					enemy_capital_tc.remaining = enemy_capital_tc.remaining + 1
+				end
+			end
+		end
+	end
+	
+	-- Return Landmark data
+	return enemy_capital_tc
+	
+end
+
+-- Returns number of enemies remaining for a given player
+function SuddenDeath_GetActiveEnemyCount(player)	
+	-- Track enemies remaining
+	local enemies_remaining = {}	
+	-- For every other player
+	for i, player_other in pairs(PLAYERS) do		
+		-- If other player is not the given player, is an enemy, and is not eliminated
+		if player ~= player_other and not Core_IsPlayerEliminated(player_other.id) and Player_ObserveRelationship(player.id, player_other.id) == R_ENEMY then 
+			-- Add enemy player to table
+			table.insert(enemies_remaining, player_other)
+		end
+	end	
+	-- Return number of enemies remaining
+	return #enemies_remaining
+end
+
+-- Destroy a player's TC/capital_tc so they cannot be repaired by an ally (e.g. on player elimination)
+function SuddenDeath_Destroycapital_tc(player)	
+	-- For every player Landmark
+	for id, landmark in pairs(player.capital_tc) do		
+		-- Kills entity (note: this function executes final destruction animation vs Entity_Destroy which despawns the entity).
+		Entity_Kill(landmark.entity)		
+	end
+end
+
+-----------------------------------------------------------------------
+-- UI Functions
+-----------------------------------------------------------------------
+
+function SuddenDeath_AddObjective()	
+	if _sudden_death.objective == nil then 
+		local localPlayer = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+		local enemies = 0
+		_sudden_death.objective_title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:290")				-- "Destroy all capitols"
+
+		-- Set primary objective data template (Note: No OR needed as conquest always precedes other objectives)
+		-- data_template = "ConquestObjectiveTemplate"
+		
+		_sudden_death.objective = Obj_Create(localPlayer.id, _sudden_death.objective_title, Loc_Empty(), _sudden_death.icons.objective, "ConquestObjectiveTemplate", localPlayer.raceName, OT_Primary, 0, "conquestObj")		
+				
+		if _first_primary_objective == nil then 
+			_first_primary_objective = _sudden_death.objective
+		end
+		
+		
+		Obj_SetState(_sudden_death.objective, OS_Incomplete)
+		Obj_SetVisible(_sudden_death.objective, true)
+		Obj_SetProgressVisible(_sudden_death.objective, true)		
+		Obj_SetCounterType(_sudden_death.objective, COUNTER_CountUpTo)
+	end
+end
+
+
+function SuddenDeath_UpdateObjective()
+	if _sudden_death.objective ~= nil then
+		local localPlayer = Core_GetPlayersTableEntry(Game_GetLocalPlayer())		
+		local capital_tc_destroyed = 0
+		enemy_capital_tc = SuddenDeath_GetEnemyLandmarkCount(localPlayer)
+		capital_tc_destroyed = enemy_capital_tc.built - enemy_capital_tc.remaining
+		
+		Obj_SetCounterCount(_sudden_death.objective, capital_tc_destroyed)
+		Obj_SetCounterMax(_sudden_death.objective, enemy_capital_tc.built)	
+		Obj_SetProgress(_sudden_death.objective, capital_tc_destroyed / enemy_capital_tc.built)
+	end
+end
+
+
+function SuddenDeath_RemoveObjective()
+	if _sudden_death.objective ~= nil then
+		Obj_SetVisible(_sudden_death.objective, false)		
+		_sudden_death.objective = nil
+	end	
+end			
+
+-- Event cue function to support delayed events
+function SuddenDeath_CreateEventCue(context, data)	
+	-- Only show events to active players
+	if not Core_IsPlayerEliminated(Game_GetLocalPlayer()) then
+		
+		-- If event should play in event queue and center screen notification (note: uses high priority icons by default)
+		if data.highPriority then
+			
+			UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", "icons\\event_queue_high_priority", data.sfx, data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Queue, nothing)
+			UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", "icons\\event_queue_high_priority_large", "", data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Title, nothing)
+			
+		-- If event should only play in event queue (note: uses either high priority icon or if not path is specified, the objective arrow icon)
+		else
+			
+			UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", data.queue_icon, data.sfx, data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Queue, nothing)
+			
+		end
+	end
+end
+
+function SuddenDeath_SetPlayerDefeated(context, data)
+	Core_SetPlayerDefeated(data.player_id, SuddenDeath_LoserPresentation, WR_CONQUEST)	
+end
+
+-- Win/Lose Presentation Functions
+function SuddenDeath_WinnerPresentation(playerID)
+	Rule_AddOneShot(SuddenDeath_DelayedWinnerPresentation, _sudden_death.presentation_delay, {playerID = playerID})	
+end
+
+function SuddenDeath_DelayedWinnerPresentation(context, data)
+	
+	if data.playerID == Game_GetLocalPlayer() then
+		Misc_ClearSelection()
+		Taskbar_SetVisibility(false)		
+		
+		Obj_SetState(_sudden_death.objective, OS_Complete)
+		Obj_CreatePopup(_sudden_death.objective, _sudden_death.objective_title)
+		Music_PlayStinger(MUS_STING_PRIMARY_OBJ_COMPLETE_ENDGAME)
+		SuddenDeath_RemoveObjective()
+		
+		Rule_AddOneShot(_gameOver_message, 
+			GAMEOVER_OBJECTIVE_TIME, { 
+			_playerID = data.playerID, 
+			_icon = _sudden_death.icons.objective, 
+			_endType = Loc_GetString(11161277), 					-- "VICTORY"  
+			_message = Loc_Empty(),									-- Unused 
+			_sound = _sudden_death.sfx.victory, 
+			_videoURI = "stinger_victory" 
+		})
+	end
+	
+end
+
+function SuddenDeath_LoserPresentation(playerID)	
+	Rule_AddOneShot(SuddenDeath_DelayedLoserPresentation, _sudden_death.presentation_delay, {playerID = playerID})	
+end
+
+function _sudden_death_RevealUI()
+	Taskbar_SetVisibility(true)
+end
+
+function SuddenDeath_SetupFailStinger()
+	Misc_ClearSelection()
+	Taskbar_SetVisibility(false)
+	Obj_SetState(_sudden_death.objective, OS_Failed)		
+	Obj_CreatePopup(_sudden_death.objective, _sudden_death.objective_title)
+	Music_PlayStinger(MUS_STING_PRIMARY_OBJ_FAIL)
+end
+
+function SuddenDeath_DelayedLoserPresentation(context, data)
+
+	local player_local = Game_GetLocalPlayer()
+	if data.playerID == player_local or Player_ObserveRelationship(player_local, data.playerID) == R_ALLY then
+		-- Team member was destroyed, check if the entire team is eliminated
+		
+		if Core_IsEntireTeamEliminated(player_local) then
+			SuddenDeath_SetupFailStinger()
+			
+			SuddenDeath_RemoveObjective() -- Only on defeat, otherwise the team could still win
+			
+			local title = Loc_GetString(11165094)			-- "DEFEAT"
+			local video = "stinger_defeat"
+			Rule_AddOneShot(_gameOver_message, 
+				GAMEOVER_OBJECTIVE_TIME, {
+				_playerID = player_local, 
+				_icon = _sudden_death.icons.objective,
+				_endType = title,
+				_message = Loc_Empty(),
+				_sound = _sudden_death.sfx.defeat, 
+				_videoURI = video,
+				_callback = _sudden_death_RevealUI
+			})
+			return
+		end
+	end
+	
+	-- Was not a Total party kill, however if the loser is the local player - they are eliminated
+	if data.playerID == Game_GetLocalPlayer() then	
+		SuddenDeath_SetupFailStinger()
+		
+		local title = Loc_GetString(11165821)		-- "ELIMINATED"
+		local video = "stinger_eliminated"
+		Rule_AddOneShot(_gameOver_message, 
+			GAMEOVER_OBJECTIVE_TIME, {
+			_playerID = player_local, 
+			_icon = _sudden_death.icons.objective,
+			_endType = title,
+			_message = Loc_Empty(),
+			_sound = _sudden_death.sfx.defeat, 
+			_videoURI = video,
+			_callback = _sudden_death_RevealUI
+		})
+	end	
+end

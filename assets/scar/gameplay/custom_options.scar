@@ -547,23 +547,6 @@ function CustomOptions_SpawnKings()
 	end
 end
 
--- position or nil
--- properly assigns spawned AI unit to location to prevent odd behaviour
-function CustomOptions_AssignAIToPosition(playerId, position, sqroup)
-	if not AI_IsAIPlayer(playerId) then
-		return
-	end
-	if position == nil then 
-		position = Player_GetStartingPosition(playerId)
-	end
-	
-	local aiPlayer = AIPlayer_GetLocalFromPlayer(playerId)
-	local homeBaseID = AIPlayer_GetOrCreateHomebase(aiPlayer, position)
-	AIPlayer_SetSquadHomebase(aiPlayer, sqroup, homeBaseID)	
-	-- if ever lost search for function like AIPlayer
-	--AIPlayer_SetAllowResourceGatheringOutsideLeash(aiPlayer, homeBaseID, true)
-	--AIPlayer_SetRequiresStatsUpdate(aiPlayer)
-end
 
 function CustomOptions_RunKing()
 	for i, player in pairs(PLAYERS) do 
@@ -636,22 +619,6 @@ end
 function InternalCustomOptions_EntityGroupName(playerId, building_category)
 	return "eg_player_" .. building_category .. "_" .. tostring(playerId)
 end
-
---function InternalCustomOptions_SpawnUnitAtSpawnOffset(player, unit_bp, ox, oy, oz, category, count)
---	--local player = World_GetPlayerAt(1)
---	local ps = Player_GetStartingPosition(player)
---	-- proper rotation
---	local nx = 5 * math.floor(math.floor(ps.x) / 5)
---	local ny = 5 * math.floor(math.floor(ps.y) / 5)
---	local nz = 5 * math.floor(math.floor(ps.z) / 5)
---	local psx = World_Pos(nx + ox, ny + oy, nz + oz)
---	-- finally spawn it	
---	local sgroup_name = "sg_player_" .. category .. "_" .. tostring(player)
---	--local sgroup_name = category
---	local sg_units = SGroup_CreateIfNotFound(sgroup_name)
---	UnitEntry_DeploySquads(player, sg_units, {{sbp = unit_bp, numSquads = count }}, psx)
---	return sg_units
---end
 
 function CustomOptions_ApplyStartingAgeUpgrades(_match)
 	local optionAgeStartKey
@@ -787,10 +754,19 @@ end
 
 
 
+function InternalCustomOptions_LockAdditionalTownCenters(player)
+	local player_civ = Player_GetRaceName(player.id)
+	Player_SetEntityProductionAvailability(player.id, InternalCustomOptions_GetTownCenter(player_civ), ITEM_LOCKED)
+end
 
-
-
-
+function InternalCustomOptions_EarlyMarket(_match)
+	for i, player in pairs(PLAYERS) do
+		if 	_match.options.section_custom_other.early_market then
+			local player_civ = Player_GetRaceName(player.id)
+			Player_SetEntityProductionAvailability(player.id, InternalCustomOptions_GetMarket(player_civ), ITEM_UNLOCKED)
+		end
+	end
+end
 
 
 

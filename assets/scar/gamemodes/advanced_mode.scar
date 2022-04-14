@@ -13,6 +13,7 @@ import("cardinal.scar")
 
 Core_RegisterModule("AdvancedMode")		-- Call this before importing vision.scar so StandardMode_OnGameSetup() is called before Vision_OnGameSetup()   
 
+import("ai/ai_singleplayer.scar")
 import("helpers/custom_helpers.scar")
 import("startconditions/custom_startconditions.scar")
 import("gameplay/custom_data.scar")
@@ -20,6 +21,7 @@ import("gameplay/custom_options.scar")
 
 -- replay system
 import("replay/replaystatviewer.scar")
+
 
 -- gameplay systems
 import("gameplay/score.scar")
@@ -42,6 +44,7 @@ import("winconditions/annihilation_reworked.scar")
 import("winconditions/elimination_reworked.scar")	
 import("winconditions/surrender_reworked.scar")		
 import("winconditions/conquest.scar")
+import("winconditions/sudden_death.scar") 
 --import("winconditions/wonder.scar")
 --import("winconditions/religious.scar")
 import("winconditions/wonder_reworked.scar")
@@ -167,6 +170,10 @@ function AdvancedMode_OnGameSetup()
 		if not _match.options.section_inner_win_conditions.option_win_condition_regicide then
 			Core_UnregisterModule("Regicide")
 		end	
+		
+		if not _match.options.section_inner_win_conditions.option_win_condition_sudden_death then
+			Core_UnregisterModule("SuddenDeath")
+		end	
 	end
 	
 	if _match.options.section_outer_win_conditions and
@@ -253,6 +260,11 @@ function AdvancedMode_PostInit()
 	end
 end
 
+--this should contain initialization for units, buildings, upgrades but it might cause issue for conditions
+function AdvancedMode_Preset() 
+
+end
+
 function AdvancedMode_Start()
 	-- Spawn aftermath, currently only for slow nomad.
 	CustomStartConditions_OnStartContinuation(_match)
@@ -268,6 +280,7 @@ function AdvancedMode_Start()
 	CustomOptions_RunKing()
 	-- this is seriously just a joke
 	Ding_Start()
+	InternalCustomOptions_EarlyMarket(_match)
 end
 
 function AdvancedMode_OnGameOver()

@@ -1,6 +1,6 @@
 ﻿ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
 1,,,Mod name.,,,Advanced Game Settings
-2,,,Mod description.,,,"Extends standard Age of Empires 4 game mode with options known from previous games.\r\n\r\nAdditional features included in current version of the mod:\r\nWin Conditions\r\n- Regicide\r\nWin Conditions Options\r\n- Sacred Timer\r\n- Wonder Timer\r\nDiplomacy Options\r\n- Treaty Timer\r\n- Enable Tribute\r\n- Enable Diplomacy\r\nMatch Options\r\n- Nomad\r\n- Last Age\r\n- Game Rates\r\n- Technology Level\r\n- Game Simulation Speed (use only in single)\r\n- Population Capacity\r\nFun Options\r\n- Spawn King\r\n- Spawn Keep\r\n\r\n\r\n                                                  Source code, feedback, bug reports or contribution to mode can be done at: https://github.com/ W o p r o k /AOE4-AdvancedGameSettings                                       PS: Current option selection should allow also recreating modes such as deathmatch and wonder rush."
+2,,,Mod description.,,,"Extends standard Age of Empires 4 game mode with more game options.\r\n\r\nAdditional features included in current version of the mod:\r\nWin Conditions\r\n- Regicide (Defeat Kings.)\r\n- Sudden Death (Destroy Landmark Town Centers. Additional non-landmark town centers are disabled.)\r\nWin Conditions Options\r\n- Sacred Timer\r\n- Wonder Timer\r\n- Team Solidarity (All teammates are eliminated if one is removed from game.)\r\nDiplomacy Options\r\n- Treaty Timer\r\n- Enable Tribute\r\n- Enable Diplomacy\r\nMatch Options\r\n- Start Type (Settled, Slow Nomad, Scattered Villagers)\r\n- Last Age\r\n- Game Rates\r\n- Technology Level\r\n- Game Simulation Speed (Only for single player)\r\n- Population Capacity\r\nUnits Options\r\n- Spawn King\r\n- Spawn Keep\r\n- Starting Villagers\r\nOther\r\n- Ding (Easter Egg)\r\nCurrent option also enables you to recreate game modes such as Deathmatch, Wonder Rush...\r\n\r\nSource code, feedback, bug reports or contribution to mode can be done at: https://github.com/Woprok/AOE4-AdvancedGameSettings \r\n"
 3,,,,,,Advanced Game Settings
 4,,,,,,Win Conditions
 5,,,,,,Advanced Match Options
@@ -20,7 +20,7 @@
 19,,,,,,Player Scores are visible when Pinned Player Information is On
 20,,,,,,Player Scores are visible when Pinned Player Information is On
 21,,,,,,Display Player Scores
-22,,,,,,"Combine standard mode with Regicide or just change settings with new options like nomad start, population capacity, speed and last age."
+22,,,,,,Advanced Game Settings provides you with a variety of match options and win conditions to customize your game and play it how you want to.\r\nHELP:\r\nTo see all options you need to scroll down.\r\nOptions tagged as SP are not supported in multiplayer matches.\r\nFull description for all options can be found at https://github.com/Woprok/AOE4-AdvancedGameSettings \r\n
 23,,,,,,Landmarks
 24,,,,,,Destroy all enemy Landmarks
 25,,,,,,Landmarks
@@ -283,3 +283,10 @@
 284,,,,,,75
 285,,,,,,100
 286,,,,,,100
+287,,,,,,Sudden Death
+288,,,,,,Sudden Death
+289,,,,,,Destroy all enemy Capitals
+290,,,sudden_death,,,Destroy all enemy capitals
+291,,,,,,Early Market
+292,,,,,,Early Market
+293,,,,,,Enables Market in Age I

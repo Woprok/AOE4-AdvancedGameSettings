@@ -120,7 +120,7 @@ function Regicide_AddObjective()
 	if _regicide.objective == nil then 
 		
 		-- Create and store objective in the global table created at the start of this script
-		_regicide.objective = Obj_Create(player_local.id, _regicide.objective_title, Loc_Empty(), _regicide.icons.objective, "ConquestObjectiveTemplate", player_local.raceName, OT_Primary, 0, "conquestObj")		
+		_regicide.objective = Obj_Create(player_local.id, _regicide.objective_title, Loc_Empty(), _regicide.icons.objective, DT_PRIMARY_DEFAULT, player_local.raceName, OT_Primary, 0, "conquestObj")		
 		
 		-- Sets the objective's state to incomplete
 		Obj_SetState(_regicide.objective, OS_Incomplete)

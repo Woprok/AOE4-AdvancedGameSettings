@@ -1,0 +1,38 @@
+-- Singleplayer AI can be altered to behave in different way
+-- In multiplayer AI cant be changed
+-- Due to that these scripts can be called only in single player
+-- These scripts are anyway just extension to force single player AI to operate properly
+--
+
+-- position or nil
+-- properly assigns spawned AI unit to location to prevent odd behaviour
+function CustomOptions_AssignAIToPosition(playerId, position, sqroup)
+	if World_IsMultiplayerGame() then
+		return
+	end
+	if not AI_IsAIPlayer(playerId) then
+		return
+	end
+	if position == nil then 
+		position = Player_GetStartingPosition(playerId)
+	end
+	
+	local aiPlayer = AIPlayer_GetLocalFromPlayer(playerId)
+	local homeBaseID = AIPlayer_GetOrCreateHomebase(aiPlayer, position)
+	AIPlayer_SetSquadHomebase(aiPlayer, sqroup, homeBaseID)	
+	-- if ever lost search for function like AIPlayer
+	--AIPlayer_SetAllowResourceGatheringOutsideLeash(aiPlayer, homeBaseID, true)
+	--AIPlayer_SetRequiresStatsUpdate(aiPlayer)
+end
+
+function CustomOptions_ApplyAiNomadBonuses(player)	
+	if not AI_IsAIPlayer(player.id) then
+		return
+	end
+
+	Player_SetStateModelBool(player.id, "player_can_construct_structures", false)
+
+	if player_civ == "chinese" and AI_IsAIPlayer(player.id) then
+		Player_GiftResource(player.id, RT_Wood, 375)
+	end
+end
