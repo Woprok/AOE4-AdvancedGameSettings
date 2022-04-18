@@ -101,11 +101,20 @@ function Wonder_UpdateConditions(_match)
 			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_instant then
 			new_timer_in_minutes = 0
 		elseif
+			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_3 then
+			new_timer_in_minutes = 3
+		elseif
 			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_5 then
 			new_timer_in_minutes = 5
 		elseif
+			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_8 then
+			new_timer_in_minutes = 8
+		elseif
 			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_10 then
 			new_timer_in_minutes = 10
+		elseif
+			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_12 then
+			new_timer_in_minutes = 12
 		elseif
 			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_15 then
 			new_timer_in_minutes = 15
