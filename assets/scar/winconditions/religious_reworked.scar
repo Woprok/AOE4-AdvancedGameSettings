@@ -87,11 +87,20 @@ function Religious_UpdateConditions(_match)
 	if _match.options.section_outer_win_conditions and 
 		_match.options.section_outer_win_conditions.option_religious_timer then
 		if
+			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_3 then
+			new_timer_in_minutes = 3
+		elseif
 			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_5 then
 			new_timer_in_minutes = 5
 		elseif
+			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_8 then
+			new_timer_in_minutes = 8
+		elseif
 			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_10 then
 			new_timer_in_minutes = 10
+		elseif
+			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_12 then
+			new_timer_in_minutes = 12
 		elseif
 			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_15 then
 			new_timer_in_minutes = 15

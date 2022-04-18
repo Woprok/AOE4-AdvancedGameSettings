@@ -264,8 +264,14 @@ function CustomOptions_SetPopCap(_match)
 	if _match.options.section_custom_conditions and 
 		_match.options.section_custom_conditions.option_pop then
 		if
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_25 then
+			pop_size = 25
+		elseif
 			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_50 then
 			pop_size = 50
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_75 then
+			pop_size = 75
 		elseif
 			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_100 then
 			pop_size = 100
@@ -275,6 +281,9 @@ function CustomOptions_SetPopCap(_match)
 		elseif
 			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_200 then
 			pop_size = 200
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_250 then
+			pop_size = 250
 		elseif
 			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_300 then
 			pop_size = 300
