@@ -1,10 +1,12 @@
 -----------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
 --
+-- Description:
 -- Sudden Death Win Condition 
---
 -- A team is eliminated when all of its players have lost capital town center landmark.
 -- The last team remaining is the victor.
---
 -----------------------------------------------------------------------
 
 -- Provide data to replay system through this script

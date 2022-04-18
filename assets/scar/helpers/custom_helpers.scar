@@ -1,3 +1,12 @@
+-----------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Collection for my random code.
+-----------------------------------------------------------------------
+
 function InternalCustomOptions_GetKeep(player_civ)
 	local ebp_building
 	if player_civ == "english" then

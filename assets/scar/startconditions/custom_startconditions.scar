@@ -1,13 +1,14 @@
+-----------------------------------------------------------------------
 -- Authors:
 -- Relic
 -- Woprock
 -- jackelpobelope (InternalCustomStartConditions_ScatteredVillagersStart)
 --
+-- Description:
 -- Contains function that initialize player starting position.
 -- Main mode must call CustomStartConditions_HandleStartPosition during PostInit and CustomStartConditions_OnStartContinuation during Start, might be registred as module later.
 -- Requires custom_helpers.scar
---
---
+-----------------------------------------------------------------------
 
 -- PostInit() fake handler for now
 function CustomStartConditions_HandleStartPosition(_match)

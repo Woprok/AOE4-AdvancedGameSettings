@@ -1,3 +1,12 @@
+-----------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Collection for my random code.
+-----------------------------------------------------------------------
+
 _custom = {
 	setspeed = 1,
 	keep = "defense_keep",

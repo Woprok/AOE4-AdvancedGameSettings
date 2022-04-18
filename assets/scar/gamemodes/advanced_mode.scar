@@ -1,9 +1,10 @@
 -----------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
 --
--- Standard Game Mode 
---
--- (c) Relic Entertainment 2017
---
+-- Description:
+-- Initialization handle for all options selected by user.
 -----------------------------------------------------------------------
 import("cardinal.scar")
 
@@ -18,6 +19,7 @@ import("helpers/custom_helpers.scar")
 import("startconditions/custom_startconditions.scar")
 import("gameplay/custom_data.scar")
 import("gameplay/custom_options.scar")
+import("gameplay/custom_siege_bombardment.scar")
 
 -- replay system
 import("replay/replaystatviewer.scar")
@@ -281,10 +283,12 @@ function AdvancedMode_Start()
 	-- this is seriously just a joke
 	Ding_Start()
 	InternalCustomOptions_EarlyMarket(_match)
+	CustomSiege_TreeBombardment(_match)
 end
 
 function AdvancedMode_OnGameOver()
 	CustomOptions_RemoveGameSpeedRule()
 	
 	Ding_DeQueue()
+	CustomSiege_TreeBombardment_DeQueue()
 end
