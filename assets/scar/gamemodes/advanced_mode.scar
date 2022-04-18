@@ -264,7 +264,6 @@ end
 
 --this should contain initialization for units, buildings, upgrades but it might cause issue for conditions
 function AdvancedMode_Preset() 
-
 end
 
 function AdvancedMode_Start()
@@ -292,3 +291,27 @@ function AdvancedMode_OnGameOver()
 	Ding_DeQueue()
 	CustomSiege_TreeBombardment_DeQueue()
 end
+
+
+
+--function CustomTable_OnEntityKilled(context)	
+--	Rule_AddGlobalEvent(CustomTable_OnEntityKilled, GE_EntityKilled)
+--	Rule_AddGlobalEvent(CustomTable_OnSquadKilled, GE_SquadKilled)
+--	Util_StartQuickIntel(ACTOR.NARR, "Entity KILLED")
+--	Entity_SetStateModelFloat(context.victim, "death_seconds", 1)
+--end
+--
+--function CustomTable_OnSquadKilled(context)	
+--	ebpextensions\health_ext<float name="death_seconds" value="19" />
+--	Util_StartQuickIntel(ACTOR.NARR, "Squad KILLED")
+--	Squad_SetStateModelFloat(context.victim, "death_seconds", 1)
+--	--local eg = Player_GetEntitiesFromType(Game_GetLocalPlayer(), "infantry")
+--	--local mf = function(gid, idx, eid)
+--	--end
+--	--EGroup_ForEach(eg, mf)
+--end
+
+
+
+
+
