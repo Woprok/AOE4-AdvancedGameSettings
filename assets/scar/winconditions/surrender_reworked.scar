@@ -1,14 +1,13 @@
 -----------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
 --
+-- Description:
 --  Surrender 'win' condition system.
---
 -- A player is eliminated when they concede (through the Surrender button in the Pause menu). 
 -- The last remaining player/team wins. 
---
--- (c) Relic Entertainment 2017
---
 -----------------------------------------------------------------------
-
 
 -----------------------------------------------------------------------
 -- Data

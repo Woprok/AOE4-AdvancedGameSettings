@@ -1,13 +1,13 @@
 -----------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
 --
+-- Description:
 -- Annihilation Win Condition 
---
 -- A player is eliminated when they have no units remaining and either no buildings or 
 -- insufficient resources with which to produce any more units. 
 -- The last remaining player/team wins. 
---
--- (c) Relic Entertainment 2019
---
 -----------------------------------------------------------------------
 
 

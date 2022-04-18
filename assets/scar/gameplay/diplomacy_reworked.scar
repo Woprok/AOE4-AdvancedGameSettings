@@ -1,9 +1,11 @@
 -----------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
 --
--- Player diplomacy & tribute system.
---
--- (c) Relic Entertainment 2017
---
+-- Description:
+-- Player diplomacy & tribute system, not working properly due to
+-- extremely specific issues related to codebase.
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------

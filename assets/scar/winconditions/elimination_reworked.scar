@@ -1,13 +1,14 @@
 -----------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
 --
+-- Description:
 -- Elimination win condition 
---
 -- A player is eliminated when they quit (through the button in the Pause menu) or otherwise drop/disconnect. 
 -- The last remaining player/team wins. 
---
--- (c) Relic Entertainment 2019
---
 -----------------------------------------------------------------------
+
 
 -----------------------------------------------------------------------
 -- Data

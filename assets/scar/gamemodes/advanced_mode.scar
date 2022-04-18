@@ -1,9 +1,10 @@
 -----------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
 --
--- Standard Game Mode 
---
--- (c) Relic Entertainment 2017
---
+-- Description:
+-- Initialization handle for all options selected by user.
 -----------------------------------------------------------------------
 import("cardinal.scar")
 

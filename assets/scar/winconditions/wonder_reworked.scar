@@ -1,11 +1,11 @@
 -----------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
 --
+-- Description:
 -- The classic 'wonder' win condition in which the player wins by building a wonder
 -- and defending it for 10 minutes. 
---
---
--- (c) Relic Entertainment 2017
---
 -----------------------------------------------------------------------
 
 -- Provide data to replay system through this script

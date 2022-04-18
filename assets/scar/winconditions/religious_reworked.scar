@@ -1,12 +1,12 @@
 -----------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
 --
+-- Description:
 -- Religious Win Condition 
---
 -- Players (or Teams) use Monks to capture Holy Sites around the map.
 -- When the player or team captures all Holy Sites, they must defend them for a period of time to win the match.
---
--- (c) Relic Entertainment 2020
---
 -----------------------------------------------------------------------
 
 -- Provide data to replay system through this script

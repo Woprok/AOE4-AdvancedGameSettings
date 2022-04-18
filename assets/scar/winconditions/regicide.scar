@@ -1,11 +1,11 @@
 -----------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
 --
--- Regicide Win Condition 
---	
+-- Description:
+-- Regicide Win Condition 	
 -- Edit of Regicide mode provided by relic
---
--- (c) Relic Entertainment 2022
---
 -----------------------------------------------------------------------
 
 -- Provide data to replay system through this script

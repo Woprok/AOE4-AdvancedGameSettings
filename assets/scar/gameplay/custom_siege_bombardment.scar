@@ -1,7 +1,12 @@
+-----------------------------------------------------------------------
 -- Authors:
+-- Relic
 -- Woprock
 -- Kashnars (inspiration for current Siege_TreeBombardment)
+--
+-- Description:
 -- These methods handle special siege effect for useful for maps that have too many trees.
+-----------------------------------------------------------------------
 
 _siege = {
 	destrctution_delay = 0.5,
