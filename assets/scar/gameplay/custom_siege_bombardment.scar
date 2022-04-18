@@ -1,0 +1,88 @@
+-- Authors:
+-- Woprock
+-- Kashnars (inspiration for current Siege_TreeBombardment)
+-- These methods handle special siege effect for useful for maps that have too many trees.
+
+_siege = {
+	destrctution_delay = 0.5,
+	destruction_radius = 5,
+	target_type = "tree",
+	egroup_holder = "neutral_entities",
+	target_siege_types_onland = {
+		"catapult",
+		"mangonel",
+		"trebuchet_counterweight",
+		"trebuchet_traction",
+		"naval_warship",
+		"nest_of_bees",
+		"naval_galleass",
+	},	
+	target_siege_types_onfire = {
+		"bombard",
+		"bombard_wheeled",
+	},	
+}
+
+function CustomSiege_TreeBombardment(_match)
+	if 	_match.options.section_custom_other.siege_tree_bombardment then
+		Rule_AddGlobalEvent(CustomSiege_OnProjectileLanded, GE_ProjectileLanded)
+		Rule_AddGlobalEvent(CustomSiege_OnProjectileFired, GE_ProjectileFired)
+	end
+end
+
+
+function CustomSiege_TreeBombardment_DeQueue()
+	if 	_match.options.section_custom_other.siege_tree_bombardment then		
+		Rule_RemoveGlobalEvent(CustomSiege_OnProjectileLanded)
+		Rule_RemoveGlobalEvent(CustomSiege_OnProjectileFired)
+	end
+end
+
+function CustomSiege_OnProjectileFired(projectile)
+	-- Checks if its correct type for this execution instance	
+	for i, siege_type in pairs(_siege.target_siege_types_onfire) do
+		if projectile.attacker ~= nil and Entity_IsOfType(projectile.attacker, siege_type) then 
+			
+			-- this requries delay of few frames due to expected travel time.
+			Rule_AddOneShot(CustomSiege_OnProjectileFired_ExpectedLanding, _siege.destrctution_delay, { target = projectile.target })
+			
+			break
+		end
+	end	
+end
+
+function CustomSiege_OnProjectileFired_ExpectedLanding(context, data)
+	CustomSiege_DestroyTreeGroup(data.target)
+end
+
+function CustomSiege_OnProjectileLanded(projectile)
+	-- Checks if its correct type for this execution instance	
+	for i, siege_type in pairs(_siege.target_siege_types_onland) do
+		if projectile.attacker ~= nil and Entity_IsOfType(projectile.attacker, siege_type) then 
+			
+			CustomSiege_DestroyTreeGroup(projectile.target)	
+			
+			break
+		end
+	end	
+end
+		
+-- this function kills any tree it find worthy of destruction
+function CustomSiege_DestroyTreeGroup(projectile_target)
+	if projectile_target == nil then
+		return
+	end
+	
+	-- find all neutral objects at the target location
+	local neutral_entities = EGroup_CreateIfNotFound(_siege.egroup_holder)
+	World_GetEntitiesNearPoint(Game_GetLocalPlayer(), neutral_entities, projectile_target, _siege.destruction_radius, OT_Neutral)
+	
+	local _CustomSiege_DestroyAnyTree = function(gid, idx, eid)		
+		-- trees are of unit type gaia, resource, tree. Are trees actually considered alive ? :thinking: 
+		if eid ~= nil and Entity_IsOfType(eid, _siege.target_type) then
+			Entity_Destroy(eid)
+		end		
+	end
+	
+	EGroup_ForEach(neutral_entities, _CustomSiege_DestroyAnyTree)
+end

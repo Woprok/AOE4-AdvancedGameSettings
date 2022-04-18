@@ -1,6 +1,6 @@
 ﻿ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
 1,,,Mod name.,,,Advanced Game Settings
-2,,,Mod description.,,,"Extends standard Age of Empires 4 game mode with more game options.\r\n\r\nAdditional features included in current version of the mod:\r\nWin Conditions\r\n- Regicide (Defeat Kings.)\r\n- Sudden Death (Destroy Landmark Town Centers. Additional non-landmark town centers are disabled.)\r\nWin Conditions Options\r\n- Sacred Timer\r\n- Wonder Timer\r\n- Team Solidarity (All teammates are eliminated if one is removed from game.)\r\nDiplomacy Options\r\n- Treaty Timer\r\n- Enable Tribute\r\n- Enable Diplomacy\r\nMatch Options\r\n- Start Type (Settled, Slow Nomad, Scattered Villagers)\r\n- Last Age\r\n- Game Rates\r\n- Technology Level\r\n- Game Simulation Speed (Only for single player)\r\n- Population Capacity\r\nUnits Options\r\n- Spawn King\r\n- Spawn Castle\r\n- Starting Villagers\r\nOther\r\n- Ding (Easter Egg)\r\n- Early Market\r\nCurrent option also enables you to recreate game modes such as Deathmatch, Wonder Rush...\r\n\r\nSource code, feedback, bug reports or contribution to mode can be done at: https://github.com/search?q=AOE4-AdvancedGameSettings (This is link to search results, due to chat filter my git nickname is censored, It should be always first result.)\r\n"
+2,,,Mod description.,,,"Extends standard Age of Empires 4 game mode with more game options.\r\n\r\nAdditional features included in current version of the mod:\r\nWin Conditions\r\n- Regicide (Defeat Kings.)\r\n- Sudden Death (Destroy Landmark Town Centers. Additional non-landmark town centers are disabled.)\r\nWin Conditions Options\r\n- Sacred Timer\r\n- Wonder Timer\r\n- Team Solidarity (All teammates are eliminated if one is removed from game.)\r\nDiplomacy Options\r\n- Treaty Timer\r\n- Enable Tribute\r\n- Enable Diplomacy\r\nMatch Options\r\n- Start Type (Settled, Slow Nomad, Scattered Villagers)\r\n- Last Age\r\n- Game Rates\r\n- Technology Level\r\n- Game Simulation Speed (Only for single player)\r\n- Population Capacity\r\nUnits Options\r\n- Spawn King\r\n- Spawn Castle\r\n- Starting Villagers\r\nOther\r\n- Ding (Easter Egg)\r\n- Early Market\r\n- Destroyable Trees\r\nCurrent option also enables you to recreate game modes such as Deathmatch, Wonder Rush...\r\n\r\nSource code, feedback, bug reports or contribution to mode can be done at: https://github.com/search?q=AOE4-AdvancedGameSettings (This is link to search results, due to chat filter my git nickname is censored, It should be always first result.)\r\n"
 3,,,,,,Advanced Game Settings
 4,,,,,,Win Conditions
 5,,,,,,Advanced Match Options
@@ -290,3 +290,6 @@
 291,,,,,,Early Market
 292,,,,,,Early Market
 293,,,,,,Enables Market in Age I
+294,,,,,,Destroyable Trees
+295,,,,,,Siege and Ships with Attack Ground command can destroy trees.
+296,,,,,,Destroyable Trees
