@@ -1,0 +1,160 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Spawns villagers with a scout on default position.
+---------------------------------------------------------------------------------------------------
+
+AGS_NOMAD_MODULE = "AGS_Nomad"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_NOMAD_MODULE)	
+
+function AGS_Nomad_PostSettingSetup()
+	if AGS_GLOBAL_SETTINGS.StartType ~= AGS_ST_NOMAD then
+		Core_UnregisterModule(AGS_NOMAD_MODULE)
+	end
+end
+
+function AGS_Nomad_PresetSpawn()
+	AGS_Nomad_OnSpawn()
+end
+
+function AGS_Nomad_PresetPostSpawn()
+	for i, player in ipairs(PLAYERS) do	
+		-- Insist that player do not have capital.
+		Player_SetStateModelFloat(player.id, "has_capital", 0)
+		-- Player should be able to build structures
+		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)		
+		Core_CallDelegateFunctions("AdjustAIPlayer", player.id, AGS_AI_ADJUSTREASON_NOMAD)
+	end
+end
+
+function AGS_Nomad_Start()
+	AGS_Nomad_StartTrickle()
+end
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+function AGS_Nomad_OnSpawn()
+	for i, player in ipairs(PLAYERS) do	
+		local player_civ = Player_GetRaceName(player.id)
+		AGS_Settled_SpawnUnits(player.id, player_civ)
+	end
+end
+-- Setup timers.
+function AGS_Nomad_StartTrickle(_match)
+	-- time tracking data
+	_custom.nomad.timeStarted = World_GetGameTime()
+	_custom.nomad.timeThreshold = 0
+	_custom.nomad.timeInterval = _custom.nomad.duration / _match.nomad.wood	
+	
+	AGS_Nomad_ResetResources(_match)
+end
+
+-- Clear resources and continue with slow trickle.
+function AGS_Nomad_ResetResources(_match)
+	
+	for i, player in pairs(PLAYERS) do	
+		
+		-- Track resources remaining to provide
+		player._nomadStart = { resources = {} }
+		player._nomadStart.resources["Food"] = Player_GetResource(player.id, RT_Food)
+		player._nomadStart.resources["Wood"] = Player_GetResource(player.id, RT_Wood)
+		player._nomadStart.resources["Stone"] = Player_GetResource(player.id, RT_Stone)
+		player._nomadStart.resources["Gold"] = Player_GetResource(player.id, RT_Gold)
+		
+		-- Adjust the difference needed for TC
+		local player_civ = Player_GetRaceName(player.id)
+		if player_civ == "mongol" then
+			player._nomadStart.resources["Wood"] = player._nomadStart.resources["Wood"] + _match.nomad.wood
+		else
+			player._nomadStart.resources["Wood"] = player._nomadStart.resources["Wood"] + _match.nomad.wood
+			player._nomadStart.resources["Stone"] = player._nomadStart.resources["Stone"] + _match.nomad.stone
+		end
+		
+		-- Reset resources
+		Player_ResetResource(player.id, RT_Food)
+		Player_ResetResource(player.id, RT_Wood)
+		Player_ResetResource(player.id, RT_Stone)
+		Player_ResetResource(player.id, RT_Gold)									
+	end
+	
+	Rule_Add(AGS_Nomad_IncrementResources)
+end
+
+-- Rule that incrementally returns initial resources to players over time.
+function AGS_Nomad_IncrementResources()	
+	
+	if World_GetGameTime() - _custom.nomad.timeStarted >= _custom.nomad.timeThreshold then
+		local allResourcesReceived = true
+		
+		for i, player in pairs(PLAYERS) do
+		
+			local _IncrementResource = function(resIndex, resType) 				
+				if player._nomadStart.resources[resIndex] > 0 then
+					if player._nomadStart.resources[resIndex] == 1 then
+						Player_AddResource(player.id, resType, 1)
+						player._nomadStart.resources[resIndex] = 0
+					else
+						Player_AddResource(player.id, resType, 1)
+						player._nomadStart.resources[resIndex] = player._nomadStart.resources[resIndex] - 1						
+					end
+				end
+			end
+			
+			_IncrementResource("Food", RT_Food)
+			_IncrementResource("Wood", RT_Wood)
+			_IncrementResource("Stone", RT_Stone)
+			_IncrementResource("Gold", RT_Gold)	
+			
+			-- Stop when player has received all resources
+			for k,v in pairs(player._nomadStart.resources) do
+				if player._nomadStart.resources[k] > 0 then
+					allResourcesReceived = false
+				end
+			end
+		end		
+		
+		if allResourcesReceived then		
+			AGS_Nomad_ResourcesFinished()
+		else
+			_custom.nomad.timeThreshold = _custom.nomad.timeThreshold + _custom.nomad.timeInterval
+		end		
+	end	
+end
+
+-- Ends nomad start's incremental resource accumulation. Gives players remaining resources, if any.
+function AGS_Nomad_ResourcesFinished()
+
+	if Rule_Exists(AGS_Nomad_IncrementResources) then	
+	
+		Rule_Remove(AGS_Nomad_IncrementResources)								
+		
+		for i, player in pairs(PLAYERS) do		
+			Player_AddResource(player.id, RT_Food, player._nomadStart.resources["Food"])
+			Player_AddResource(player.id, RT_Wood, player._nomadStart.resources["Wood"])
+			Player_AddResource(player.id, RT_Stone, player._nomadStart.resources["Stone"])
+			Player_AddResource(player.id, RT_Gold, player._nomadStart.resources["Gold"])
+			player._nomadStart = nil	
+		end					
+	end
+end
+
+
+function AGS_Nomad_SpawnUnits()		
+	local sbp_vil = AGS_GetCivilizationUnit(player_civ, AGS_BP_VILLAGER)
+	local snameVIL = InternalCustomOptions_SquadGroupName(player_id, _custom.villager)
+	local sg_vil = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player_id, snameVIL, sbp_vil, -10, 0, -10, _custom.starting_villagers)
+	
+	Core_CallDelegateFunctions("UnitsSpawned", player.id, nil, sg_vil)
+	
+	local sbp_sco = AGS_GetCivilizationUnit(player_civ, AGS_BP_SCOUT)
+	local snameSCO = InternalCustomOptions_SquadGroupName(player_id, _custom.scout)
+	local sg_sco = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player_id, snameSCO, sbp_sco, -12, 0, -12, 1)
+end

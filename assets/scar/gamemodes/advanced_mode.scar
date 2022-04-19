@@ -104,14 +104,12 @@ _match = {
 		{			
 			option = "option_start_age_1",
 			initialUpgrades = {
-				BP_GetUpgradeBlueprint("dark_age"),
 			},
 		},
 		{			
 			option = "option_start_age_2", 
 			initialUpgrades = {						
 				BP_GetUpgradeBlueprint("dark_age"),
-				BP_GetUpgradeBlueprint("feudal_age"),
 			},
 		},
 		{			
@@ -127,8 +125,6 @@ _match = {
 			initialUpgrades = {
 				BP_GetUpgradeBlueprint("dark_age"),
 				BP_GetUpgradeBlueprint("feudal_age"),
-				BP_GetUpgradeBlueprint("castle_age"),
-				BP_GetUpgradeBlueprint("imperial_age"),
 			},
 		},
 	},
@@ -240,8 +236,6 @@ function AdvancedMode_PostInit()
 		Diplomacy_AllPlayer_DestroyTeamsFinalize()
 	end
 	
-	-- Spawn TC or Nomad
-	CustomStartConditions_HandleStartPosition(_match)
 	-- Complete standard procedures after determining start such as vision and age ? (actually did I ever test if age thing does something ?)
 	CustomOptions_ApplyStartingAgeUpgrades(_match)		
 	-- Spawn king even if regicide is disabled for players that choose this option

@@ -8,7 +8,7 @@
 -- Referenceable by any other script.
 ---------------------------------------------------------------------------------------------------
 
-AGS_BP_KEEP = "keep"
+AGS_BP_KEEP = "defense_keep"
 AGS_BP_TC_CAPITAL = "town_center_capital"
 AGS_BP_TC_CAPITAL_UNIT = "town_center_capital_moving"
 AGS_BP_TC = "town_center"
@@ -25,7 +25,7 @@ AGS_ENTITY_TABLE = {
 		sheep = "gaia_herdable_sheep",
 	},
 	english = {
-		keep = "building_defense_keep_eng",
+		defense_keep = "building_defense_keep_eng",
 		town_center_capital = "building_town_center_capital_eng",
 		town_center = "building_town_center_eng",
 		town_center_landmark = "building_landmark_age2_westminster_palace_eng",
@@ -35,7 +35,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_eng",
 	},
 	chinese = {
-		keep = "building_defense_keep_chi",
+		defense_keep = "building_defense_keep_chi",
 		town_center_capital = "building_town_center_capital_chi",
 		town_center = "building_town_center_chi",
 		market = "building_econ_market_control_chi",
@@ -44,7 +44,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_chi",		
 	},
 	french = {
-		keep = "building_defense_keep_fre",
+		defense_keep = "building_defense_keep_fre",
 		town_center_capital = "building_town_center_capital_fre",
 		town_center = "building_town_center_fre",
 		market = "building_econ_market_control_fre",
@@ -53,7 +53,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_fre",
 	},
 	hre = {
-		keep = "building_defense_keep_hre",
+		defense_keep = "building_defense_keep_hre",
 		town_center_capital = "building_town_center_capital_hre",
 		town_center = "building_town_center_hre",
 		town_center_landmark = "building_landmark_age3_hohenzollern_castle_hre",
@@ -63,7 +63,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_hre",
 	},
 	rus = {	
-		keep = "building_defense_keep_control_rus",
+		defense_keep = "building_defense_keep_control_rus",
 		town_center_capital = "building_town_center_capital_rus",
 		town_center = "building_town_center_rus",
 		market = "building_econ_market_control_rus",
@@ -72,7 +72,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_rus",
 	},
 	abbasid = {
-		keep = "building_defense_keep_control_abb",
+		defense_keep = "building_defense_keep_control_abb",
 		town_center_capital = "building_town_center_capital_abb",
 		town_center = "building_town_center_abb",
 		market = "building_econ_market_control_abb",
@@ -81,7 +81,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_abb",
 	},
 	mongol = {
-		keep = "building_defense_keep_control_nov",
+		defense_keep = "building_defense_keep_control_nov",
 		town_center_capital = "building_town_center_capital_mon",
 		town_center_capital_moving = "building_town_center_capital_moving_mon",
 		town_center = "building_town_center_mon",
@@ -91,7 +91,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_mon",
 	},
 	sultanate = {
-		keep = "building_defense_keep_control_sul",
+		defense_keep = "building_defense_keep_control_sul",
 		town_center_capital = "building_town_center_capital_sul",
 		town_center = "building_town_center_sul",
 		market = "building_econ_market_control_sul",
@@ -109,6 +109,15 @@ AGS_UP_IMPERIAL = "AGE_IMPERIAL"
 AGS_CIV_SULTANATE = "sultanate"
 AGS_CIV_ENGLISH = "english"
 AGS_CIV_HRE = "hre"
+AGS_CIV_MONGOL = "mongol"
+AGS_CIV_ABBASID = "abbasid"
+
+AGS_UPGRADE_AGES = {
+	AGE_DARK = "dark_age",
+	AGE_FEUDAL = "feudal_age",
+	AGE_CASTLE = "castle_age",
+	AGE_IMPERIAL = "imperial_age",
+}
 
 AGS_UPGRADE_CORRECTION_TABLE = {
 	english = {
@@ -584,4 +593,52 @@ end
 
 function AGS_GetNeutralUnit(bp_type)
 	return BP_GetSquadBlueprint(AGS_ENTITY_TABLE["neutral"][bp_type])
+end
+
+function AGS_EGroupName(player_id, entity_category)
+	return "eg_player_" .. entity_category .. "_" .. tostring(player_id)
+end
+
+function AGS_SGroupName(player_id, unit_category)
+	return "sg_player_" .. unit_category .. "_" .. tostring(player_id)
+end
+-- Spawn entity and return it to caller.
+function AGS_SpawnEntity(player_id, egroup_name, bp_entity, position, position_offset)
+	if position == nil then
+		position = Player_GetStartingPosition(player_id)	
+	end
+	if position_offset == nil then
+		position_offset = World_Pos(0, 0, 0)	
+	end	
+	-- Determine proper position and rotation.
+	local nx = 5 * math.floor(math.floor(position.x) / 5)
+	local ny = 5 * math.floor(math.floor(position.y) / 5)
+	local nz = 5 * math.floor(math.floor(position.z) / 5)
+	local placement = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z)
+	local rotation = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z + 5)
+	-- Spawn
+	local e = Entity_CreateFacing(bp_entity, player_id, placement, rotation, true)
+	Entity_Spawn(e)
+	Entity_ForceConstruct(e)
+	Entity_SnapToGridAndGround(e, false)
+	local eg = EGroup_CreateIfNotFound(egroup_name) 
+	EGroup_Add(eg, e)
+	return e	
+end
+-- Spawn squad and return it to caller in squad group.
+function AGS_SpawnSquad(player_id, sgroup_name, bp_squad, position, position_offset, count)
+	if position == nil then
+		position = Player_GetStartingPosition(player_id)	
+	end
+	if position_offset == nil then
+		position_offset = World_Pos(0, 0, 0)	
+	end	
+	-- Determine proper position and rotation.
+	local nx = 5 * math.floor(math.floor(position.x) / 5)
+	local ny = 5 * math.floor(math.floor(position.y) / 5)
+	local nz = 5 * math.floor(math.floor(position.z) / 5)
+	local placement = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z)
+	local rotation = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z - 1)
+	-- Spawn
+	return Util_CreateSquads(player_id, sgroup_name, bp_squad, placement, placement, count, nil, false, rotation, nil, rotation, nil, nil, nil, nil, false)		
 end

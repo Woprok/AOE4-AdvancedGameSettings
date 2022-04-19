@@ -1,0 +1,36 @@
+
+-- This function spawns a king next each player's Town Center
+function CustomOptions_SpawnKings()
+	for i, player in pairs(PLAYERS) do
+		local player_civ = Player_GetRaceName(player.id)
+		
+		local sbp_king = AGS_GetCivilizationUnit(player_civ, AGS_BP_KING)
+		local sname = InternalCustomOptions_SquadGroupName(player.id, _custom.king)
+		
+		local sg_king = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, sname, sbp_king, -13, 0, -13, 1)
+
+		Core_CallDelegateFunctions("UnitsSpawned", player.id, nil, sg_king)
+	end
+end
+
+
+
+function CustomOptions_RunKing()
+	for i, player in pairs(PLAYERS) do 
+		local sqKing = Player_GetSquadsFromType(player.id, _custom.king)
+		if SGroup_Count(sqKing) == 1 then
+			local ekeep = InternalCustomOptions_EntityGroupName(player.id, _custom.keep)			
+			if (EGroup_Exists(ekeep)) then
+				local egkeep = EGroup_FromName(ekeep)
+				Cmd_Garrison(sqKing, egkeep, false, false, true)			
+			elseif EGroup_Count(Player_GetEntitiesFromType(player.id, _custom.town_center)) ~= 0 then
+				local egtc = Player_GetEntitiesFromType(player.id, _custom.town_center)
+				Cmd_Garrison(sqKing, egtc, false, false, true)			
+			else
+				local move_position = Util_GetOffsetPosition(player.startingPos, 20, 15)
+				Cmd_Ability(sqKing, BP_GetAbilityBlueprint("core_formation_line"))
+				Cmd_FormationMove(sqKing, move_position, false)				
+			end
+		end		
+	end
+end

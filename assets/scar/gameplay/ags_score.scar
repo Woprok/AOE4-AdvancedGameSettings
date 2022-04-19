@@ -1,0 +1,12 @@
+
+
+
+	
+function CustomOptions_EnableScore(_match)
+	if (_match.options.section_starting_conditions and _match.options.section_starting_conditions.option_score) then
+		for _, player in pairs(PLAYERS) do
+			player.scarModel.show_actual_score = true
+			UI_SetPlayerDataContext(player.id, player.scarModel)
+		end
+	end
+end

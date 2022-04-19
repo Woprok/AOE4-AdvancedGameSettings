@@ -1,0 +1,148 @@
+
+
+function CustomOptions_SetPopCap(_match)
+	local pop_size = -1
+	if _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_pop then
+		if
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_25 then
+			pop_size = 25
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_50 then
+			pop_size = 50
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_75 then
+			pop_size = 75
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_100 then
+			pop_size = 100
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_150 then
+			pop_size = 150
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_200 then
+			pop_size = 200
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_250 then
+			pop_size = 250
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_300 then
+			pop_size = 300
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_400 then
+			pop_size = 400
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_500 then
+			pop_size = 500
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_1000 then
+			pop_size = 1000
+		elseif
+			_match.options.section_custom_conditions.option_pop.enum_value == _match.options.section_custom_conditions.option_pop.enum_items.option_pop_10000 then
+			pop_size = 10000
+		end
+	end
+
+	if pop_size > 0 then
+		InternalCustomOptions_SetPopCap(pop_size)
+	end
+end
+
+function InternalCustomOptions_SetPopCap(pop_size)
+	for _, player in pairs(PLAYERS) do
+		
+		local value =  - (200 - pop_size)
+		
+		CustomOptions_Player_SetMaxCapPopulation(player, value)
+		if Player_GetRaceName(player.id) == "mongol" then
+			CustomOptions_Player_SetMaxPopulation(player, value)
+		end	
+	end
+end
+
+function CustomOptions_Player_SetMaxPopulation(player, pop_size)
+	Player_SetExactMaxPopulation(player.id, CT_Personnel, pop_size)
+	--Player_SetExactMaxPopulation(player.id, CT_Vehicle, pop_size)
+end
+
+function CustomOptions_Player_SetMaxCapPopulation(player, pop_size)
+	Player_SetExactMaxCapPopulation(player.id, CT_Personnel, pop_size)
+	--Player_SetExactMaxCapPopulation(player.id, CT_Vehicle, pop_size)
+end
+
+
+--? @shortdesc Sets the current personnel or vehicle cap for a player. The captype is either CT_Personnel or CT_Vehicle (you can't adjust Medic caps just yet).
+--? @extdesc Note that any modifiers that adjust the current cap will be applied on top of this.  Also note, the current cap cannot go higher than the max cap.
+--? @args PlayerID playerid, Integer captype, Integer newcap
+--? @result Void
+function Player_SetExactMaxPopulation(playerid, captype, value)
+	
+	if scartype(playerid) ~= ST_PLAYER then fatal("Player_SetMaxPopulation: Invalid PlayerID") end
+	local index = World_GetPlayerIndex(playerid)
+	
+	if (captype == CT_Vehicle) then
+		
+		if( _player_vehicle_cap == nil ) then	
+			_player_vehicle_cap = {}
+		else
+			Modifier_Remove( _player_vehicle_cap[index] )
+		end
+		local modifier = Modifier_Create(MAT_Player, "vehicle_cap_player_modifier", MUT_Addition, false, value, "")
+		_player_vehicle_cap[index] = Modifier_ApplyToPlayer( modifier, playerid, 0 )
+		
+	elseif (captype == CT_Personnel) then
+		
+		if( _player_personnel_cap == nil ) then	
+			_player_personnel_cap = {}
+		else
+			Modifier_Remove( _player_personnel_cap[index] )
+		end
+		local modifier = Modifier_Create(MAT_Player, "personnel_cap_player_modifier", MUT_Addition, false, value, "")
+		_player_personnel_cap[index] = Modifier_ApplyToPlayer( modifier, playerid, 0 )
+		
+	else
+		
+		fatal("Player_SetMaxPopulation: Invalid cap type")
+		
+	end
+	
+end
+
+
+--? @shortdesc Sets the current personnel or vehicle max-cap for a player. The captype is either CT_Personnel or CT_Vehicle (you can't adjust Medic caps just yet).
+--? @extdesc Note that any modifiers that adjust the current max cap will be applied on top of this.  Also note, this is only adjusting the max cap, not the current cap,
+--? @extdesc you will have to call Player_SetMaxPopulation to adjust the current max population to do this.
+--? @args PlayerID playerid, Integer captype, Integer newcap
+--? @result Void
+function Player_SetExactMaxCapPopulation(playerid, captype, value)
+
+	if scartype(playerid) ~= ST_PLAYER then fatal("Player_SetMaxPopulation: Invalid PlayerID") end
+	local index = World_GetPlayerIndex(playerid)
+	
+	if (captype == CT_Vehicle) then
+		
+		if( _player_vehicle_max_cap == nil ) then	
+			_player_vehicle_max_cap = {}
+		else
+			Modifier_Remove( _player_vehicle_max_cap[index] )
+		end
+		local modifier = Modifier_Create(MAT_Player, "max_vehicle_cap_player_modifier", MUT_Addition, false, value, "")
+		_player_vehicle_max_cap[index] = Modifier_ApplyToPlayer( modifier, playerid, 0 )
+		
+	elseif (captype == CT_Personnel) then
+		
+		if( _player_personnel_max_cap == nil ) then	
+			_player_personnel_max_cap = {}
+		else
+			Modifier_Remove( _player_personnel_max_cap[index])
+		end
+		local modifier = Modifier_Create(MAT_Player, "max_personnel_cap_player_modifier", MUT_Addition, false, value, "")
+		_player_personnel_max_cap[index] = Modifier_ApplyToPlayer( modifier, playerid, 0 )
+		
+	else
+		
+		fatal("Player_SetMaxCapPopulation: Invalid cap type")
+		
+	end
+	
+end

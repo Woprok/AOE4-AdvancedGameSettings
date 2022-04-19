@@ -8,6 +8,10 @@
 -- Referenceable by any other script.
 ---------------------------------------------------------------------------------------------------
 
+AGS_ST_SETTLED = 0
+AGS_ST_NOMAD = 1
+AGS_ST_SCATTERED = 2
+
 AGS_RTC_NONE = 0
 AGS_RTC_NORMAL = 1
 AGS_RTC_LANDMARK = 2
@@ -15,15 +19,23 @@ AGS_RTC_LANDMARK = 2
 AGS_GLOBAL_SETTINGS = {
 	
 	StartAge = 1,
-	LastAge = 4,
+	FinalAge = 5,
 	TechnologyAge = 0,
 	
 	StartingVillagers = 6,
+	StartingScouts = 1, -- undefined
+	StartingSheeps = 1, -- undefined
+	StartingTownCenters = 1, -- undefined
+	StartType = AGS_ST_SETTLED,
 	
 	CanDing = false,
 	EarlyMarket = false,
 	TreeBombardment = false,
 	RestrictTownCenters = AGS_RTC_NONE,
+	
+	CanReveal = false, -- undefined
+	RevealRadius = 70, -- undefined
+	RevealDuration = 0.25, -- undefined
 }
 
 ---------------------------------------------------------------------------------------------------
@@ -56,6 +68,14 @@ function AGS_Settings_SettingSetup(options)
 		
 		if category.tech_level then
 			AGS_SetTechnologyAge(category.tech_level)
+		end
+		
+		if category.option_start_type then
+			AGS_SetStartType(category.option_start_type)
+		end
+		
+		if category.option_max_age then 
+			AGS_SetFinalAge(category.option_max_age)
 		end
 	end
 	
@@ -93,6 +113,17 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_SetStartType(option_start_type)
+	if option_start_type.enum_value == option_start_type.enum_items.standard then
+		AGS_GLOBAL_SETTINGS.StartType = AGS_ST_SETTLED
+	elseif option_start_type.enum_value == option_start_type.enum_items.slow_nomad then
+		AGS_GLOBAL_SETTINGS.StartType = AGS_ST_NOMAD
+	elseif option_start_type.enum_value == option_start_type.enum_items.scattered_villagers then
+		AGS_GLOBAL_SETTINGS.StartType = AGS_ST_SCATTERED
+	end	
+end
+
 function AGS_SetCanDing(can_ding)
 	AGS_GLOBAL_SETTINGS.CanDing = can_ding
 end
@@ -116,6 +147,22 @@ function AGS_SetRestrictTownCenters(restrict_town_centers)
 end
 
 
+function AGS_SetFinalAge(option_max_age)	
+	-- AGE_DARK
+	if option_max_age.enum_value == option_max_age.enum_items.option_max_age_1 then
+		AGS_GLOBAL_SETTINGS.FinalAge = 1 
+	-- AGE_FEUDAL
+	elseif option_max_age.enum_value == option_max_age.enum_items.option_max_age_2 then
+		AGS_GLOBAL_SETTINGS.FinalAge = 2 
+	-- AGE_CASTLE
+	elseif option_max_age.enum_value == option_max_age.enum_items.option_max_age_3 then
+		AGS_GLOBAL_SETTINGS.FinalAge = 3 
+	-- AGE_IMPERIAL
+	elseif option_max_age.enum_value == option_max_age.enum_items.option_max_age_4 then
+		AGS_GLOBAL_SETTINGS.FinalAge = 4 
+	end		
+end
+
 function AGS_SetStartAge(option_start_age)	
 	-- AGE_DARK
 	if option_start_age.enum_value == option_start_age.enum_items.option_start_age_1 then
@@ -128,7 +175,10 @@ function AGS_SetStartAge(option_start_age)
 		AGS_GLOBAL_SETTINGS.StartAge = 3 
 	-- AGE_IMPERIAL
 	elseif option_start_age.enum_value == option_start_age.enum_items.option_start_age_4 then
-		AGS_GLOBAL_SETTINGS.StartAge = 4 
+		AGS_GLOBAL_SETTINGS.StartAge = 4 		
+	-- POST_AGE_IMPERIAL
+	elseif option_start_age.enum_value == option_start_age.enum_items.option_start_age_5 then
+		AGS_GLOBAL_SETTINGS.StartAge = 5 
 	end		
 end
 

@@ -1,0 +1,36 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Reveals area around player spawn.
+---------------------------------------------------------------------------------------------------
+
+AGS_REVEAL_SPAWN_MODULE = "AGS_RevealSpawn"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_REVEAL_SPAWN_MODULE)	
+
+function AGS_RevealSpawn_PostSettingSetup()
+	if not AGS_GLOBAL_SETTINGS.CanReveal then
+		Core_UnregisterModule(AGS_REVEAL_SPAWN_MODULE)
+	end
+end
+
+function AGS_RevealSpawn_PresetPostSpawn()
+	AGS_RevealSpawn()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Reveal fog of war around starting position of a player.
+function AGS_RevealSpawn()		
+	for i, player in pairs(PLAYERS) do	
+		FOW_PlayerRevealArea(player.id, player.startingPos, AGS_GLOBAL_SETTINGS.RevealRadius, AGS_GLOBAL_SETTINGS.RevealDuration)	
+	end
+end

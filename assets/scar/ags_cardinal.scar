@@ -15,14 +15,17 @@
 import("cardinal.scar")
 
 import("ags_global_settings.scar")
-import("ai/ags_ai.scar")
+
 import("helpers/ags_blueprints.scar")
+import("ai/ags_ai.scar")
 import("gameplay/ags_ding.scar")
 import("gameplay/ags_early_market.scar")
 import("gameplay/ags_town_center_limit.scar")
 import("gameplay/ags_tree_bombardment.scar")
+import("startconditions/ags_start_settled.scar")
+import("startconditions/ags_start_nomad.scar")
+import("startconditions/ags_start_scattered.scar")
 import("startconditions/ags_technologies.scar")
-
 ---------------------------------------------------------------------------------------------------
 -- Core_CallDelegateFunctions:
 -- UnitsSpawned(player_id, position: home_position, sgroup: units)
@@ -31,4 +34,24 @@ import("startconditions/ags_technologies.scar")
 -- PresetPostSpawn
 -- SettingSetup(wincondition_options: options)
 -- PostSettingSetup
+---------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------
+-- Expected Order:
+-- 1. OnGameSetup
+-- 2. SettingSetup
+-- 3. PostSettingSetup
+-- PreInit
+-- OnInit
+-- PostInit
+-- 4. Preset
+-- 5. PresetSpawn
+-- 6. PresetPostSpawn
+-- PreStart
+-- 7. Start
+-- 8. OnGameOver
+--
+-- Determined by others:
+-- AdjustAIPlayer(player_id, ADJUSTREASON: reason)
+-- UnitsSpawned(player_id, position: home_position, sgroup: units)
 ---------------------------------------------------------------------------------------------------

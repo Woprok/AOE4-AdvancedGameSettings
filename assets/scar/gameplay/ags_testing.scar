@@ -1,0 +1,28 @@
+
+
+
+
+function CustomOptions_RemoveGaia(_match)
+	if _match.options.custom and
+		_match.options.section_custom_conditions.nogaia then
+		local egroup = EGroup_CreateUnique()
+		World_GetAllNeutralEntities(egroup)
+		EGroup_Filter(egroup, "animal", FILTER_KEEP)
+		EGroup_DestroyAllEntities(egroup)    		
+		EGroup_Destroy(egroup)
+	end
+end
+
+function CustomOptions_RemoveUnits(_match)
+	if _match.options.custom and
+		_match.options.section_custom_conditions.nounits then
+		SGroup_DestroyAllSquads(Player_GetSquads(player.id))
+	end
+end
+
+function CustomOptions_Cheats(_match)
+	_match.is_cheat_enabled = Misc_IsCommandLineOptionSet("cheat")
+	_match.revealMap = Misc_IsCommandLineOptionSet("no_fow")
+end
+
+

@@ -1,0 +1,103 @@
+
+function CustomOptions_AddGameSpeedRule()
+	Rule_AddGlobalEvent(CustomOptions_GameSpeedRule, GE_ConstructionComplete)
+end
+
+function CustomOptions_RemoveGameSpeedRule()
+	Rule_RemoveGlobalEvent(CustomOptions_GameSpeedRule)
+end
+
+-- Global event callback for GE_ConstructionComplete
+function CustomOptions_GameSpeedRule(context)	
+
+	local player = Core_GetPlayersTableEntry(context.player)
+	local entity = context.entity
+		
+	Modifier_ApplyToEntity(Modifier_Create(MAT_Entity, "production_speed_modifier", MUT_Multiplication, false, _custom.setspeed, nil), entity, 0.0)
+	Modifier_ApplyToEntity(Modifier_Create(MAT_Entity, "cost_ticks_modifier", MUT_Multiplication, false, 1/_custom.setspeed, nil), entity, 0.0)
+
+end
+
+function CustomOptions_SetGameSpeed(_match)
+	local speed = -1
+	if _match.options.section_custom_conditions and 
+		_match.options.section_custom_conditions.option_speed then
+		if _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_025x then
+			speed = 0.25
+		elseif _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_050x then
+			speed = 0.50	
+		elseif _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_075x then
+			speed = 0.75	
+		elseif _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_1x then
+			speed = 1.00	
+		elseif _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_2x then
+			speed = 2.00
+		elseif _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_3x then
+			speed = 3.00	
+		elseif _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_5x then
+			speed = 5.00	
+		elseif _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_10x then
+			speed = 10.00
+		elseif _match.options.section_custom_conditions and 
+			_match.options.section_custom_conditions.option_speed and 
+			_match.options.section_custom_conditions.option_speed.enum_value == _match.options.section_custom_conditions.option_speed.enum_items.option_speed_100x then
+			speed = 100.00
+		end
+	end
+	
+	if speed > 0 and speed ~= 1.00 then
+		InternalCustomOptions_SetGameSpeed(_match, speed)
+	end
+end
+
+-- Modifies the default gathering, construction, production, and upgrade speeds for all units and players.
+
+function InternalCustomOptions_SetGameSpeed(_match, speed)
+	
+	-- Removed existing speed modifiers
+	for _, modifier in pairs(_match.speed.modifiers) do
+		Modifier_RemoveInternal(modifier.ModifierID)
+	end
+	_match.speed.modifiers = {}
+	_custom.setspeed = speed
+	_match.speed.build = speed
+	_match.speed.repair = speed
+	_match.speed.gather = speed
+	_match.speed.upgrade = speed
+	_match.speed.production = speed
+	
+	local ApplyModifier = function(player_id, modifier_ebp, modifier_type, modifier_value)
+		if modifier_value ~= 1 then 
+			local modifier = Modifier_Create(MAT_EntityType, modifier_type, MUT_Multiplication, false, modifier_value, modifier_ebp)
+			Modifier_ApplyToPlayer(modifier, player_id, 0.0)
+			table.insert(_match.speed.modifiers, modifier)
+		end
+	end
+	
+	-- Apply new modifiers
+	for _, player in pairs(PLAYERS) do	
+		local villager_ebp = Cardinal_ConvertTypeToEntityBlueprint("villager", player.id)		
+		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_food", _match.speed.gather)
+		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_wood", _match.speed.gather)
+		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_gold", _match.speed.gather)
+		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_stone", _match.speed.gather)
+		ApplyModifier(player.id, villager_ebp, "construction_rate", _match.speed.build)
+--		ApplyModifier(player.id, villager_ebp, "repair_rate_modifier", _match.speed.repair)
+	end
+end
