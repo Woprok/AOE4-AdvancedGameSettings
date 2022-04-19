@@ -1,0 +1,182 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Contains all option definitions and their current values.
+-- Referenceable by any other script.
+---------------------------------------------------------------------------------------------------
+
+AGS_RTC_NONE = 0
+AGS_RTC_NORMAL = 1
+AGS_RTC_LANDMARK = 2
+
+AGS_GLOBAL_SETTINGS = {
+	
+	StartAge = 1,
+	LastAge = 4,
+	TechnologyAge = 0,
+	
+	StartingVillagers = 6,
+	
+	CanDing = false,
+	EarlyMarket = false,
+	TreeBombardment = false,
+	RestrictTownCenters = AGS_RTC_NONE,
+}
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule("AGS_Settings")	
+
+function AGS_Settings_SettingSetup(options)	
+	-- Options can not be null.
+	if not options then
+		return
+	end
+	
+	-- Do each category of settings defined in gamemode.
+	-- Undefined categories will use global settings.
+	local category = nil
+	
+	
+	if options.section_starting_conditions then 	
+		category = options.section_starting_conditions		
+		
+		if category.option_start_age then
+			AGS_SetStartAge(category.option_start_age)
+		end
+	end
+		
+	if options.section_custom_conditions then
+		category = options.section_custom_conditions	
+		
+		if category.tech_level then
+			AGS_SetTechnologyAge(category.tech_level)
+		end
+	end
+	
+	if options.section_custom_conditions_2 then
+		category = options.section_custom_conditions_2	
+		
+		if category.spawn_villager then
+			AGS_SetStartingVillagers(category.spawn_villager)
+		end		
+	end		
+	
+	if options.section_custom_other then
+		category = options.section_custom_other	
+		
+		if category.can_ding ~= nil then
+			AGS_SetCanDing(category.can_ding)
+		end
+		
+		if category.early_market ~= nil then
+			AGS_SetEarlyMarket(category.early_market)
+		end
+		
+		if category.siege_tree_bombardment ~= nil then
+			AGS_SetTreeBombardment(category.siege_tree_bombardment)
+		end
+		
+		if category.restrict_town_centers then
+			AGS_SetRestrictTownCenters(category.restrict_town_centers)
+		end
+	end
+	
+	Core_CallDelegateFunctions("PostSettingSetup", _match.options)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+function AGS_SetCanDing(can_ding)
+	AGS_GLOBAL_SETTINGS.CanDing = can_ding
+end
+
+function AGS_SetEarlyMarket(early_market)
+	AGS_GLOBAL_SETTINGS.EarlyMarket = early_market
+end
+
+function AGS_SetTreeBombardment(tree_bombardment)
+	AGS_GLOBAL_SETTINGS.TreeBombardment = tree_bombardment
+end
+
+function AGS_SetRestrictTownCenters(restrict_town_centers)
+	if restrict_town_centers.enum_value == restrict_town_centers.enum_items.none then
+		AGS_GLOBAL_SETTINGS.RestrictTownCenters = AGS_RTC_NONE 
+	elseif restrict_town_centers.enum_value == restrict_town_centers.enum_items.normal then
+		AGS_GLOBAL_SETTINGS.RestrictTownCenters = AGS_RTC_NORMAL 
+	elseif restrict_town_centers.enum_value == restrict_town_centers.enum_items.landmark then
+		AGS_GLOBAL_SETTINGS.RestrictTownCenters = AGS_RTC_LANDMARK
+	end		
+end
+
+
+function AGS_SetStartAge(option_start_age)	
+	-- AGE_DARK
+	if option_start_age.enum_value == option_start_age.enum_items.option_start_age_1 then
+		AGS_GLOBAL_SETTINGS.StartAge = 1 
+	-- AGE_FEUDAL
+	elseif option_start_age.enum_value == option_start_age.enum_items.option_start_age_2 then
+		AGS_GLOBAL_SETTINGS.StartAge = 2 
+	-- AGE_CASTLE
+	elseif option_start_age.enum_value == option_start_age.enum_items.option_start_age_3 then
+		AGS_GLOBAL_SETTINGS.StartAge = 3 
+	-- AGE_IMPERIAL
+	elseif option_start_age.enum_value == option_start_age.enum_items.option_start_age_4 then
+		AGS_GLOBAL_SETTINGS.StartAge = 4 
+	end		
+end
+
+function AGS_SetTechnologyAge(tech_level)
+	-- NONE
+	if tech_level.enum_value == tech_level.enum_items.none then
+		AGS_GLOBAL_SETTINGS.TechnologyAge = 0 
+	-- ONE LESS THEN STARTING
+	elseif tech_level.enum_value == tech_level.enum_items.previous_age then
+		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GLOBAL_SETTINGS.StartAge - 1 
+	-- SAME AS STARTING
+	elseif tech_level.enum_value == tech_level.enum_items.current_age then
+		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GLOBAL_SETTINGS.StartAge 
+	end		
+end
+
+function AGS_SetStartingVillagers(spawn_villager)
+	if spawn_villager.enum_value == spawn_villager.enum_items.villager_1 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 1
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_2 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 2
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_3 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 3
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_4 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 4
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_5 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 5
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_6 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 6
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_7 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 7
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_8 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 8
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_9 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 9
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_10 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 10
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_20 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 20
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_30 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 30
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_40 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 40
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_50 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 50
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_75 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 75
+	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_100 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 100
+	end
+end

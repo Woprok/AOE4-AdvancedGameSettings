@@ -1,0 +1,80 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Handles civilization receiving upgrades before the game start.
+---------------------------------------------------------------------------------------------------
+
+AGS_TECHNOLOGIES_MODULE = "AGS_Technologies"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_TECHNOLOGIES_MODULE)	
+
+function AGS_Technologies_PostSettingSetup()
+	if AGS_GLOBAL_SETTINGS.TechnologyAge == 0 then
+		Core_UnregisterModule(AGS_TECHNOLOGIES_MODULE)
+	end
+end
+
+function AGS_Technologies_PresetPostSpawn()
+	AGS_Technologies_UpgradeAllPlayers()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Technologies_UpgradeAllPlayers()	
+	for i, player in ipairs(PLAYERS) do	
+		AGS_Technologies_UpgradePlayer(player.id, Player_GetRaceName(player.id))
+	end
+end
+
+function AGS_Technologies_UpgradePlayer(player_id, player_civ)
+	if AGS_GLOBAL_SETTINGS.TechnologyAge >= 1 then 
+		AGS_Technologies_DetermineUpgrades(player_id, player_civ, AGS_UP_DARK)
+	end
+	if AGS_GLOBAL_SETTINGS.TechnologyAge >= 2 then 
+		AGS_Technologies_DetermineUpgrades(player_id, player_civ, AGS_UP_FEUDAL)
+	end
+	if AGS_GLOBAL_SETTINGS.TechnologyAge >= 3 then 
+		AGS_Technologies_DetermineUpgrades(player_id, player_civ, AGS_UP_CASTLE)
+	end
+	if AGS_GLOBAL_SETTINGS.TechnologyAge >= 4 then 
+		AGS_Technologies_DetermineUpgrades(player_id, player_civ, AGS_UP_IMPERIAL)
+	end
+end
+
+function AGS_Technologies_DetermineUpgrades(player_id, player_civ, upgrades_age)
+	-- Common upgrades are applied first.
+	if player_civ ~= AGS_CIV_SULTANATE then 
+		AGS_Technologies_ApplyUpgradeList(player_id, AGS_UPGRADE_TABLE[AGS_UP_ANY][upgrades_age])
+		-- Remove upgrades that would conflict with unique civ upgrades.
+		AGS_Technologies_RemoveUpgradeList(player_id, AGS_UPGRADE_CORRECTION_TABLE[player_civ])
+	end	
+	-- Apply unique upgrades that each civ has.
+	AGS_Technologies_ApplyUpgradeList(player_id, AGS_UPGRADE_TABLE[player_civ][upgrades_age])	
+end
+
+function AGS_Technologies_ApplyUpgradeList(player_id, list)
+	for i, upgrade in ipairs(list) do 
+		local bp_upgrade = BP_GetUpgradeBlueprint(upgrade)
+		if not Player_HasUpgrade(player_id, bp_upgrade) then
+			Player_CompleteUpgrade(player_id, bp_upgrade)				
+		end
+	end	
+end
+
+function AGS_Technologies_RemoveUpgradeList(player_id, list)
+	for i, upgrade in ipairs(list) do 
+		local bp_upgrade = BP_GetUpgradeBlueprint(upgrade)
+		if not Player_HasUpgrade(player_id, bp_upgrade) then
+			Player_RemoveUpgrade(player_id, bp_upgrade)				
+		end
+	end	
+end

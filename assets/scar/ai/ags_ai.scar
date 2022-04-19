@@ -14,6 +14,7 @@ AGS_AI_ADJUSTREASON_NOMAD = 1
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
+
 Core_RegisterModule("AGS_AI")	
 
 function AGS_AI_UnitsSpawned(player_id, home_position, units)
@@ -37,18 +38,21 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+
 function AGS_AI_IsLocalGame()
 	if World_IsMultiplayerGame() then
 		return false
 	end
 	return true
 end
+
 function AGS_AI_IsAI(player_id)
 	if not AI_IsAIPlayer(player_id) then
 		return false
 	end
 	return true
 end
+
 -- Assigns selected units to AI default control.
 function AGS_AI_AssignSpawnedUnits(player_id, home_position, units)
 	if home_position == nil then 
@@ -61,6 +65,7 @@ function AGS_AI_AssignSpawnedUnits(player_id, home_position, units)
 	--AIPlayer_SetAllowResourceGatheringOutsideLeash(player_ai, home_base_id, true)
 	--AIPlayer_SetRequiresStatsUpdate(player_ai)
 end
+
 -- Changes certain value as AI might not be able to manage certain nomad conditions.
 function AGS_AI_ApplyNomadAdjustments(player_id)	
 	Player_SetStateModelBool(player_id, "player_can_construct_structures", false)

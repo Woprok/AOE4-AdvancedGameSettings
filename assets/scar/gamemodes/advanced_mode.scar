@@ -209,7 +209,8 @@ function AdvancedMode_OnGameSetup()
 		allow_spectators = _match.options.section_endgame.option_allow_spectators
 	end
 	
-	CustomOptions_UpdateStartingVillagers(_match)
+	
+	Core_CallDelegateFunctions("SettingSetup", _match.options)
 end
 
 function AdvancedMode_OnInit()
@@ -255,14 +256,13 @@ function AdvancedMode_PostInit()
 		CustomOptions_SpawnKeeps()
 	end
 
-	if _match.options.section_custom_conditions and
-		_match.options.section_custom_conditions.tech_level then
-		CustomDataOptions_ApplyTechnologyUpgrades(_match)
-	end
 end
 
 --this should contain initialization for units, buildings, upgrades but it might cause issue for conditions
 function AdvancedMode_Preset() 
+	
+	Core_CallDelegateFunctions("PresetSpawn")
+	Core_CallDelegateFunctions("PresetPostSpawn")
 end
 
 function AdvancedMode_Start()
@@ -279,9 +279,7 @@ function AdvancedMode_Start()
 	
 	CustomOptions_RunKing()
 	-- this is seriously just a joke
-	Ding_Start()
 	InternalCustomOptions_EarlyMarket(_match)
-	CustomSiege_TreeBombardment(_match)
 	
 	--FunTest()
 end
@@ -289,8 +287,6 @@ end
 function AdvancedMode_OnGameOver()
 	CustomOptions_RemoveGameSpeedRule()
 	
-	Ding_DeQueue()
-	CustomSiege_TreeBombardment_DeQueue()
 end
 
 

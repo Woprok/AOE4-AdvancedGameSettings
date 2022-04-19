@@ -710,123 +710,13 @@ function CustomOptions_SetSimulationSpeed(_match)
 	end
 end
 
-function CustomOptions_UpdateStartingVillagers(_match)
-	local start_count = 6
-	if _match.options.section_custom_conditions_2 and 
-		_match.options.section_custom_conditions_2.spawn_villager then
-		if
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_1 then
-			start_count = 1
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_2 then
-			start_count = 2
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_3 then
-			start_count = 3
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_4 then
-			start_count = 4
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_5 then
-			start_count = 5
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_6 then
-			start_count = 6
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_7 then
-			start_count = 7
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_8 then
-			start_count = 8
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_9 then
-			start_count = 9
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_10 then
-			start_count = 10
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_20 then
-			start_count = 20
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_30 then
-			start_count = 30
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_40 then
-			start_count = 40
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_50 then
-			start_count = 50
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_75 then
-			start_count = 75
-		elseif
-			_match.options.section_custom_conditions_2.spawn_villager.enum_value == _match.options.section_custom_conditions_2.spawn_villager.enum_items.villager_100 then
-			start_count = 100
-		end
-	end
-
-	_custom.starting_villagers = start_count -- customizable vill count
-	_custom.scattered_villagers = start_count
-end
-
-
-
-
-function InternalCustomOptions_LockAdditionalTownCenters(player)
-	local player_civ = Player_GetRaceName(player.id)
-	Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player_civ, AGS_BP_TC), ITEM_LOCKED)
-end
-
-function InternalCustomOptions_EarlyMarket(_match)
-	for i, player in pairs(PLAYERS) do
-		if 	_match.options.section_custom_other.early_market then
-			local player_civ = Player_GetRaceName(player.id)
-			Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player_civ, AGS_BP_MARKET), ITEM_UNLOCKED)
-		end
-	end
-end
 
 
 
 
 
--- might be revisited later as this is only here as joke option.
-function Ding_Start()
-	if 	_match.options.section_custom_other.can_ding then
-		--figure out how to get real selection event, e.g. definitely not GE_SubselectionChanged, GE_EntitySelectionVisualChanged, GE_SelectionChanged
-		Ding_Queue()
-	end	
-end
 
-function Ding_Queue()
-	-- Each frame check
-	Rule_AddInterval(Ding_Execute, 1)
-end
 
-function Ding_Execute()	
-	
-	local egroup = Player_GetEntitiesFromType(Game_GetLocalPlayer(), _match.types.townCenter)
-	local sgroup_vil = Player_GetSquadsFromType(Game_GetLocalPlayer(), "villager")
-	if Misc_IsEGroupSelected(egroup, false) then
-		-- Remove to not create overflow of DINGS
-		Rule_Remove(Ding_Execute)	
-		Util_StartQuickIntel(ACTOR.NARR, "DING DING DING DING DING DING DING DING DING DING")
-		-- Do next in 15 secs, 
-		Rule_AddOneShot(Ding_Queue, 15)
-	elseif Misc_IsSGroupSelected(sgroup_vil, false) then
-		-- Remove to not create overflow of SAYS
-		Rule_Remove(Ding_Execute)	
-		Util_StartQuickIntel(ACTOR.NARR,"Yes, milord? What is it? More work? What?")
-		-- Do next in 15 secs, 
-		Rule_AddOneShot(Ding_Queue, 15)
-	end
-end
 
-function Ding_DeQueue()
-	if Rule_Exists(Ding_Execute) then
-		Rule_Remove(Ding_Execute)
-	end
-	if Rule_Exists(Ding_Queue) then
-		Rule_Remove(Ding_Queue)
-	end
-end
+
+

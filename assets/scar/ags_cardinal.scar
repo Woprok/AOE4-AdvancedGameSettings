@@ -11,13 +11,24 @@
 ---------------------------------------------------------------------------------------------------
 -- Imports:
 ---------------------------------------------------------------------------------------------------
+
 import("cardinal.scar")
 
+import("ags_global_settings.scar")
 import("ai/ags_ai.scar")
 import("helpers/ags_blueprints.scar")
+import("gameplay/ags_ding.scar")
+import("gameplay/ags_early_market.scar")
+import("gameplay/ags_town_center_limit.scar")
+import("gameplay/ags_tree_bombardment.scar")
+import("startconditions/ags_technologies.scar")
 
 ---------------------------------------------------------------------------------------------------
 -- Core_CallDelegateFunctions:
--- "UnitsSpawned(player_id, position: home_position, sgroup: units)"
--- "AdjustAIPlayer(player_id, ADJUSTREASON: reason)"
+-- UnitsSpawned(player_id, position: home_position, sgroup: units)
+-- AdjustAIPlayer(player_id, ADJUSTREASON: reason)
+-- PresetSpawn
+-- PresetPostSpawn
+-- SettingSetup(wincondition_options: options)
+-- PostSettingSetup
 ---------------------------------------------------------------------------------------------------
