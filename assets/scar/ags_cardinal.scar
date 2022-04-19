@@ -19,5 +19,5 @@ import("helpers/ags_blueprints.scar")
 ---------------------------------------------------------------------------------------------------
 -- Core_CallDelegateFunctions:
 -- "UnitsSpawned(player_id, position: home_position, sgroup: units)"
--- "AdjustAIPlayer(player_id, int_constant: reason)"
+-- "AdjustAIPlayer(player_id, ADJUSTREASON: reason)"
 ---------------------------------------------------------------------------------------------------

@@ -92,7 +92,7 @@ function InternalCustomStartConditions_SetupNomadStart(_match)
 		-- Player should be able to build structures
 		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)
 		
-		Core_CallDelegateFunctions("AdjustAIPlayer", player.id, AGSAI_ADJUSTREASON_NOMAD)
+		Core_CallDelegateFunctions("AdjustAIPlayer", player.id, AGS_AI_ADJUSTREASON_NOMAD)
 	end
 end
 
