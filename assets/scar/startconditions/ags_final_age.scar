@@ -8,6 +8,22 @@
 ---------------------------------------------------------------------------------------------------
 
 AGS_FINAL_AGE_MODULE = "AGS_FinalAge"
+AGS_FINAL_AGE_ABB_EW_DARK = BP_GetUpgradeBlueprint("upgrade_add_culture_wing")
+AGS_FINAL_AGE_ABB_MW_DARK = BP_GetUpgradeBlueprint("upgrade_add_economy_wing")
+AGS_FINAL_AGE_ABB_CW_DARK = BP_GetUpgradeBlueprint("upgrade_add_military_wing")
+AGS_FINAL_AGE_ABB_TW_DARK = BP_GetUpgradeBlueprint("upgrade_add_trade_wing")
+AGS_FINAL_AGE_ABB_EW_FEUDAL = BP_GetUpgradeBlueprint("upgrade_add_culture_wing_feudal")
+AGS_FINAL_AGE_ABB_MW_FEUDAL = BP_GetUpgradeBlueprint("upgrade_add_economy_wing_feudal")
+AGS_FINAL_AGE_ABB_CW_FEUDAL = BP_GetUpgradeBlueprint("upgrade_add_military_wing_feudal")
+AGS_FINAL_AGE_ABB_TW_FEUDAL = BP_GetUpgradeBlueprint("upgrade_add_trade_wing_feudal")
+AGS_FINAL_AGE_ABB_EW_CASTLE = BP_GetUpgradeBlueprint("upgrade_add_culture_wing_castle")
+AGS_FINAL_AGE_ABB_MW_CASTLE = BP_GetUpgradeBlueprint("upgrade_add_economy_wing_castle")
+AGS_FINAL_AGE_ABB_CW_CASTLE = BP_GetUpgradeBlueprint("upgrade_add_military_wing_castle")
+AGS_FINAL_AGE_ABB_TW_CASTLE = BP_GetUpgradeBlueprint("upgrade_add_trade_wing_castle")
+AGS_FINAL_AGE_ABB_EW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_culture_wing_imperial")
+AGS_FINAL_AGE_ABB_MW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_economy_wing_imperial")
+AGS_FINAL_AGE_ABB_CW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_military_wing_imperial")
+AGS_FINAL_AGE_ABB_TW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_trade_wing_imperial")
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -30,7 +46,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_FinalAge_LockAgeUps()
-	for _, player in pairs(PLAYERS) do
+	for _, player in ipairs(PLAYERS) do
 		local player_civ = Player_GetRaceName(player.id)
 		if player_civ == AGS_CIV_ABBASID then
 			AGS_FinalAge_LockAbbasidsAgeUp(player.id, AGS_GLOBAL_SETTINGS.FinalAge)
@@ -41,27 +57,27 @@ end
 
 function AGS_FinalAge_LockAbbasidsAgeUp(player_id, final_age)
 	if final_age == 1 then
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_culture_wing"), ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_economy_wing"), ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_military_wing"), ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_trade_wing"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_EW_DARK, ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_MW_DARK, ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_CW_DARK, ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_TW_DARK, ITEM_LOCKED)
 	end
 	if final_age == 2 then
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_culture_wing_feudal"), ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_economy_wing_feudal"), ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_military_wing_feudal"), ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_trade_wing_feudal"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_EW_FEUDAL, ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_MW_FEUDAL, ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_CW_FEUDAL, ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_TW_FEUDAL, ITEM_LOCKED)
 	end
 	if final_age == 3 then
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_culture_wing_castle"), ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_economy_wing_castle"), ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_military_wing_castle"), ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_trade_wing_castle"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_EW_CASTLE, ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_MW_CASTLE, ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_CW_CASTLE, ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_TW_CASTLE, ITEM_LOCKED)
 	end
 	if final_age == 4 then
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_culture_wing_imperial"), ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_economy_wing_imperial"), ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_military_wing_imperial"), ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, BP_GetUpgradeBlueprint("upgrade_add_trade_wing_imperial"), ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_EW_IMPERIAL, ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_MW_IMPERIAL, ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_CW_IMPERIAL, ITEM_LOCKED)
+		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_TW_IMPERIAL, ITEM_LOCKED)
 	end
 end

@@ -22,6 +22,10 @@ AGS_GLOBAL_SETTINGS = {
 	FinalAge = 5,
 	TechnologyAge = 0,
 	
+	GameRates = 1.0,
+	SimulationSpeed = 1.0,
+	PopulationCapacity = 200,
+	
 	StartingVillagers = 6,
 	StartingScouts = 1, -- undefined
 	StartingSheeps = 1, -- undefined
@@ -32,10 +36,13 @@ AGS_GLOBAL_SETTINGS = {
 	EarlyMarket = false,
 	TreeBombardment = false,
 	RestrictTownCenters = AGS_RTC_NONE,
+	CanTest = false, -- undefined
 	
 	CanReveal = false, -- undefined
 	RevealRadius = 70, -- undefined
 	RevealDuration = 0.25, -- undefined
+	
+	VisibleScore = false,
 }
 
 ---------------------------------------------------------------------------------------------------
@@ -61,6 +68,10 @@ function AGS_Settings_SettingSetup(options)
 		if category.option_start_age then
 			AGS_SetStartAge(category.option_start_age)
 		end
+		
+		if category.option_score ~= nil then
+			AGS_SetVisibleScore(category.option_score)
+		end
 	end
 		
 	if options.section_custom_conditions then
@@ -76,6 +87,18 @@ function AGS_Settings_SettingSetup(options)
 		
 		if category.option_max_age then 
 			AGS_SetFinalAge(category.option_max_age)
+		end
+		
+		if category.option_speed then
+			AGS_SetGameRates(category.option_speed)
+		end
+		
+		if category.option_pop then
+			AGS_SetPopulationCapacity(category.option_pop)
+		end
+		
+		if category.option_speed_rate then
+			AGS_SetSimulationSpeed(category.option_speed_rate)
 		end
 	end
 	
@@ -113,6 +136,10 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_SetVisibleScore(option_score)
+	AGS_GLOBAL_SETTINGS.VisibleScore = option_score
+end
 
 function AGS_SetStartType(option_start_type)
 	if option_start_type.enum_value == option_start_type.enum_items.standard then
@@ -193,6 +220,78 @@ function AGS_SetTechnologyAge(tech_level)
 	elseif tech_level.enum_value == tech_level.enum_items.current_age then
 		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GLOBAL_SETTINGS.StartAge 
 	end		
+end
+
+function AGS_SetSimulationSpeed(option_speed_rate)
+	if option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_50 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 0.50
+	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_75 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 0.75
+	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_90 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 0.90
+	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_100 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.00
+	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_110 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.10
+	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_125 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.25
+	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_150 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.50
+	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_200 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 2.00
+	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_300 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 3.00
+	end
+end
+
+function AGS_SetGameRates(option_speed)
+	if option_speed.enum_value == option_speed.enum_items.option_speed_025x then
+		AGS_GLOBAL_SETTINGS.GameRates = 0.25
+	elseif option_speed.enum_value == option_speed.enum_items.option_speed_050x then
+		AGS_GLOBAL_SETTINGS.GameRates = 0.50	
+	elseif option_speed.enum_value == option_speed.enum_items.option_speed_075x then
+		AGS_GLOBAL_SETTINGS.GameRates = 0.75	
+	elseif option_speed.enum_value == option_speed.enum_items.option_speed_1x then
+		AGS_GLOBAL_SETTINGS.GameRates = 1.00	
+	elseif option_speed.enum_value == option_speed.enum_items.option_speed_2x then
+		AGS_GLOBAL_SETTINGS.GameRates = 2.00
+	elseif option_speed.enum_value == option_speed.enum_items.option_speed_3x then
+		AGS_GLOBAL_SETTINGS.GameRates = 3.00	
+	elseif option_speed.enum_value == option_speed.enum_items.option_speed_5x then
+		AGS_GLOBAL_SETTINGS.GameRates = 5.00	
+	elseif option_speed.enum_value == option_speed.enum_items.option_speed_10x then
+		AGS_GLOBAL_SETTINGS.GameRates = 10.00
+	elseif option_speed.enum_value == option_speed.enum_items.option_speed_100x then
+		AGS_GLOBAL_SETTINGS.GameRates = 100.00
+	end
+end
+
+function AGS_SetPopulationCapacity(option_pop)
+	if option_pop.enum_value == option_pop.enum_items.option_pop_25 then
+		AGS_GLOBAL_SETTINGS.PopulationCapacity = 25
+	elseif option_pop.enum_value == option_pop.enum_items.option_pop_50 then
+		AGS_GLOBAL_SETTINGS.PopulationCapacity = 50
+	elseif option_pop.enum_value == option_pop.enum_items.option_pop_75 then
+		AGS_GLOBAL_SETTINGS.PopulationCapacity = 75
+	elseif option_pop.enum_value == option_pop.enum_items.option_pop_100 then
+		AGS_GLOBAL_SETTINGS.PopulationCapacity = 100
+	elseif option_pop.enum_value == option_pop.enum_items.option_pop_150 then
+		AGS_GLOBAL_SETTINGS.PopulationCapacity = 150
+	elseif option_pop.enum_value == option_pop.enum_items.option_pop_200 then
+		AGS_GLOBAL_SETTINGS.PopulationCapacity = 200
+	elseif option_pop.enum_value == option_pop.enum_items.option_pop_250 then
+		AGS_GLOBAL_SETTINGS.PopulationCapacity = 250
+	elseif option_pop.enum_value == option_pop.enum_items.option_pop_300 then
+		AGS_GLOBAL_SETTINGS.PopulationCapacity = 300
+	elseif option_pop.enum_value == option_pop.enum_items.option_pop_400 then
+		AGS_GLOBAL_SETTINGS.PopulationCapacity = 400
+	elseif option_pop.enum_value == option_pop.enum_items.option_pop_500 then
+		AGS_GLOBAL_SETTINGS.PopulationCapacity = 500
+	elseif option_pop.enum_value == option_pop.enum_items.option_pop_1000 then
+		AGS_GLOBAL_SETTINGS.PopulationCapacity = 1000
+	elseif option_pop.enum_value == option_pop.enum_items.option_pop_10000 then
+		AGS_GLOBAL_SETTINGS.PopulationCapacity = 10000
+	end
 end
 
 function AGS_SetStartingVillagers(spawn_villager)

@@ -17,15 +17,30 @@ import("cardinal.scar")
 import("ags_global_settings.scar")
 
 import("helpers/ags_blueprints.scar")
+
 import("ai/ags_ai.scar")
+
 import("gameplay/ags_ding.scar")
 import("gameplay/ags_early_market.scar")
+import("gameplay/ags_game_rates.scar")
+import("gameplay/ags_population_capacity.scar")
+import("gameplay/ags_score.scar")
+import("gameplay/ags_simulation_speed.scar")
+import("gameplay/ags_testing.scar")
 import("gameplay/ags_town_center_limit.scar")
 import("gameplay/ags_tree_bombardment.scar")
-import("startconditions/ags_start_settled.scar")
+import("gameplay/ags_vision.scar")
+
 import("startconditions/ags_start_nomad.scar")
 import("startconditions/ags_start_scattered.scar")
+import("startconditions/ags_start_settled.scar")
+import("startconditions/ags_start_keep.scar")
+import("startconditions/ags_start_king.scar")
+
+import("startconditions/ags_initial_age.scar")
 import("startconditions/ags_technologies.scar")
+import("startconditions/ags_final_age.scar")
+import("startconditions/ags_reveal_spawn.scar")
 ---------------------------------------------------------------------------------------------------
 -- Core_CallDelegateFunctions:
 -- UnitsSpawned(player_id, position: home_position, sgroup: units)

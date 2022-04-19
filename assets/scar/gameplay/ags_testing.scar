@@ -1,28 +1,45 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Enables testing and cheating functionality. WIP.
+---------------------------------------------------------------------------------------------------
 
+AGS_TESTING_MODULE = "AGS_Testing"
 
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
 
+Core_RegisterModule(AGS_TESTING_MODULE)	
 
-function CustomOptions_RemoveGaia(_match)
-	if _match.options.custom and
-		_match.options.section_custom_conditions.nogaia then
-		local egroup = EGroup_CreateUnique()
-		World_GetAllNeutralEntities(egroup)
-		EGroup_Filter(egroup, "animal", FILTER_KEEP)
-		EGroup_DestroyAllEntities(egroup)    		
-		EGroup_Destroy(egroup)
+function AGS_Testing_PostSettingSetup()
+	if not AGS_GLOBAL_SETTINGS.CanTest then
+		Core_UnregisterModule(AGS_TESTING_MODULE)
 	end
 end
 
-function CustomOptions_RemoveUnits(_match)
-	if _match.options.custom and
-		_match.options.section_custom_conditions.nounits then
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Testing_RemoveGaia()
+	local egroup = EGroup_CreateUnique()
+	World_GetAllNeutralEntities(egroup)
+	EGroup_Filter(egroup, "animal", FILTER_KEEP)
+	EGroup_DestroyAllEntities(egroup)    		
+	EGroup_Destroy(egroup)
+end
+
+function AGS_Testing_RemoveUnits()
+	for _, player in ipairs(PLAYERS) do
 		SGroup_DestroyAllSquads(Player_GetSquads(player.id))
 	end
 end
 
-function CustomOptions_Cheats(_match)
-	_match.is_cheat_enabled = Misc_IsCommandLineOptionSet("cheat")
-	_match.revealMap = Misc_IsCommandLineOptionSet("no_fow")
+function AGS_Testing_Cheats()
+	AGS_GLOBAL_SETTINGS.is_cheat_enabled = Misc_IsCommandLineOptionSet("cheat")
+	AGS_GLOBAL_SETTINGS.revealMap = Misc_IsCommandLineOptionSet("no_fow")
 end
-
-

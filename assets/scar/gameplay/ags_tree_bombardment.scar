@@ -13,7 +13,7 @@ AGS_TREE_BOMBARDMENT = {
 	on_fired_delay = 0.5,
 	search_radius = 5,
 	egroup_name = "tree_bombardment",
-	sige_on_landed = {
+	siege_on_landed = {
 		"catapult",
 		"mangonel",
 		"trebuchet_counterweight",
@@ -55,7 +55,7 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Executes after small delay.
 function AGS_TreeBombardment_OnProjectileFired(projectile)
-	for i, siege_type in pairs(AGS_TREE_BOMBARDMENT.sige_on_fired) do
+	for i, siege_type in pairs(AGS_TREE_BOMBARDMENT.siege_on_fired) do
 		if projectile.attacker ~= nil and Entity_IsOfType(projectile.attacker, siege_type) then 		
 			Rule_AddOneShot(AGS_TreeBombardment_OnExpectedLanding, AGS_TREE_BOMBARDMENT.on_fired_delay, { target = projectile.target })
 			break
@@ -68,7 +68,7 @@ function AGS_TreeBombardment_OnExpectedLanding(context, data)
 end
 -- Executes immediately.
 function AGS_TreeBombardment_OnProjectileLanded(projectile)
-	for i, siege_type in pairs(AGS_TREE_BOMBARDMENT.sige_on_landed) do
+	for i, siege_type in pairs(AGS_TREE_BOMBARDMENT.siege_on_landed) do
 		if projectile.attacker ~= nil and Entity_IsOfType(projectile.attacker, siege_type) then 			
 			AGS_TreeBombardment_DestroyTreeGroup(projectile.target)				
 			break
