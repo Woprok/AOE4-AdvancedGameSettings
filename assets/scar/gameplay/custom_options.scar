@@ -561,7 +561,7 @@ function CustomOptions_SpawnKings()
 		
 		local sg_king = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, sname, sbp_king, -13, 0, -13, 1)
 
-		CustomOptions_AssignAIToPosition(player.id, nil, sg_king)
+		Core_CallDelegateFunctions("UnitsSpawned", player.id, nil, sg_king)
 	end
 end
 

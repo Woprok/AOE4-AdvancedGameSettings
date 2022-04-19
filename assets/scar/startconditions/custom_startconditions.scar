@@ -92,7 +92,7 @@ function InternalCustomStartConditions_SetupNomadStart(_match)
 		-- Player should be able to build structures
 		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)
 		
-		CustomOptions_ApplyAiNomadBonuses(player)
+		Core_CallDelegateFunctions("AdjustAIPlayer", player.id, AGSAI_ADJUSTREASON_NOMAD)
 	end
 end
 
@@ -203,17 +203,18 @@ function InternalCustomStartConditions_SpawnInitialSquads()
 		local sbp_vil = InternalCustomOptions_GetVillager(player_civ)
 		local snameVIL = InternalCustomOptions_SquadGroupName(player.id, _custom.villager)
 		local sg_vil = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameVIL, sbp_vil, -10, 0, -10, _custom.starting_villagers)
-		CustomOptions_AssignAIToPosition(player.id, nil, sg_vil)
+		
+		Core_CallDelegateFunctions("UnitsSpawned", player.id, nil, sg_vil)
 		
 		local sbp_sco = InternalCustomOptions_GetScout(player_civ)
 		local snameSCO = InternalCustomOptions_SquadGroupName(player.id, _custom.scout)
 		local sg_sco = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSCO, sbp_sco, -12, 0, -12, 1)
-		--CustomOptions_AssignAIToPosition(player.id, nil, sg_sco)
+
 		
 		local sbp_shp = InternalCustomOptions_GetSheep(player_civ)
 		local snameSHP = InternalCustomOptions_SquadGroupName(player.id, _custom.sheep)
 		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 1)
-		--CustomOptions_AssignAIToPosition(player.id, nil, sg_shp)
+
 	end
 end
 
@@ -250,7 +251,7 @@ function InternalCustomStartConditions_ScatteredVillagersStart()
 		-- Finish squad spawn and assign it to AI if required.
 		local sg_vil = InternalCustomOptions_SpawnSquadsAtPosition(player.id, snameVIL, sbp_vil, spawn_pos, _custom.scattered_villagers)	
 		LocalCommand_Squad(player.id, sg_vil, SCMD_Stop, false)	
-		CustomOptions_AssignAIToPosition(player.id, spawn_pos, sg_vil)	
+		Core_CallDelegateFunctions("UnitsSpawned", player.id, spawn_pos, sg_vil)
 		
 		
 		local _f_randomize_unit = function(gid, idx, sid)
