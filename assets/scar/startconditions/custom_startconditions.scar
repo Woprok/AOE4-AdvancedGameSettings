@@ -57,7 +57,7 @@ function InternalCustomStartConditions_StandardStart(_match)
 		if player_civ == "mongol" then
 			local sqTownCenter = Player_GetSquadsFromType(player.id, _custom.town_center)
 			if SGroup_Count(sqTownCenter) == 0 then	
-				local sbp_tc = BP_GetSquadBlueprint("building_town_center_capital_moving_mon")
+				local sbp_tc = AGS_GetCivilizationUnit(player_civ, AGS_BP_TC_CAPITAL_UNIT)
 				local snameTC = InternalCustomOptions_SquadGroupName(player.id, _custom.town_center)
 				local sg_tc = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameTC, sbp_tc, 0, 0, 0, 1)
 			end
@@ -65,7 +65,7 @@ function InternalCustomStartConditions_StandardStart(_match)
 		else	
 			local egTownCenter = Player_GetEntitiesFromType(player.id, _custom.town_center) 
 			if EGroup_Count(egTownCenter) == 0 then	
-				local ebp_tc = InternalCustomOptions_GetTownCenterCapital(player_civ)		
+				local ebp_tc = AGS_GetCivilizationEntity(player_civ, AGS_BP_TC_CAPITAL)		
 				local enameTC = InternalCustomOptions_EntityGroupName(player.id, _custom.town_center)
 				local eg_tc = InternalCustomOptions_SpawnEntityAtSpawnOffset(player.id, enameTC, ebp_tc, 0, 0, 0)
 				-- Send event (conquest win condition relies on this)
@@ -200,18 +200,18 @@ function InternalCustomStartConditions_SpawnInitialSquads()
 	for i, player in pairs(PLAYERS) do
 		local player_civ = Player_GetRaceName(player.id)
 		
-		local sbp_vil = InternalCustomOptions_GetVillager(player_civ)
+		local sbp_vil = AGS_GetCivilizationUnit(player_civ, AGS_BP_VILLAGER)
 		local snameVIL = InternalCustomOptions_SquadGroupName(player.id, _custom.villager)
 		local sg_vil = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameVIL, sbp_vil, -10, 0, -10, _custom.starting_villagers)
 		
 		Core_CallDelegateFunctions("UnitsSpawned", player.id, nil, sg_vil)
 		
-		local sbp_sco = InternalCustomOptions_GetScout(player_civ)
+		local sbp_sco = AGS_GetCivilizationUnit(player_civ, AGS_BP_SCOUT)
 		local snameSCO = InternalCustomOptions_SquadGroupName(player.id, _custom.scout)
 		local sg_sco = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSCO, sbp_sco, -12, 0, -12, 1)
 
 		
-		local sbp_shp = InternalCustomOptions_GetSheep(player_civ)
+		local sbp_shp = AGS_GetNeutralUnit(AGS_BP_SHEEP)
 		local snameSHP = InternalCustomOptions_SquadGroupName(player.id, _custom.sheep)
 		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 1)
 
@@ -234,7 +234,7 @@ function InternalCustomStartConditions_ScatteredVillagersStart()
 		end
 		
 		-- Get Villager BP and spawn them at single location, before spreading them out to create artificial home for AI.
-		local sbp_vil = InternalCustomOptions_GetVillager(player_civ)		
+		local sbp_vil = AGS_GetCivilizationUnit(player_civ, AGS_BP_VILLAGER)		
 		local snameVIL = InternalCustomOptions_SquadGroupName(player.id, _custom.villager)
 		
 		-- Get spawn dimensions and initial squad location

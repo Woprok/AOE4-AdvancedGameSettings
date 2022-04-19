@@ -1,0 +1,114 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Simplified access to civilization specific blueprints.
+---------------------------------------------------------------------------------------------------
+
+AGS_BP_KEEP = "keep"
+AGS_BP_TC_CAPITAL = "town_center_capital"
+AGS_BP_TC_CAPITAL_UNIT = "town_center_capital_moving"
+AGS_BP_TC = "town_center"
+AGS_BP_MARKET = "market"
+AGS_BP_VILLAGER = "villager"
+AGS_BP_SCOUT = "scout"
+AGS_BP_KING = "king"
+AGS_BP_SHEEP = "sheep"
+
+_ags_blueprint_table = {
+	neutral = {
+		sheep = "gaia_herdable_sheep",
+	},
+	english = {
+		keep = "building_defense_keep_eng",
+		town_center_capital = "building_town_center_capital_eng",
+		town_center = "building_town_center_eng",
+		market = "building_econ_market_control_eng",
+		villager = "unit_villager_1_eng",
+		scout = "unit_scout_1_eng",
+		king = "unit_king_1_eng",
+	},
+	chinese = {
+		keep = "building_defense_keep_chi",
+		town_center_capital = "building_town_center_capital_chi",
+		town_center = "building_town_center_chi",
+		market = "building_econ_market_control_chi",
+		villager = "unit_villager_1_chi",
+		scout = "unit_scout_1_chi",
+		king = "unit_king_1_chi",		
+	},
+	french = {
+		keep = "building_defense_keep_fre",
+		town_center_capital = "building_town_center_capital_fre",
+		town_center = "building_town_center_fre",
+		market = "building_econ_market_control_fre",
+		villager = "unit_villager_1_fre",
+		scout = "unit_scout_1_fre",
+		king = "unit_king_1_fre",
+	},
+	hre = {
+		keep = "building_defense_keep_hre",
+		town_center_capital = "building_town_center_capital_hre",
+		town_center = "building_town_center_hre",
+		market = "building_econ_market_control_hre",
+		villager = "unit_villager_1_hre",
+		scout = "unit_scout_1_hre",
+		king = "unit_king_1_hre",
+	},
+	rus = {	
+		keep = "building_defense_keep_control_rus",
+		town_center_capital = "building_town_center_capital_rus",
+		town_center = "building_town_center_rus",
+		market = "building_econ_market_control_rus",
+		villager = "unit_villager_1_rus",
+		scout = "unit_scout_1_rus",
+		king = "unit_king_1_rus",
+	},
+	abbasid = {
+		keep = "building_defense_keep_control_abb",
+		town_center_capital = "building_town_center_capital_abb",
+		town_center = "building_town_center_abb",
+		market = "building_econ_market_control_abb",
+		villager = "unit_villager_1_abb",
+		scout = "unit_scout_1_abb",
+		king = "unit_king_1_abb",
+	},
+	mongol = {
+		keep = "building_defense_keep_control_nov",
+		town_center_capital = "building_town_center_capital_mon",
+		town_center_capital_moving = "building_town_center_capital_moving_mon",
+		town_center = "building_town_center_mon",
+		market = "building_econ_market_mon",
+		villager = "unit_villager_1_mon",
+		scout = "unit_khan_1_mon",
+		king = "unit_king_1_mon",
+	},
+	sultanate = {
+		keep = "building_defense_keep_control_sul",
+		town_center_capital = "building_town_center_capital_sul",
+		town_center = "building_town_center_sul",
+		market = "building_econ_market_control_sul",
+		villager = "unit_villager_1_sul",
+		scout = "unit_scout_1_sul",
+		king = "unit_king_1_sul",
+	},
+}
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_GetCivilizationEntity(player_civ, bp_type)
+	return BP_GetEntityBlueprint(_ags_blueprint_table[player_civ][bp_type])
+end
+function AGS_GetCivilizationUnit(player_civ, bp_type)
+	return BP_GetSquadBlueprint(_ags_blueprint_table[player_civ][bp_type])
+end
+function AGS_GetNeutralEntity(bp_type)
+	return BP_GetEntityBlueprint(_ags_blueprint_table["neutral"][bp_type])
+end
+function AGS_GetNeutralUnit(bp_type)
+	return BP_GetSquadBlueprint(_ags_blueprint_table["neutral"][bp_type])
+end

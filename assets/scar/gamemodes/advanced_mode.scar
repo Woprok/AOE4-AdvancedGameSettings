@@ -15,8 +15,6 @@ import("ags_cardinal.scar")
 
 Core_RegisterModule("AdvancedMode")		-- Call this before importing vision.scar so StandardMode_OnGameSetup() is called before Vision_OnGameSetup()   
 
-import("ai/ags_ai.scar")
-import("helpers/custom_helpers.scar")
 import("startconditions/custom_startconditions.scar")
 import("gameplay/custom_data.scar")
 import("gameplay/custom_options.scar")
