@@ -1,11 +1,40 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Map reveal level at the start of the game.
+---------------------------------------------------------------------------------------------------
 
-function CustomOptions_SetFOW(_match)
-	if (_match.options.section_starting_conditions and _match.options.section_starting_conditions.option_fow) then
-		if (_match.options.section_starting_conditions.option_fow.enum_value == _match.options.section_starting_conditions.option_fow.enum_items.option_fow_explore) then 
-			FOW_ExploreAll()
-		elseif (_match.options.section_starting_conditions.option_fow.enum_value == _match.options.section_starting_conditions.option_fow.enum_items.option_fow_reveal) then
-			FOW_ForceRevealAllUnblockedAreas()
-		end
+AGS_VISION_MODULE = "AGS_Vision"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_VISION_MODULE)	
+
+function AGS_Vision_PostSettingSetup()
+	if AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_HIDDEN then
+		Core_UnregisterModule(AGS_VISION_MODULE)
 	end
 end
-	
+
+function AGS_Vision_PresetPostSpawn()
+	AGS_Vision_RevealMap()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Vision_RevealMap()
+	if AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_HIDDEN then 
+		return
+	elseif AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_EXPLORED then 
+		FOW_ExploreAll()
+	elseif AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_REVEALED then
+		FOW_ForceRevealAllUnblockedAreas()
+	end
+end

@@ -1,30 +1,61 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Spawns king near default position.
+---------------------------------------------------------------------------------------------------
 
+AGS_SPAWN_KING_MODULE = "AGS_SpawnKing"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_SPAWN_KING_MODULE)	
+
+function AGS_SpawnKing_PostSettingSetup()
+	if not AGS_GLOBAL_SETTINGS.SpawnKing then
+		Core_UnregisterModule(AGS_SPAWN_KING_MODULE)
+	end
+end
+
+function AGS_SpawnKing_PresetSpawn()
+	AGS_SpawnKing_OnSpawn()
+end
+
+function AGS_SpawnKing_PresetPostSpawn()
+	AGS_SpawnKing_RunKing()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
 -- This function spawns a king next each player's Town Center
-function CustomOptions_SpawnKings()
+function AGS_SpawnKing_OnSpawn()
 	for i, player in pairs(PLAYERS) do
 		local player_civ = Player_GetRaceName(player.id)
 		
 		local sbp_king = AGS_GetCivilizationUnit(player_civ, AGS_BP_KING)
-		local sname = InternalCustomOptions_SquadGroupName(player.id, _custom.king)
+		local sname = AGS_SGroupName(player.id, AGS_BP_KING)
 		
-		local sg_king = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, sname, sbp_king, -13, 0, -13, 1)
+		local sg_king = AGS_SpawnSquad(player.id, sname, sbp_king, nil, World_Pos(-13, 0, -13), AGS_GLOBAL_SETTINGS.StartingKings)
 
 		Core_CallDelegateFunctions("UnitsSpawned", player.id, nil, sg_king)
 	end
 end
 
-
-
-function CustomOptions_RunKing()
+function AGS_SpawnKing_RunKing()
 	for i, player in pairs(PLAYERS) do 
-		local sqKing = Player_GetSquadsFromType(player.id, _custom.king)
+		local sqKing = Player_GetSquadsFromType(player.id, AGS_BP_KING)
 		if SGroup_Count(sqKing) == 1 then
-			local ekeep = InternalCustomOptions_EntityGroupName(player.id, _custom.keep)			
+			local ekeep = AGS_EGroupName(player.id, AGS_BP_KEEP)			
 			if (EGroup_Exists(ekeep)) then
 				local egkeep = EGroup_FromName(ekeep)
 				Cmd_Garrison(sqKing, egkeep, false, false, true)			
-			elseif EGroup_Count(Player_GetEntitiesFromType(player.id, _custom.town_center)) ~= 0 then
-				local egtc = Player_GetEntitiesFromType(player.id, _custom.town_center)
+			elseif EGroup_Count(Player_GetEntitiesFromType(player.id, AGS_BP_TC)) ~= 0 then
+				local egtc = Player_GetEntitiesFromType(player.id, AGS_BP_TC)
 				Cmd_Garrison(sqKing, egtc, false, false, true)			
 			else
 				local move_position = Util_GetOffsetPosition(player.startingPos, 20, 15)

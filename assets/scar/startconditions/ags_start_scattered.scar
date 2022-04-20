@@ -10,6 +10,8 @@
 
 AGS_SCATTER_RADIUS = 1
 AGS_SCATTER_TUNING = 1.8
+AGS_SCATTER_WOOD = 400
+AGS_SCATTER_STONE = 300
 AGS_SCATTERED_VILLAGERS_MODULE = "AGS_ScatteredVillagers"
 
 ---------------------------------------------------------------------------------------------------
@@ -44,22 +46,20 @@ end
 function AGS_ScatteredVillagers_OnSpawn()	
 	-- Tune villager spawn out from the middle of the map.
 	AGS_SCATTER_RADIUS = math.max(World_GetWidth(), World_GetLength())/AGS_SCATTER_TUNING 
-	
-	for i, player in pairs(PLAYERS) do		
+
+	for i, player in ipairs(PLAYERS) do		
 		player_civ = Player_GetRaceName(player.id)		
 		-- Increase starting resources to cover building a TC
-		if player_civ == "mongol" then
-			Player_GiftResource(player.id, RT_Wood, 400)
-		else
-			Player_GiftResource(player.id, RT_Wood, 400)
-			Player_GiftResource(player.id, RT_Stone, 300)
+		if player_civ ~= AGS_CIV_MONGOL then
+			Player_GiftResource(player.id, RT_Stone, AGS_SCATTER_STONE)
 		end
+		Player_GiftResource(player.id, RT_Wood, AGS_SCATTER_WOOD)
 		
 		-- Get Villager BP and spawn them at single location, before spreading them out to create artificial home for AI.
 		local sbp_vil = AGS_GetCivilizationUnit(player_civ, AGS_BP_VILLAGER)		
-		local snameVIL = InternalCustomOptions_SquadGroupName(player.id, AGS_BP_VILLAGER)
+		local snameVIL = AGS_SGroupName(player.id, AGS_BP_VILLAGER)
 		
-		-- Get spawn dimensions and initial squad location
+		-- Get spawn dimensions and initial squad location.
 		local map_center = World_Pos(0, 0, 0)	
 		
 		local _f_random_position = function()
@@ -71,7 +71,7 @@ function AGS_ScatteredVillagers_OnSpawn()
 		
 		local spawn_pos = _f_random_position()
 		-- Finish squad spawn and assign it to AI if required.
-		local sg_vil = InternalCustomOptions_SpawnSquadsAtPosition(player.id, snameVIL, sbp_vil, spawn_pos, AGS_GLOBAL_SETTINGS.StartingVillagers)	
+		local sg_vil = AGS_SpawnSquad(player.id, snameVIL, sbp_vil, spawn_pos, nil, AGS_GLOBAL_SETTINGS.StartingVillagers)	
 		LocalCommand_Squad(player.id, sg_vil, SCMD_Stop, false)	
 		Core_CallDelegateFunctions("UnitsSpawned", player.id, spawn_pos, sg_vil)
 		

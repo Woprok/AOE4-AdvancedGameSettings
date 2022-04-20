@@ -8,7 +8,7 @@
 -- Referenceable by any other script.
 ---------------------------------------------------------------------------------------------------
 
-AGS_BP_KEEP = "defense_keep"
+AGS_BP_KEEP = "castle" --scar_keep or castle
 AGS_BP_TC_CAPITAL = "town_center_capital"
 AGS_BP_TC_CAPITAL_UNIT = "town_center_capital_moving"
 AGS_BP_TC = "town_center"
@@ -25,7 +25,7 @@ AGS_ENTITY_TABLE = {
 		sheep = "gaia_herdable_sheep",
 	},
 	english = {
-		defense_keep = "building_defense_keep_eng",
+		castle = "building_defense_keep_eng",
 		town_center_capital = "building_town_center_capital_eng",
 		town_center = "building_town_center_eng",
 		town_center_landmark = "building_landmark_age2_westminster_palace_eng",
@@ -35,7 +35,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_eng",
 	},
 	chinese = {
-		defense_keep = "building_defense_keep_chi",
+		castle = "building_defense_keep_chi",
 		town_center_capital = "building_town_center_capital_chi",
 		town_center = "building_town_center_chi",
 		market = "building_econ_market_control_chi",
@@ -44,7 +44,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_chi",		
 	},
 	french = {
-		defense_keep = "building_defense_keep_fre",
+		castle = "building_defense_keep_fre",
 		town_center_capital = "building_town_center_capital_fre",
 		town_center = "building_town_center_fre",
 		market = "building_econ_market_control_fre",
@@ -53,7 +53,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_fre",
 	},
 	hre = {
-		defense_keep = "building_defense_keep_hre",
+		castle = "building_defense_keep_hre",
 		town_center_capital = "building_town_center_capital_hre",
 		town_center = "building_town_center_hre",
 		town_center_landmark = "building_landmark_age3_hohenzollern_castle_hre",
@@ -63,7 +63,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_hre",
 	},
 	rus = {	
-		defense_keep = "building_defense_keep_control_rus",
+		castle = "building_defense_keep_control_rus",
 		town_center_capital = "building_town_center_capital_rus",
 		town_center = "building_town_center_rus",
 		market = "building_econ_market_control_rus",
@@ -72,7 +72,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_rus",
 	},
 	abbasid = {
-		defense_keep = "building_defense_keep_control_abb",
+		castle = "building_defense_keep_control_abb",
 		town_center_capital = "building_town_center_capital_abb",
 		town_center = "building_town_center_abb",
 		market = "building_econ_market_control_abb",
@@ -81,7 +81,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_abb",
 	},
 	mongol = {
-		defense_keep = "building_defense_keep_control_nov",
+		castle = "building_defense_keep_control_nov",
 		town_center_capital = "building_town_center_capital_mon",
 		town_center_capital_moving = "building_town_center_capital_moving_mon",
 		town_center = "building_town_center_mon",
@@ -91,7 +91,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_mon",
 	},
 	sultanate = {
-		defense_keep = "building_defense_keep_control_sul",
+		castle = "building_defense_keep_control_sul",
 		town_center_capital = "building_town_center_capital_sul",
 		town_center = "building_town_center_sul",
 		market = "building_econ_market_control_sul",

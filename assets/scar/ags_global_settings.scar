@@ -8,6 +8,9 @@
 -- Referenceable by any other script.
 ---------------------------------------------------------------------------------------------------
 
+-- All data hidden inside specific entities such as player must be inside of this. See nomad for examples.
+AGS_DATA = "AGS_DATA"
+
 AGS_ST_SETTLED = 0
 AGS_ST_NOMAD = 1
 AGS_ST_SCATTERED = 2
@@ -15,6 +18,10 @@ AGS_ST_SCATTERED = 2
 AGS_RTC_NONE = 0
 AGS_RTC_NORMAL = 1
 AGS_RTC_LANDMARK = 2
+
+AGS_MAP_HIDDEN = 0
+AGS_MAP_EXPLORED = 1
+AGS_MAP_REVEALED = 2
 
 AGS_GLOBAL_SETTINGS = {
 	
@@ -30,7 +37,12 @@ AGS_GLOBAL_SETTINGS = {
 	StartingScouts = 1, -- undefined
 	StartingSheeps = 1, -- undefined
 	StartingTownCenters = 1, -- undefined
+	StartingKeeps = 1, -- undefined
+	StartingKings = 1, -- undefined
 	StartType = AGS_ST_SETTLED,
+	
+	SpawnKeep = false,
+	SpawnKing = false,
 	
 	CanDing = false,
 	EarlyMarket = false,
@@ -41,6 +53,7 @@ AGS_GLOBAL_SETTINGS = {
 	CanReveal = false, -- undefined
 	RevealRadius = 70, -- undefined
 	RevealDuration = 0.25, -- undefined
+	MapVision = AGS_MAP_HIDDEN,
 	
 	VisibleScore = false,
 }
@@ -71,6 +84,10 @@ function AGS_Settings_SettingSetup(options)
 		
 		if category.option_score ~= nil then
 			AGS_SetVisibleScore(category.option_score)
+		end
+				
+		if category.option_fow ~= nil then
+			AGS_SetMapVision(category.option_fow)
 		end
 	end
 		
@@ -108,6 +125,14 @@ function AGS_Settings_SettingSetup(options)
 		if category.spawn_villager then
 			AGS_SetStartingVillagers(category.spawn_villager)
 		end		
+				
+		if category.spawn_king ~= nil then
+			AGS_SetSpawnKing(category.spawn_king)		
+		end	
+		
+		if category.spawn_keep ~= nil then
+			AGS_SetSpawnKeep(category.spawn_keep)
+		end
 	end		
 	
 	if options.section_custom_other then
@@ -130,12 +155,31 @@ function AGS_Settings_SettingSetup(options)
 		end
 	end
 	
+	AGS_DATA_INIT()
 	Core_CallDelegateFunctions("PostSettingSetup", _match.options)
+end
+
+function AGS_DATA_INIT()
+	for i, player in ipairs(PLAYERS) do	
+		player[AGS_DATA] = {
+			-- EMPTY
+		}
+	end
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_SetMapVision(option_fow)	
+	if option_fow.enum_value == option_fow.enum_items.option_fow_concealed then
+		AGS_GLOBAL_SETTINGS.MapVision = AGS_MAP_HIDDEN 
+	elseif option_fow.enum_value == option_fow.enum_items.option_fow_explore then
+		AGS_GLOBAL_SETTINGS.MapVision = AGS_MAP_EXPLORED 
+	elseif option_fow.enum_value == option_fow.enum_items.option_fow_reveal then
+		AGS_GLOBAL_SETTINGS.MapVision = AGS_MAP_REVEALED 	
+	end
+end
 
 function AGS_SetVisibleScore(option_score)
 	AGS_GLOBAL_SETTINGS.VisibleScore = option_score
@@ -149,6 +193,14 @@ function AGS_SetStartType(option_start_type)
 	elseif option_start_type.enum_value == option_start_type.enum_items.scattered_villagers then
 		AGS_GLOBAL_SETTINGS.StartType = AGS_ST_SCATTERED
 	end	
+end
+
+function AGS_SetSpawnKing(spawn_king)
+	AGS_GLOBAL_SETTINGS.SpawnKing = spawn_king
+end
+
+function AGS_SetSpawnKeep(spawn_keep)
+	AGS_GLOBAL_SETTINGS.SpawnKeep = spawn_keep
 end
 
 function AGS_SetCanDing(can_ding)
@@ -187,7 +239,10 @@ function AGS_SetFinalAge(option_max_age)
 	-- AGE_IMPERIAL
 	elseif option_max_age.enum_value == option_max_age.enum_items.option_max_age_4 then
 		AGS_GLOBAL_SETTINGS.FinalAge = 4 
-	end		
+	-- POST_AGE_IMPERIAL
+	elseif option_max_age.enum_value == option_max_age.enum_items.option_max_age_5 then
+		AGS_GLOBAL_SETTINGS.FinalAge = 5 
+	end				
 end
 
 function AGS_SetStartAge(option_start_age)	
@@ -203,10 +258,7 @@ function AGS_SetStartAge(option_start_age)
 	-- AGE_IMPERIAL
 	elseif option_start_age.enum_value == option_start_age.enum_items.option_start_age_4 then
 		AGS_GLOBAL_SETTINGS.StartAge = 4 		
-	-- POST_AGE_IMPERIAL
-	elseif option_start_age.enum_value == option_start_age.enum_items.option_start_age_5 then
-		AGS_GLOBAL_SETTINGS.StartAge = 5 
-	end		
+	end
 end
 
 function AGS_SetTechnologyAge(tech_level)

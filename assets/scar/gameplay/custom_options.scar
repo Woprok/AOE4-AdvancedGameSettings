@@ -8,12 +8,7 @@
 -----------------------------------------------------------------------
 
 _custom = {
-	nomad = {
-		timeStarted = 0,
-		timeThreshold = 0,
-		timeInterval = 0.5,	-- initialized here to prevent script reloading from failing
-		duration = 90,		-- time (in seconds) until players accumulate enough resources to build a town center
-	},
+
 	treaty = {
 		timeStarted = 0,
 		timeThreshold = 0, 		--initial threshold check is at start

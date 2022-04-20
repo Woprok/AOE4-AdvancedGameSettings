@@ -15,11 +15,6 @@ import("ags_cardinal.scar")
 
 Core_RegisterModule("AdvancedMode")		-- Call this before importing vision.scar so StandardMode_OnGameSetup() is called before Vision_OnGameSetup()   
 
-import("startconditions/custom_startconditions.scar")
-import("gameplay/custom_data.scar")
-import("gameplay/custom_options.scar")
-import("gameplay/custom_siege_bombardment.scar")
-
 -- replay system
 import("replay/replaystatviewer.scar")
 
@@ -128,10 +123,7 @@ _match = {
 			},
 		},
 	},
-	nomad = {
-		wood = 400,
-		stone = 300,
-	},
+
 	FOWRevealRadius = 70, -- radius around player start position within which FOW is initially revealed
 
 	
@@ -177,14 +169,6 @@ function AdvancedMode_OnGameSetup()
 		not _match.options.section_outer_win_conditions.option_team_solidarity then
 		Core_UnregisterModule("TeamSolidarity")
 	end
-
-	--Starting age
-	--if _match.options.section_custom_conditions and 
-	--	_match.options.section_custom_conditions.option_start_nomad then 
-	--	Core_UnregisterModule("ClassicStart")
-	--else
-	--	Core_UnregisterModule("NomadStart")				
-	--end
 
 	--Shared vision
 	if not _match.options.section_starting_conditions
@@ -238,17 +222,7 @@ function AdvancedMode_PostInit()
 	
 	-- Complete standard procedures after determining start such as vision and age ? (actually did I ever test if age thing does something ?)
 	CustomOptions_ApplyStartingAgeUpgrades(_match)		
-	-- Spawn king even if regicide is disabled for players that choose this option
-	if not _match.options.section_inner_win_conditions.option_win_condition_regicide then
-		
-		if _match.options.section_custom_conditions_2.spawn_king then
-			CustomOptions_SpawnKings()		
-		end	
-	end	
-	-- Spawn keep if it was allowed
-	if _match.options.section_custom_conditions_2.spawn_keep then
-		CustomOptions_SpawnKeeps()
-	end
+
 
 end
 
