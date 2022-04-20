@@ -130,6 +130,9 @@ end
 
 -- Updates shared line of sight between a player and all others in the match.
 function AGS_SharedVision_UpdateVisionForPlayer(player)		
+	if player == nil then
+		return 
+	end
 	for _, other_player in pairs(PLAYERS) do
 		AGS_SharedVision_UpdateVisionBetweenPlayers(player, other_player)
 	end	
