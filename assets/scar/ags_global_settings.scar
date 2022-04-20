@@ -24,6 +24,18 @@ AGS_MAP_EXPLORED = 1
 AGS_MAP_REVEALED = 2
 
 AGS_GLOBAL_SETTINGS = {
+	Conquest = true,
+	Regicide = false,
+	Religous = true,
+	Wonder = true,
+
+	TreatyTimer = 0,
+	ReligousTimer = 10,
+	WonderTimer = 15,
+	
+	CanTribute = true,
+	CanDiplomacy = false,
+	LastManStanding = false, --undefined in RDO yet
 	
 	StartAge = 1,
 	FinalAge = 5,
@@ -74,6 +86,17 @@ function AGS_Settings_SettingSetup(options)
 	-- Undefined categories will use global settings.
 	local category = nil
 	
+	if options.section_outer_win_conditions then
+		category = options.section_outer_win_conditions
+		
+		if category.option_religious_timer then
+			AGS_SetReligousTimer(category.option_religious_timer)
+		end
+		
+		if category.option_wonder_timer then
+			AGS_SetWonderTimer(category.option_wonder_timer)
+		end
+	end
 	
 	if options.section_starting_conditions then 	
 		category = options.section_starting_conditions		
@@ -135,6 +158,27 @@ function AGS_Settings_SettingSetup(options)
 		end
 	end		
 	
+	if options.section_diplomacy then
+		category = options.section_diplomacy
+		
+		if category.option_diplomacy_treaty then 
+			AGS_SetTreatyTimer(category.option_diplomacy_treaty)
+		end
+		
+		if category.option_diplomacy_tribute ~= nil then 
+			AGS_SetCanTribute(category.option_diplomacy_tribute)
+		end
+		
+		if category.option_diplomacy_dynamic ~= nil then
+			AGS_SetCanDiplomacy(category.option_diplomacy_dynamic)
+		end
+		
+		if category.option_diplomacy_teams ~= nil then
+			AGS_SetLastManStanding(category.option_diplomacy_teams)
+		end
+	
+	end
+	
 	if options.section_custom_other then
 		category = options.section_custom_other	
 		
@@ -156,7 +200,7 @@ function AGS_Settings_SettingSetup(options)
 	end
 	
 	AGS_DATA_INIT()
-	Core_CallDelegateFunctions("PostSettingSetup", _match.options)
+	Core_CallDelegateFunctions("PostSettingSetup")
 end
 
 function AGS_DATA_INIT()
@@ -170,6 +214,82 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_SetWonderTimer(option_wonder_timer)
+	if option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_instant then
+		AGS_GLOBAL_SETTINGS.WonderTimer = 0
+	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_3 then
+		AGS_GLOBAL_SETTINGS.WonderTimer = 3
+	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_5 then
+		AGS_GLOBAL_SETTINGS.WonderTimer = 5
+	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_8 then
+		AGS_GLOBAL_SETTINGS.WonderTimer = 8
+	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_10 then
+		AGS_GLOBAL_SETTINGS.WonderTimer = 10
+	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_12 then
+		AGS_GLOBAL_SETTINGS.WonderTimer = 12
+	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_15 then
+		AGS_GLOBAL_SETTINGS.WonderTimer = 15
+	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_20 then
+		AGS_GLOBAL_SETTINGS.WonderTimer = 20
+	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_25 then
+		AGS_GLOBAL_SETTINGS.WonderTimer = 25
+	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_30 then
+		AGS_GLOBAL_SETTINGS.WonderTimer = 30
+	end
+end
+
+function AGS_SetReligousTimer(option_religious_timer)
+	if option_religious_timer.enum_value == option_religious_timer.enum_items.religious_3 then
+		AGS_GLOBAL_SETTINGS.ReligousTimer = 3
+	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_5 then
+		AGS_GLOBAL_SETTINGS.ReligousTimer = 5
+	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_8 then
+		AGS_GLOBAL_SETTINGS.ReligousTimer = 8
+	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_10 then
+		AGS_GLOBAL_SETTINGS.ReligousTimer = 10
+	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_12 then
+		AGS_GLOBAL_SETTINGS.ReligousTimer = 12
+	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_15 then
+		AGS_GLOBAL_SETTINGS.ReligousTimer = 15
+	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_20 then
+		AGS_GLOBAL_SETTINGS.ReligousTimer = 20
+	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_25 then
+		AGS_GLOBAL_SETTINGS.ReligousTimer = 25
+	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_30 then
+		AGS_GLOBAL_SETTINGS.ReligousTimer = 30
+	end
+end
+
+function AGS_SetCanTribute(option_diplomacy_tribute)
+	AGS_GLOBAL_SETTINGS.CanTribute = option_diplomacy_tribute
+end
+
+function AGS_SetCanDiplomacy(option_diplomacy_dynamic)
+	AGS_GLOBAL_SETTINGS.CanDiplomacy = option_diplomacy_dynamic
+end
+
+function AGS_SetLastManStanding(option_diplomacy_teams)
+	AGS_GLOBAL_SETTINGS.LastManStanding = option_diplomacy_teams
+end
+
+function CustomOptions_TrySetTreaty(option_diplomacy_treaty)
+	if option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_no then
+		AGS_GLOBAL_SETTINGS.TreatyTimer = 0
+	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_5 then
+		AGS_GLOBAL_SETTINGS.TreatyTimer = 5
+	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_10 then
+		AGS_GLOBAL_SETTINGS.TreatyTimer = 10
+	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_20 then
+		AGS_GLOBAL_SETTINGS.TreatyTimer = 20
+	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_30 then
+		AGS_GLOBAL_SETTINGS.TreatyTimer = 30
+	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_45 then
+		AGS_GLOBAL_SETTINGS.TreatyTimer = 45
+	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_60 then
+		AGS_GLOBAL_SETTINGS.TreatyTimer = 60
+	end
+end
 
 function AGS_SetMapVision(option_fow)	
 	if option_fow.enum_value == option_fow.enum_items.option_fow_concealed then
@@ -224,7 +344,6 @@ function AGS_SetRestrictTownCenters(restrict_town_centers)
 		AGS_GLOBAL_SETTINGS.RestrictTownCenters = AGS_RTC_LANDMARK
 	end		
 end
-
 
 function AGS_SetFinalAge(option_max_age)	
 	-- AGE_DARK

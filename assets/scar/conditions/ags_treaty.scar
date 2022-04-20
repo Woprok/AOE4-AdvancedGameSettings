@@ -1,0 +1,125 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Handles treaty functionality and all asociated events invokes.
+---------------------------------------------------------------------------------------------------
+
+AGS_TREATY_MODULE = "AGS_Treaty"
+AGS_TREATY_START = 0
+AGS_TREATY_THRESHOLD = 60.0
+AGS_TREATY_INTERVAL = 60.0
+AGS_TREATY_DURATION = 0
+
+AGS_TREATY_EVENTCUE = {
+	sfx_treaty_timer_first = "sfx_ui_victory_countdown_update_first",
+	sfx_treaty_timer_final = "sfx_ui_victory_countdown_update_final",
+	cueCountdown = {			-- event cue shown at countdown intervals 
+		title = Loc_Empty(),
+		desc = Loc_Empty(),
+		sfx = "sfx_ui_victory_countdown_update_first",
+		icon = "icons\\event_queue_high_priority_large",
+		template = "high_priority", 
+		style = ECV_Queue | ECV_Title,
+	},	
+}
+
+function AGS_Treaty_ShowTimer(minutes_remaining)
+	local cue = AGS_TREATY_EVENTCUE.cueCountdown
+	local uiColour = Player_GetUIColour(Game_GetLocalPlayer())
+	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:155", minutes_remaining)			
+	cue.sfx = AGS_TREATY_EVENTCUE.sfx_treaty_timer_first
+	Rule_AddOneShot(AGS_Treaty_CreateEventCue, 0, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})	
+end
+
+function AGS_Treaty_EndTimer()
+	local cue = AGS_TREATY_EVENTCUE.cueCountdown
+	local uiColour = Player_GetUIColour(Game_GetLocalPlayer())
+	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:154")			
+	cue.sfx = AGS_TREATY_EVENTCUE.sfx_treaty_timer_final
+	Rule_AddOneShot(AGS_Treaty_CreateEventCue, 0, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})	
+end
+-- Event cue function to support delayed events
+function AGS_Treaty_CreateEventCue(context, data)
+	
+	-- If event should play in event queue and center screen notification (note: uses high priority icons by default)
+	if data.highPriority then
+		
+		UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", "icons\\event_queue_high_priority", data.sfx, data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Queue, nothing)
+		UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", "icons\\event_queue_high_priority_large", "", data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Title, nothing)
+	
+	-- If event should only play in event queue (note: uses either high priority icon or if not path is specified, the objective arrow icon)
+	else
+		
+		UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", data.queue_icon, data.sfx, data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Queue, nothing)
+		
+	end	
+end
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_TREATY_MODULE)	
+
+function AGS_Treaty_PostSettingSetup()
+	if AGS_GLOBAL_SETTINGS.TreatyTimer == 0 then
+		Core_UnregisterModule(AGS_TREATY_MODULE)
+	end
+end
+
+function AGS_Treaty_Start()
+	AGS_Treaty_Create(AGS_GLOBAL_SETTINGS.TreatyTimer)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Treaty_Create(treaty_duration)
+	-- Start tracking time.
+	AGS_TREATY_START = World_GetGameTime()
+	AGS_TREATY_DURATION = treaty_duration * 60.0 --minutes to seconds
+	
+	-- Disables fighting between players via diplomacy.	
+	Diplomacy_AllPlayer_SaveAndChangeToFriends()
+	Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.CanTribute, false)
+	
+	-- Notify everyone of treaty rules are in place.	
+	Core_CallDelegateFunctions("TreatyStarted")
+	
+	-- Start countdown.
+	Rule_Add(AGS_Treaty_Countdown)
+	-- Show timer cue.
+	AGS_Treaty_ShowTimer(treaty_duration)
+end
+
+function AGS_Treaty_Countdown()	
+	local world_time = World_GetGameTime()
+	-- if enough time passed end all treaties
+	if world_time - AGS_TREATY_START >= AGS_TREATY_DURATION then
+		AGS_Treaty_End()
+	-- everytime threshold is reached we will inform players that one minute passed, in all cases other than final minute passed as that is moment of start
+	elseif world_time - AGS_TREATY_START >= AGS_TREATY_THRESHOLD then 
+		local minutes_remaining = math.floor((AGS_TREATY_DURATION - (world_time - AGS_TREATY_START)) / 60)
+		AGS_Treaty_ShowTimer(minutes_remaining)
+		-- define next threshold
+		AGS_TREATY_THRESHOLD = AGS_TREATY_THRESHOLD + AGS_TREATY_INTERVAL		
+	end	
+end
+
+function AGS_Treaty_End()
+	if Rule_Exists(AGS_Treaty_Countdown) then	
+		-- End countdown.
+		Rule_Remove(AGS_Treaty_Countdown)
+		-- Show timer ended cue.
+		AGS_Treaty_EndTimer()	
+		
+		Diplomacy_AllPlayer_LoadFromSave()
+		Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.CanTribute, AGS_GLOBAL_SETTINGS.CanDiplomacy)
+		-- Notify everyone of treaty rules ended.	
+		Core_CallDelegateFunctions("TreatyEnded")		
+	end
+end

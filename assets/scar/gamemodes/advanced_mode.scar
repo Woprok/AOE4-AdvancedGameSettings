@@ -15,29 +15,13 @@ import("ags_cardinal.scar")
 
 Core_RegisterModule("AdvancedMode")		-- Call this before importing vision.scar so StandardMode_OnGameSetup() is called before Vision_OnGameSetup()   
 
--- replay system
-import("replay/replaystatviewer.scar")
-
-
 -- gameplay systems
-import("gameplay/score.scar")
---import("gameplay/diplomacy.scar")
---import("gameplay/relationships.scar")
 import("gameplay/diplomacy_reworked.scar")
-import("gameplay/vision.scar")
-import("gameplay/cheat.scar") 
-
--- start conditions 
--- we will use our own, so it behaves as intended always.
---import("startconditions/classic_start.scar")
---import("startconditions/nomad_start.scar")
-
--- win conditions
---import("winconditions/annihilation.scar")			-- When conquest, religious, and wonder are all unselected in match options
---import("winconditions/elimination.scar")			-- For players who quit or drop (through pause menu or disconnection)
---import("winconditions/surrender.scar")			-- For players who surrender (through pause menu)
+-- When conquest, religious, and wonder are all unselected in match options
 import("winconditions/annihilation_reworked.scar")	
+-- For players who quit or drop (through pause menu or disconnection)
 import("winconditions/elimination_reworked.scar")	
+-- For players who surrender (through pause menu)
 import("winconditions/surrender_reworked.scar")		
 import("winconditions/conquest.scar")
 import("winconditions/sudden_death.scar") 
@@ -48,21 +32,6 @@ import("winconditions/religious_reworked.scar")
 import("winconditions/regicide.scar")
 import("winconditions/teamsolidarity.scar")
 
--- training
-import("training/coretraininggoals.scar")
-import("training/frenchtraininggoals.scar")
-import("training/englishtraininggoals.scar")
-import("training/sultanatetraininggoals.scar")
-import("training/rustraininggoals.scar")
-import("training/mongoltraininggoals.scar")
-import("training/chinesetraininggoals.scar")
-import("training/abbasidtraininggoals.scar")
-
--- UI support
-import("gameplay/event_cues.scar")
-import("gameplay/currentageui.scar")
-import("gameplay/chi/current_dynasty_ui.scar")
-
 -----------------------------------------------------------------------
 -- Data
 -----------------------------------------------------------------------
@@ -71,62 +40,6 @@ _match = {
 	options = {},
 	is_cheat_enabled = false,
 	is_diplomacy_enabled = false,
-	is_tribute_enabled = true,
-	speed = {						-- modifier multipliers 
-		setspeed = 1,
-		build = 1,
-		repair = 1,
-		gather = 1,		
-		upgrade = 1,
-		production = 1,
-		modifiers = {},
-	},
-	custom = {
-		max_age = 4,	
-	},
-	ebps = {
-		townCenterCapital = {			-- blueprints by race (filled dynamically)
-		},
-		townCenter = {			-- blueprints by race (filled dynamically)
-		},
-	},
-	types = {
-		townCenterCapital = "town_center_capital",
-		townCenter = "town_center",
-		landmark = "landmark",
-	},
-	ages = {   					
-		{			
-			option = "option_start_age_1",
-			initialUpgrades = {
-			},
-		},
-		{			
-			option = "option_start_age_2", 
-			initialUpgrades = {						
-				BP_GetUpgradeBlueprint("dark_age"),
-			},
-		},
-		{			
-			option = "option_start_age_3",
-			initialUpgrades = {
-				BP_GetUpgradeBlueprint("dark_age"),
-				BP_GetUpgradeBlueprint("feudal_age"),
-				BP_GetUpgradeBlueprint("castle_age"),
-			},
-		},
-		{			
-			option = "option_start_age_4",
-			initialUpgrades = {
-				BP_GetUpgradeBlueprint("dark_age"),
-				BP_GetUpgradeBlueprint("feudal_age"),
-			},
-		},
-	},
-
-	FOWRevealRadius = 70, -- radius around player start position within which FOW is initially revealed
-
-	
 }
 
 -----------------------------------------------------------------------
@@ -146,14 +59,14 @@ function AdvancedMode_OnGameSetup()
 		if not _match.options.section_inner_win_conditions.option_win_condition_religious then
 			Core_UnregisterModule("Religious")
 		else
-			Religious_UpdateConditions(_match)
+			Religious_UpdateConditions()
 		end
 	
 		
 		if not _match.options.section_inner_win_conditions.option_win_condition_wonder then
 			Core_UnregisterModule("Wonder")
 		else
-			Wonder_UpdateConditions(_match)
+			Wonder_UpdateConditions()
 		end
 		
 		if not _match.options.section_inner_win_conditions.option_win_condition_regicide then
@@ -170,141 +83,44 @@ function AdvancedMode_OnGameSetup()
 		Core_UnregisterModule("TeamSolidarity")
 	end
 
-	--Shared vision
-	if not _match.options.section_starting_conditions
-		or not _match.options.section_starting_conditions.option_vision
-		or _match.options.section_starting_conditions.option_vision.enum_value == _match.options.section_starting_conditions.option_vision.enum_items.option_vision_default then
-		Core_UnregisterModule("Vision")	
-	end
+
 	
 	--Diplomacy options
 	if _match.options.section_diplomacy then
-		_match.options.section_diplomacy.option_diplomacy_teams = not _match.options.section_diplomacy.option_diplomacy_dynamic -- inverse the value for this as original checkbox has reverse logic ?
-		_match.is_diplomacy_enabled = _match.options.section_diplomacy.option_diplomacy_dynamic -- diplomacy enabled -> true is dynamic relations, false is locked teams	
-		_match.is_tribute_enabled = _match.options.section_diplomacy.option_diplomacy_tribute
+		_match.options.section_diplomacy.option_diplomacy_teams = 
+		not _match.options.section_diplomacy.option_diplomacy_dynamic 
+		-- inverse the value for this as original checkbox has reverse logic ?
+		_match.is_diplomacy_enabled = _match.options.section_diplomacy.option_diplomacy_dynamic 
+		-- diplomacy enabled -> true is dynamic relations, false is locked teams	
 	end
 	
-	-- Set player behaviour when eliminated
-	if _match.options.section_endgame then 
-		allow_spectators = _match.options.section_endgame.option_allow_spectators
-	end
 	
 	
 	Core_CallDelegateFunctions("SettingSetup", _match.options)
 end
 
 function AdvancedMode_OnInit()
-	UI_AllTerritoryHide()
-
-	Core_CallDelegateFunctions("DiplomacyEnabled", _match.is_diplomacy_enabled)
-	Core_CallDelegateFunctions("TributeEnabled", _match.is_tribute_enabled)
+	Core_CallDelegateFunctions("DiplomacyEnabled", AGS_GLOBAL_SETTINGS.CanDiplomacy)
+	Core_CallDelegateFunctions("TributeEnabled", AGS_GLOBAL_SETTINGS.CanTribute)
 	
-	if _match.is_diplomacy_enabled then
+	if AGS_GLOBAL_SETTINGS.CanDiplomacy then
 		Diplomacy_AllPlayer_DestroyTeams()
-	end
-		
-	ReplayStatViewer_PopulateReplayStatTabs({"CurrentResourcesTemplate", "IncomeTemplate", "MilitaryTemplate"})	
-
-	CustomOptions_SetPopCap(_match)
-	CustomOptions_SetGameSpeed(_match)
-	CustomOptions_LockAgeUp(_match)	
-	CustomOptions_AddGameSpeedRule()
-	
-	-- Enforce disabling of buttons in diplomacy/tribute panel until its stated otherwise
-	CustomOptions_SetSelectedDiplomacyRuleset(_match)
+	end		
 end
 
 function AdvancedMode_PostInit()
-	
-	if _match.is_diplomacy_enabled then
+	if AGS_GLOBAL_SETTINGS.CanDiplomacy then
 		Diplomacy_AllPlayer_DestroyTeamsFinalize()
 	end
-	
-	-- Complete standard procedures after determining start such as vision and age ? (actually did I ever test if age thing does something ?)
-	CustomOptions_ApplyStartingAgeUpgrades(_match)		
-
-
 end
-
 --this should contain initialization for units, buildings, upgrades but it might cause issue for conditions
-function AdvancedMode_Preset() 
-	
+function AdvancedMode_Preset() 	
 	Core_CallDelegateFunctions("PresetSpawn")
 	Core_CallDelegateFunctions("PresetPostSpawn")
 end
 
 function AdvancedMode_Start()
-	-- Spawn aftermath, currently only for slow nomad.
-	CustomStartConditions_OnStartContinuation(_match)
-	
-	CustomOptions_SetFOW(_match)
-	CustomOptions_EnableScore(_match)
-	
-	--  Try to start treaty timer etc.
-	CustomOptions_TrySetTreaty(_match)
-	CustomOptions_SetSimulationSpeed(_match)
-	
-	
-	CustomOptions_RunKing()
-	-- this is seriously just a joke
-	InternalCustomOptions_EarlyMarket(_match)
-	
-	--FunTest()
 end
 
-function AdvancedMode_OnGameOver()
-	CustomOptions_RemoveGameSpeedRule()
-	
+function AdvancedMode_OnGameOver()	
 end
-
-
-function FunTest()
-	for i, player in pairs(PLAYERS) do
-		local player_civ = Player_GetRaceName(player.id)
-		
-		local snameSHP = InternalCustomOptions_SquadGroupName(player.id, "danes")
-		local sbp_shp = BP_GetSquadBlueprint("unit_raider_dane")
-		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 5)
-		local sbp_shp = BP_GetSquadBlueprint("unit_militia_1_rus")
-		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 5)
-		local sbp_shp = BP_GetSquadBlueprint("unit_great_trebuchet_cmp_mon")
-		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 5)
-		local sbp_shp = BP_GetSquadBlueprint("unit_landsknecht_mercenary_3_hre_cmp")
-		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 5)
-		local sbp_shp = BP_GetSquadBlueprint("unit_shield_villager_cmp_fre")
-		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 5)
-		local sbp_shp = BP_GetSquadBlueprint("unit_supply_cart_eng")
-		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 5)
-		local sbp_shp = BP_GetSquadBlueprint("unit_foot_knight_2_cmp_eng")
-		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 5)
-		local sbp_shp = BP_GetSquadBlueprint("unit_shield_villager_cmp_eng")
-		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 5)
-		local sbp_shp = BP_GetSquadBlueprint("unit_shieldwall_hastings_cmp_eng")
-		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 5)
-		local sbp_shp = BP_GetSquadBlueprint("unit_supply_cart_chi")
-		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 5)
-		local sbp_shp = BP_GetSquadBlueprint("unit_militia_cmp_chi")
-		local sg_shp = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSHP, sbp_shp, -9, 0, -9, 5)
-	end
-end
---function CustomTable_OnEntityKilled(context)	
---	Rule_AddGlobalEvent(CustomTable_OnEntityKilled, GE_EntityKilled)
---	Rule_AddGlobalEvent(CustomTable_OnSquadKilled, GE_SquadKilled)
---	Util_StartQuickIntel(ACTOR.NARR, "Entity KILLED")
---	Entity_SetStateModelFloat(context.victim, "death_seconds", 1)
---end
---
---function CustomTable_OnSquadKilled(context)	
---	ebpextensions\health_ext<float name="death_seconds" value="19" />
---	Util_StartQuickIntel(ACTOR.NARR, "Squad KILLED")
---	Squad_SetStateModelFloat(context.victim, "death_seconds", 1)
---	--local eg = Player_GetEntitiesFromType(Game_GetLocalPlayer(), "infantry")
---	--local mf = function(gid, idx, eid)
---	--end
---	--EGroup_ForEach(eg, mf)
---end
-
-
-
-
-

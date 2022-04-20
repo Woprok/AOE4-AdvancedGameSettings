@@ -12,14 +12,26 @@
 -- Imports:
 ---------------------------------------------------------------------------------------------------
 
+-- Core import that enables match to start.
 import("cardinal.scar")
-
+-- Core import that holds all AGS data workflow.
 import("ags_global_settings.scar")
-
+-- Core import that contains helpers for all AGS scripts.
 import("helpers/ags_blueprints.scar")
-
+-- Necessary import for AI hacks.
 import("ai/ags_ai.scar")
-
+-- High priority start conditions.
+import("startconditions/ags_start_nomad.scar")
+import("startconditions/ags_start_scattered.scar")
+import("startconditions/ags_start_settled.scar")
+import("startconditions/ags_start_keep.scar")
+import("startconditions/ags_start_king.scar")
+-- Low priority start conditions.
+import("startconditions/ags_initial_age.scar")
+import("startconditions/ags_technologies.scar")
+import("startconditions/ags_final_age.scar")
+import("startconditions/ags_reveal_spawn.scar")
+-- Low priority gameplay customizations that do not have dependencies.
 import("gameplay/ags_ding.scar")
 import("gameplay/ags_early_market.scar")
 import("gameplay/ags_game_rates.scar")
@@ -30,17 +42,25 @@ import("gameplay/ags_testing.scar")
 import("gameplay/ags_town_center_limit.scar")
 import("gameplay/ags_tree_bombardment.scar")
 import("gameplay/ags_vision.scar")
+-- Low priority tutorial goals for new players.
+import("training/coretraininggoals.scar")
+import("training/frenchtraininggoals.scar")
+import("training/englishtraininggoals.scar")
+import("training/sultanatetraininggoals.scar")
+import("training/rustraininggoals.scar")
+import("training/mongoltraininggoals.scar")
+import("training/chinesetraininggoals.scar")
+import("training/abbasidtraininggoals.scar")
+-- Additional UI support for match.
+import("gameplay/event_cues.scar")
+import("gameplay/currentageui.scar")
+import("gameplay/chi/current_dynasty_ui.scar")
+-- Conditions can be loaded as last, they might require others to propagete first.
+import("conditions/ags_treaty.scar")
 
-import("startconditions/ags_start_nomad.scar")
-import("startconditions/ags_start_scattered.scar")
-import("startconditions/ags_start_settled.scar")
-import("startconditions/ags_start_keep.scar")
-import("startconditions/ags_start_king.scar")
+-- Unfinished rework continues after that
+import("gameplay/ags_utilities.scar")
 
-import("startconditions/ags_initial_age.scar")
-import("startconditions/ags_technologies.scar")
-import("startconditions/ags_final_age.scar")
-import("startconditions/ags_reveal_spawn.scar")
 ---------------------------------------------------------------------------------------------------
 -- Core_CallDelegateFunctions:
 -- UnitsSpawned(player_id, position: home_position, sgroup: units)
@@ -49,6 +69,8 @@ import("startconditions/ags_reveal_spawn.scar")
 -- PresetPostSpawn
 -- SettingSetup(wincondition_options: options)
 -- PostSettingSetup
+-- TreatyStarted
+-- TreatyEnded
 ---------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------
@@ -64,6 +86,8 @@ import("startconditions/ags_reveal_spawn.scar")
 -- 6. PresetPostSpawn
 -- PreStart
 -- 7. Start
+-- TreatyStarted
+-- TreatyEnded
 -- 8. OnGameOver
 --
 -- Determined by others:

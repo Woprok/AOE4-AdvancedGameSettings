@@ -99,6 +99,9 @@ function Diplomacy_DiplomacyEnabled(is_enabled)
 	end
 end
 
+function Diplomacy_PostSettingSetup()
+	Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.CanTribute, AGS_GLOBAL_SETTINGS.CanDiplomacy)
+end
 
 -- Callback invoked to indicate whether sending of tribute is disabled (as a match option).
 -- Invoked through game mode script's *_OnIntit() function. 

@@ -1,0 +1,85 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Handles small calls that are not currently moderated.
+---------------------------------------------------------------------------------------------------
+
+-- section_inner_win_conditions(option_win_condition_conquest, option_win_condition_religious, option_win_condition_wonder)
+-- section_diplomacy(option_diplomacy_teams, option_diplomacy_tribute)
+-- section_endgame(option_allow_spectators)
+-- section_starting_conditions(
+-- 		reveal_fow_on_elimination
+--		option_fow[option_fow_concealed, option_fow_explore, option_fow_reveal]
+--		option_score
+-- 		option_start_age 
+--		option_vision[option_vision_default],
+--		option_speed[option_speed_2x, option_speed_3x, option_speed_20x, option_speed_50x, option_speed_100x]
+--		option_initial_units[initial_units_none]
+--		option_starting_resources
+--		option_timer[option_timer_reset]
+-- )
+
+AGS_UTILITIES_MODULE = "AGS_Utilities"
+
+-- Replay System
+import("gameplay/score.scar")
+import("replay/replaystatviewer.scar")
+import("gameplay/vision.scar")
+import("gameplay/cheat.scar") 
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_UTILITIES_MODULE)	
+
+function AGS_Utilities_SettingSetup(options)
+	--Shared vision
+	if not options.section_starting_conditions
+		or not options.section_starting_conditions.option_vision
+		or options.section_starting_conditions.option_vision.enum_value == options.section_starting_conditions.option_vision.enum_items.option_vision_default then
+		Core_UnregisterModule("Vision")	
+	end
+	-- Set player behaviour when eliminated
+	if options.section_endgame then 
+		allow_spectators = options.section_endgame.option_allow_spectators
+	end
+end
+
+function AGS_Utilities_PostSettingSetup()
+
+	
+end
+
+function AGS_Utilities_Start()
+end
+function AGS_Utilities_OnInit()
+	UI_AllTerritoryHide()
+	
+	ReplayStatViewer_PopulateReplayStatTabs({"CurrentResourcesTemplate", "IncomeTemplate", "MilitaryTemplate"})	
+end
+
+function AGS_Utilities_OnGameOver()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+-- used in conquest and surrender winconditions
+--? @shortdesc Returns the value of the "Reveal FOW on Elimination" match option
+--function Core_RevealFOWOnEliminationEnabled()
+--	local reveal_fow_on_elimination = false
+--	
+--	local matchOptions = {}
+--	Setup_GetWinConditionOptions(matchOptions)
+--	
+--	if matchOptions.section_starting_conditions then
+--		return matchOptions.section_starting_conditions.reveal_fow_on_elimination
+--	end
+--		
+--	return false
+--end

@@ -93,58 +93,29 @@ Core_RegisterModule("Wonder")
 -- Callbacks
 -----------------------------------------------------------------------
 
-function Wonder_UpdateConditions(_match)
-	local new_timer_in_minutes = -1
-	if _match.options.section_outer_win_conditions and 
-		_match.options.section_outer_win_conditions.option_wonder_timer then
-		if
-			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_instant then
-			new_timer_in_minutes = 0
-		elseif
-			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_3 then
-			new_timer_in_minutes = 3
-		elseif
-			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_5 then
-			new_timer_in_minutes = 5
-		elseif
-			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_8 then
-			new_timer_in_minutes = 8
-		elseif
-			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_10 then
-			new_timer_in_minutes = 10
-		elseif
-			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_12 then
-			new_timer_in_minutes = 12
-		elseif
-			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_15 then
-			new_timer_in_minutes = 15
-		elseif
-			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_20 then
-			new_timer_in_minutes = 20
-		elseif
-			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_25 then
-			new_timer_in_minutes = 25
-		elseif
-			_match.options.section_outer_win_conditions.option_wonder_timer.enum_value == _match.options.section_outer_win_conditions.option_wonder_timer.enum_items.wonder_30 then
-			new_timer_in_minutes = 30
-		end
-	end
-
-	if new_timer_in_minutes >= 0 then
-		_wonder.time_victory = new_timer_in_minutes * 60 -- in seconds
-	end	
+function Wonder_UpdateConditions()
+	_wonder.time_victory = AGS_GLOBAL_SETTINGS.WonderTimer * 60 -- in seconds
 end
 
 function Wonder_CanTick(can_tick)
+
+end
+
+function Wonder_TreatyStarted()
+	_wonder.solo_victory = true
 	if _wonder.time_victory > 0 then
 		for _, player in pairs(PLAYERS) do
-			Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", can_tick)	
+			Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", false)	
 		end
 	end
 end
-
-function Wonder_IsSoloVictory(is_solo)
-	_wonder.solo_victory = true
+function Wonder_TreatyEnded()
+	_wonder.solo_victory = false
+	if _wonder.time_victory > 0 then
+		for _, player in pairs(PLAYERS) do
+			Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", true)	
+		end
+	end
 end
 
 function Wonder_CanWin(wonder_player, other_player)

@@ -84,11 +84,11 @@ function AGS_TreeBombardment_DestroyTreeGroup(projectile_target)
 	local neutral_entities = EGroup_CreateIfNotFound(AGS_TREE_BOMBARDMENT.egroup_name)
 	World_GetEntitiesNearPoint(Game_GetLocalPlayer(), neutral_entities, projectile_target, AGS_TREE_BOMBARDMENT.search_radius, OT_Neutral)
 	
-	local _CustomSiege_DestroyAnyTree = function(gid, idx, eid)		
+	local _AGS_DestroyAnyTree = function(gid, idx, eid)		
 		if eid ~= nil and Entity_IsOfType(eid, AGS_BP_TREE) then
 			Entity_Destroy(eid)
 		end		
 	end
 	
-	EGroup_ForEach(neutral_entities, _CustomSiege_DestroyAnyTree)
+	EGroup_ForEach(neutral_entities, _AGS_DestroyAnyTree)
 end

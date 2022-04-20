@@ -40,8 +40,11 @@ function TeamSolidarity_DiplomacyEnabled(is_enabled)
 	_teamsolidarity.last_man_standing = is_enabled
 end
 
-function TeamSolidarity_IsTreaty(treaty)
-	_teamsolidarity.treaty_active = treaty
+function TeamSolidarity_TreatyStarted()
+	_teamsolidarity.treaty_active = true	
+end
+function TeamSolidarity_TreatyEnded()
+	_teamsolidarity.treaty_active = false
 end
 
 -- Called during load as part of the game setup sequence

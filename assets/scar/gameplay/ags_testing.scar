@@ -43,3 +43,42 @@ function AGS_Testing_Cheats()
 	AGS_GLOBAL_SETTINGS.is_cheat_enabled = Misc_IsCommandLineOptionSet("cheat")
 	AGS_GLOBAL_SETTINGS.revealMap = Misc_IsCommandLineOptionSet("no_fow")
 end
+
+function AGS_Testing_SpawnTest()
+	for i, player in pairs(PLAYERS) do
+		local player_civ = Player_GetRaceName(player.id)
+		
+		local snameSHP = AGS_SGroupName(player.id, "danes")
+		local sbp_shp = BP_GetSquadBlueprint("unit_raider_dane")
+		local sg_shp = AGS_SpawnSquad(player.id, snameSHP, sbp_shp, nil, World_Pos(-10, 0, -10), 5)
+		local sbp_shp = BP_GetSquadBlueprint("unit_militia_1_rus")
+		local sbp_shp = BP_GetSquadBlueprint("unit_great_trebuchet_cmp_mon")
+		local sbp_shp = BP_GetSquadBlueprint("unit_landsknecht_mercenary_3_hre_cmp")
+		local sbp_shp = BP_GetSquadBlueprint("unit_shield_villager_cmp_fre")
+		local sbp_shp = BP_GetSquadBlueprint("unit_supply_cart_eng")
+		local sbp_shp = BP_GetSquadBlueprint("unit_foot_knight_2_cmp_eng")
+		local sbp_shp = BP_GetSquadBlueprint("unit_shield_villager_cmp_eng")
+		local sbp_shp = BP_GetSquadBlueprint("unit_shieldwall_hastings_cmp_eng")
+		local sbp_shp = BP_GetSquadBlueprint("unit_supply_cart_chi")
+		local sbp_shp = BP_GetSquadBlueprint("unit_militia_cmp_chi")
+	end
+end
+
+--	Rule_AddGlobalEvent(AGS_Testing_OnEntityKilled, GE_EntityKilled)
+--	Rule_AddGlobalEvent(AGS_Testing_OnSquadKilled, GE_SquadKilled)
+--	Rule_RemoveGlobalEvent(AGS_Testing_OnEntityKilled)
+--	Rule_RemoveGlobalEvent(AGS_Testing_OnSquadKilled)
+--function AGS_Testing_OnEntityKilled(context)	
+--	Util_StartQuickIntel(ACTOR.NARR, "Entity KILLED")
+--	Entity_SetStateModelFloat(context.victim, "death_seconds", 1)
+--end
+--
+--function AGS_Testing_OnSquadKilled(context)	
+--	ebpextensions\health_ext<float name="death_seconds" value="19" />
+--	Util_StartQuickIntel(ACTOR.NARR, "Squad KILLED")
+--	Squad_SetStateModelFloat(context.victim, "death_seconds", 1)
+--	--local eg = Player_GetEntitiesFromType(Game_GetLocalPlayer(), "infantry")
+--	--local mf = function(gid, idx, eid)
+--	--end
+--	--EGroup_ForEach(eg, mf)
+--end

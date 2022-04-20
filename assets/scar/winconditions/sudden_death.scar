@@ -132,8 +132,6 @@ function SuddenDeath_OnInit()
 			
 			-- For every Landmark found
 			EGroup_ForEach(eg_player_capital_tc, _TrackLandmark)
-
-			InternalCustomOptions_LockAdditionalTownCenters(player)
 		end			
 		
 		-- Listen for construction completion

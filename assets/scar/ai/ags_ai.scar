@@ -8,6 +8,7 @@
 -- These functions have to always verify if they can be called.
 ---------------------------------------------------------------------------------------------------
 
+AGS_AI_MODULE = "AGS_AI"
 AGS_AI_ADJUSTREASON_NO = 0
 AGS_AI_ADJUSTREASON_NOMAD = 1
 
@@ -15,7 +16,7 @@ AGS_AI_ADJUSTREASON_NOMAD = 1
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
 
-Core_RegisterModule("AGS_AI")	
+Core_RegisterModule(AGS_AI_MODULE)	
 
 function AGS_AI_UnitsSpawned(player_id, home_position, units)
 	if not AGS_AI_IsLocalGame() or not AGS_AI_IsAI(player_id) then

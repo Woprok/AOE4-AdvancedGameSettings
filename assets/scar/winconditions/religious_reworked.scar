@@ -82,47 +82,15 @@ Core_RegisterModule(_religious.module)
 -- Callbacks
 -----------------------------------------------------------------------
 
-function Religious_UpdateConditions(_match)
-	local new_timer_in_minutes = -1
-	if _match.options.section_outer_win_conditions and 
-		_match.options.section_outer_win_conditions.option_religious_timer then
-		if
-			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_3 then
-			new_timer_in_minutes = 3
-		elseif
-			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_5 then
-			new_timer_in_minutes = 5
-		elseif
-			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_8 then
-			new_timer_in_minutes = 8
-		elseif
-			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_10 then
-			new_timer_in_minutes = 10
-		elseif
-			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_12 then
-			new_timer_in_minutes = 12
-		elseif
-			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_15 then
-			new_timer_in_minutes = 15
-		elseif
-			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_20 then
-			new_timer_in_minutes = 20
-		elseif
-			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_25 then
-			new_timer_in_minutes = 25
-		elseif
-			_match.options.section_outer_win_conditions.option_religious_timer.enum_value == _match.options.section_outer_win_conditions.option_religious_timer.enum_items.religious_30 then
-			new_timer_in_minutes = 30
-		end
-	end
-
-	if new_timer_in_minutes > 0 then
-		_religious.time_victory = new_timer_in_minutes * 60 -- in seconds
-	end	
+function Religious_UpdateConditions()
+	_religious.time_victory = AGS_GLOBAL_SETTINGS.ReligousTimer * 60 -- in seconds
 end
 
-function Religious_CanTick(can_tick)
-	_religious.can_tick = can_tick	
+function Religious_TreatyStarted()
+	_religious.can_tick = false	
+end
+function Religious_TreatyEnded()
+	_religious.can_tick = true
 end
 
 -- Callback invoked when Diplomacy is enabled (indicates whether win condition should be based on player or team).
