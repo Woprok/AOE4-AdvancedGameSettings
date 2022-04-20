@@ -99,7 +99,7 @@ function Diplomacy_DiplomacyEnabled(is_enabled)
 	end
 end
 
-function Diplomacy_PostSettingSetup()
+function Diplomacy_PresetPostSpawn()
 	Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.CanTribute, AGS_GLOBAL_SETTINGS.CanDiplomacy)
 end
 

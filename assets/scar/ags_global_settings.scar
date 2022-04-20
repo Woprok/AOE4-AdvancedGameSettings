@@ -7,9 +7,9 @@
 -- Contains all option definitions and their current values.
 -- Referenceable by any other script.
 ---------------------------------------------------------------------------------------------------
-
--- All data hidden inside specific entities such as player must be inside of this. See nomad for examples.
-AGS_DATA = "AGS_DATA"
+AGS_SV_ALWAYS = 0
+AGS_SV_MARKET = 1
+AGS_SV_NEVER = 2
 
 AGS_ST_SETTLED = 0
 AGS_ST_NOMAD = 1
@@ -66,6 +66,7 @@ AGS_GLOBAL_SETTINGS = {
 	RevealRadius = 70, -- undefined
 	RevealDuration = 0.25, -- undefined
 	MapVision = AGS_MAP_HIDDEN,
+	SharedVision = AGS_SV_ALWAYS,
 	
 	VisibleScore = false,
 }
@@ -111,6 +112,10 @@ function AGS_Settings_SettingSetup(options)
 				
 		if category.option_fow ~= nil then
 			AGS_SetMapVision(category.option_fow)
+		end
+		
+		if category.option_vision ~= nil then
+			AGS_SetSharedVision(category.option_vision)
 		end
 	end
 		
@@ -199,16 +204,7 @@ function AGS_Settings_SettingSetup(options)
 		end
 	end
 	
-	AGS_DATA_INIT()
 	Core_CallDelegateFunctions("PostSettingSetup")
-end
-
-function AGS_DATA_INIT()
-	for i, player in ipairs(PLAYERS) do	
-		player[AGS_DATA] = {
-			-- EMPTY
-		}
-	end
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -273,7 +269,7 @@ function AGS_SetLastManStanding(option_diplomacy_teams)
 	AGS_GLOBAL_SETTINGS.LastManStanding = option_diplomacy_teams
 end
 
-function CustomOptions_TrySetTreaty(option_diplomacy_treaty)
+function AGS_SetTreatyTimer(option_diplomacy_treaty)
 	if option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_no then
 		AGS_GLOBAL_SETTINGS.TreatyTimer = 0
 	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_5 then
@@ -288,6 +284,16 @@ function CustomOptions_TrySetTreaty(option_diplomacy_treaty)
 		AGS_GLOBAL_SETTINGS.TreatyTimer = 45
 	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_60 then
 		AGS_GLOBAL_SETTINGS.TreatyTimer = 60
+	end
+end
+
+function AGS_SetSharedVision(option_vision)	
+	if option_vision.enum_value == option_vision.enum_items.option_vision_always then
+		AGS_GLOBAL_SETTINGS.SharedVision = AGS_SV_ALWAYS 
+	elseif option_vision.enum_value == option_vision.enum_items.option_vision_market then
+		AGS_GLOBAL_SETTINGS.SharedVision = AGS_SV_MARKET 
+	elseif option_vision.enum_value == option_vision.enum_items.option_vision_default then
+		AGS_GLOBAL_SETTINGS.SharedVision = AGS_SV_NEVER 	
 	end
 end
 

@@ -22,14 +22,14 @@ function AGS_PopulationCapacity_PostSettingSetup()
 end
 
 function AGS_PopulationCapacity_PresetPostSpawn()
-	AGS_PopulationCapacity_Change()
+	AGS_PopulationCapacity_Change(AGS_GLOBAL_SETTINGS.PopulationCapacity)
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_PopulationCapacity_Change()
+function AGS_PopulationCapacity_Change(pop_size)
 	for _, player in ipairs(PLAYERS) do		
 		local value =  - (200 - pop_size)	
 		local player_civ = Player_GetRaceName(player.id)

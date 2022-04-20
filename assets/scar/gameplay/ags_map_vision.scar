@@ -7,29 +7,29 @@
 -- Map reveal level at the start of the game.
 ---------------------------------------------------------------------------------------------------
 
-AGS_VISION_MODULE = "AGS_Vision"
+AGS_MAP_VISION_MODULE = "AGS_MapVision"
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
 
-Core_RegisterModule(AGS_VISION_MODULE)	
+Core_RegisterModule(AGS_MAP_VISION_MODULE)	
 
-function AGS_Vision_PostSettingSetup()
+function AGS_MapVision_PostSettingSetup()
 	if AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_HIDDEN then
-		Core_UnregisterModule(AGS_VISION_MODULE)
+		Core_UnregisterModule(AGS_MAP_VISION_MODULE)
 	end
 end
 
-function AGS_Vision_PresetPostSpawn()
-	AGS_Vision_RevealMap()
+function AGS_MapVision_PresetPostSpawn()
+	AGS_MapVision_RevealMap()
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_Vision_RevealMap()
+function AGS_MapVision_RevealMap()
 	if AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_HIDDEN then 
 		return
 	elseif AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_EXPLORED then 

@@ -27,7 +27,6 @@ AGS_UTILITIES_MODULE = "AGS_Utilities"
 -- Replay System
 import("gameplay/score.scar")
 import("replay/replaystatviewer.scar")
-import("gameplay/vision.scar")
 import("gameplay/cheat.scar") 
 
 ---------------------------------------------------------------------------------------------------
@@ -37,12 +36,6 @@ import("gameplay/cheat.scar")
 Core_RegisterModule(AGS_UTILITIES_MODULE)	
 
 function AGS_Utilities_SettingSetup(options)
-	--Shared vision
-	if not options.section_starting_conditions
-		or not options.section_starting_conditions.option_vision
-		or options.section_starting_conditions.option_vision.enum_value == options.section_starting_conditions.option_vision.enum_items.option_vision_default then
-		Core_UnregisterModule("Vision")	
-	end
 	-- Set player behaviour when eliminated
 	if options.section_endgame then 
 		allow_spectators = options.section_endgame.option_allow_spectators
