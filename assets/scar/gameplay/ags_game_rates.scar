@@ -22,83 +22,35 @@ function AGS_GameRates_UpdateModuleSettings()
 	end
 end
 
-function AGS_GameRates_Preset()
-	Rule_AddGlobalEvent(AGS_GameRates_ConstructionComplete, GE_ConstructionComplete)
-	Rule_AddGlobalEvent(AGS_GameRates_Test1, GE_ConstructionComplete)
-	Rule_AddGlobalEvent(AGS_GameRates_Test2, GE_BuildItemComplete)
-	Rule_AddGlobalEvent(AGS_GameRates_Test3, GE_AbilityComplete)
-	Rule_AddGlobalEvent(AGS_GameRates_Test4, GE_SquadSpawn)
-	Rule_AddGlobalEvent(AGS_GameRates_Test5, GE_EntitySpawn)
-end
-
-function AGS_GameRates_Start()
-	AGS_GameRates_ChangeGameRates()
-end
-
-function AGS_GameRates_OnGameOver()
-	Rule_RemoveGlobalEvent(AGS_GameRates_ConstructionComplete)
+function AGS_GameRates_Preset()	
+	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType("building"))	
+	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType("annihilation_condition"))	
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
-function AGS_GameRates_Test1(context)
-	Util_PrintObject("Test1", 10)
-	Util_PrintObject(context, 10)
-end
-function AGS_GameRates_Test2(context)
-	Util_PrintObject("Test2", 10)
-	Util_PrintObject(context, 10)
-end
-function AGS_GameRates_Test3(context)
-	Util_PrintObject("Test3", 10)
-	Util_PrintObject(context, 10)
-end
-function AGS_GameRates_Test4(context)
-	Util_PrintObject("Test4", 10)
-	Util_PrintObject(context, 10)
-end
-function AGS_GameRates_Test(context)
-	Util_PrintObject("Test5", 10)
-	Util_PrintObject(context, 10)
-end
-	
 ---------------------------------------------------------------------------------------------------
+
+function AGS_GameRates_ApplyGameRates(bps)
+	for _, ebp in pairs(bps) do 
+		if AGS_GAME_RATES_MODIFIERS[ebp.PropertyBagGroupID] == nil then
+			AGS_GAME_RATES_MODIFIERS[ebp.PropertyBagGroupID] = true
+			for _, player in pairs(PLAYERS) do	
+				AGS_GameRates_ApplyModifier(player.id, ebp, "production_speed_modifier", AGS_GLOBAL_SETTINGS.GameRates)
+				--AGS_GameRates_ApplyModifier(player.id, ebp, "cost_ticks_modifier", 1/AGS_GLOBAL_SETTINGS.GameRates)
+				AGS_GameRates_ApplyModifier(player.id, ebp, "speed_maximum_modifier", AGS_GLOBAL_SETTINGS.GameRates)
+				AGS_GameRates_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_food", AGS_GLOBAL_SETTINGS.GameRates)
+				AGS_GameRates_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_wood", AGS_GLOBAL_SETTINGS.GameRates)
+				AGS_GameRates_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_gold", AGS_GLOBAL_SETTINGS.GameRates)
+				AGS_GameRates_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_stone", AGS_GLOBAL_SETTINGS.GameRates)
+				AGS_GameRates_ApplyModifier(player.id, ebp, "construction_rate", AGS_GLOBAL_SETTINGS.GameRates)
+				AGS_GameRates_ApplyModifier(player.id, ebp, "repair_rate_modifier", AGS_GLOBAL_SETTINGS.GameRates)	
+			end
+		end
+	end
+end
+
 -- Apply function.
 function AGS_GameRates_ApplyModifier(player_id, modifier_ebp, modifier_type, modifier_value)
 	Modifier_ApplyToPlayer(Modifier_Create(MAT_EntityType, modifier_type, MUT_Multiplication, false, modifier_value, modifier_ebp), player_id, 0.0)
 end	
-
-function AGS_GameRates_ConstructionComplete(context)
-	if context == nil or context.entity == nil then
-		return
-	end
-	local ebp = Entity_GetBlueprint(context.entity)
-	if ebp == nil then 
-		return 
-	end
-	
-	Util_PrintObject(ebp, 10)
-	if AGS_GAME_RATES_MODIFIERS[ebp.id] ~= nil then
-		return
-	end
-	AGS_GAME_RATES_MODIFIERS[ebp.id] = ebp
-	for _, player in pairs(PLAYERS) do			
-		AGS_GameRates_ApplyModifier(player.id, ebp, "production_speed_modifier", AGS_GLOBAL_SETTINGS.GameRates)
-		AGS_GameRates_ApplyModifier(player.id, ebp, "cost_ticks_modifier", 1/AGS_GLOBAL_SETTINGS.GameRates)
-		AGS_GameRates_ApplyModifier(player.id, ebp, "speed_maximum_modifier", AGS_GLOBAL_SETTINGS.GameRates)
-	end
-end
-
-function AGS_GameRates_ChangeGameRates()
-	-- Apply new modifiers.
-	for _, player in pairs(PLAYERS) do				
-		local villager_ebp = Cardinal_ConvertTypeToEntityBlueprint(AGS_BP_VILLAGER, player.id)		
-		AGS_GameRates_ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_food", AGS_GLOBAL_SETTINGS.GameRates)
-		AGS_GameRates_ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_wood", AGS_GLOBAL_SETTINGS.GameRates)
-		AGS_GameRates_ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_gold", AGS_GLOBAL_SETTINGS.GameRates)
-		AGS_GameRates_ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_stone", AGS_GLOBAL_SETTINGS.GameRates)
-		AGS_GameRates_ApplyModifier(player.id, villager_ebp, "construction_rate", AGS_GLOBAL_SETTINGS.GameRates)
-		AGS_GameRates_ApplyModifier(player.id, villager_ebp, "repair_rate_modifier", AGS_GLOBAL_SETTINGS.GameRates)
-		--AGS_GameRates_ApplyModifier(player.id, villager_ebp, "speed_maximum_modifier", AGS_GLOBAL_SETTINGS.GameRates)
-	end
-end
