@@ -1,0 +1,58 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Advances players to selected starting age.
+---------------------------------------------------------------------------------------------------
+
+AGS_INITIAL_AGE_MODULE = "AGS_InitialAge"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_INITIAL_AGE_MODULE)	
+
+function AGS_InitialAge_PostSettingSetup()
+	if AGS_GLOBAL_SETTINGS.StartAge == 0 then
+		Core_UnregisterModule(AGS_INITIAL_AGE_MODULE)
+	end
+end
+
+function AGS_InitialAge_PresetPostSpawn()
+	AGS_InitialAge_UpgradeAllPlayers()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_InitialAge_UpgradeAllPlayers()	
+	for i, player in ipairs(PLAYERS) do	
+		AGS_InitialAge_UpgradePlayer(player.id)
+	end
+end
+
+function AGS_InitialAge_UpgradePlayer(player_id)
+	if AGS_GLOBAL_SETTINGS.StartAge >= 1 then 
+		AGS_InitialAge_ApplyAge(player_id, AGS_UPGRADE_AGES[AGS_UP_DARK])
+	end
+	if AGS_GLOBAL_SETTINGS.StartAge >= 2 then 
+		AGS_InitialAge_ApplyAge(player_id, AGS_UPGRADE_AGES[AGS_UP_FEUDAL])
+	end
+	if AGS_GLOBAL_SETTINGS.StartAge >= 3 then 
+		AGS_InitialAge_ApplyAge(player_id, AGS_UPGRADE_AGES[AGS_UP_CASTLE])
+	end
+	if AGS_GLOBAL_SETTINGS.StartAge >= 4 then 
+		AGS_InitialAge_ApplyAge(player_id, AGS_UPGRADE_AGES[AGS_UP_IMPERIAL])
+	end
+end
+
+function AGS_InitialAge_ApplyAge(player_id, upgrade)
+	local bp_upgrade = BP_GetUpgradeBlueprint(upgrade)
+	if not Player_HasUpgrade(player_id, bp_upgrade) then
+		Player_CompleteUpgrade(player_id, bp_upgrade)				
+	end
+end

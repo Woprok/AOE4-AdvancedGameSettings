@@ -1,0 +1,94 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+-- Kashnars (inspiration for current tree bombardment)
+--
+-- Description:
+-- Handle special siege effect useful for maps that have too many trees.
+---------------------------------------------------------------------------------------------------
+
+AGS_TREE_BOMBARDMENT_MODULE = "AGS_TreeBombardment"
+AGS_TREE_BOMBARDMENT = {
+	on_fired_delay = 0.5,
+	search_radius = 5,
+	egroup_name = "tree_bombardment",
+	siege_on_landed = {
+		"catapult",
+		"mangonel",
+		"trebuchet_counterweight",
+		"trebuchet_traction",
+		"naval_warship",
+		"nest_of_bees",
+		"naval_galleass",
+	},	
+	siege_on_fired = {
+		"bombard",
+		"bombard_wheeled",
+	},	
+}
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_TREE_BOMBARDMENT_MODULE)	
+
+function AGS_EarlyMarket_PostSettingSetup()
+	if not AGS_GLOBAL_SETTINGS.TreeBombardment then
+		Core_UnregisterModule(AGS_TREE_BOMBARDMENT_MODULE)
+	end
+end
+
+function AGS_TreeBombardment_Start()
+	Rule_AddGlobalEvent(AGS_TreeBombardment_OnProjectileLanded, GE_ProjectileLanded)
+	Rule_AddGlobalEvent(AGS_TreeBombardment_OnProjectileFired, GE_ProjectileFired)
+end
+
+function AGS_TreeBombardment_OnGameOver()
+	Rule_RemoveGlobalEvent(AGS_TreeBombardment_OnProjectileLanded)
+	Rule_RemoveGlobalEvent(AGS_TreeBombardment_OnProjectileFired)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Executes after small delay.
+function AGS_TreeBombardment_OnProjectileFired(projectile)
+	for i, siege_type in pairs(AGS_TREE_BOMBARDMENT.siege_on_fired) do
+		if projectile.attacker ~= nil and Entity_IsOfType(projectile.attacker, siege_type) then 		
+			Rule_AddOneShot(AGS_TreeBombardment_OnExpectedLanding, AGS_TREE_BOMBARDMENT.on_fired_delay, { target = projectile.target })
+			break
+		end
+	end	
+end
+-- Bridge between interfaces.
+function AGS_TreeBombardment_OnExpectedLanding(context, data)
+	AGS_TreeBombardment_DestroyTreeGroup(data.target)
+end
+-- Executes immediately.
+function AGS_TreeBombardment_OnProjectileLanded(projectile)
+	for i, siege_type in pairs(AGS_TREE_BOMBARDMENT.siege_on_landed) do
+		if projectile.attacker ~= nil and Entity_IsOfType(projectile.attacker, siege_type) then 			
+			AGS_TreeBombardment_DestroyTreeGroup(projectile.target)				
+			break
+		end
+	end	
+end		
+-- Remove any tree from projectile_target radius.
+function AGS_TreeBombardment_DestroyTreeGroup(projectile_target)
+	if projectile_target == nil then
+		return
+	end
+	
+	local neutral_entities = EGroup_CreateIfNotFound(AGS_TREE_BOMBARDMENT.egroup_name)
+	World_GetEntitiesNearPoint(Game_GetLocalPlayer(), neutral_entities, projectile_target, AGS_TREE_BOMBARDMENT.search_radius, OT_Neutral)
+	
+	local _AGS_DestroyAnyTree = function(gid, idx, eid)		
+		if eid ~= nil and Entity_IsOfType(eid, AGS_BP_TREE) then
+			Entity_Destroy(eid)
+		end		
+	end
+	
+	EGroup_ForEach(neutral_entities, _AGS_DestroyAnyTree)
+end

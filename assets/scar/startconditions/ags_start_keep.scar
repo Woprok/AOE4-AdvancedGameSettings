@@ -1,0 +1,41 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Spawn keep near default position.
+---------------------------------------------------------------------------------------------------
+
+AGS_SPAWN_KEEP_MODULE = "AGS_SpawnKeep"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_SPAWN_KEEP_MODULE)	
+
+function AGS_SpawnKeep_PostSettingSetup()
+	if not AGS_GLOBAL_SETTINGS.SpawnKeep then
+		Core_UnregisterModule(AGS_SPAWN_KEEP_MODULE)
+	end
+end
+
+function AGS_SpawnKeep_PresetSpawn()
+	AGS_SpawnKeep_OnSpawn()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- This function spawns a castle next to each player's Town Center
+function AGS_SpawnKeep_OnSpawn()
+	for i, player in pairs(PLAYERS) do
+		local player_civ = Player_GetRaceName(player.id)
+		
+		local ebp_building = AGS_GetCivilizationEntity(player_civ, AGS_BP_KEEP)		
+		local ename = AGS_EGroupName(player.id, AGS_BP_KEEP)
+		
+		AGS_SpawnEntity(player.id, ename, ebp_building, nil, World_Pos(15, 0, 0))
+	end
+end

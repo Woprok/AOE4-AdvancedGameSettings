@@ -299,3 +299,25 @@
 302,,,,,,25
 304,,,,,,75
 306,,,,,,250
+307,,,,,,test
+308,,,,,,test
+309,,,,,,Town Centers Restriction
+310,,,,,,Town Centers Restriction
+311,,,,,,Restrict construction of additional town centers other than capital town center. None allows constructing all TCs. Normal TCs limits players to landmarks. All TCs disabled all TCs other than capital TC. 
+312,,,,,,Default
+313,,,,,,Default
+314,,,,,,Normal TCs
+315,,,,,,Normal TCs
+316,,,,,,All TCs
+317,,,,,,All TCs
+318,,,,,,Post Age IV
+319,,,,,,Post Age IV
+320,,,,,,Shared Vision
+321,,,,,,Shared Vision
+322,,,,,,"Teammates share vision by default, this allows you to restrict it."
+323,,,,,,Always
+324,,,,,,Always
+325,,,,,,Requires Market
+326,,,,,,Requires Market
+327,,,,,,Never
+328,,,,,,Never

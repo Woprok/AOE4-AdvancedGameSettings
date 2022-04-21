@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Enables score showed during match.
+---------------------------------------------------------------------------------------------------
+
+AGS_SCORE_MODULE = "AGS_Score"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_SCORE_MODULE)	
+
+function AGS_Score_PostSettingSetup()
+	if not AGS_GLOBAL_SETTINGS.VisibleScore then
+		Core_UnregisterModule(AGS_SCORE_MODULE)
+	end
+end
+
+function AGS_Score_PresetPostSpawn()
+	AGS_Score_Visible()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+	
+function AGS_Score_Visible()
+	for _, player in ipairs(PLAYERS) do
+		player.scarModel.show_actual_score = true
+		UI_SetPlayerDataContext(player.id, player.scarModel)
+	end
+end

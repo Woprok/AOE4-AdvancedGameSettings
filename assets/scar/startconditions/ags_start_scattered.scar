@@ -1,0 +1,86 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+-- jackelpobelope (inspiration for current scattered villagers)
+--
+-- Description:
+-- Spawns villagers randomly on the map.
+---------------------------------------------------------------------------------------------------
+
+AGS_SCATTER_RADIUS = 1
+AGS_SCATTER_TUNING = 1.8
+AGS_SCATTER_WOOD = 400
+AGS_SCATTER_STONE = 300
+AGS_SCATTERED_VILLAGERS_MODULE = "AGS_ScatteredVillagers"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_SCATTERED_VILLAGERS_MODULE)	
+
+function AGS_ScatteredVillagers_PostSettingSetup()
+	if AGS_GLOBAL_SETTINGS.StartType ~= AGS_ST_SCATTERED then
+		Core_UnregisterModule(AGS_SCATTERED_VILLAGERS_MODULE)
+	end
+end
+
+function AGS_ScatteredVillagers_PresetSpawn()
+	AGS_ScatteredVillagers_OnSpawn()
+end
+
+function AGS_ScatteredVillagers_PresetPostSpawn()
+	for i, player in ipairs(PLAYERS) do	
+		-- Insist that player do not have capital.
+		Player_SetStateModelFloat(player.id, "has_capital", 0)
+		-- Player should be able to build structures.
+		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)		
+		Core_CallDelegateFunctions("AdjustAIPlayer", player.id, AGS_AI_ADJUSTREASON_NOMAD)
+	end
+end
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Distributes all players all units randomly around the map.
+function AGS_ScatteredVillagers_OnSpawn()	
+	-- Tune villager spawn out from the middle of the map.
+	AGS_SCATTER_RADIUS = math.max(World_GetWidth(), World_GetLength())/AGS_SCATTER_TUNING 
+
+	for i, player in ipairs(PLAYERS) do		
+		player_civ = Player_GetRaceName(player.id)		
+		-- Increase starting resources to cover building a TC
+		if player_civ ~= AGS_CIV_MONGOL then
+			Player_GiftResource(player.id, RT_Stone, AGS_SCATTER_STONE)
+		end
+		Player_GiftResource(player.id, RT_Wood, AGS_SCATTER_WOOD)
+		
+		-- Get Villager BP and spawn them at single location, before spreading them out to create artificial home for AI.
+		local sbp_vil = AGS_GetCivilizationUnit(player_civ, AGS_BP_VILLAGER)		
+		local snameVIL = AGS_SGroupName(player.id, AGS_BP_VILLAGER)
+		
+		-- Get spawn dimensions and initial squad location.
+		local map_center = World_Pos(0, 0, 0)	
+		
+		local _f_random_position = function()
+			local x = World_GetRand(0 - AGS_SCATTER_RADIUS, AGS_SCATTER_RADIUS)
+			local z = World_GetRand(0 - AGS_SCATTER_RADIUS, AGS_SCATTER_RADIUS)
+			local y = World_GetHeightAt(x, z)
+			return World_Pos(x, y, z)
+		end
+		
+		local spawn_pos = _f_random_position()
+		-- Finish squad spawn and assign it to AI if required.
+		local sg_vil = AGS_SpawnSquad(player.id, snameVIL, sbp_vil, spawn_pos, nil, AGS_GLOBAL_SETTINGS.StartingVillagers)	
+		LocalCommand_Squad(player.id, sg_vil, SCMD_Stop, false)	
+		Core_CallDelegateFunctions("UnitsSpawned", player.id, spawn_pos, sg_vil)
+		
+		
+		local _f_randomize_unit = function(gid, idx, sid)
+			Squad_WarpToPos(sid, _f_random_position())
+		end
+		
+		--Randomize all members location. 
+		SGroup_ForEach(sg_vil, _f_randomize_unit)
+	end
+end	

@@ -1,0 +1,78 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Extensions used to handle incorrect AI behaviour in single player.
+-- These functions have to always verify if they can be called.
+---------------------------------------------------------------------------------------------------
+
+AGS_AI_MODULE = "AGS_AI"
+AGS_AI_ADJUSTREASON_NO = 0
+AGS_AI_ADJUSTREASON_NOMAD = 1
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_AI_MODULE)	
+
+function AGS_AI_UnitsSpawned(player_id, home_position, units)
+	if not AGS_AI_IsLocalGame() or not AGS_AI_IsAI(player_id) then
+		return
+	end
+	
+	AGS_AI_AssignSpawnedUnits(player_id, home_position, units)
+end
+
+function AGS_AI_AdjustAIPlayer(player_id, reason)
+	if not AGS_AI_IsAI(player_id) then
+		return
+	end
+	
+	if reason == AGS_AI_ADJUSTREASON_NOMAD then
+		AGS_AI_ApplyNomadAdjustments(player_id)
+	end
+end
+	
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_AI_IsLocalGame()
+	if World_IsMultiplayerGame() then
+		return false
+	end
+	return true
+end
+
+function AGS_AI_IsAI(player_id)
+	if not AI_IsAIPlayer(player_id) then
+		return false
+	end
+	return true
+end
+
+-- Assigns selected units to AI default control.
+function AGS_AI_AssignSpawnedUnits(player_id, home_position, units)
+	if home_position == nil then 
+		home_position = Player_GetStartingPosition(player_id)
+	end
+	
+	local player_ai = AIPlayer_GetLocalFromPlayer(player_id)	
+	local home_base_id = AIPlayer_GetOrCreateHomebase(player_ai, home_position)
+	AIPlayer_SetSquadHomebase(player_ai, units, home_base_id)	
+	--AIPlayer_SetAllowResourceGatheringOutsideLeash(player_ai, home_base_id, true)
+	--AIPlayer_SetRequiresStatsUpdate(player_ai)
+end
+
+-- Changes certain value as AI might not be able to manage certain nomad conditions.
+function AGS_AI_ApplyNomadAdjustments(player_id)	
+	Player_SetStateModelBool(player_id, "player_can_construct_structures", false)
+	
+	local player_civ = Player_GetRaceName(player_id)
+	if player_civ == "chinese" and AI_IsAIPlayer(player_id) then
+		Player_GiftResource(player_id, RT_Wood, 375)
+	end
+end

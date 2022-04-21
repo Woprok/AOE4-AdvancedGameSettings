@@ -1,0 +1,36 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Alters game simulation speed.
+---------------------------------------------------------------------------------------------------
+
+AGS_SIMULATION_SPEED_MODULE = "AGS_SimulationSpeed"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_SIMULATION_SPEED_MODULE)	
+
+function AGS_SimulationSpeed_PostSettingSetup()
+	if AGS_GLOBAL_SETTINGS.SimulationSpeed == 1.0 then
+		Core_UnregisterModule(AGS_SIMULATION_SPEED_MODULE)
+	end
+end
+
+function AGS_SimulationSpeed_Start()
+	AGS_SimulationSpeed_ChangeSimulationSpeed()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Alter game simulation speed, e.g. make everything faster/slower including ticks, timers...
+function AGS_SimulationSpeed_ChangeSimulationSpeed()
+	local old_rate = Game_GetSimRate()
+	local new_rate = old_rate * AGS_GLOBAL_SETTINGS.SimulationSpeed
+	Game_SetSimRate(new_rate)
+end

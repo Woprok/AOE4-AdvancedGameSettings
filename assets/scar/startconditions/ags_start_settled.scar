@@ -1,0 +1,78 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Spawns villagers along with town center on default position.
+---------------------------------------------------------------------------------------------------
+
+AGS_SETTLED_MODULE = "AGS_Settled"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_SETTLED_MODULE)	
+
+function AGS_Settled_PostSettingSetup()
+	if AGS_GLOBAL_SETTINGS.StartType ~= AGS_ST_SETTLED then
+		Core_UnregisterModule(AGS_SETTLED_MODULE)
+	end
+end
+
+function AGS_Settled_PresetSpawn()
+	AGS_Settled_OnSpawn()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Settled_OnSpawn()
+	for i, player in ipairs(PLAYERS) do	
+		local player_civ = Player_GetRaceName(player.id)
+		if player_civ == AGS_CIV_MONGOL then
+			AGS_Settled_SpawnMovingTownCenter(player.id, player_civ)
+		else
+			AGS_Settled_SpawnStaticTownCenter(player.id, player_civ)
+		end
+		AGS_Settled_SpawnUnits(player.id, player_civ)
+	end
+end
+-- Setup as placed town center.
+function AGS_Settled_SpawnStaticTownCenter(player_id, player_civ)	
+	local egTownCenter = Player_GetEntitiesFromType(player_id, AGS_BP_TC) 
+	if EGroup_Count(egTownCenter) == 0 then	
+		local ebp_tc = AGS_GetCivilizationEntity(player_civ, AGS_BP_TC_CAPITAL)		
+		local enameTC = AGS_EGroupName(player_id, AGS_BP_TC)
+		local eg_tc = AGS_SpawnEntity(player_id, enameTC, ebp_tc, nil, World_Pos(0, 0, 0))
+		-- Send event (conquest win condition relies on this)
+		Core_CallDelegateFunctions("OnConstructionComplete", {pbg = ebp_tc, player = player_id, entity = eg_tc})	
+	end	
+end
+-- Setup as moving town center.
+function AGS_Settled_SpawnMovingTownCenter(player_id, player_civ)	
+	local sqTownCenter = Player_GetSquadsFromType(player_id, AGS_BP_TC)
+	if SGroup_Count(sqTownCenter) == 0 then	
+		local sbp_tc = AGS_GetCivilizationUnit(player_civ, AGS_BP_TC_CAPITAL_UNIT)
+		local snameTC = AGS_SGroupName(player_id, AGS_BP_TC)
+		local sg_tc = AGS_SpawnSquad(player_id, snameTC, sbp_tc, nil, World_Pos(0, 0, 0), AGS_GLOBAL_SETTINGS.StartingTownCenters)
+	end
+end
+
+function AGS_Settled_SpawnUnits(player_id, player_civ)		
+	local sbp_vil = AGS_GetCivilizationUnit(player_civ, AGS_BP_VILLAGER)
+	local snameVIL = AGS_SGroupName(player_id, AGS_BP_VILLAGER)
+	local sg_vil = AGS_SpawnSquad(player_id, snameVIL, sbp_vil, nil, World_Pos(-10, 0, -10), AGS_GLOBAL_SETTINGS.StartingVillagers)
+	
+	Core_CallDelegateFunctions("UnitsSpawned", player_id, nil, sg_vil)
+	
+	local sbp_sco = AGS_GetCivilizationUnit(player_civ, AGS_BP_SCOUT)
+	local snameSCO = AGS_SGroupName(player_id, AGS_BP_SCOUT)
+	local sg_sco = AGS_SpawnSquad(player_id, snameSCO, sbp_sco, nil, World_Pos(-12, 0, -12), AGS_GLOBAL_SETTINGS.StartingScouts)
+
+	local sbp_shp = AGS_GetNeutralUnit(AGS_BP_SHEEP)
+	local snameSHP = AGS_SGroupName(player_id, AGS_BP_SHEEP)
+	local sg_shp = AGS_SpawnSquad(player_id, snameSHP, sbp_shp, nil, World_Pos(-9, 0, -9), AGS_GLOBAL_SETTINGS.StartingSheeps)	
+end

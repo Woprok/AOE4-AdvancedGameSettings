@@ -1,0 +1,67 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Handles ding option after game start.
+-- Narrates TC and Villagers.
+---------------------------------------------------------------------------------------------------
+
+AGS_DING_MODULE = "AGS_Ding"
+AGS_DING_DELAY = 15
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_DING_MODULE)	
+
+function AGS_Ding_PostSettingSetup()
+	if not AGS_GLOBAL_SETTINGS.CanDing then
+		Core_UnregisterModule(AGS_DING_MODULE)
+	end
+end
+
+function AGS_Ding_Start()
+	AGS_Ding_Queue()
+end
+
+function AGS_Ding_OnGameOver()
+	AGS_Ding_Dequeue()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Checks each frame for desired event.
+function AGS_Ding_Queue()
+	Rule_AddInterval(AGS_Ding_Attempt, 1)
+end
+-- Cleanup.
+function AGS_Ding_Dequeue()
+	if Rule_Exists(AGS_Ding_Attempt) then
+		Rule_Remove(AGS_Ding_Attempt)
+	end
+	if Rule_Exists(AGS_Ding_Queue) then
+		Rule_Remove(AGS_Ding_Queue)
+	end
+end
+-- Queues next after delay
+function AGS_Ding_DelayedQueue()
+	Rule_Remove(AGS_Ding_Attempt)	
+	Rule_AddOneShot(AGS_Ding_Queue, AGS_DING_DELAY)
+end
+
+function AGS_Ding_Attempt()		
+	local egroup = Player_GetEntitiesFromType(Game_GetLocalPlayer(), AGS_BP_TC)
+	local sgroup_vil = Player_GetSquadsFromType(Game_GetLocalPlayer(), AGS_BP_VILLAGER)
+	
+	if Misc_IsEGroupSelected(egroup, false) then		
+		Util_StartQuickIntel(ACTOR.NARR, "DING DING DING DING DING DING DING DING DING DING")
+		AGS_Ding_DelayedQueue()
+	elseif Misc_IsSGroupSelected(sgroup_vil, false) then		
+		Util_StartQuickIntel(ACTOR.NARR, "Yes, milord? What is it? More work? What?")
+		AGS_Ding_DelayedQueue()
+	end
+end

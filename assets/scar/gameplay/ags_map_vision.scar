@@ -1,0 +1,40 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Map reveal level at the start of the game.
+---------------------------------------------------------------------------------------------------
+
+AGS_MAP_VISION_MODULE = "AGS_MapVision"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_MAP_VISION_MODULE)	
+
+function AGS_MapVision_PostSettingSetup()
+	if AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_HIDDEN then
+		Core_UnregisterModule(AGS_MAP_VISION_MODULE)
+	end
+end
+
+function AGS_MapVision_PresetPostSpawn()
+	AGS_MapVision_RevealMap()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_MapVision_RevealMap()
+	if AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_HIDDEN then 
+		return
+	elseif AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_EXPLORED then 
+		FOW_ExploreAll()
+	elseif AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_REVEALED then
+		FOW_ForceRevealAllUnblockedAreas()
+	end
+end

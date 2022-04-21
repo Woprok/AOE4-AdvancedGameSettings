@@ -1,0 +1,147 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Shared vision for standard gameplay.
+-- Players start match without shared vision.
+-- Players gain shared vision with mutual allies when they both consruct a market.
+-- Players lose shared vision when they are no longer mutual allies.
+---------------------------------------------------------------------------------------------------
+
+AGS_SHARED_VISION_MODULE = "AGS_SharedVision"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_SHARED_VISION_MODULE)	
+
+function AGS_SharedVision_PostSettingSetup()
+	if AGS_GLOBAL_SETTINGS.SharedVision == AGS_SV_NEVER then
+		Core_UnregisterModule(AGS_SHARED_VISION_MODULE)
+	end
+end
+
+function AGS_SharedVision_PresetPostSpawn()
+	AGS_SharedVision_DefineConditions()
+end
+
+-- Grants shared vision to allies if possible.
+function AGS_SharedVision_Start()	
+	for _, player in ipairs(PLAYERS) do
+		AGS_SharedVision_UpdateVisionForPlayer(player)
+	end
+end
+-- Callback invoked by Core_AddPlayerToTeam()
+--function AGS_SharedVision_OnPlayerLeftTeam(player)	
+--	AGS_SharedVision_UpdateVisionForPlayer(player) 	
+--end
+-- Callback invoked by Core_AddPlayerToTeam()
+function AGS_SharedVision_OnPlayerJoinedTeam(player)	
+	AGS_SharedVision_UpdateVisionForPlayer(player) 	
+end
+
+function AGS_SharedVision_OnRelationshipChanged(observer_id, target_id)
+	AGS_SharedVision_UpdateVisionBetweenPlayers(Core_GetPlayersTableEntry(observer_id), Core_GetPlayersTableEntry(target_id))
+end
+
+function AGS_SharedVision_OnGameOver()
+	AGS_SharedVision_StopTrackRequirements()
+end
+
+function AGS_SharedVision_TreatyStarted()
+	for _, player in ipairs(PLAYERS) do
+		AGS_SharedVision_UpdateVisionForPlayer(player)
+	end
+end
+
+function AGS_SharedVision_TreatyEnded()
+	for _, player in ipairs(PLAYERS) do
+		AGS_SharedVision_UpdateVisionForPlayer(player)
+	end
+end
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_SharedVision_DefineConditions()
+	AGS_SharedVision_Disable()
+	if AGS_GLOBAL_SETTINGS.SharedVision == AGS_SV_ALWAYS then 
+		AGS_SharedVision_NoRequirements()
+	elseif AGS_GLOBAL_SETTINGS.SharedVision == AGS_SV_MARKET then 
+		AGS_SharedVision_TrackRequirements()
+	elseif AGS_GLOBAL_SETTINGS.SharedVision == AGS_SV_NEVER then
+		return
+	end
+end
+-- Disables shared vision.
+function AGS_SharedVision_Disable()		
+	for _, player in ipairs(PLAYERS) do
+		player.AGS_SV_ENABLED = false
+		for _, other_player in ipairs(PLAYERS) do
+			if player.id ~= other_player.id then
+				World_EnableSharedLineOfSight(player.id, other_player.id, false) 
+			end
+		end
+	end
+end
+
+function AGS_SharedVision_NoRequirements()
+	for _, player in ipairs(PLAYERS) do
+		-- originally it was player.is_shared_vision_enabled
+		player.AGS_SV_ENABLED = true
+	end
+end
+
+function AGS_SharedVision_TrackRequirements()
+	Rule_AddGlobalEvent(AGS_SharedVision_OnConstructionComplete, GE_ConstructionComplete)
+	Rule_AddGlobalEvent(AGS_SharedVision_OnEntityKilled, GE_EntityKilled)
+end
+
+function AGS_SharedVision_StopTrackRequirements()
+	if Rule_Exists(AGS_SharedVision_OnConstructionComplete) then
+		Rule_RemoveGlobalEvent(AGS_SharedVision_OnConstructionComplete)	
+	end
+	if Rule_Exists(AGS_SharedVision_OnEntityKilled) then
+		Rule_RemoveGlobalEvent(AGS_SharedVision_OnEntityKilled)	
+	end
+end
+-- Updates requirements and reflects new vision conditions.
+function AGS_SharedVision_OnConstructionComplete(context)
+	local player = Core_GetPlayersTableEntry(context.player)	
+	if player ~= nil and context.entity ~= nil and Entity_IsOfType(context.entity, AGS_BP_MARKET) then		
+		player.AGS_SV_ENABLED = true		
+		AGS_SharedVision_UpdateVisionForPlayer(player)
+	end	
+end
+-- Updates requirements and reflects new vision conditions.
+function AGS_SharedVision_OnEntityKilled(context)	
+	local player = Core_GetPlayersTableEntry(context.victimOwner)
+	if player ~= nil and context.victim ~= nil and Entity_IsOfType(context.victim, AGS_BP_MARKET) then
+		local egroup = Player_GetEntitiesFromType(player.id, AGS_BP_MARKET)
+		if EGroup_CountSpawned(egroup) == 0 then
+			player.AGS_SV_ENABLED = false	
+			AGS_SharedVision_UpdateVisionForPlayer(player)
+		end		
+	end
+end
+
+-- Updates shared line of sight between a player and all others in the match.
+function AGS_SharedVision_UpdateVisionForPlayer(player)		
+	if player == nil then
+		return 
+	end
+	for _, other_player in pairs(PLAYERS) do
+		AGS_SharedVision_UpdateVisionBetweenPlayers(player, other_player)
+	end	
+end
+-- Enables/disables shared line of sight if playerA and playerB are mutual allies and both have constructed a market.
+function AGS_SharedVision_UpdateVisionBetweenPlayers(playerA, playerB)		
+	if playerA ~= playerB then 
+		local requirements = playerA.AGS_SV_ENABLED and playerB.AGS_SV_ENABLED
+		local allies = Player_ObserveRelationship(playerA.id, playerB.id) == R_ALLY and Player_ObserveRelationship(playerB.id, playerA.id) == R_ALLY
+		World_EnableSharedLineOfSight(playerA.id, playerB.id, requirements and allies)
+	end
+end

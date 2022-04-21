@@ -63,6 +63,11 @@ function Regicide_PreInit()
 	
 end
 
+function Regicide_PostSettingSetup()
+	-- Ensure that kind is spawned if regicide is enabled
+	AGS_GLOBAL_SETTINGS.SpawnKing = true
+end
+
 -- Called on match initialization before handing control to the player
 function Regicide_OnInit()	
 	-- Get local player so we can reference it later
@@ -73,8 +78,6 @@ function Regicide_OnInit()
 	
 	-- CALLING FUNCTIONS: The following calls the Mod_FindTownCenter() and Mod_SpawnBuilding() functions directly and immediately.
 	--Regicide_FindTownCenter()
-	--CustomOptions_SpawnKeeps()
-	CustomOptions_SpawnKings()
 	
 	Regicide_InitWinCondition()
 end
@@ -175,8 +178,11 @@ function Regicide_OnPlayerDefeated(player, reason)
 	end
 end
 
-function Regicide_IsTreaty(treaty)
-	_regicide.treaty_active = treaty
+function Regicide_TreatyStarted()
+	_regicide.treaty_active = true	
+end
+function Regicide_TreatyEnded()
+	_regicide.treaty_active = false
 end
 
 function WinCondition_CheckSurrender()

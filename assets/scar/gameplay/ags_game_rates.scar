@@ -1,0 +1,68 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Alters all production and gathering rates.
+---------------------------------------------------------------------------------------------------
+
+AGS_GAME_RATES_MODULE = "AGS_GameRates"
+AGS_GAME_RATES_MODIFIERS = {}
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_FINAL_AGE_MODULE)	
+
+function AGS_GameRates_PostSettingSetup()
+	if AGS_GLOBAL_SETTINGS.GameRates == 1.0 then
+		Core_UnregisterModule(AGS_GAME_RATES_MODULE)
+	end
+end
+
+function AGS_GameRates_Start()
+	AGS_GameRates_ChangeGameRates()
+	Rule_AddGlobalEvent(AGS_GameRates_ConstructionComplete, GE_ConstructionComplete)
+end
+
+function AGS_GameRates_OnGameOver()
+	Rule_RemoveGlobalEvent(AGS_GameRates_ConstructionComplete)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_GameRates_ConstructionComplete(context)	
+	local player = Core_GetPlayersTableEntry(context.player)
+	local entity = context.entity		
+	Modifier_ApplyToEntity(Modifier_Create(MAT_Entity, "production_speed_modifier", MUT_Multiplication, false, AGS_GLOBAL_SETTINGS.GameRates, nil), entity, 0.0)
+	Modifier_ApplyToEntity(Modifier_Create(MAT_Entity, "cost_ticks_modifier", MUT_Multiplication, false, 1/AGS_GLOBAL_SETTINGS.GameRates, nil), entity, 0.0)
+end
+
+function AGS_GameRates_ChangeGameRates()
+	-- Remove existing speed modifiers.
+	for _, modifier in pairs(AGS_GAME_RATES_MODIFIERS) do
+		Modifier_RemoveInternal(modifier.ModifierID)
+	end
+	-- Apply function.
+	local ApplyModifier = function(player_id, modifier_ebp, modifier_type, modifier_value)
+		if modifier_value ~= 1 then 
+			local modifier = Modifier_Create(MAT_EntityType, modifier_type, MUT_Multiplication, false, modifier_value, modifier_ebp)
+			Modifier_ApplyToPlayer(modifier, player_id, 0.0)
+			table.insert(AGS_GAME_RATES_MODIFIERS, modifier)
+		end
+	end	
+	-- Apply new modifiers.
+	for _, player in ipairs(PLAYERS) do	
+		local villager_ebp = Cardinal_ConvertTypeToEntityBlueprint(AGS_BP_VILLAGER, player.id)		
+		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_food", AGS_GLOBAL_SETTINGS.GameRates)
+		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_wood", AGS_GLOBAL_SETTINGS.GameRates)
+		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_gold", AGS_GLOBAL_SETTINGS.GameRates)
+		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_stone", AGS_GLOBAL_SETTINGS.GameRates)
+		ApplyModifier(player.id, villager_ebp, "construction_rate", AGS_GLOBAL_SETTINGS.GameRates)
+		ApplyModifier(player.id, villager_ebp, "repair_rate_modifier", AGS_GLOBAL_SETTINGS.GameRates)
+	end
+end
