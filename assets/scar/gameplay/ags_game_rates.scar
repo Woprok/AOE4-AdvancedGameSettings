@@ -56,7 +56,7 @@ function AGS_GameRates_ChangeGameRates()
 		end
 	end	
 	-- Apply new modifiers.
-	for _, player in ipairs(PLAYERS) do	
+	for _, player in pairs(PLAYERS) do	
 		local villager_ebp = Cardinal_ConvertTypeToEntityBlueprint(AGS_BP_VILLAGER, player.id)		
 		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_food", AGS_GLOBAL_SETTINGS.GameRates)
 		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_wood", AGS_GLOBAL_SETTINGS.GameRates)

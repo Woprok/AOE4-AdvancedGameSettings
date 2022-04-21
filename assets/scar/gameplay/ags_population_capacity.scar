@@ -30,7 +30,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_PopulationCapacity_Change(pop_size)
-	for _, player in ipairs(PLAYERS) do		
+	for _, player in pairs(PLAYERS) do		
 		local value =  - (200 - pop_size)	
 		local player_civ = Player_GetRaceName(player.id)
 		AGS_PopulationCapacity_SetMaxCapPopulation(player, value)

@@ -30,7 +30,7 @@ end
 ---------------------------------------------------------------------------------------------------
 	
 function AGS_Score_Visible()
-	for _, player in ipairs(PLAYERS) do
+	for _, player in pairs(PLAYERS) do
 		player.scarModel.show_actual_score = true
 		UI_SetPlayerDataContext(player.id, player.scarModel)
 	end

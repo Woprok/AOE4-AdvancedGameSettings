@@ -609,8 +609,8 @@ function Diplomacy_UpdateNameColours()
 		return
 	end
 	
-	for i, context_player in pairs(_diplomacy.data_context.players) do
-		for _, player in ipairs(PLAYERS) do
+	for _, context_player in pairs(_diplomacy.data_context.players) do
+		for _, player in pairs(PLAYERS) do
 			if context_player.player_index == player.index then
 				context_player.name.color = UI_GetColourAsString(Player_GetUIColour(player.id))
 				break
@@ -822,7 +822,7 @@ function Diplomacy_CreateDataContext()
 	local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())	
 	table.insert(_diplomacy.data_context.players, CreatePlayerDataContext(player_local))
 	
-	for _, player in ipairs(PLAYERS) do		
+	for _, player in pairs(PLAYERS) do		
 		if not player.isLocal then 
 			table.insert(_diplomacy.data_context.players, CreatePlayerDataContext(player))
 		end

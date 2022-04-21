@@ -202,8 +202,8 @@ function AGS_Settings_SettingSetup(options)
 		if category.restrict_town_centers then
 			AGS_SetRestrictTownCenters(category.restrict_town_centers)
 		end
-	end
-	
+	end	
+	Util_PrintObject(AGS_GLOBAL_SETTINGS, 5)
 	Core_CallDelegateFunctions("PostSettingSetup")
 end
 

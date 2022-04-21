@@ -30,7 +30,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_Technologies_UpgradeAllPlayers()	
-	for i, player in ipairs(PLAYERS) do	
+	for _, player in pairs(PLAYERS) do	
 		AGS_Technologies_UpgradePlayer(player.id, Player_GetRaceName(player.id))
 	end
 end
@@ -62,7 +62,7 @@ function AGS_Technologies_DetermineUpgrades(player_id, player_civ, upgrades_age)
 end
 
 function AGS_Technologies_ApplyUpgradeList(player_id, list)
-	for i, upgrade in ipairs(list) do 
+	for _, upgrade in pairs(list) do 
 		local bp_upgrade = BP_GetUpgradeBlueprint(upgrade)
 		if not Player_HasUpgrade(player_id, bp_upgrade) then
 			Player_CompleteUpgrade(player_id, bp_upgrade)				
@@ -71,7 +71,7 @@ function AGS_Technologies_ApplyUpgradeList(player_id, list)
 end
 
 function AGS_Technologies_RemoveUpgradeList(player_id, list)
-	for i, upgrade in ipairs(list) do 
+	for _, upgrade in pairs(list) do 
 		local bp_upgrade = BP_GetUpgradeBlueprint(upgrade)
 		if not Player_HasUpgrade(player_id, bp_upgrade) then
 			Player_RemoveUpgrade(player_id, bp_upgrade)				

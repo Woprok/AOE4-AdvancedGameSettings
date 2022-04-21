@@ -30,7 +30,7 @@ end
 
 -- Grants shared vision to allies if possible.
 function AGS_SharedVision_Start()	
-	for _, player in ipairs(PLAYERS) do
+	for _, player in pairs(PLAYERS) do
 		AGS_SharedVision_UpdateVisionForPlayer(player)
 	end
 end
@@ -52,13 +52,13 @@ function AGS_SharedVision_OnGameOver()
 end
 
 function AGS_SharedVision_TreatyStarted()
-	for _, player in ipairs(PLAYERS) do
+	for _, player in pairs(PLAYERS) do
 		AGS_SharedVision_UpdateVisionForPlayer(player)
 	end
 end
 
 function AGS_SharedVision_TreatyEnded()
-	for _, player in ipairs(PLAYERS) do
+	for _, player in pairs(PLAYERS) do
 		AGS_SharedVision_UpdateVisionForPlayer(player)
 	end
 end
@@ -78,9 +78,9 @@ function AGS_SharedVision_DefineConditions()
 end
 -- Disables shared vision.
 function AGS_SharedVision_Disable()		
-	for _, player in ipairs(PLAYERS) do
+	for _, player in pairs(PLAYERS) do
 		player.AGS_SV_ENABLED = false
-		for _, other_player in ipairs(PLAYERS) do
+		for _, other_player in pairs(PLAYERS) do
 			if player.id ~= other_player.id then
 				World_EnableSharedLineOfSight(player.id, other_player.id, false) 
 			end
@@ -89,7 +89,7 @@ function AGS_SharedVision_Disable()
 end
 
 function AGS_SharedVision_NoRequirements()
-	for _, player in ipairs(PLAYERS) do
+	for _, player in pairs(PLAYERS) do
 		-- originally it was player.is_shared_vision_enabled
 		player.AGS_SV_ENABLED = true
 	end

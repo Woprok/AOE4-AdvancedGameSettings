@@ -30,7 +30,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_EarlyMarket_Unlock()
-	for i, player in ipairs(PLAYERS) do
+	for _, player in pairs(PLAYERS) do
 		local player_civ = Player_GetRaceName(player.id)
 		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player_civ, AGS_BP_MARKET), ITEM_UNLOCKED)
 	end

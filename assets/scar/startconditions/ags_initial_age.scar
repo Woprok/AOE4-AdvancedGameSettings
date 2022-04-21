@@ -30,7 +30,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_InitialAge_UpgradeAllPlayers()	
-	for i, player in ipairs(PLAYERS) do	
+	for _, player in pairs(PLAYERS) do	
 		AGS_InitialAge_UpgradePlayer(player.id)
 	end
 end

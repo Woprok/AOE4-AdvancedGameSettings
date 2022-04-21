@@ -97,3 +97,20 @@ import("gameplay/ags_utilities.scar")
 -- AdjustAIPlayer(player_id, ADJUSTREASON: reason)
 -- UnitsSpawned(player_id, position: home_position, sgroup: units)
 ---------------------------------------------------------------------------------------------------
+
+-- gameplay systems
+import("gameplay/diplomacy_reworked.scar")
+-- When conquest, religious, and wonder are all unselected in match options
+import("winconditions/annihilation_reworked.scar")	
+-- For players who quit or drop (through pause menu or disconnection)
+import("winconditions/elimination_reworked.scar")	
+-- For players who surrender (through pause menu)
+import("winconditions/surrender_reworked.scar")		
+import("winconditions/conquest.scar")
+import("winconditions/sudden_death.scar") 
+--import("winconditions/wonder.scar")
+--import("winconditions/religious.scar")
+import("winconditions/wonder_reworked.scar")
+import("winconditions/religious_reworked.scar")
+import("winconditions/regicide.scar")
+import("winconditions/teamsolidarity.scar")

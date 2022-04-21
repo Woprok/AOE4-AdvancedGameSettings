@@ -82,7 +82,7 @@ end
 function AGS_AI_StoneVision()
 	local outcrop_group = EGroup_CreateIfNotFound("stone_outcrops")
 	World_GetAllNeutralEntities(outcrop_group)
-	for _, player in ipairs(PLAYERS) do 
+	for _, player in pairs(PLAYERS) do 
 		local player_civ = Player_GetRaceName(player.id)				
 		if player_civ == AGS_CIV_MONGOL and AGS_AI_IsAI(player.id) then
 			

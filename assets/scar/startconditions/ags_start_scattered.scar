@@ -31,7 +31,7 @@ function AGS_ScatteredVillagers_PresetSpawn()
 end
 
 function AGS_ScatteredVillagers_PresetPostSpawn()
-	for i, player in ipairs(PLAYERS) do	
+	for _, player in _pairs(PLAYERS) do	
 		-- Insist that player do not have capital.
 		Player_SetStateModelFloat(player.id, "has_capital", 0)
 		-- Player should be able to build structures.
@@ -47,7 +47,7 @@ function AGS_ScatteredVillagers_OnSpawn()
 	-- Tune villager spawn out from the middle of the map.
 	AGS_SCATTER_RADIUS = math.max(World_GetWidth(), World_GetLength())/AGS_SCATTER_TUNING 
 
-	for i, player in ipairs(PLAYERS) do		
+	for _, player in pairs(PLAYERS) do		
 		player_civ = Player_GetRaceName(player.id)		
 		-- Increase starting resources to cover building a TC
 		if player_civ ~= AGS_CIV_MONGOL then

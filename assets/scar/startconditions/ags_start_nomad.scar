@@ -32,7 +32,7 @@ function AGS_Nomad_PresetSpawn()
 end
 
 function AGS_Nomad_PresetPostSpawn()
-	for i, player in ipairs(PLAYERS) do	
+	for _, player in pairs(PLAYERS) do	
 		-- Insist that player do not have capital.
 		Player_SetStateModelFloat(player.id, "has_capital", 0)
 		-- Player should be able to build structures
@@ -48,7 +48,7 @@ end
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 function AGS_Nomad_OnSpawn()
-	for i, player in ipairs(PLAYERS) do	
+	for _, player in pairs(PLAYERS) do	
 		local player_civ = Player_GetRaceName(player.id)
 		AGS_Nomad_SpawnUnits(player.id, player_civ)
 	end
@@ -61,7 +61,7 @@ function AGS_Nomad_StartTrickle()
 end
 -- Clear resources and continue with slow trickle.
 function AGS_Nomad_ResetResources()	
-	for i, player in ipairs(PLAYERS) do			
+	for _, player in pairs(PLAYERS) do			
 		-- Track resources remaining to provide
 		player.AGS_NOMAD_RES = { }
 		player.AGS_NOMAD_RES["Food"] = Player_GetResource(player.id, RT_Food)
@@ -88,7 +88,7 @@ end
 function AGS_Nomad_IncrementResources()		
 	if World_GetGameTime() - AGS_NOMAD_START >= AGS_NOMAD_THRESHOLD then
 		local allResourcesReceived = true		
-		for i, player in ipairs(PLAYERS) do		
+		for _, player in pairs(PLAYERS) do		
 			local _IncrementResource = function(resIndex, resType) 				
 				if player.AGS_NOMAD_RES[resIndex] > 0 then
 					Player_AddResource(player.id, resType, 1)
@@ -113,7 +113,7 @@ end
 function AGS_Nomad_ResourcesFinished()
 	if Rule_Exists(AGS_Nomad_IncrementResources) then		
 		Rule_Remove(AGS_Nomad_IncrementResources)
-		for i, player in ipairs(PLAYERS) do		
+		for _, player in pairs(PLAYERS) do		
 			Player_AddResource(player.id, RT_Food, player.AGS_NOMAD_RES["Food"])
 			Player_AddResource(player.id, RT_Wood, player.AGS_NOMAD_RES["Wood"])
 			Player_AddResource(player.id, RT_Stone, player.AGS_NOMAD_RES["Stone"])

@@ -34,7 +34,7 @@ function AGS_Testing_RemoveGaia()
 end
 
 function AGS_Testing_RemoveUnits()
-	for _, player in ipairs(PLAYERS) do
+	for _, player in pairs(PLAYERS) do
 		SGroup_DestroyAllSquads(Player_GetSquads(player.id))
 	end
 end

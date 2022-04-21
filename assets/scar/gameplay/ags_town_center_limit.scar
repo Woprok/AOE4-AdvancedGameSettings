@@ -36,14 +36,14 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_TownCenterLimit_RestrictNormal()
-	for i, player in ipairs(PLAYERS) do
+	for i, player in pairs(PLAYERS) do
 		local player_civ = Player_GetRaceName(player.id)
 		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player_civ, AGS_BP_TC), ITEM_REMOVED)
 	end
 end
 
 function AGS_TownCenterLimit_RestrictAll()
-	for i, player in ipairs(PLAYERS) do
+	for i, player in pairs(PLAYERS) do
 		local player_civ = Player_GetRaceName(player.id)
 		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player_civ, AGS_BP_TC), ITEM_REMOVED)
 		if player_civ == AGS_CIV_ENGLISH or player_civ == AGS_CIV_HRE then

@@ -30,7 +30,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_Settled_OnSpawn()
-	for i, player in ipairs(PLAYERS) do	
+	for _, player in pairs(PLAYERS) do	
 		local player_civ = Player_GetRaceName(player.id)
 		if player_civ == AGS_CIV_MONGOL then
 			AGS_Settled_SpawnMovingTownCenter(player.id, player_civ)
