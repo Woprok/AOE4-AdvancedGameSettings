@@ -34,7 +34,7 @@ AGS_TREE_BOMBARDMENT = {
 
 Core_RegisterModule(AGS_TREE_BOMBARDMENT_MODULE)	
 
-function AGS_EarlyMarket_PostSettingSetup()
+function AGS_TreeBombardment_UpdateModuleSettings()
 	if not AGS_GLOBAL_SETTINGS.TreeBombardment then
 		Core_UnregisterModule(AGS_TREE_BOMBARDMENT_MODULE)
 	end

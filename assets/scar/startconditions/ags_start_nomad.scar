@@ -21,7 +21,7 @@ AGS_NOMAD_DURATION = 60 -- Accumulation time
 
 Core_RegisterModule(AGS_NOMAD_MODULE)	
 
-function AGS_Nomad_PostSettingSetup()
+function AGS_Nomad_UpdateModuleSettings()
 	if AGS_GLOBAL_SETTINGS.StartType ~= AGS_ST_NOMAD then
 		Core_UnregisterModule(AGS_NOMAD_MODULE)
 	end

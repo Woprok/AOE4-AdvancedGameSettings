@@ -31,7 +31,7 @@ AGS_FINAL_AGE_ABB_TW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_trade_wing_i
 
 Core_RegisterModule(AGS_FINAL_AGE_MODULE)	
 
-function AGS_FinalAge_PostSettingSetup()
+function AGS_FinalAge_UpdateModuleSettings()
 	if AGS_GLOBAL_SETTINGS.FinalAge == 5 then
 		Core_UnregisterModule(AGS_FINAL_AGE_MODULE)
 	end

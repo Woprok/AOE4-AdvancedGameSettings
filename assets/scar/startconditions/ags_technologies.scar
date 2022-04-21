@@ -15,7 +15,7 @@ AGS_TECHNOLOGIES_MODULE = "AGS_Technologies"
 
 Core_RegisterModule(AGS_TECHNOLOGIES_MODULE)	
 
-function AGS_Technologies_PostSettingSetup()
+function AGS_Technologies_UpdateModuleSettings()
 	if AGS_GLOBAL_SETTINGS.TechnologyAge == 0 then
 		Core_UnregisterModule(AGS_TECHNOLOGIES_MODULE)
 	end

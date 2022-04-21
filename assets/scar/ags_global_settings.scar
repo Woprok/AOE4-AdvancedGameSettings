@@ -41,7 +41,7 @@ AGS_GLOBAL_SETTINGS = {
 	FinalAge = 5,
 	TechnologyAge = 0,
 	
-	GameRates = 1.0,
+	GameRates = 1.00,
 	SimulationSpeed = 1.0,
 	PopulationCapacity = 200,
 	
@@ -77,7 +77,7 @@ AGS_GLOBAL_SETTINGS = {
 
 Core_RegisterModule("AGS_Settings")	
 
-function AGS_Settings_SettingSetup(options)	
+function AGS_Settings_SetupSettings(options)	
 	-- Options can not be null.
 	if not options then
 		return
@@ -203,8 +203,6 @@ function AGS_Settings_SettingSetup(options)
 			AGS_SetRestrictTownCenters(category.restrict_town_centers)
 		end
 	end	
-	Util_PrintObject(AGS_GLOBAL_SETTINGS, 5)
-	Core_CallDelegateFunctions("PostSettingSetup")
 end
 
 ---------------------------------------------------------------------------------------------------

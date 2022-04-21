@@ -15,7 +15,7 @@ AGS_SIMULATION_SPEED_MODULE = "AGS_SimulationSpeed"
 
 Core_RegisterModule(AGS_SIMULATION_SPEED_MODULE)	
 
-function AGS_SimulationSpeed_PostSettingSetup()
+function AGS_SimulationSpeed_UpdateModuleSettings()
 	if AGS_GLOBAL_SETTINGS.SimulationSpeed == 1.0 then
 		Core_UnregisterModule(AGS_SIMULATION_SPEED_MODULE)
 	end

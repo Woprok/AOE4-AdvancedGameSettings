@@ -8,7 +8,6 @@
 ---------------------------------------------------------------------------------------------------
 
 AGS_GAME_RATES_MODULE = "AGS_GameRates"
-AGS_GAME_RATES_MODIFIERS = {}
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -16,13 +15,13 @@ AGS_GAME_RATES_MODIFIERS = {}
 
 Core_RegisterModule(AGS_FINAL_AGE_MODULE)	
 
-function AGS_GameRates_PostSettingSetup()
-	if AGS_GLOBAL_SETTINGS.GameRates == 1.0 then
+function AGS_GameRates_UpdateModuleSettings()
+	if AGS_GLOBAL_SETTINGS.GameRates == 1.00 then
 		Core_UnregisterModule(AGS_GAME_RATES_MODULE)
 	end
 end
 
-function AGS_GameRates_Start()
+function AGS_GameRates_OnInit()
 	AGS_GameRates_ChangeGameRates()
 	Rule_AddGlobalEvent(AGS_GameRates_ConstructionComplete, GE_ConstructionComplete)
 end
@@ -43,17 +42,9 @@ function AGS_GameRates_ConstructionComplete(context)
 end
 
 function AGS_GameRates_ChangeGameRates()
-	-- Remove existing speed modifiers.
-	for _, modifier in pairs(AGS_GAME_RATES_MODIFIERS) do
-		Modifier_RemoveInternal(modifier.ModifierID)
-	end
 	-- Apply function.
 	local ApplyModifier = function(player_id, modifier_ebp, modifier_type, modifier_value)
-		if modifier_value ~= 1 then 
-			local modifier = Modifier_Create(MAT_EntityType, modifier_type, MUT_Multiplication, false, modifier_value, modifier_ebp)
-			Modifier_ApplyToPlayer(modifier, player_id, 0.0)
-			table.insert(AGS_GAME_RATES_MODIFIERS, modifier)
-		end
+		Modifier_ApplyToPlayer(Modifier_Create(MAT_EntityType, modifier_type, MUT_Multiplication, false, modifier_value, modifier_ebp), player_id, 0.0)
 	end	
 	-- Apply new modifiers.
 	for _, player in pairs(PLAYERS) do	
@@ -63,6 +54,6 @@ function AGS_GameRates_ChangeGameRates()
 		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_gold", AGS_GLOBAL_SETTINGS.GameRates)
 		ApplyModifier(player.id, villager_ebp, "resource_entity_harvest_rate_stone", AGS_GLOBAL_SETTINGS.GameRates)
 		ApplyModifier(player.id, villager_ebp, "construction_rate", AGS_GLOBAL_SETTINGS.GameRates)
-		ApplyModifier(player.id, villager_ebp, "repair_rate_modifier", AGS_GLOBAL_SETTINGS.GameRates)
+		--ApplyModifier(player.id, villager_ebp, "repair_rate_modifier", AGS_GLOBAL_SETTINGS.GameRates)
 	end
 end

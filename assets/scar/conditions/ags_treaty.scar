@@ -64,7 +64,7 @@ end
 
 Core_RegisterModule(AGS_TREATY_MODULE)	
 
-function AGS_Treaty_PostSettingSetup()
+function AGS_Treaty_UpdateModuleSettings()
 	if AGS_GLOBAL_SETTINGS.TreatyTimer == 0 then
 		Core_UnregisterModule(AGS_TREATY_MODULE)
 	end

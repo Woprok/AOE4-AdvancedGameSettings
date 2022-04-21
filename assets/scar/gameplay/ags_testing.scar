@@ -15,7 +15,7 @@ AGS_TESTING_MODULE = "AGS_Testing"
 
 Core_RegisterModule(AGS_TESTING_MODULE)	
 
-function AGS_Testing_PostSettingSetup()
+function AGS_Testing_UpdateModuleSettings()
 	if not AGS_GLOBAL_SETTINGS.CanTest then
 		Core_UnregisterModule(AGS_TESTING_MODULE)
 	end

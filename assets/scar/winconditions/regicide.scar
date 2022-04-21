@@ -63,9 +63,11 @@ function Regicide_PreInit()
 	
 end
 
-function Regicide_PostSettingSetup()
+function Regicide_AdjustSettings()
 	-- Ensure that kind is spawned if regicide is enabled
-	AGS_GLOBAL_SETTINGS.SpawnKing = true
+	if not AGS_GLOBAL_SETTINGS.SpawnKing then
+		AGS_GLOBAL_SETTINGS.SpawnKing = true
+	end
 end
 
 -- Called on match initialization before handing control to the player
@@ -79,11 +81,11 @@ function Regicide_OnInit()
 	-- CALLING FUNCTIONS: The following calls the Mod_FindTownCenter() and Mod_SpawnBuilding() functions directly and immediately.
 	--Regicide_FindTownCenter()
 	
-	Regicide_InitWinCondition()
 end
 
 -- Called after initialization is done when game is fading up from black
 function Regicide_Start()
+	Regicide_InitWinCondition()
 	
 	-- Setup the player's objective UI by calling the below function directly
 	Regicide_AddObjective()

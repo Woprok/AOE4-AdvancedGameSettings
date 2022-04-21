@@ -18,7 +18,7 @@ AGS_SHARED_VISION_MODULE = "AGS_SharedVision"
 
 Core_RegisterModule(AGS_SHARED_VISION_MODULE)	
 
-function AGS_SharedVision_PostSettingSetup()
+function AGS_SharedVision_UpdateModuleSettings()
 	if AGS_GLOBAL_SETTINGS.SharedVision == AGS_SV_NEVER then
 		Core_UnregisterModule(AGS_SHARED_VISION_MODULE)
 	end

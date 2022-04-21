@@ -15,7 +15,7 @@ AGS_INITIAL_AGE_MODULE = "AGS_InitialAge"
 
 Core_RegisterModule(AGS_INITIAL_AGE_MODULE)	
 
-function AGS_InitialAge_PostSettingSetup()
+function AGS_InitialAge_UpdateModuleSettings()
 	if AGS_GLOBAL_SETTINGS.StartAge == 0 then
 		Core_UnregisterModule(AGS_INITIAL_AGE_MODULE)
 	end

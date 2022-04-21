@@ -15,7 +15,7 @@ AGS_TOWN_CENTER_LIMIT_MODULE = "AGS_TownCenterLimit"
 
 Core_RegisterModule(AGS_TOWN_CENTER_LIMIT_MODULE)	
 
-function AGS_TownCenterLimit_PostSettingSetup()
+function AGS_TownCenterLimit_UpdateModuleSettings()
 	if AGS_GLOBAL_SETTINGS.RestrictTownCenters == AGS_RTC_NONE then
 		Core_UnregisterModule(AGS_TOWN_CENTER_LIMIT_MODULE)
 	end

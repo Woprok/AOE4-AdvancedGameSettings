@@ -35,16 +35,11 @@ import("gameplay/cheat.scar")
 
 Core_RegisterModule(AGS_UTILITIES_MODULE)	
 
-function AGS_Utilities_SettingSetup(options)
+function AGS_Utilities_SetupSettings(options)
 	-- Set player behaviour when eliminated
 	if options.section_endgame then 
 		allow_spectators = options.section_endgame.option_allow_spectators
 	end
-end
-
-function AGS_Utilities_PostSettingSetup()
-
-	
 end
 
 function AGS_Utilities_Start()

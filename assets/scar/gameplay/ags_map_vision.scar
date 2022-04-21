@@ -15,7 +15,7 @@ AGS_MAP_VISION_MODULE = "AGS_MapVision"
 
 Core_RegisterModule(AGS_MAP_VISION_MODULE)	
 
-function AGS_MapVision_PostSettingSetup()
+function AGS_MapVision_UpdateModuleSettings()
 	if AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_HIDDEN then
 		Core_UnregisterModule(AGS_MAP_VISION_MODULE)
 	end

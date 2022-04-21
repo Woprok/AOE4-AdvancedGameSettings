@@ -46,7 +46,7 @@ function AdvancedMode_OnGameSetup()
 		else
 			Religious_UpdateConditions()
 		end
-	
+		
 		
 		if not _match.options.section_inner_win_conditions.option_win_condition_wonder then
 			Core_UnregisterModule("Wonder")
@@ -81,7 +81,13 @@ function AdvancedMode_OnGameSetup()
 	
 	
 	
-	Core_CallDelegateFunctions("SettingSetup", _match.options)
+	Util_PrintObject(AGS_GLOBAL_SETTINGS, 5)
+	Core_CallDelegateFunctions("SetupSettings", _match.options)
+	Util_PrintObject(AGS_GLOBAL_SETTINGS, 5)
+	Core_CallDelegateFunctions("AdjustSettings")
+	Util_PrintObject(AGS_GLOBAL_SETTINGS, 5)
+	Core_CallDelegateFunctions("UpdateModuleSettings")
+	Util_PrintObject(AGS_GLOBAL_SETTINGS, 5)
 end
 
 function AdvancedMode_OnInit()
