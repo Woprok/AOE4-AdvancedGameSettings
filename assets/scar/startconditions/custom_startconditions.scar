@@ -202,12 +202,12 @@ function InternalCustomStartConditions_SpawnInitialSquads()
 		
 		local sbp_vil = InternalCustomOptions_GetVillager(player_civ)
 		local snameVIL = InternalCustomOptions_SquadGroupName(player.id, _custom.villager)
-		local sg_vil = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameVIL, sbp_vil, -10, 0, -10, _custom.starting_villagers)
+		local sg_vil = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameVIL, sbp_vil, -11, 0, -11, _custom.starting_villagers)
 		CustomOptions_AssignAIToPosition(player.id, nil, sg_vil)
 		
 		local sbp_sco = InternalCustomOptions_GetScout(player_civ)
 		local snameSCO = InternalCustomOptions_SquadGroupName(player.id, _custom.scout)
-		local sg_sco = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSCO, sbp_sco, -12, 0, -12, 1)
+		local sg_sco = InternalCustomOptions_SpawnSquadsAtSpawnOffset(player.id, snameSCO, sbp_sco, -12, 0, -4, 1)
 		--CustomOptions_AssignAIToPosition(player.id, nil, sg_sco)
 		
 		local sbp_shp = InternalCustomOptions_GetSheep(player_civ)
