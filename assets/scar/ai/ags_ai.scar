@@ -36,6 +36,10 @@ function AGS_AI_AdjustAIPlayer(player_id, reason)
 	end
 end
 	
+function AGS_AI_PresetPostSpawn()
+	AGS_AI_StoneVision()
+end
+
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
@@ -53,7 +57,6 @@ function AGS_AI_IsAI(player_id)
 	end
 	return true
 end
-
 -- Assigns selected units to AI default control.
 function AGS_AI_AssignSpawnedUnits(player_id, home_position, units)
 	if home_position == nil then 
@@ -66,13 +69,31 @@ function AGS_AI_AssignSpawnedUnits(player_id, home_position, units)
 	--AIPlayer_SetAllowResourceGatheringOutsideLeash(player_ai, home_base_id, true)
 	--AIPlayer_SetRequiresStatsUpdate(player_ai)
 end
-
 -- Changes certain value as AI might not be able to manage certain nomad conditions.
 function AGS_AI_ApplyNomadAdjustments(player_id)	
 	Player_SetStateModelBool(player_id, "player_can_construct_structures", false)
 	
 	local player_civ = Player_GetRaceName(player_id)
-	if player_civ == "chinese" and AI_IsAIPlayer(player_id) then
+	if player_civ == AGS_CIV_CHINESE and AGS_AI_IsAI(player_id) then
 		Player_GiftResource(player_id, RT_Wood, 375)
+	end
+end
+
+function AGS_AI_StoneVision()
+	local outcrop_group = EGroup_CreateIfNotFound("stone_outcrops")
+	World_GetAllNeutralEntities(outcrop_group)
+	for _, player in ipairs(PLAYERS) do 
+		local player_civ = Player_GetRaceName(player.id)				
+		if player_civ == AGS_CIV_MONGOL and AGS_AI_IsAI(player.id) then
+			
+			local _AGS_ShowStone = function(gid, idx, eid)		
+				if eid ~= nil and Entity_IsOfType(eid, "resource") and Entity_IsOfType(eid, "stone") then
+					local stone_position = Entity_GetPosition(eid)
+					FOW_PlayerRevealArea(player.id, stone_position, 10, 0.25)
+				end		
+			end
+			
+			EGroup_ForEach(outcrop_group, _AGS_ShowStone)	
+		end
 	end
 end

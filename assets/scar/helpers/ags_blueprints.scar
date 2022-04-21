@@ -111,6 +111,7 @@ AGS_CIV_ENGLISH = "english"
 AGS_CIV_HRE = "hre"
 AGS_CIV_MONGOL = "mongol"
 AGS_CIV_ABBASID = "abbasid"
+AGS_CIV_CHINESE = "chinese"
 
 AGS_UPGRADE_AGES = {
 	AGE_DARK = "dark_age",

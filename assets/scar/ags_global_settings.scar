@@ -62,7 +62,7 @@ AGS_GLOBAL_SETTINGS = {
 	RestrictTownCenters = AGS_RTC_NONE,
 	CanTest = false, -- undefined
 	
-	CanReveal = false, -- undefined
+	CanReveal = true, -- undefined
 	RevealRadius = 70, -- undefined
 	RevealDuration = 0.25, -- undefined
 	MapVision = AGS_MAP_HIDDEN,

@@ -16,7 +16,7 @@ AGS_REVEAL_SPAWN_MODULE = "AGS_RevealSpawn"
 Core_RegisterModule(AGS_REVEAL_SPAWN_MODULE)	
 
 function AGS_RevealSpawn_PostSettingSetup()
-	if not AGS_GLOBAL_SETTINGS.CanReveal then
+	if not AGS_GLOBAL_SETTINGS.CanReveal or AGS_GLOBAL_SETTINGS.StartType ~= AGS_ST_SETTLED then
 		Core_UnregisterModule(AGS_REVEAL_SPAWN_MODULE)
 	end
 end
@@ -29,7 +29,7 @@ end
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 -- Reveal fog of war around starting position of a player.
-function AGS_RevealSpawn()		
+function AGS_RevealSpawn()			
 	for i, player in ipairs(PLAYERS) do	
 		FOW_PlayerRevealArea(player.id, player.startingPos, AGS_GLOBAL_SETTINGS.RevealRadius, AGS_GLOBAL_SETTINGS.RevealDuration)	
 	end

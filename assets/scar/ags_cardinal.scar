@@ -10,6 +10,7 @@
 
 ---------------------------------------------------------------------------------------------------
 -- Imports:
+-- Order of imports defines oder of event handles. Beware of it when intruducing dependencies.
 ---------------------------------------------------------------------------------------------------
 
 -- Core import that enables match to start.
@@ -30,6 +31,7 @@ import("startconditions/ags_start_king.scar")
 import("startconditions/ags_initial_age.scar")
 import("startconditions/ags_technologies.scar")
 import("startconditions/ags_final_age.scar")
+-- Low priority that requires other modules.
 import("startconditions/ags_reveal_spawn.scar")
 -- Low priority gameplay customizations that do not have dependencies.
 import("gameplay/ags_ding.scar")
