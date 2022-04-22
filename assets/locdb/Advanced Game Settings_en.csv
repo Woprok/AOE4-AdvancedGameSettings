@@ -321,3 +321,5 @@
 326,,,,,,Requires Market
 327,,,,,,Never
 328,,,,,,Never
+329,,,ags_conditions_visuals,,,%1PLAYER_NAME% surrendered in solidarity
+330,,,ags_conditions_visuals,,,Your teammates must survive.

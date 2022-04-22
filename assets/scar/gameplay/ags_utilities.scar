@@ -23,6 +23,7 @@
 -- )
 
 AGS_UTILITIES_MODULE = "AGS_Utilities"
+AGS_UTILITIES_LOCAL_PLAYER = nil
 
 -- Replay System
 import("gameplay/score.scar")
@@ -47,15 +48,33 @@ end
 function AGS_Utilities_OnInit()
 	UI_AllTerritoryHide()
 	
-	ReplayStatViewer_PopulateReplayStatTabs({"CurrentResourcesTemplate", "IncomeTemplate", "MilitaryTemplate"})	
+	AGS_Utilities_OnLocalPlayerChanged(Game_GetLocalPlayer())
+	Rule_AddGlobalEvent(AGS_Utilities_OnLocalPlayerChanged, GE_LocalPlayerChanged)
+	
+	ReplayStatViewer_PopulateReplayStatTabs({"CurrentResourcesTemplate", "IncomeTemplate", "MilitaryTemplate"})		
+end
+
+function AGS_Utilities_OnPlayerDefeated(player, reason)
+	-- Reveal all on local player defeated.
+	local localPlayer = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+	if player == localPlayer and Core_RevealFOWOnEliminationEnabled() then
+		FOW_UIRevealAll()
+	end
 end
 
 function AGS_Utilities_OnGameOver()
+	Rule_AddGlobalEvent(AGS_Utilities_OnLocalPlayerChanged)
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+-- Called when local player is changed.
+function AGS_Utilities_OnLocalPlayerChanged(context)
+	if context ~= nil and context.player ~= nil then
+		AGS_UTILITIES_LOCAL_PLAYER = Core_GetPlayersTableEntry(context.player)
+	end
+end
 
 -- used in conquest and surrender winconditions
 --? @shortdesc Returns the value of the "Reveal FOW on Elimination" match option

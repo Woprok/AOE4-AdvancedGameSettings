@@ -775,3 +775,16 @@ function SuddenDeath_DelayedLoserPresentation(context, data)
 		})
 	end	
 end
+
+
+
+
+function Annihilation_IsACapital(entity)		
+	return Entity_GetStateModelBool(entity, "town_center_is_capital") or Entity_IsOfType(entity, "town_center_capital")
+end
+
+
+function Annihilation_IsALandmark(entity)		
+	return Entity_IsOfType(entity, _annihilation.types.landmark) and not Entity_IsOfType(entity, _annihilation.types.wonder)	
+end
+

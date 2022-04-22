@@ -118,18 +118,10 @@ import("winconditions/teamsolidarity.scar")
 ---------------------------------------------------------------------------------------------------
 -- Relic Calls:
 ---------------------------------------------------------------------------------------------------
--- RegisterEncounterPlans
--- DiplomacyEnabled
--- TributeEnabled
--- OnRelationshipChanged // due to non existing GE_RelationChanged
--- OnTributeSent
--- OnConstructionComplete
+-- INITIALIZATION IN ORDER
+-------------------------------------------------
 -- OnGameSetup
 -- OnGameRestore
--- OnLeaveGameMatchRequested
--- OnSurrenderMatchRequested
--- OnPlayerAITakeover
--- PreGameOver
 -- PreInit
 -- OnInit
 -- PostInit
@@ -140,13 +132,33 @@ import("winconditions/teamsolidarity.scar")
 -- InitComplete
 -- PreStart
 -- Start
--- OnPlayerDefeated
--- OnTeamDefeated
+-- PreGameOver
 -- OnGameOver
+-------------------------------------------------
+-- DIPLOMACY STATE
+-------------------------------------------------
+-- TributeEnabled
+-- OnTributeSent
+-- DiplomacyEnabled
+-- OnRelationshipChanged // due to non existing GE_RelationChanged
 -- OnPlayerLeftTeam
 -- OnTeamCreated
 -- OnTeamRemoved
 -- OnPlayerJoinedTeam
+-------------------------------------------------
+-- PLAYER MATCH STATE
+-------------------------------------------------
+-- OnLeaveGameMatchRequested
+-- OnSurrenderMatchRequested
+-- OnPlayerDefeated
+-- OnTeamDefeated
+-- OnPlayerAITakeover
+-------------------------------------------------
+-- IRRELEVANT
+-------------------------------------------------
+-- ActivateMenuItem
+-- StartWithCheat
+-- RegisterEncounterPlans
 -- UnitEntry_PreprocessDeployment
 -- UnitEntry_StartDeployment
 -- UnitEntry_EndDeployment
@@ -154,8 +166,7 @@ import("winconditions/teamsolidarity.scar")
 -- UnitEntry_SpawnUnit
 -- UnitEntry_SpawnUnit_Finish
 -- UnitEntry_RegisterEntryMethods
--- ActivateMenuItem
--- StartWithCheat
+-- OnConstructionComplete // Was invoked only be Relic StartConditions after TC was spawned.
 ---------------------------------------------------------------------------------------------------
 -- Expected Order:
 -- 1. OnGameSetup
@@ -195,4 +206,7 @@ import("winconditions/teamsolidarity.scar")
 -- GE_StrategicPointChanged -> OnStrategicPointChanged TODO from OnHolySiteChange 
 -- GE_DamageReceived -> OnDamageReceived 
 -- GE_ConstructionStart -> OnConstructionStart
+---------------------------------------------------------------------------------------------------
+-- TODO:
+-- Go and organize Player_, Core_ methods better as Core_GetPlayersTableEntry is shortcut for Player_
 ---------------------------------------------------------------------------------------------------

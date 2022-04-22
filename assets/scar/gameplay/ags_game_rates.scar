@@ -23,8 +23,8 @@ function AGS_GameRates_UpdateModuleSettings()
 end
 
 function AGS_GameRates_Preset()	
-	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType("building"))	
-	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType("annihilation_condition"))	
+	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_BUILDING_CLASS))	
+	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_UNIT_CLASS))	
 end
 
 ---------------------------------------------------------------------------------------------------

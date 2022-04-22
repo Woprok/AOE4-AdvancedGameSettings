@@ -1,0 +1,301 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Contains visuals and helpers for conditions such as treaty and conquest.
+---------------------------------------------------------------------------------------------------
+
+AGS_LOOSER_DEFEAT = {
+	icon = nil,
+	-- DEFEAT
+	title = Loc_GetString(11165094),
+	message = Loc_Empty(),
+	sound = "mus_stinger_landmark_objective_complete_fail",
+	video = "stinger_defeat",		
+}
+AGS_LOOSER_DEFEAT_CONQUEST = {
+	icon = nil,
+	-- DEFEAT
+	title = Loc_GetString(11165094),
+	message = Loc_Empty(),
+	sound = "ConquestDefeatEvent",
+	video = "stinger_defeat",		
+}
+AGS_LOOSER_ELIMINATED = {
+	icon = nil,
+	-- ELIMINATED
+	title = Loc_GetString(11165821),
+	message = Loc_Empty(),
+	sound = "mus_stinger_landmark_objective_complete_fail",
+	video = "stinger_eliminated",		
+}
+AGS_LOOSER_ELIMINATED_CONQUEST = {
+	icon = nil,
+	-- ELIMINATED
+	title = Loc_GetString(11165821),
+	message = Loc_Empty(),
+	sound = "ConquestDefeatEvent",
+	video = "stinger_eliminated",		
+}
+AGS_WINNER_VICTORY = {
+	icon = nil,
+	-- VICTORY
+	title = Loc_GetString(11161277),
+	message = Loc_Empty(),
+	sound = "mus_stinger_landmark_objective_complete_success",
+	video = "stinger_victory",		
+}
+AGS_WINNER_VICTORY_CONQUEST = {
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_conquest", 
+	-- VICTORY
+	title = Loc_GetString(11161277),
+	message = Loc_Empty(),
+	sound = "ConquestVictoryEvent",
+	video = "stinger_victory",		
+}
+
+AGS_OBJECTIVE_REGICIDE = {
+	-- Your King must survive.
+	title = "$11218487", 
+	description = Loc_Empty,
+	icon = "icons\\objectives\\objectives_leader",
+	data_template = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "regicideObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+AGS_OBJECTIVE_TEAMSOLIDARITY = {
+	-- Your teammates must survive.
+	title = "$64c5019a145c4e4da448dbd3adeea61e:330", 
+	description = Loc_Empty,
+	icon = "icons\\objectives\\objectives_leader",
+	data_template = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "teamsolidarityObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+-- "%1PLAYER_NAME% eliminated"
+AGS_CUE_TITLE_ANNIHILATED_ID = 11159062
+AGS_CUE_TITLE_ELIMINATED_ID = 11165820
+AGS_CUE_TITLE_REGICIDED_ID = 11165820
+-- "%1PLAYER_NAME% surrendered"
+AGS_CUE_TITLE_SURRENDERED_ID = 11161289
+-- "%1PLAYER_NAME% surrendered in solidarity with his teammate"
+AGS_CUE_TITLE_TEAM_SOLIDARITY_ID = "$64c5019a145c4e4da448dbd3adeea61e:329"
+
+AGS_CUE_CORE = {	
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	lifetime = 10.0,		
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	repeatTime = 30.0,		
+	title = Loc_Empty(),
+	desc = Loc_Empty(),
+	sfx = "sfx_ui_event_queue_high_priority_play",
+	icon = "icons\\event_queue_high_priority_large",
+	color = {r = 255, g = 255, b = 255, a = 255},
+	template = "high_priority", 
+	style = ECV_Queue | ECV_Title,
+}
+AGS_CUE_SURRENDER = {	
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	lifetime = 10.0,		
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	repeatTime = 30.0,		
+	title = Loc_Empty(),
+	desc = Loc_Empty(),
+	sfx = "sfx_ui_surrendered_notification_play",
+	icon = "icons\\event_queue_high_priority_large",
+	color = {r = 255, g = 255, b = 255, a = 255},
+	template = "high_priority", 
+	style = ECV_Queue | ECV_Title,
+}
+AGS_SFX = {
+	eliminated_self = "Conquest_friendly_eliminated",
+	eliminated_ally = "Conquest_friendly_eliminated",
+	eliminated_enemy = "Conquest_enemy_eliminated",	
+}
+---------------------------------------------------------------------------------------------------
+-- Helpers:
+---------------------------------------------------------------------------------------------------
+
+-- Reasons: 
+AGS_WR_NONE = WR_NONE 
+AGS_WR_ANNIHILATION = WR_ANNIHILATION
+AGS_WR_ELIMINATION = WR_ELIMINATION
+AGS_WR_SURRENDER = WR_SURRENDER
+AGS_WR_REGICIDE = 4
+AGS_WR_TEAM_SOLIDARITY = 5
+
+-- Sets a player as defeated, invoking presentation and calling OnPlayerDefeated. 
+function AGS_SetPlayerDefeated(player_id, presentation_function, defeat_reason)
+	-- Invokes OnPlayerDefeated, only owner of the reason should use it for win/lose checks.
+	Core_SetPlayerDefeated(player_id, presentation_function, defeat_reason)
+	-- Basically this is called by default and its dumb...
+	if Player_IsAlive(player_id) then
+		AGS_Print("Killed player even through he was defeated ?", 5)
+		World_KillPlayer(player_id, KPR_Lost)
+	end
+end
+-- Sets a player as victorious, invoking presentation and calling PreGameOver. 
+function AGS_SetPlayerVictorious(player_id, presentation_function, victory_reason)
+	Core_SetPlayerVictorious(player_id, presentation_function, victory_reason)
+end
+-- Ends the game by doing last delegate call OnGameOver executed via core method.
+function AGS_EndGame()	
+	Core_OnGameOver()
+end
+
+function AGS_SetObjective(objective, state, visibility)
+	Obj_SetState(objective, state)
+	Obj_SetVisible(objective, visibility)
+	-- Sets the progress element of the objective to visible so players can see it
+	--Obj_SetProgressVisible(_mod.objective, true)		
+	-- Sets the objective progress type to a counter
+	--Obj_SetCounterType(_mod.objective, COUNTER_CountUpTo)
+	-- Set the starting objective progress to 1 because we spawn a House for the player in Mod_SpawnBuilding()
+	--Obj_SetCounterCount(_mod.objective, 1)
+	-- Set the maximum objective progress
+	--Obj_SetCounterMax(_mod.objective, _mod.objective_requirement)
+	-- Set the objective progress bar percentage value
+	--Obj_SetProgress(_mod.objective, 1 / _mod.objective_requirement)
+end
+-- Returns nil or winner id list
+function AGS_DoesWinnerGroupExists()
+	local winner_group = nil
+	-- TODO for case single and static teams
+	if AGS_GLOBAL_SETTINGS.WinnerGroup == AGS_WG_DYNAMIC then
+		winner_group = AGS_GetDynamicTeamWinners()
+	end	
+	return winner_group
+end
+
+-- Returns nil or winner id list
+function AGS_GetDynamicTeamWinners()
+	local winner_group = { }
+	-- Get count of living players.
+	local total_alive = AGS_CountAlivePlayers()
+	local total_winners = 0
+	for _, player in pairs(PLAYERS) do	
+		if Player_IsAlive(player.id) then
+			local allies_count = AGS_CountAllies(player.id)	
+			-- +1 is for this player
+			if allies_count + 1 == total_alive then
+				total_winners = total_winners + 1
+				table.insert(winner_group, player.id)				
+			end				
+		end		
+	end
+	
+	if total_alive == total_winners then
+		return winner_group
+	end
+	return nil
+end
+
+function AGS_CountAlivePlayers()
+	local total_alive = 0
+	for _, player in pairs(PLAYERS) do	
+		if Player_IsAlive(player.id) then
+			total_alive = total_alive + 1
+		end
+	end
+	return total_alive
+end
+
+function AGS_CountAliveAllies(player_id)
+	-- Obtain allies count.
+	local allies_count = 0
+	for _, ally in pairs(PLAYERS) do
+		if player_id ~= ally.id and Player_IsAlive(ally.id) and 
+			AGS_IsMutualRelation(player_id, ally.id, R_ALLY) then
+			allies_count = allies_count + 1
+		end
+	end		
+	return allies_count
+end
+-- Returns all teammates for that player
+function AGS_GetAllTeammates(player_id)
+	-- TODO return list of static allies ids
+end
+---------------------------------------------------------------------------------------------------
+-- Visuals:
+---------------------------------------------------------------------------------------------------
+
+function AGS_PlaySFX(source_player_id)
+	if source_player_id == Game_GetLocalPlayer() then
+		Sound_Play2D(AGS_SFX.eliminated_self)
+	elseif AGS_IsMutualRelation(source_player_id, Game_GetLocalPlayer(), R_ALLY) then
+		Sound_Play2D(AGS_SFX.eliminated_ally)
+	else
+		Sound_Play2D(AGS_SFX.eliminated_enemy)
+	end
+end
+
+-- Show event queue notification.
+function AGS_CreateCue(cue_template, title_id, player_name)
+	UI_CreateEventCueClickable(
+		-1, 
+		cue_template.lifetime, 
+		0, 
+		cue_template.repeatTime, 
+		Loc_FormatText(title_id, player_name), 
+		cue_template.desc, 
+		cue_template.template, 
+		cue_template.icon, 
+		cue_template.sfx, 
+		cue_template.color.r, 
+		cue_template.color.g, 
+		cue_template.color.b, 
+		cue_template.color.a, 
+		cue_template.style, 
+		nothing
+	)	
+end
+
+function AGS_CreateObjective(objective, player_id, player_civ)
+	return Obj_Create(
+		player_id, -- Most likely always local player ?
+		objective.title,
+		objective.description(), 	
+		objective.icon, 
+		objective.data_template, 
+		player_civ, 
+		objective.priority, -- objective type e.g. primary or secondary
+		objective.parent, -- parent objective
+		objective.telemetry
+	)
+end
+
+function AGS_LoserPresenation(player_id, defeat_presentation, elimnation_presentation)
+	if AGS_GLOBAL_SETTINGS.WinnerGroup == AGS_WG_MAN then
+		AGS_Presenation(player_id, defeat_presentation)
+	elseif AGS_GLOBAL_SETTINGS.WinnerGroup == AGS_WG_TEAM and AGS_CountAliveAllies(player_id) > 0 then 
+		AGS_Presenation(player_id, elimnation_presentation)		
+	elseif AGS_GLOBAL_SETTINGS.WinnerGroup == AGS_WG_DYNAMIC then
+		AGS_Presenation(player_id, defeat_presentation)
+	else
+		AGS_Presenation(player_id, defeat_presentation)		
+	end
+end
+
+function AGS_Presenation(player_id, presentation)
+	if player_id == Game_GetLocalPlayer() then
+		Rule_AddOneShot(
+			_gameOver_message, 
+			GAMEOVER_OBJECTIVE_TIME, 
+			{
+				_playerID = player_id,
+				_icon = presentation.icon,
+				_endType = presentation.title,
+				_message = presentation.message,
+				_sound = presentation.sound,
+				_videoURI = presentation.video
+			}
+		)
+	end
+end

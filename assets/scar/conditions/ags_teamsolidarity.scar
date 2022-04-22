@@ -1,0 +1,123 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Team Solidarity subcondition.
+-- A player is eliminated when any ally is eliminated. 
+-- The last remaining player/team wins. 
+---------------------------------------------------------------------------------------------------
+
+AGS_TEAM_SOLIDARITY_MODULE = "AGS_TeamSolidarity"
+AGS_TEAM_SOLIDARITY_OBJECTIVE = nil
+AGS_TEAM_SOLIDARITY_ACTIVE_CHECKS = true
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_TEAM_SOLIDARITY_MODULE)	
+
+-- Unregister TeamSolidarity and prevent it from being initialized.
+function AGS_TeamSolidarity_UpdateModuleSettings()
+	if not AGS_GLOBAL_SETTINGS.TeamSolidarity then
+		Core_UnregisterModule(AGS_TEAM_SOLIDARITY_MODULE)
+	end
+end
+
+function AGS_TeamSolidarity_OnPlayerDefeated(player, reason)
+	-- Enforces teammates solidarity on other reasons.
+	if reason ~= AGS_WR_TEAM_SOLIDARITY then 
+		AGS_TeamSolidarity_Enforce(player)
+	end
+	if reason == AGS_WR_TEAM_SOLIDARITY then
+		AGS_TeamSolidarity_Notification(player)
+		AGS_TeamSolidarity_CheckVictory()
+	end
+end
+
+function AGS_TeamSolidarity_TreatyStarted()
+	AGS_TEAM_SOLIDARITY_ACTIVE_CHECKS = false
+end
+
+function AGS_TeamSolidarity_TreatyEnded()
+	AGS_TEAM_SOLIDARITY_ACTIVE_CHECKS = true
+end
+
+function AGS_TeamSolidarity_Start()
+	AGS_TeamSolidarity_CreateObjective()
+end
+
+function AGS_TeamSolidarity_OnGameOver()
+	AGS_TeamSolidarity_RemoveObjective()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_TeamSolidarity_Notification(player)
+	local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+	-- Play always for now.
+	AGS_PlaySFX(player.id)
+	-- If local is still in the game show message in right corner.
+	if player ~= nil and not player_local.isEliminated then 
+		AGS_CreateCue(AGS_CUE_CORE, AGS_CUE_TITLE_TEAM_SOLIDARITY_ID, player.playerName)
+	end
+end
+
+function AGS_TeamSolidarity_CreateObjective()
+	local player_id = Game_GetLocalPlayer()
+	local player_civ = Player_GetRaceName(player_id)
+	AGS_TEAM_SOLIDARITY_OBJECTIVE = AGS_CreateObjective(AGS_OBJECTIVE_TEAMSOLIDARITY, player_id, player_civ)
+	AGS_SetObjective(AGS_TEAM_SOLIDARITY_OBJECTIVE, OS_Incomplete, true)
+end
+
+function AGS_TeamSolidarity_RemoveObjective()
+
+end
+-- Enforce Teammates Solidarity.
+function AGS_TeamSolidarity_Enforce(defeated_teammate)
+	if defeated_teammate ~= nil then
+		if not AGS_TEAM_SOLIDARITY_ACTIVE_CHECKS then
+			for _, ally_id in pairs(AGS_GetAllTeammates(defeated_teammate.id)) do			
+				AGS_SetPlayerDefeated(ally_id, AGS_TeamSolidarity_LoserPresenation, AGS_WR_TEAM_SOLIDARITY)	
+			end
+		else			
+			-- This is correct way to resolve this for non-treaty situations.
+			for _, potential_ally in pairs(PLAYERS) do
+				if defeated_teammate ~= potential_ally then				
+					if AGS_IsMutualRelation(defeated_teammate.id, potential_ally.id, R_ALLY) then
+						AGS_SetPlayerDefeated(potential_ally.id, AGS_TeamSolidarity_LoserPresenation, AGS_WR_TEAM_SOLIDARITY)					
+					end
+				end
+			end
+		end
+	end	
+end
+
+function AGS_TeamSolidarity_CheckVictory()
+	if not AGS_TEAM_SOLIDARITY_ACTIVE_CHECKS then
+		return
+	end
+	
+	local winners = AGS_DoesWinnerGroupExists()
+	if winners == nil then
+		return
+	end
+	
+	for _, winner_id in pairs(winners) do 
+		AGS_SetPlayerVictorious(winner_id, AGS_TeamSolidarity_WinnerPresentation, AGS_WR_TEAM_SOLIDARITY)
+	end
+	
+	AGS_EndGame()	
+end
+
+function AGS_TeamSolidarity_WinnerPresentation(player_id)
+	AGS_Presenation(player_id, AGS_WINNER_VICTORY_CONQUEST)
+end
+
+function AGS_TeamSolidarity_LoserPresenation(player_id)
+	AGS_LoserPresenation(player_id, AGS_LOOSER_DEFEAT_CONQUEST, AGS_LOOSER_ELIMINATED_CONQUEST)
+end

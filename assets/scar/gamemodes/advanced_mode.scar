@@ -36,39 +36,11 @@ function AdvancedMode_OnGameSetup()
 	Setup_GetWinConditionOptions(_match.options)
 	
 	-- Win condition options
-	if _match.options.section_inner_win_conditions then
-		if not _match.options.section_inner_win_conditions.option_win_condition_conquest then
-			Core_UnregisterModule("Conquest")
-		end	
-		
-		if not _match.options.section_inner_win_conditions.option_win_condition_religious then
-			Core_UnregisterModule("Religious")
-		else
-			Religious_UpdateConditions()
-		end
-		
-		
-		if not _match.options.section_inner_win_conditions.option_win_condition_wonder then
-			Core_UnregisterModule("Wonder")
-		else
-			Wonder_UpdateConditions()
-		end
-		
-		if not _match.options.section_inner_win_conditions.option_win_condition_regicide then
-			Core_UnregisterModule("Regicide")
-		end	
-		
+	if _match.options.section_inner_win_conditions then	
 		if not _match.options.section_inner_win_conditions.option_win_condition_sudden_death then
 			Core_UnregisterModule("SuddenDeath")
 		end	
 	end
-	
-	if _match.options.section_outer_win_conditions and
-		not _match.options.section_outer_win_conditions.option_team_solidarity then
-		Core_UnregisterModule("TeamSolidarity")
-	end
-
-
 	
 	--Diplomacy options
 	if _match.options.section_diplomacy then
@@ -81,13 +53,13 @@ function AdvancedMode_OnGameSetup()
 	
 	
 	
-	Util_PrintObject(AGS_GLOBAL_SETTINGS, 5)
+	AGS_Print(AGS_GLOBAL_SETTINGS)
 	Core_CallDelegateFunctions("SetupSettings", _match.options)
-	Util_PrintObject(AGS_GLOBAL_SETTINGS, 5)
+	AGS_Print(AGS_GLOBAL_SETTINGS)
 	Core_CallDelegateFunctions("AdjustSettings")
-	Util_PrintObject(AGS_GLOBAL_SETTINGS, 5)
+	AGS_Print(AGS_GLOBAL_SETTINGS)
 	Core_CallDelegateFunctions("UpdateModuleSettings")
-	Util_PrintObject(AGS_GLOBAL_SETTINGS, 5)
+	AGS_Print(AGS_GLOBAL_SETTINGS)
 end
 
 function AdvancedMode_OnInit()
@@ -111,7 +83,7 @@ function AdvancedMode_Preset()
 end
 
 function AdvancedMode_Start()
-	Util_PrintObject(AGS_GLOBAL_SETTINGS, 5)
+	AGS_Print(AGS_GLOBAL_SETTINGS)
 end
 
 function AdvancedMode_OnGameOver()	

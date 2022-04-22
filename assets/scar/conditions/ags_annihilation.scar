@@ -1,0 +1,268 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Annihilation win condition.
+-- A player is eliminated when they have no units remaining and either no buildings or insufficient 
+-- resources with which to produce any more units. 
+-- The last remaining player/team wins. 
+---------------------------------------------------------------------------------------------------
+
+AGS_ANNIHILATION_MODULE = "AGS_Annihilation"
+AGS_ANNIHILATION_OBJECTIVE = nil
+AGS_ANNIHILATION_ACTIVE_CHECKS = true
+AGS_ANNIHILATION_PLAYERS_WITH_MARKETS = { }
+
+-- Map of all production buildings and cheapest items.
+AGS_ANNIHILATION_PRODUCTIONS_MAP = {		
+	town_center = AGS_BP_VILLAGER,
+	barracks = AGS_BP_SPEARMAN,
+	archery_range = AGS_BP_ARCHER,
+	stable = AGS_BP_HORSEMAN,
+	siege_workshop = AGS_BP_SPRINGALD,
+	monastery = AGS_BP_MONK, 
+},	
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_ANNIHILATION_MODULE)
+
+-- Unregister Annihilation and prevent it from being initialized.
+function AGS_Annihilation_UpdateModuleSettings()
+	if not AGS_GLOBAL_SETTINGS.Annihilation then
+		Core_UnregisterModule(AGS_ANNIHILATION_MODULE)
+	end
+end
+
+function AGS_Annihilation_Preset()
+	AGS_Annihilation_DefineCheapestSquads()
+end
+
+function AGS_Annihilation_Start()
+	AGS_Annihilation_StartProgressTracking()
+end
+
+function AGS_Annihilation_TreatyStarted()
+	AGS_ANNIHILATION_ACTIVE_CHECKS = false
+end
+
+function AGS_Annihilation_TreatyEnded()
+	AGS_ANNIHILATION_ACTIVE_CHECKS = true
+end
+
+function AGS_Annihilation_OnPlayerDefeated(player, reason)
+	if reason == AGS_WR_ANNIHILATION then 
+		AGS_Annihilation_Notification(player)
+		AGS_Annihilation_CheckVictory()
+	end
+end
+
+function AGS_Annihilation_OnGameOver()
+	AGS_Annihilation_StopProgressTracking()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Elimination_Notification(player)
+	local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+	-- Play always for now.
+	AGS_PlaySFX(player.id)
+	-- If local is still in the game show message in right corner.
+	if player ~= nil and not player_local.isEliminated then 
+		AGS_CreateCue(AGS_CUE_CORE, AGS_CUE_TITLE_ANNIHILATED_ID, player.playerName)
+	end
+end
+
+function AGS_Annihilation_CheckVictory()
+	if not AGS_ANNIHILATION_ACTIVE_CHECKS then
+		return
+	end
+	
+	local winners = AGS_DoesWinnerGroupExists()
+	if winners == nil then
+		return
+	end
+	
+	for _, winner_id in pairs(winners) do 
+		AGS_SetPlayerVictorious(winner_id, AGS_Annihilation_WinnerPresentation, AGS_WR_ANNIHILATION)
+	end
+	
+	AGS_EndGame()
+end
+
+function AGS_Annihilation_StartProgressTracking()
+	Rule_AddGlobalEvent(AGS_Annihilation_OnEntityKilled, GE_EntityKilled)
+	Rule_AddGlobalEvent(AGS_Annihilation_OnLandmarkDestroyed, GE_EntityLandmarkDestroyed)
+	Rule_AddGlobalEvent(AGS_Annihilation_OnConstructionComplete, GE_ConstructionComplete)	
+end
+
+function AGS_Annihilation_StopProgressTracking()
+	Rule_RemoveGlobalEvent(AGS_Annihilation_OnEntityKilled)
+	Rule_RemoveGlobalEvent(AGS_Annihilation_OnLandmarkDestroyed)
+	Rule_RemoveGlobalEvent(AGS_Annihilation_OnConstructionComplete)	
+end
+
+function AGS_Annihilation_OnEntityKilled(context)
+	if context ~= nil and context.victimOwner ~= nil then
+		AGS_Annihilation_CheckAnnihilation(context.victimOwner)
+	end
+end
+
+function AGS_Annihilation_OnLandmarkDestroyed(context)
+	if context ~= nil and context.landmarkOwner ~= nil then
+		AGS_Annihilation_CheckAnnihilation(context.landmarkOwner)
+	end
+end
+-- Tracks which players have built a market (and can therefore gift resources to allies).
+function AGS_Annihilation_OnConstructionComplete(context)
+	if context ~= nil and context.entity ~= nil and Entity_IsOfType(context.entity, AGS_BP_MARKET) then
+		local owner = context.player
+		for _, player in pairs(AGS_ANNIHILATION_PLAYERS_WITH_MARKETS) do
+			if player == owner then 
+				-- player already built a market
+				return	
+			end
+		end
+		table.insert(AGS_ANNIHILATION_PLAYERS_WITH_MARKETS, owner)
+	end
+end
+
+function AGS_Annihilation_CheckAnnihilation(player_id)
+	local player = Core_GetPlayersTableEntry(player_id)
+	if player ~= nil and not player.isEliminated then
+		-- This requires that all relevant squad entities are tagged with "annihilation_condition" unit_class 
+		local num_squads = Player_GetEntityCountByUnitType(player.id, AGS_BP_UNIT_CLASS)
+		-- Check if player has any squad left.
+		if num_squads > 0 then
+			return
+		end
+		-- Check for annihiliation when player has no squads left.
+		if not AGS_Annihilation_IsAbleToProduce(player) then
+			AGS_SetPlayerDefeated(player.id, AGS_Annihilation_LoserPresenation, AGS_WR_ANNIHILATION)		
+		end
+	end
+end
+
+function AGS_Annihilation_WinnerPresentation(player_id)
+	AGS_Presenation(player_id, AGS_WINNER_VICTORY)
+end
+
+function AGS_Annihilation_LoserPresenation(player_id)
+	AGS_LoserPresenation(player_id, AGS_LOOSER_DEFEAT, AGS_LOOSER_ELIMINATED)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Annihilation Checks:
+---------------------------------------------------------------------------------------------------
+
+-- Cache the cost of the cheapest unit that can be made from each type of building.
+function AGS_Annihilation_DefineCheapestSquads()
+	for i, player in pairs(PLAYERS) do
+		player.AGS_ANNIHILATION = { cheapest_squad_cost = {} }
+		for entity_type, squad_type in pairs(AGS_ANNIHILATION_PRODUCTIONS_MAP) do 
+			local sbp = Cardinal_ConvertTypeToSquadBlueprint(squad_type, player.id)
+			if sbp == nil then
+				print(string.format("Annihilation_OnInit() - No squad blueprint found for %s %s", player.raceName, squad_type))
+			else
+				player.AGS_ANNIHILATION.cheapest_squad_cost[entity_type] = Player_GetSquadBPCost(player.id, sbp)
+			end
+		end
+	end	
+end
+
+function AGS_Annihilation_IsAbleToProduce(player)
+	local food = Player_GetResource(player.id, RT_Food)
+	local wood = Player_GetResource(player.id, RT_Wood)
+	local gold = Player_GetResource(player.id, RT_Gold)		
+	local has_landmark_entity_with_queue = false
+	local has_production_entity_with_queue = false
+	local has_squads_in_queue = false
+	local has_resources_for_generic_production = false
+	-- Check whether player has an ally that can send resources to produce something
+	local has_ally_with_resources = AGS_GLOBAL_SETTINGS.CanTribute and AGS_Annihilation_PlayerCanReceiveTribute(player.id)
+	-- Check if player has a unit in production or sufficient resources to produce something. 
+	local entities = Player_GetEntities(player.id)
+	for i = 1, EGroup_CountSpawned(entities) do
+		local entity = EGroup_GetEntityAt(entities, i)	
+		-- Accounts for both packed Mongol buildings and finished buildings of other civs 
+		if Entity_IsOfType(entity, "mobile_building") or Entity_GetBuildingProgress(entity) >= 1.0 then			
+			-- Check if this entity has a production queue that is not disabled
+			if Entity_IsProductionQueueAvailable(entity) then				
+				-- Track if player has a landmark that can produce units
+				if Entity_IsOfType(entity, AGS_BP_LANDMARK) then
+					has_landmark_entity_with_queue = true
+					-- Track if player has a production building
+				else
+					has_production_entity_with_queue = true
+				end
+				-- Check if player has any units currently being produced
+				local num_items_in_queue = Entity_GetProductionQueueSize(entity)
+				for j = 0, (num_items_in_queue - 1) do
+					local prod_queue_item_type = Entity_GetProductionQueueItemType(entity, j)
+					if Entity_GetProductionQueueItemType(entity, j) == PITEM_Spawn then
+						has_squads_in_queue = true
+						break
+					end
+				end
+				-- Check if player has resources to produce cheapest unit from generic buildings (does not include landmarks)
+				for entity_type, cost in pairs(player.AGS_ANNIHILATION.cheapest_squad_cost) do 
+					if Entity_IsOfType(entity, entity_type) then 									
+						if food >= cost.food and wood >= cost.wood and gold >= cost.gold then
+							has_resources_for_generic_production = true
+							break
+						end
+					end
+				end
+			end
+			
+			-- End entity loop if there is enough information to calculate annihilation
+			if has_landmark_entity_with_queue and has_production_entity_with_queue 
+				and has_squads_in_queue and has_resources_for_generic_production then
+				break
+			end
+		end		
+	end
+	EGroup_Destroy(entities)
+	
+	-- Player is annihilated if:
+	-- They have no units alive (validated with num_squads) AND
+	-- They have no units being produced AND
+	-- They have no Landmarks with production and they have no generic production building(s) OR
+	-- They have no Landmarks with production and they have generic production building(s) but they cannot afford generic production.
+	if not has_squads_in_queue and 
+		(
+			(not has_landmark_entity_with_queue and not has_production_entity_with_queue) or 
+			(not has_landmark_entity_with_queue and has_production_entity_with_queue and 
+				not has_resources_for_generic_production and not has_ally_with_resources)
+		) then
+		return false
+	end
+	return true
+end
+
+-- Returns true if player can receive tribute (i.e. has an ally with a market).
+function AGS_Annihilation_PlayerCanReceiveTribute(player_id)
+	-- Returns true if player can send tribute (i.e. has built a market).	
+	local PlayerCanSendTribute = function (player_id)
+		for _, id in pairs(AGS_ANNIHILATION_PLAYERS_WITH_MARKETS) do
+			if id == player_id then
+				return true
+			end
+		end
+	end		
+	for _, other_player in pairs(PLAYERS) do
+		if other_player.id ~= player_id
+			and not other_player.isEliminated 
+			and AGS_IsMutualRelation(other_player.id, player_id, R_ALLY) 
+			and PlayerCanSendTribute(other_player.id) then 
+			return true
+		end
+	end
+	return false
+end

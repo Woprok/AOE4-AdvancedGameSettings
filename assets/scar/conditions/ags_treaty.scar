@@ -4,7 +4,10 @@
 -- Woprock
 --
 -- Description:
+-- Treaty subcondition.
 -- Handles treaty functionality and all asociated events invokes.
+-- Creates cease fire at the start of the game.
+-- TODO PRETREATY OVER ENDGAME CHECKS
 ---------------------------------------------------------------------------------------------------
 
 AGS_TREATY_MODULE = "AGS_Treaty"

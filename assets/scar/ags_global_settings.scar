@@ -7,6 +7,10 @@
 -- Contains all option definitions and their current values.
 -- Referenceable by any other script.
 ---------------------------------------------------------------------------------------------------
+AGS_WG_MAN = 0
+AGS_WG_TEAM = 1
+AGS_WG_DYNAMIC = 2
+
 AGS_SV_ALWAYS = 0
 AGS_SV_MARKET = 1
 AGS_SV_NEVER = 2
@@ -24,18 +28,24 @@ AGS_MAP_EXPLORED = 1
 AGS_MAP_REVEALED = 2
 
 AGS_GLOBAL_SETTINGS = {
+	Annihilation = true, -- Player loses everything.
+	Surrender = true, -- Player surrenders.
+	Elimination = true, -- Player quits.
 	Conquest = true,
-	Regicide = false,
-	Religous = true,
+	Religious = true,
 	Wonder = true,
-
+	Regicide = false,
+	--Score = false,
+	
+	TeamSolidarity = false,
 	TreatyTimer = 0,
 	ReligousTimer = 10,
 	WonderTimer = 15,
 	
-	CanTribute = true,
-	CanDiplomacy = false,
-	LastManStanding = false, --undefined in RDO yet
+	CanTribute = true, -- Enables sending tributes.
+	CanDiplomacy = false, -- Enables changing relations.
+	WinnerGroup = AGS_WG_TEAM, -- 0 one guy, 1 static team, 2 dynamic team.
+	--LastManStanding = false, -- Should be selectable between Last_X_Standing: Man, Team, DynamicTeam.
 	
 	StartAge = 1,
 	FinalAge = 5,
@@ -87,6 +97,30 @@ function AGS_Settings_SetupSettings(options)
 	-- Undefined categories will use global settings.
 	local category = nil
 	
+	if options.section_inner_win_conditions then
+		category = options.section_inner_win_conditions
+	
+		if category.option_win_condition_conquest ~= nil then
+			AGS_SetConquest(category.option_win_condition_conquest)
+		end
+		
+		if category.option_win_condition_religious ~= nil then
+			AGS_SetReligious(category.option_win_condition_religious)
+		end
+		
+		if category.option_win_condition_wonder ~= nil then
+			AGS_SetWonder(category.option_win_condition_wonder)
+		end
+		
+		if category.option_win_condition_regicide ~= nil then
+			AGS_SetRegicide(category.option_win_condition_regicide)
+		end		
+		
+		--if category.option_win_condition_score ~= nil then
+		--	AGS_SetScore(category.option_win_condition_score)
+		--end		
+	end
+	
 	if options.section_outer_win_conditions then
 		category = options.section_outer_win_conditions
 		
@@ -96,6 +130,10 @@ function AGS_Settings_SetupSettings(options)
 		
 		if category.option_wonder_timer then
 			AGS_SetWonderTimer(category.option_wonder_timer)
+		end
+		
+		if category.option_team_solidarity ~= nil then
+			AGS_SetTeamSolidarity(category.option_team_solidarity)
 		end
 	end
 	
@@ -178,9 +216,9 @@ function AGS_Settings_SetupSettings(options)
 			AGS_SetCanDiplomacy(category.option_diplomacy_dynamic)
 		end
 		
-		if category.option_diplomacy_teams ~= nil then
-			AGS_SetLastManStanding(category.option_diplomacy_teams)
-		end
+		--if category.option_diplomacy_teams ~= nil then
+		--	AGS_SetLastManStanding(category.option_diplomacy_teams)
+		--end
 	
 	end
 	
@@ -208,6 +246,26 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_SetConquest(option_win_condition_conquest)
+	AGS_GLOBAL_SETTINGS.Conquest = option_win_condition_conquest
+end
+function AGS_SetReligious(option_win_condition_religious)
+	AGS_GLOBAL_SETTINGS.Religious = option_win_condition_religious
+end
+function AGS_SetWonder(option_win_condition_wonder)
+	AGS_GLOBAL_SETTINGS.Wonder = option_win_condition_wonder
+end
+function AGS_SetRegicide(option_win_condition_regicide)
+	AGS_GLOBAL_SETTINGS.Regicide = option_win_condition_regicide
+end
+--function AGS_SetScore(option_win_condition_score)
+--	AGS_GLOBAL_SETTINGS.Score = option_win_condition_score
+--end
+
+function AGS_SetTeamSolidarity(option_team_solidarity)
+	AGS_GLOBAL_SETTINGS.TeamSolidarity = option_team_solidarity
+end
 
 function AGS_SetWonderTimer(option_wonder_timer)
 	if option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_instant then
@@ -263,9 +321,9 @@ function AGS_SetCanDiplomacy(option_diplomacy_dynamic)
 	AGS_GLOBAL_SETTINGS.CanDiplomacy = option_diplomacy_dynamic
 end
 
-function AGS_SetLastManStanding(option_diplomacy_teams)
-	AGS_GLOBAL_SETTINGS.LastManStanding = option_diplomacy_teams
-end
+--function AGS_SetLastManStanding(option_diplomacy_teams)
+--	AGS_GLOBAL_SETTINGS.LastManStanding = option_diplomacy_teams
+--end
 
 function AGS_SetTreatyTimer(option_diplomacy_treaty)
 	if option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_no then

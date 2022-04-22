@@ -44,7 +44,16 @@ function AGS_SharedVision_OnPlayerJoinedTeam(player)
 end
 
 function AGS_SharedVision_OnRelationshipChanged(observer_id, target_id)
-	AGS_SharedVision_UpdateVisionBetweenPlayers(Core_GetPlayersTableEntry(observer_id), Core_GetPlayersTableEntry(target_id))
+	if observer_id == nil or target_id == nil then
+		return 
+	end
+	local playerA = Core_GetPlayersTableEntry(observer_id)
+	local playerB = Core_GetPlayersTableEntry(target_id)
+	if playerA == nil or playerB == nil then
+		return 
+	end
+	
+	AGS_SharedVision_UpdateVisionBetweenPlayers(playerA, playerB)
 end
 
 function AGS_SharedVision_OnGameOver()
@@ -138,10 +147,10 @@ function AGS_SharedVision_UpdateVisionForPlayer(player)
 	end	
 end
 -- Enables/disables shared line of sight if playerA and playerB are mutual allies and both have constructed a market.
-function AGS_SharedVision_UpdateVisionBetweenPlayers(playerA, playerB)		
+function AGS_SharedVision_UpdateVisionBetweenPlayers(playerA, playerB)	
 	if playerA ~= playerB then 
 		local requirements = playerA.AGS_SV_ENABLED and playerB.AGS_SV_ENABLED
-		local allies = Player_ObserveRelationship(playerA.id, playerB.id) == R_ALLY and Player_ObserveRelationship(playerB.id, playerA.id) == R_ALLY
+		local allies = AGS_IsMutualRelation(playerA.id, playerB.id, R_ALLY)
 		World_EnableSharedLineOfSight(playerA.id, playerB.id, requirements and allies)
 	end
 end

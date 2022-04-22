@@ -55,7 +55,6 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Executes after small delay.
 function AGS_TreeBombardment_OnProjectileFired(projectile)	
-	Util_PrintObject(projectile)
 	for i, siege_type in pairs(AGS_TREE_BOMBARDMENT.siege_on_fired) do
 		if projectile.attacker ~= nil and Entity_IsOfType(projectile.attacker, siege_type) then 		
 			Rule_AddOneShot(AGS_TreeBombardment_OnExpectedLanding, AGS_TREE_BOMBARDMENT.on_fired_delay, { target = projectile.target })

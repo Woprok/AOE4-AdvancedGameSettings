@@ -1,0 +1,97 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Elimination win condition.
+-- A player is eliminated when they quit (through the button in the Pause menu) or otherwise drop/disconnect. 
+-- The last remaining player/team wins. 
+---------------------------------------------------------------------------------------------------
+
+AGS_ELIMINATION_MODULE = "AGS_Elimination"
+AGS_ELIMINATION_OBJECTIVE = nil
+AGS_ELIMINATION_ACTIVE_CHECKS = true
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_ELIMINATION_MODULE)
+
+-- Unregister Elimination and prevent it from being initialized.
+function AGS_Elimination_UpdateModuleSettings()
+	if not AGS_GLOBAL_SETTINGS.Elimination then
+		Core_UnregisterModule(AGS_ELIMINATION_MODULE)
+	end
+end
+-- Overrides default behaviour of DefaultOnPlayerAITakeover() to keep game going regardless of number of humans.
+function AGS_Elimination_OnPlayerAITakeover(context)
+	-- I guess we will keep this as it was. For some reason its never set free.
+	OnPlayerAITakeover_Hold()
+	if context ~= nil and context.player ~= nil then
+		local player = Core_GetPlayersTableEntry(context.player)
+		if player ~= nil and player.isHuman and not player.isEliminated then
+			AGS_Print(string.format("Elimination_OnPlayerAITakeover() - %s replaced by AI", player.playerName.LocString))		
+			-- Human players here quit the game and are eliminated
+			-- AI players here were hosted on the now disconnected human players computer, and need to move to another
+			-- client. This was done in C++ land (in GameWorld::SetGameOver and GameWorld::StationTakeOverAi) so don't
+			-- eliminate them here.
+			AGS_SetPlayerDefeated(player.id, AGS_Elimination_LoserPresenation, AGS_WR_ELIMINATION)
+		end		
+	end	
+end
+
+function AGS_Elimination_TreatyStarted()
+	AGS_ELIMINATION_ACTIVE_CHECKS = false
+end
+
+function AGS_Elimination_TreatyEnded()
+	AGS_ELIMINATION_ACTIVE_CHECKS = true
+end
+
+function AGS_Elimination_OnPlayerDefeated(player, reason)
+	if reason == AGS_WR_ELIMINATION then 
+		AGS_Elimination_Notification(player)
+		AGS_Elimination_CheckVictory()
+	end
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Elimination_Notification(player)
+	local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+	-- Play always for now.
+	AGS_PlaySFX(player.id)
+	-- If local is still in the game show message in right corner.
+	if player ~= nil and not player_local.isEliminated then 
+		AGS_CreateCue(AGS_CUE_CORE, AGS_CUE_TITLE_ELIMINATED_ID, player.playerName)
+	end
+end
+-- Check if there is single remaining allied group.
+function AGS_Elimination_CheckVictory()
+	if not AGS_ELIMINATION_ACTIVE_CHECKS then
+		return
+	end
+	
+	local winners = AGS_DoesWinnerGroupExists()
+	if winners == nil then
+		return
+	end
+	
+	for _, winner_id in pairs(winners) do 
+		AGS_SetPlayerVictorious(winner_id, AGS_Elimination_WinnerPresentation, AGS_WR_ELIMINATION)
+	end
+	
+	AGS_EndGame()
+end
+
+function AGS_Elimination_WinnerPresentation(player_id)
+	AGS_Presenation(player_id, AGS_WINNER_VICTORY_CONQUEST)
+end
+
+function AGS_Elimination_LoserPresenation(player_id)
+	AGS_LoserPresenation(player_id, AGS_LOOSER_DEFEAT_CONQUEST, AGS_LOOSER_ELIMINATED_CONQUEST)
+end
