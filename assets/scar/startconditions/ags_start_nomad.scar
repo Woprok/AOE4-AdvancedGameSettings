@@ -128,8 +128,6 @@ function AGS_Nomad_SpawnUnits(player_id, player_civ)
 	local snameVIL = AGS_SGroupName(player_id, AGS_BP_VILLAGER)
 	local sg_vil = AGS_SpawnSquad(player_id, snameVIL, sbp_vil, nil, World_Pos(-10, 0, -10), AGS_GLOBAL_SETTINGS.StartingVillagers)
 	
-	Core_CallDelegateFunctions("UnitsSpawned", player_id, nil, sg_vil)
-	
 	local sbp_sco = AGS_GetCivilizationUnit(player_civ, AGS_BP_SCOUT)
 	local snameSCO = AGS_SGroupName(player_id, AGS_BP_SCOUT)
 	local sg_sco = AGS_SpawnSquad(player_id, snameSCO, sbp_sco, nil, World_Pos(-12, 0, -12), AGS_GLOBAL_SETTINGS.StartingScouts)

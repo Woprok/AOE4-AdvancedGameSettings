@@ -5,6 +5,12 @@
 --
 -- Description:
 -- Enables testing and cheating functionality. WIP.
+-- Ideas
+-- - score victory
+-- -> has timer
+-- -> has objectives
+-- -> final winner is highest scoring team or individual
+-- -> score is awarded for objectives, fighitning, economy etc.
 ---------------------------------------------------------------------------------------------------
 
 AGS_TESTING_MODULE = "AGS_Testing"

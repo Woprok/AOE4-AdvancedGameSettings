@@ -41,8 +41,6 @@ function AGS_SpawnKing_OnSpawn()
 		local sname = AGS_SGroupName(player.id, AGS_BP_KING)
 		
 		local sg_king = AGS_SpawnSquad(player.id, sname, sbp_king, nil, World_Pos(-13, 0, -13), AGS_GLOBAL_SETTINGS.StartingKings)
-
-		Core_CallDelegateFunctions("UnitsSpawned", player.id, nil, sg_king)
 	end
 end
 

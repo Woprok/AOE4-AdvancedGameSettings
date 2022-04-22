@@ -47,8 +47,6 @@ function AGS_Settled_SpawnStaticTownCenter(player_id, player_civ)
 		local ebp_tc = AGS_GetCivilizationEntity(player_civ, AGS_BP_TC_CAPITAL)		
 		local enameTC = AGS_EGroupName(player_id, AGS_BP_TC)
 		local eg_tc = AGS_SpawnEntity(player_id, enameTC, ebp_tc, nil, World_Pos(0, 0, 0))
-		-- Send event (conquest win condition relies on this)
-		Core_CallDelegateFunctions("OnConstructionComplete", {pbg = ebp_tc, player = player_id, entity = eg_tc})	
 	end	
 end
 -- Setup as moving town center.
@@ -65,9 +63,7 @@ function AGS_Settled_SpawnUnits(player_id, player_civ)
 	local sbp_vil = AGS_GetCivilizationUnit(player_civ, AGS_BP_VILLAGER)
 	local snameVIL = AGS_SGroupName(player_id, AGS_BP_VILLAGER)
 	local sg_vil = AGS_SpawnSquad(player_id, snameVIL, sbp_vil, nil, World_Pos(-8, 0, -12), AGS_GLOBAL_SETTINGS.StartingVillagers)
-	
-	Core_CallDelegateFunctions("UnitsSpawned", player_id, nil, sg_vil)
-	
+		
 	local sbp_sco = AGS_GetCivilizationUnit(player_civ, AGS_BP_SCOUT)
 	local snameSCO = AGS_SGroupName(player_id, AGS_BP_SCOUT)
 	local sg_sco = AGS_SpawnSquad(player_id, snameSCO, sbp_sco, nil, World_Pos(-12, 0, -8), AGS_GLOBAL_SETTINGS.StartingScouts)

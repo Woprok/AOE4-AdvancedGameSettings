@@ -96,7 +96,7 @@ end
 function Regicide_OnGameOver()
 	-- It is good practice to remove any Rules that were configured so they do not continue to run after the match has concluded
 	Rule_RemoveGlobalEvent(Regicide_OnLocalPlayerChanged)
-	Rule_RemoveGlobalEvent(Regicide_WinCondition_OnKingDeath)
+	Rule_RemoveGlobalEvent(Regicide_WinCondition_OnEntityKilled)
 	Rule_Remove(WinCondition_CheckSurrender)
 
 end
@@ -104,11 +104,11 @@ end
 function Regicide_InitWinCondition()
 	-- Add a rule that will get called periodically to check if the win condition has been met.
 	-- Activate the losing condition on King Death
-	Rule_AddGlobalEvent(Regicide_WinCondition_OnKingDeath, GE_EntityKilled)
+	Rule_AddGlobalEvent(Regicide_WinCondition_OnEntityKilled, GE_EntityKilled)
 	Rule_AddInterval(WinCondition_CheckSurrender, 3)
 end
 
-function Regicide_WinCondition_OnKingDeath(context)
+function Regicide_WinCondition_OnEntityKilled(context)
 	if Entity_IsOfType(context.victim, "King") then
 		Core_SetPlayerDefeated(context.victimOwner, Annihilation_LoserPresentation, WR_ANNIHILATION)
 	end

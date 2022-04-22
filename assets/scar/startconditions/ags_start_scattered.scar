@@ -72,9 +72,7 @@ function AGS_ScatteredVillagers_OnSpawn()
 		local spawn_pos = _f_random_position()
 		-- Finish squad spawn and assign it to AI if required.
 		local sg_vil = AGS_SpawnSquad(player.id, snameVIL, sbp_vil, spawn_pos, nil, AGS_GLOBAL_SETTINGS.StartingVillagers)	
-		LocalCommand_Squad(player.id, sg_vil, SCMD_Stop, false)	
-		Core_CallDelegateFunctions("UnitsSpawned", player.id, spawn_pos, sg_vil)
-		
+		LocalCommand_Squad(player.id, sg_vil, SCMD_Stop, false)			
 		
 		local _f_randomize_unit = function(gid, idx, sid)
 			Squad_WarpToPos(sid, _f_random_position())

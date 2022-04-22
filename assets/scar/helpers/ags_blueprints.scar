@@ -624,6 +624,7 @@ function AGS_SpawnEntity(player_id, egroup_name, bp_entity, position, position_o
 	Entity_SnapToGridAndGround(e, false)
 	local eg = EGroup_CreateIfNotFound(egroup_name) 
 	EGroup_Add(eg, e)
+	Core_CallDelegateFunctions("EntitySpawned", {pbg = bp_entity, player = player_id, entity = e})
 	return e	
 end
 -- Spawn squad and return it to caller in squad group.
@@ -641,5 +642,9 @@ function AGS_SpawnSquad(player_id, sgroup_name, bp_squad, position, position_off
 	local placement = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z)
 	local rotation = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z - 1)
 	-- Spawn
-	return Util_CreateSquads(player_id, sgroup_name, bp_squad, placement, placement, count, nil, false, rotation, nil, rotation, nil, nil, nil, nil, false)		
+	local squad_group = Util_CreateSquads(player_id, sgroup_name, bp_squad, placement, placement, count, nil, false, rotation, nil, rotation, nil, nil, nil, nil, false)	
+
+	Core_CallDelegateFunctions("UnitsSpawned", player_id, position, squad_group)
+	
+	return squad_group	
 end

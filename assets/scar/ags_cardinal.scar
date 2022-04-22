@@ -64,19 +64,98 @@ import("conditions/ags_treaty.scar")
 -- Unfinished rework continues after that
 import("gameplay/ags_utilities.scar")
 
+
+
+
+-- gameplay systems
+import("gameplay/diplomacy_reworked.scar")
+-- When conquest, religious, and wonder are all unselected in match options
+import("winconditions/annihilation_reworked.scar")	
+-- For players who quit or drop (through pause menu or disconnection)
+import("winconditions/elimination_reworked.scar")	
+-- For players who surrender (through pause menu)
+import("winconditions/surrender_reworked.scar")		
+import("winconditions/conquest.scar")
+import("winconditions/sudden_death.scar") 
+--import("winconditions/wonder.scar")
+--import("winconditions/religious.scar")
+import("winconditions/wonder_reworked.scar")
+import("winconditions/religious_reworked.scar")
+import("winconditions/regicide.scar")
+import("winconditions/teamsolidarity.scar")
+
 ---------------------------------------------------------------------------------------------------
--- Core_CallDelegateFunctions:
+-- GUIDELINES AND SOME HELP
+---------------------------------------------------------------------------------------------------
+-- Core_CallDelegateFunctions("<suffix>")
+---------------------------------------------------------------------------------------------------
+-- AGS Calls:
+---------------------------------------------------------------------------------------------------
+-- ENTITY & UNIT SPAWNED 
+-------------------------------------------------
+-- EntitySpawned({pbg = entity_blueprint, player = player_id, entity = spawned_entity}) 
 -- UnitsSpawned(player_id, position: home_position, sgroup: units)
+-------------------------------------------------
+-- AI PLAYER UPDATES
+-------------------------------------------------
 -- AdjustAIPlayer(player_id, ADJUSTREASON: reason)
--- PresetSpawn
--- PresetPostSpawn
+-------------------------------------------------
+-- SETTINGS & MODULE ADJUSTMENTS
+-------------------------------------------------
 -- SetupSettings(wincondition_options: options)
--- AdjustSettings
+-- AdjustSettings 
 -- ModuleSettings
+-------------------------------------------------
+-- INITIALIZATION BEFORE START
+-------------------------------------------------
+-- PresetSpawn 
+-- PresetPostSpawn 
+-------------------------------------------------
+-- TREATY CONTROL
+-------------------------------------------------
 -- TreatyStarted
 -- TreatyEnded
 ---------------------------------------------------------------------------------------------------
-
+-- Relic Calls:
+---------------------------------------------------------------------------------------------------
+-- RegisterEncounterPlans
+-- DiplomacyEnabled
+-- TributeEnabled
+-- OnRelationshipChanged // due to non existing GE_RelationChanged
+-- OnTributeSent
+-- OnConstructionComplete
+-- OnGameSetup
+-- OnGameRestore
+-- OnLeaveGameMatchRequested
+-- OnSurrenderMatchRequested
+-- OnPlayerAITakeover
+-- PreGameOver
+-- PreInit
+-- OnInit
+-- PostInit
+-- SetupVariables
+-- SetDifficulty
+-- SetRestrictions
+-- Preset
+-- InitComplete
+-- PreStart
+-- Start
+-- OnPlayerDefeated
+-- OnTeamDefeated
+-- OnGameOver
+-- OnPlayerLeftTeam
+-- OnTeamCreated
+-- OnTeamRemoved
+-- OnPlayerJoinedTeam
+-- UnitEntry_PreprocessDeployment
+-- UnitEntry_StartDeployment
+-- UnitEntry_EndDeployment
+-- UnitEntry_CreateUnit
+-- UnitEntry_SpawnUnit
+-- UnitEntry_SpawnUnit_Finish
+-- UnitEntry_RegisterEntryMethods
+-- ActivateMenuItem
+-- StartWithCheat
 ---------------------------------------------------------------------------------------------------
 -- Expected Order:
 -- 1. OnGameSetup
@@ -99,25 +178,21 @@ import("gameplay/ags_utilities.scar")
 -- 51. TreatyEnded
 --
 -- 100. OnGameOver
---
--- Determined by others at any time they are relevant:
--- AdjustAIPlayer(player_id, ADJUSTREASON: reason)
--- UnitsSpawned(player_id, position: home_position, sgroup: units)
 ---------------------------------------------------------------------------------------------------
-
--- gameplay systems
-import("gameplay/diplomacy_reworked.scar")
--- When conquest, religious, and wonder are all unselected in match options
-import("winconditions/annihilation_reworked.scar")	
--- For players who quit or drop (through pause menu or disconnection)
-import("winconditions/elimination_reworked.scar")	
--- For players who surrender (through pause menu)
-import("winconditions/surrender_reworked.scar")		
-import("winconditions/conquest.scar")
-import("winconditions/sudden_death.scar") 
---import("winconditions/wonder.scar")
---import("winconditions/religious.scar")
-import("winconditions/wonder_reworked.scar")
-import("winconditions/religious_reworked.scar")
-import("winconditions/regicide.scar")
-import("winconditions/teamsolidarity.scar")
+-- Global events should be handled by OnEvent methods, here is list that is currently used.
+---------------------------------------------------------------------------------------------------
+-- GE_ConstructionComplete -> OnContructionComplete 
+-- GE_EntityKilled -> OnEntityKilled
+-- GE_SquadKilled -> OnSquadKilled
+-- GE_ProjectileFired -> OnProjectileFired
+-- GE_ProjectileLanded -> OnProjectileLanded
+-- GE_UpgradeComplete -> OnUpgradeComplete
+-- GE_PlayerNameChanged -> OnPlayerNameChanged
+-- GE_PlayerAddResource -> OnPlayerAddResource
+-- GE_PlayerTeamIdUpdated -> OnPlayerTeamIdUpdated TODO from OnPlayerTeamChanged
+-- GE_EntityLandmarkDestroyed -> OnEntityLandmarkDestroyed TODO from OnLandmarkDestroyed
+-- GE_LocalPlayerChanged -> OnLocalPlayerChanged
+-- GE_StrategicPointChanged -> OnStrategicPointChanged TODO from OnHolySiteChange 
+-- GE_DamageReceived -> OnDamageReceived 
+-- GE_ConstructionStart -> OnConstructionStart
+---------------------------------------------------------------------------------------------------
