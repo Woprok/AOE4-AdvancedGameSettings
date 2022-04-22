@@ -59,30 +59,24 @@ import("gameplay/event_cues.scar")
 import("gameplay/currentageui.scar")
 import("gameplay/chi/current_dynasty_ui.scar")
 -- Conditions can be loaded as last, they might require others to propagete first.
-import("conditions/ags_treaty.scar")
+
+import("conditions/ags_conditions_visuals.scar") -- helpers and visuals
+import("conditions/ags_treaty.scar") -- peace phase
+import("conditions/ags_annihilation.scar") -- player needs stuff to play
+import("conditions/ags_surrender.scar") -- player can leave game
+import("conditions/ags_elimination.scar") -- player can rage quit
+import("conditions/ags_conquest.scar") -- conquest objectives
+import("conditions/ags_religious.scar") -- sacred site objectives
+import("conditions/ags_wonder.scar") -- wonder building objectives
+import("conditions/ags_regicide.scar") -- stab king objectives
+import("conditions/ags_teamsolidarity.scar") -- team needs everyone
 
 -- Unfinished rework continues after that
 import("gameplay/ags_utilities.scar")
 
-
-
-
 -- gameplay systems
 import("gameplay/diplomacy_reworked.scar")
--- When conquest, religious, and wonder are all unselected in match options
-import("winconditions/annihilation_reworked.scar")	
--- For players who quit or drop (through pause menu or disconnection)
-import("winconditions/elimination_reworked.scar")	
--- For players who surrender (through pause menu)
-import("winconditions/surrender_reworked.scar")		
-import("winconditions/conquest.scar")
-import("winconditions/sudden_death.scar") 
---import("winconditions/wonder.scar")
---import("winconditions/religious.scar")
-import("winconditions/wonder_reworked.scar")
-import("winconditions/religious_reworked.scar")
-import("winconditions/regicide.scar")
-import("winconditions/teamsolidarity.scar")
+
 
 ---------------------------------------------------------------------------------------------------
 -- GUIDELINES AND SOME HELP

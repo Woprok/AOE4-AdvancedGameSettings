@@ -218,8 +218,8 @@ function AGS_CountAliveAllies(player_id)
 	end		
 	return allies_count
 end
--- Returns all teammates for that player
-function AGS_GetAllTeammates(player_id)
+-- Returns all alive teammates for that player
+function AGS_GetAllAliveTeammates(player_id)
 	-- TODO return list of static allies ids
 end
 ---------------------------------------------------------------------------------------------------

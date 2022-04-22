@@ -81,13 +81,13 @@ end
 function AGS_TeamSolidarity_Enforce(defeated_teammate)
 	if defeated_teammate ~= nil then
 		if not AGS_TEAM_SOLIDARITY_ACTIVE_CHECKS then
-			for _, ally_id in pairs(AGS_GetAllTeammates(defeated_teammate.id)) do			
+			for _, ally_id in pairs(AGS_GetAllAliveTeammates(defeated_teammate.id)) do			
 				AGS_SetPlayerDefeated(ally_id, AGS_TeamSolidarity_LoserPresenation, AGS_WR_TEAM_SOLIDARITY)	
 			end
 		else			
 			-- This is correct way to resolve this for non-treaty situations.
 			for _, potential_ally in pairs(PLAYERS) do
-				if defeated_teammate ~= potential_ally then				
+				if defeated_teammate ~= potential_ally and not potential_ally.isEliminated then				
 					if AGS_IsMutualRelation(defeated_teammate.id, potential_ally.id, R_ALLY) then
 						AGS_SetPlayerDefeated(potential_ally.id, AGS_TeamSolidarity_LoserPresenation, AGS_WR_TEAM_SOLIDARITY)					
 					end
