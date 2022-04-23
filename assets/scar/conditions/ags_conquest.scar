@@ -5,9 +5,17 @@
 --
 -- Description:
 -- Conquest win condition.
+-- A team is eliminated when all of its players have lost all their landmarks (including capital town center).
+-- The last team remaining is the victor.
 ---------------------------------------------------------------------------------------------------
 
 AGS_CONQUEST_MODULE = "AGS_Conquest"
+AGS_CONQUEST_OBJECTIVE = nil
+AGS_CONQUEST_ACTIVE_CHECKS = true
+AGS_CONQUEST_PLAYERS_MIN_REQUIRED = 2
+AGS_CONQUEST_TICK_WAIT = 0.25 -- 0.125 is a single tick
+-- player.landmarks
+AGS_CONQUEST_DAMAGE_INTERVAL = 30.0
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -16,11 +24,251 @@ AGS_CONQUEST_MODULE = "AGS_Conquest"
 Core_RegisterModule(AGS_CONQUEST_MODULE)	
 
 function AGS_Conquest_UpdateModuleSettings()
-	if not AGS_GLOBAL_SETTINGS.Conquest then
+	if not AGS_GLOBAL_SETTINGS.Conquest or #PLAYERS <= AGS_CONQUEST_PLAYERS_MIN_REQUIRED then
 		Core_UnregisterModule(AGS_CONQUEST_MODULE)
 	end
+end
+
+function AGS_Conquest_Start()
+	AGS_Conquest_StartProgressTracking()
+	AGS_Conquest_InitializeTargetCollection()
+	AGS_Conquest_CreateObjective()
+end
+
+function AGS_Conquest_OnPlayerDefeated(player, reason)
+	if reason == AGS_WR_CONQUEST then 
+		AGS_Conquest_Notification(player)
+		AGS_Conquest_CheckVictory()
+	end
+end
+
+function AGS_Conquest_OnGameOver()
+	AGS_Conquest_RemoveObjective()
+	AGS_Conquest_StopProgressTracking()
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_Conquest_StartProgressTracking()
+	Rule_RemoveGlobalEvent(AGS_Conquest_OnConstructionComplete, GE_ConstructionComplete)
+	Rule_RemoveGlobalEvent(AGS_Conquest_OnDamageReceived, GE_DamageReceived)
+	-- TODO TEST ENTITYKILLED ENTITYCRUSHED ETC. for checking changes
+end
+
+function AGS_Conquest_StopProgressTracking()
+	Rule_RemoveGlobalEvent(AGS_Conquest_OnConstructionComplete)
+	Rule_RemoveGlobalEvent(AGS_Conquest_OnDamageReceived)
+end
+
+function AGS_Conquest_CreateObjective()
+	local player_id = Game_GetLocalPlayer()
+	local player_civ = Player_GetRaceName(player_id)
+	AGS_CONQUEST_OBJECTIVE = AGS_CreateObjective(AGS_OBJECTIVE_CONQUEST, player_id, player_civ)
+	AGS_SetObjective(AGS_CONQUEST_OBJECTIVE, OS_Incomplete, true)
+end
+
+function AGS_Conquest_UpdateObjective()
+-- we new here boys, we gonna rock
+end
+
+function AGS_Conquest_RemoveObjective()
+	AGS_SetObjective(AGS_CONQUEST_OBJECTIVE, nil, false)	
+end
+-- Check if there is single remaining allied group.
+function AGS_Conquest_CheckVictory()
+	if not AGS_CONQUEST_ACTIVE_CHECKS then
+		return
+	end
+	
+	local winners = AGS_DoesWinnerGroupExists()
+	if winners == nil then
+		return
+	end
+	
+	for _, winner_id in pairs(winners) do 
+		AGS_SetPlayerVictorious(winner_id, AGS_Conquest_WinnerPresentation, AGS_WR_CONQUEST)
+	end
+	
+	AGS_EndGame()
+end
+
+
+function AGS_Conquest_WinnerPresentation(player_id)
+	AGS_Presenation(player_id, AGS_WINNER_VICTORY)
+end
+
+function AGS_Conquest_LoserPresenation(player_id)
+	AGS_LoserPresenation(player_id, AGS_LOOSER_DEFEAT, AGS_LOOSER_ELIMINATED)
+end
+
+
+
+
+
+function AGS_IsObjectiveTarget(entity_id)
+	return AGS_IsACapital(entity_id) or AGS_IsALandmark(entity_id) -- or AGS_IsAWonder(entity_id)
+end
+
+function AGS_Conquest_OnConstructionComplete(context)
+	if context == nil or context.player == nil or context.entity == nil then 
+		return
+	end
+	
+	local new_context = {
+		player = Core_GetPlayersTableEntry(context.player),
+		entity_id = context.entity,
+		entity_uwid = Entity_GetID(context.entity),
+	}
+	
+	if new_context.player == nil or new_context.entity_uid == nil or player.isEliminated then
+		return
+	end
+	
+	if AGS_IsObjectiveTarget(new_context.entity_id) then
+		-- Delay processing this event by two frames so deferred data model updates can complete. 
+		Rule_AddOneShot(AGS_Conquest_OnPostConstructionComplete, AGS_CONQUEST_TICK_WAIT, new_context)	
+	end
+end
+
+function AGS_Conquest_InitializeTargetCollection()
+	for _, player in pairs(PLAYERS) do
+		player.landmarks = {}
+		local eg_player_landmarks = Player_GetAllEntities(player.id)
+		
+		EGroup_Filter(eg_player_landmarks, { AGS_BP_LANDMARK }, FILTER_KEEP)
+		
+		local AGS_TrackLandmark = function(gid, idx, eid)
+			local entity_uwid = Entity_GetID(eid)
+			-- Track entity UWIDs.
+			if AGS_IsObjectiveTarget(eid) and player.landmarks[entity_uwid] == nil then				
+				player.landmarks[entity_uwid] = {
+					entity = eid,
+					last_health = Entity_GetHealth(eid),
+					damage_timer = string.format("conquest.landmark_damage_timer_%d", entity_uwid),
+					landmark_active = Entity_IsValid(entity_uwid) and Entity_GetStateModelBool(eid, "landmark_active"),
+					-- is_a_capital = AGS_IsACapital(eid), -- irrelevant on 99%
+					last_attacker = nil
+				}
+			end
+		end
+		
+		-- Try add found entities to a table.
+		EGroup_ForEach(eg_player_landmarks, AGS_TrackLandmark)
+	end
+end
+
+function AGS_Conquest_OnPostConstructionComplete(context, data)
+	-- Track entity UWIDs since Mongol structures trigger a GE_ConstructionComplete event when unpacked as well as when constructed.
+	if player.landmarks[data.entity_uwid] ~= nil then
+		return
+	end
+	-- Save structure in tracker list for a player.
+	data.player.landmarks[entity_uwid] = {
+		entity = data.entity_id,
+	 	last_health = Entity_GetHealth(data.entity_id),
+		damage_timer = string.format("conquest.landmark_damage_timer_%d", data.entity_uwid),
+		landmark_active = Entity_IsValid(data.entity_uwid) and Entity_GetStateModelBool(data.entity_id, "landmark_active"),
+		-- is_a_capital = AGS_IsACapital(data.entity_id), -- irrelevant on 99%
+		last_attacker = nil
+	}	
+	AGS_Conquest_UpdateObjective()
+end
+
+function AGS_Conquest_OnDamageReceived(context)
+	-- Excludes razing buildings as they do not have an attacker ?
+	if context == nil or context.attacker == nil or context.victim == nil then 
+		return 
+	end
+	-- Builder and attacker can't be world owned. Why ?
+	if World_OwnsEntity(context.victim) or World_OwnsEntity(context.attacker) then
+	
+	end
+	-- Excludes everythng that is not tracked by wincondition.
+	if not AGS_IsObjectiveTarget(context.victim) then
+		return
+	end	
+	-- Exclude scuttling of incomplete buildings.
+	if Entity_IsBuilding(context.victim) and Entity_GetBuildingProgress(context.victim) < 1.0 then
+		return
+	end	
+	-- Get building ID and owner
+	local id = Entity_GetID(context.victim)
+	local owner = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(context.victim))
+	-- Owner must always have this landmark registered for us to do anything with it ?
+	if owner.landmarks[id] == nil then
+		return
+	end
+	-- If Landmark is being repaired (also triggers OnDamageReceived)
+	if context.isRepairing then		
+		-- If inactive Landmark is fully repaired
+		if Entity_GetHealthPercentage(context.victim) == 1 and owner.landmarks[id].landmark_active == false then			
+			-- Track Landmark as active
+			owner.landmarks[id].landmark_active = true			
+		end		
+		return		
+	end
+	
+	-- No notifications for eliminated player.
+	if Core_IsPlayerEliminated(Game_GetLocalPlayer()) then
+		return
+	end
+	-- Notifications are done only about alive players and standing landmarks.
+	if not Core_IsPlayerEliminated(owner.id) and Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then
+		AGS_Conquest_DamageNotification(context, owner, id)	
+	end
+end
+
+AGS_CUE_LANDMARK_DAMAGE = {	
+	eventType = -1,	
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	lifetime = 10.0,		
+	repeatCount = 0,
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	repeatTime = 20.0,		
+	title = Loc_Empty(),
+	desc = Loc_Empty(),
+	sfx = "mus_stinger_landmark_building_damaged",
+	icon = "icons\\event_queue_high_priority_large",
+	icon_high_priority = "icons\\event_queue_high_priority_large",
+	color = {r = 255, g = 255, b = 255, a = 255},
+	--template = "high_priority", 
+	template = "event_with_player_color",
+	style = ECV_Queue | ECV_Title,
+}
+
+function AGS_Conquest_DamageNotification(context, owner, id)
+	-- Store last attacker in landmark data.
+	owner.landmarks[id].last_attacker = Entity_GetPlayerOwner(context.attacker)
+	-- If attacking player is local player or his ally do nothing.
+	if owner.landmarks[id].last_attacker.isLocal or AGS_IsMutualRelation(Game_GetLocalPlayer(), owner.landmarks[id].last_attacker, R_ALLY) then
+		return
+	end
+	
+	-- Timer is in progress.
+	if Timer_Exists(owner.landmarks[id].damage_timer) and Timer_GetRemaining(owner.landmarks[id].damage_timer) > 0.0 then
+		return
+	end
+	-- If timer does not exists this will create it for selected entity and start next countdown.
+	Timer_Start(owner.landmarks[id].damage_timer, AGS_CONQUEST_DAMAGE_INTERVAL)	
+	
+	-- Create cue.
+	local uiColour = Player_GetUIColour(owner.landmarks[id].last_attacker)
+	local title = nil
+	local high_priority = true
+	-- Notify owner.
+	if owner.isLocal then
+		title = AGS_FormatText(AGS_CUE_TITLE_LANDMARK_A_SELF_ID)
+	-- Notify his ally.
+	elseif AGS_IsMutualRelation(Game_GetLocalPlayer(), owner.id, R_ALLY) then
+		title = AGS_FormatText(AGS_CUE_TITLE_LANDMARK_A_TEAM_ID, owner.playerName)	
+		high_priority = false
+	end	
+	if title ~= nil then
+		-- TODO DELAY IF AND BODY ? BY event_cue_delay == 2.0 see Conquest_CreateEventCue
+		if not Core_IsPlayerEliminated(Game_GetLocalPlayer()) then
+			AGS_CreateCueComplex(AGS_CUE_LANDMARK_DAMAGE, high_priority, title, uiColour)
+		end
+	end
+end

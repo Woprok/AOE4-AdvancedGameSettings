@@ -63,7 +63,7 @@ function AGS_TeamSolidarity_Notification(player)
 	AGS_PlaySFX(player.id)
 	-- If local is still in the game show message in right corner.
 	if player ~= nil and not player_local.isEliminated then 
-		AGS_CreateCue(AGS_CUE_CORE, AGS_CUE_TITLE_TEAM_SOLIDARITY_ID, player.playerName)
+		AGS_CreateCue(AGS_CUE_CORE, AGS_FormatText(AGS_CUE_TITLE_TEAM_SOLIDARITY_ID, player.playerName))
 	end
 end
 
@@ -75,7 +75,7 @@ function AGS_TeamSolidarity_CreateObjective()
 end
 
 function AGS_TeamSolidarity_RemoveObjective()
-
+	AGS_SetObjective(AGS_TEAM_SOLIDARITY_OBJECTIVE, nil, false)
 end
 -- Enforce Teammates Solidarity.
 function AGS_TeamSolidarity_Enforce(defeated_teammate)

@@ -75,7 +75,7 @@ function AGS_Elimination_Notification(player)
 	AGS_PlaySFX(player.id)
 	-- If local is still in the game show message in right corner.
 	if player ~= nil and not player_local.isEliminated then 
-		AGS_CreateCue(AGS_CUE_CORE, AGS_CUE_TITLE_ANNIHILATED_ID, player.playerName)
+		AGS_CreateCue(AGS_CUE_CORE, AGS_FormatText(AGS_CUE_TITLE_ANNIHILATED_ID, player.playerName))
 	end
 end
 

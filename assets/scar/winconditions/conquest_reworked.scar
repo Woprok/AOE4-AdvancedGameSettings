@@ -1,37 +1,4 @@
------------------------------------------------------------------------
---
--- Conquest Win Condition 
---
--- A team is eliminated when all of its players have lost all their landmarks (including capital town center).
--- The last team remaining is the victor.
---
--- (c) Relic Entertainment 2017
---
------------------------------------------------------------------------
-
--- Provide data to replay system through this script
-import("replay/replaystatviewer.scar")
-
------------------------------------------------------------------------
--- Data
------------------------------------------------------------------------
-
-if _conquest==nil then
-
-	_conquest = {
-	module = "Conquest",
-	last_man_standing = false, -- false = fixed teams, true = dynamic diplomacy (i.e. only 1 player can win).
-		
-	icons = {
-		objective = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
-		alert = "icons\\event_queue_high_priority_large",
-	},	
-	types = {
-		landmark = "wonder",
-		wonder = "wonder_imperial_age",
-		building = "building", 
-	},
-	objective_title = Loc_Empty(),
+s = {
 	damage_interval = 30.0,
 	event_cue_delay = 2.0,
 	presentation_delay = 2.0,
@@ -42,17 +9,8 @@ if _conquest==nil then
 		landmark_destroyed_enemy = "mus_stinger_enemy_landmark_destroyed",
 		eliminated_player_ally = "Conquest_friendly_eliminated",
 		eliminated_enemy = "Conquest_enemy_eliminated",
-		victory = "mus_stinger_landmark_objective_complete_success",
-		defeat = "mus_stinger_landmark_objective_complete_fail",
 	},
-	cue_damaged = {				-- event cue shown when capital or landmark is damaged
-		title = Loc_Empty(),
-		desc = Loc_Empty(),
-		sfx = "mus_stinger_landmark_building_damaged",
-		icon = "icons\\event_queue_high_priority_large",
-		template = "high_priority",
-		style = ECV_Queue | ECV_Title,
-	},
+
 	cue_destroyed = {			-- event cue shown when capital or landmark is destroyed 
 		title = Loc_Empty(),
 		desc = Loc_Empty(),
@@ -66,90 +24,8 @@ if _conquest==nil then
 		icon = "",
 		template = "high_priority", 
 		style = ECV_Queue,
-	},
-}
+},}
 
-end
-
------------------------------------------------------------------------
--- Scripting framework 
------------------------------------------------------------------------
-
-Core_RegisterModule(_conquest.module)
-
------------------------------------------------------------------------
--- Callbacks
------------------------------------------------------------------------
-
--- Callback invoked when Diplomacy is enabled (indicates win condition should be based on player instead of team).
-function Conquest_DiplomacyEnabled(isEnabled)
-	_conquest.last_man_standing = isEnabled
-end
-
-
--- Callback invoked by Core::OnInit()
-function Conquest_OnInit()
-	-- Get local player
-	player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
-	Rule_AddGlobalEvent(Conquest_OnLocalPlayerChanged, GE_LocalPlayerChanged)
-	
-	
-	-- If there is only one player
-	if  #PLAYERS <= 1 then
-		
-		-- Remove Conquest objective
-		Core_UnregisterModule(_conquest.module)
-		
-	-- If there is more than one player
-	else
-		
-		-- For every player
-		for _, player in pairs(PLAYERS) do
-			
-			-- Track Landmarks
-			player.landmarks = {}
-			
-			-- Get all player entities
-			local eg_player_landmarks = Player_GetAllEntities(player.id)
-			-- Filter out all entities except for capital TC's and Landmarks
-			EGroup_Filter(eg_player_landmarks, "landmark", FILTER_KEEP)
-			
-			local _TrackLandmark = function(gid, idx, eid)
-				
-				-- Get entity ID
-				local entity_id = Entity_GetID(eid)
-				
-				-- If entity is a Landmark or Capital
-				if (Conquest_IsALandmark(eid) or Conquest_IsACapital(eid)) and player.landmarks[entity_id] == nil  then
-					
-					-- Track entity IDs since Mongol structures trigger a GE_ConstructionComplete event when unpacked as well as when constructed.
-					player.landmarks[entity_id] = {
-						entity = eid,
-					 	last_health = Entity_GetHealth(eid),
-						damage_timer = string.format("conquest.landmark_damage_timer_%d", entity_id),
-						landmark_active = Entity_IsValid(entity_id) and Entity_GetStateModelBool(eid, "landmark_active"),
-						is_a_capital = Conquest_IsACapital(eid),
-						last_attacker = nil
-					}
-					
-				end		
-			end
-			
-			-- For every Landmark found
-			EGroup_ForEach(eg_player_landmarks, _TrackLandmark)
-
-		end			
-		
-		-- Listen for construction completion
-		Rule_AddGlobalEvent(Conquest_OnConstructionComplete, GE_ConstructionComplete) 
-		-- Listen for damage received
-		Rule_AddGlobalEvent(Conquest_OnDamageReceived, GE_DamageReceived)
-		
-		-- Replay stats
-		ReplayStatViewer_PopulateReplayStatTabs({"ConquestTrackerTemplate"})
-		ReplayStatViewer_RegisterPlayerDataContextUpdater(Conquest_UpdatePlayerStats)
-	end
-end
 
 -- Start function
 function Conquest_Start()
@@ -168,9 +44,6 @@ end
 function Conquest_OnGameOver()
 	
 	-- Remove rules on game over
-	Rule_RemoveGlobalEvent(Conquest_OnConstructionComplete)
-	Rule_RemoveGlobalEvent(Conquest_OnDamageReceived)
-	Rule_RemoveGlobalEvent(Conquest_OnLocalPlayerChanged)
 	Rule_Remove(Conquest_CheckElimination)
 	
 end
@@ -184,182 +57,6 @@ function Conquest_OnPlayerJoinedTeam(playerData)
 end
 
 
--- Global event callback for GE_ConstructionComplete
-function Conquest_OnConstructionComplete(context)	
-
-	-- Delay processing this event by two frames so deferred data model updates can complete. 
-	-- Pass context of this event as the data for Conquest_PostConstructionComplete() 
-	Rule_AddOneShot(Conquest_PostConstructionComplete, 0.25, context)
-
-end
-
-
--- Delayed handler for global event GE_ConstructionComplete
-function Conquest_PostConstructionComplete(context, data)
-
-	-- Get player constructing
-	local player = Core_GetPlayersTableEntry(data.player)
-	-- Get constructed entity
-	local entity = data.entity
-		
-	-- If player is valid and has not been eliminated
-	if player ~= nil and entity ~= nil and not Core_IsPlayerEliminated(player.id) then
-		
-		--print(string.format("Conquest_PostConstructionComplete() - Player %d (team %d) built %s", player.index, player.team.index, BP_GetName(data.pbg)))		
-		
-		-- Get entity ID
-		local entity_id = Entity_GetID(entity)  
-		
-		-- If constructed entity is a Landmark or Capital
-		if (Conquest_IsALandmark(entity) or Conquest_IsACapital(entity)) and player.landmarks[entity_id] == nil  then
-			
-			-- Track entity IDs since Mongol structures trigger a GE_ConstructionComplete event when unpacked as well as when constructed.
-			player.landmarks[entity_id] = {
-				entity = entity,
-			 	last_health = Entity_GetHealth(entity),
-				damage_timer = string.format("conquest.landmark_damage_timer_%d", entity_id),
-				landmark_active = Entity_IsValid(entity_id) and Entity_GetStateModelBool(entity, "landmark_active"),
-				is_a_capital = Conquest_IsACapital(entity),
-				last_attacker = nil
-			}
-			
-			-- Update Conquest objective
-			Conquest_UpdateObjective()				
-		end			
-	end	
-end
-
-
--- Global event callback for GE_DamageReceived
-function Conquest_OnDamageReceived(context)
-	
-	-- If there is an attacker (excludes razing buildings)
-	if context.attacker then
-		
-		-- If building/attacker are not world-owned and building is a Capital Town Center or a Landmark
-		if not World_OwnsEntity(context.victim) and not World_OwnsEntity(context.attacker) and (Conquest_IsACapital(context.victim) or Conquest_IsALandmark(context.victim)) then 
-			
-			-- Exclude scuttling of incomplete buildings		
-			if not Entity_IsBuilding(context.victim) or Entity_GetBuildingProgress(context.victim) >= 1.0 then
-				
-				-- Get building ID and owner
-				local id = Entity_GetID(context.victim)
-				local owner = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(context.victim))
-				
-				-- If Landmark is being repaired (also triggers OnDamageReceived)
-				if context.isRepairing then
-					
-					-- If inactive Landmark is fully repaired
-					if Entity_GetHealthPercentage(context.victim) == 1 and owner.landmarks[id].landmark_active == false then
-						
-						-- Track Landmark as active
-						owner.landmarks[id].landmark_active = true
-						
-					end
-					
-					return
-					
-				end
-				
-				-- If owner has Landmarks
-				if owner.landmarks[id] ~= nil then
-					
-					-- Create a cue cooldown timer
-					local show_cue = not Timer_Exists(owner.landmarks[id].damage_timer) or Timer_GetRemaining(owner.landmarks[id].damage_timer) == 0.0		
-					Timer_Start(owner.landmarks[id].damage_timer, _conquest.damage_interval)
-					
-					-- If no cue cooldown timer is active, Landmark owner is not eliminated, and local player is not eliminated
-					if show_cue 
-						and not Core_IsPlayerEliminated(owner.id) 
-						and not Core_IsPlayerEliminated(player_local.id) 
-						and Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then
-						
-						-- Get damaged cue data
-						local cue = _conquest.cue_damaged
-						
-						-- Store last attacker in landmark data
-						owner.landmarks[id].last_attacker = Entity_GetPlayerOwner(context.attacker)
-						
-						-- Get attacking player's colour
-						local uiColour = Player_GetUIColour(owner.landmarks[id].last_attacker)
-						
-						-- If attacking player is local player
-						if owner.landmarks[id].last_attacker.isLocal then
-								
-							-- Do nothing
-							
-							-- If attacking player is local player's ally
-						elseif Player_ObserveRelationship(player_local.id, owner.landmarks[id].last_attacker) == R_ALLY then
-								
-							-- Do nothing
-							
-							-- If local player owns Landmark
-						elseif owner.isLocal then
-							
-							-- Create cue title
-							local cue_title = 11198265	 -- Enemy attacking Landmark
-							
-							--Notify local player that Landmark is under attack
-							Rule_AddOneShot(Conquest_CreateEventCue, _conquest.event_cue_delay, { title = cue_title, queue_icon = "icons\\event_queue_high_priority", sfx = _conquest.sfx.landmark_damaged_player, uiColour = uiColour, highPriority =  true})
-							
-							-- If local player's ally owns Landmark
-						elseif Player_ObserveRelationship(player_local.id, owner.id) == R_ALLY then
-							
-							-- Create cue title
-							local cue_title = Loc_FormatText(11198266, owner.playerName)	--"Enemy attacking %1PLAYER_NAME%'s Landmark"
-							
-							--Notify local player that Landmark is under attack
-							Rule_AddOneShot(Conquest_CreateEventCue, _conquest.event_cue_delay, { title = cue_title, queue_icon = "icons\\event_queue_high_priority", sfx = _conquest.sfx.landmark_damaged_player, uiColour = uiColour, highPriority =  false})
-						end
-					end
-				end
-			end	
-		end
-	end
-end
-
--- Callback invoked by Core_SetPlayerDefeated() when a player is eliminated.
-function Conquest_OnPlayerDefeated(defeatedPlayer, reason)
-	
-	-- If win was due to Conquest
-	if reason == WR_CONQUEST then
-		
-		if Player_IsAlive(defeatedPlayer.id) then
-			-- Kill player
-			World_KillPlayer(defeatedPlayer.id, KPR_Lost)
-		end
-		
-		-- Check for victory
-		Conquest_CheckVictory()
-		
-		if defeatedPlayer == player_local and Core_RevealFOWOnEliminationEnabled() then
-			FOW_UIRevealAll()
-		end
-	end
-end
-
--- Called when local player is changed
-function Conquest_OnLocalPlayerChanged(context)
-	
-	player_local = Core_GetPlayersTableEntry(context.player)
-	
-end
-
--- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
-function Conquest_UpdatePlayerStats(player, scarModel)
-	local landmarks_built = 0
-	local landmarks_remaining = 0
-	
-	for id, landmark in pairs(player.landmarks) do
-		landmarks_built = landmarks_built + 1
-		if Entity_IsValid(id) and Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then 
-			landmarks_remaining = landmarks_remaining + 1
-		end
-	end
-		
-	scarModel.Conquest_Target = landmarks_built
-	scarModel.Conquest_Current = landmarks_remaining
-end
 
 -----------------------------------------------------------------------
 -- Rules
@@ -535,67 +232,6 @@ end
 -- Private/Internal functions
 -----------------------------------------------------------------------
 
-function Conquest_CheckVictory()
-	
-	-- Track one of the surviving players
-	local winning_player = nil
-	
-	-- For all players
-	for i, player in pairs(PLAYERS) do
-		
-		-- If player is not eliminated
-		if not Core_IsPlayerEliminated(player.id) then 
-			
-			-- Get remaining enemies of player
-			local enemies_remaining = Conquest_GetActiveEnemyCount(player)
-			
-			-- If no enemies remain
-			if enemies_remaining == 0 then
-				-- Track player
-				winning_player = player
-				break
-			end
-		end
-	end
-	
-	if winning_player ~= nil then
-		
-		-- For every player
-		for i, player in pairs(PLAYERS) do
-			
-			-- If player is winning player's ally
-			if Player_ObserveRelationship(player.id, winning_player.id) == R_ALLY then
-				Core_SetPlayerVictorious(player.id, Conquest_WinnerPresentation, WR_CONQUEST)	
-			end
-		end
-	-- If a winning player was not found, check if no humans remain
-	else
-		
-		-- Track humans remaining
-		local humansRemaining = {}
-		for i, player in pairs(PLAYERS) do
-			if (not player.isEliminated) and Player_IsHuman(player.id) then
-				table.insert(humansRemaining, player)
-			end
-		end
-		
-		-- If no humans remain, resolve match as winnerless. This gracefully resolves matches where the last human player surrenders in an AI game with RelicLink.
-		if #humansRemaining == 0 then
-			Core_OnGameOver()
-			Core_WinnerlessGameOver(Annihilation_LoserPresentation, WR_ANNIHILATION)
-		end
-	end
-end
-
-
-function Conquest_IsACapital(entity)		
-	return Entity_GetStateModelBool(entity, "town_center_is_capital") or Entity_IsOfType(entity, "town_center_capital")
-end
-
-
-function Conquest_IsALandmark(entity)		
-	return Entity_IsOfType(entity, _conquest.types.landmark) and not Entity_IsOfType(entity, _conquest.types.wonder)	
-end
 
 -- Returns number of Landmarks a player has built/remaining
 function Conquest_GetPlayerLandmarkCount(player)
@@ -737,13 +373,9 @@ function Conquest_AddObjective()
 	if _conquest.objective == nil then 
 		local localPlayer = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
 		local enemies = 0
-		_conquest.objective_title = 11159056				-- "Destroy all enemy landmarks"
-
-		-- Set primary objective data template (Note: No OR needed as Conquest always precedes other objectives)
-		data_template = "ConquestObjectiveTemplate"
 		
-		_conquest.objective = Obj_Create(localPlayer.id, _conquest.objective_title, Loc_Empty(), _conquest.icons.objective, data_template, localPlayer.raceName, OT_Primary, 0, "conquestObj")		
-				
+
+		-- Set primary objective data template (Note: No OR needed as Conquest always precedes other objectives)				
 		if _first_primary_objective == nil then 
 			_first_primary_objective = _conquest.objective
 		end
@@ -778,26 +410,6 @@ function Conquest_RemoveObjective()
 	end	
 end			
 
--- Event cue function to support delayed events
-function Conquest_CreateEventCue(context, data)
-	
-	-- Only show events to active players
-	if not Core_IsPlayerEliminated(Game_GetLocalPlayer()) then
-		
-		-- If event should play in event queue and center screen notification (note: uses high priority icons by default)
-		if data.highPriority then
-			
-			UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", "icons\\event_queue_high_priority", data.sfx, data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Queue, nothing)
-			UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", "icons\\event_queue_high_priority_large", "", data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Title, nothing)
-			
-		-- If event should only play in event queue (note: uses either high priority icon or if not path is specified, the objective arrow icon)
-		else
-			
-			UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", data.queue_icon, data.sfx, data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Queue, nothing)
-			
-		end
-	end
-end
 
 function Conquest_SetPlayerDefeated(context, data)
 
@@ -808,7 +420,7 @@ end
 -- Win/Lose Presentation Functions
 function Conquest_WinnerPresentation(playerID)
 	
-	Rule_AddOneShot(Conquest_DelayedWinnerPresentation, _conquest.presentation_delay, {playerID = playerID})
+	Rule_AddOneShot(Conquest_DelayedWinnerPresentation, AGS_EVENT_CUE_DELAY, {playerID = playerID})
 	
 end
 
@@ -823,28 +435,17 @@ function Conquest_DelayedWinnerPresentation(context, data)
 		Music_PlayStinger(MUS_STING_PRIMARY_OBJ_COMPLETE_ENDGAME)
 		Conquest_RemoveObjective()
 		
-		Rule_AddOneShot(_gameOver_message, 
-			GAMEOVER_OBJECTIVE_TIME, { 
-			_playerID = data.playerID, 
-			_icon = _conquest.icons.objective, 
-			_endType = Loc_GetString(11161277), 					-- "VICTORY"  
-			_message = Loc_Empty(),									-- Unused 
-			_sound = _conquest.sfx.victory, 
-			_videoURI = "stinger_victory" 
-		})
+		Rule_AddOneShot(_gameOver_message)
 	end
 	
 end
 
 function Conquest_LoserPresentation(playerID)
 	
-	Rule_AddOneShot(Conquest_DelayedLoserPresentation, _conquest.presentation_delay, {playerID = playerID})
+	Rule_AddOneShot(Conquest_DelayedLoserPresentation, AGS_EVENT_CUE_DELAY, {playerID = playerID})
 	
 end
 
-function _Conquest_RevealUI()
-	Taskbar_SetVisibility(true)
-end
 
 function Conquest_SetupFailStinger()
 	Misc_ClearSelection()
@@ -865,18 +466,7 @@ function Conquest_DelayedLoserPresentation(context, data)
 			
 			Conquest_RemoveObjective() -- Only on defeat, otherwise the team could still win
 			
-			local title = Loc_GetString(11165094)			-- "DEFEAT"
-			local video = "stinger_defeat"
-			Rule_AddOneShot(_gameOver_message, 
-				GAMEOVER_OBJECTIVE_TIME, {
-				_playerID = player_local, 
-				_icon = _conquest.icons.objective,
-				_endType = title,
-				_message = Loc_Empty(),
-				_sound = _conquest.sfx.defeat, 
-				_videoURI = video,
-				_callback = _Conquest_RevealUI
-			})
+			Rule_AddOneShot(_gameOver_message)
 			return
 		end
 	end
@@ -885,17 +475,6 @@ function Conquest_DelayedLoserPresentation(context, data)
 	if data.playerID == Game_GetLocalPlayer() then	
 		Conquest_SetupFailStinger()
 		
-		local title = Loc_GetString(11165821)		-- "ELIMINATED"
-		local video = "stinger_eliminated"
-		Rule_AddOneShot(_gameOver_message, 
-			GAMEOVER_OBJECTIVE_TIME, {
-			_playerID = player_local, 
-			_icon = _conquest.icons.objective,
-			_endType = title,
-			_message = Loc_Empty(),
-			_sound = _conquest.sfx.defeat, 
-			_videoURI = video,
-			_callback = _Conquest_RevealUI
-		})
+		Rule_AddOneShot(_gameOver_message)
 	end	
 end

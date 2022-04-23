@@ -90,3 +90,51 @@ end
 --		
 --	return false
 --end
+
+
+-- TODO INTEGRATE INTO THIS CLASS UNTIL WE CAN REWORK REPLAYS
+-- Replay stats
+		-- Initialize replay stats
+		ReplayStatViewer_PopulateReplayStatTabs({"ReligiousTrackerTemplate"})
+		ReplayStatViewer_RegisterPlayerDataContextUpdater(Religious_UpdatePlayerStats)
+ReplayStatViewer_PopulateReplayStatTabs({"ConquestTrackerTemplate"})
+ReplayStatViewer_RegisterPlayerDataContextUpdater(Conquest_UpdatePlayerStats)
+	ReplayStatViewer_PopulateReplayStatTabs({"WonderTrackerTemplate"})
+	ReplayStatViewer_RegisterPlayerDataContextUpdater(Wonder_UpdatePlayerStats)
+-- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
+function Religious_UpdatePlayerStats(player, scarModel)	
+	scarModel.Relics_Target = #_religious.sites
+	scarModel.Relics_Current = Religious_SitesOwnedByPlayer(player)
+end
+
+-- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
+function Conquest_UpdatePlayerStats(player, scarModel)
+	local landmarks_built = 0
+	local landmarks_remaining = 0
+	
+	for id, landmark in pairs(player.landmarks) do
+		landmarks_built = landmarks_built + 1
+		if Entity_IsValid(id) and Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then 
+			landmarks_remaining = landmarks_remaining + 1
+		end
+	end
+		
+	scarModel.Conquest_Target = landmarks_built
+	scarModel.Conquest_Current = landmarks_remaining
+end
+-- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
+function Wonder_UpdatePlayerStats(player, scarModel)	
+	if not player.isEliminated and player._wonder.entity_id ~= nil and Entity_IsValid(player._wonder.entity_id) then 
+		if Timer_Exists(player._wonder.timer_victory_deterministic) then 
+			scarModel.Wonder_Target = _wonder.time_victory 								-- in sec
+			scarModel.Wonder_Current = Timer_GetRemaining(player._wonder.timer_victory_deterministic) -- in sec	
+			return
+		elseif Entity_GetBuildingProgress(Entity_FromID(player._wonder.entity_id)) < 1.0 then
+			scarModel.Wonder_Target = _wonder.time_victory 	-- in sec
+			scarModel.Wonder_Current = 0 					-- in sec	0 : under construction
+			return
+		end
+	end
+	scarModel.Wonder_Target = 0 	-- in sec
+	scarModel.Wonder_Current = -1 	-- in sec	-1 : not constructed
+end

@@ -77,7 +77,7 @@ function AGS_Surrender_Notification(player)
 	AGS_PlaySFX(player.id)
 	-- If local is still in the game show message in right corner.
 	if player ~= nil and not player_local.isEliminated then 
-		AGS_CreateCue(AGS_CUE_SURRENDER, AGS_CUE_TITLE_SURRENDERED_ID, player.playerName)
+		AGS_CreateCue(AGS_CUE_SURRENDER, AGS_FormatText(AGS_CUE_TITLE_SURRENDERED_ID, player.playerName))
 	end
 end
 -- Check if there is single remaining allied group.

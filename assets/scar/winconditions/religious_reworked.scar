@@ -9,15 +9,8 @@
 -- When the player or team captures all Holy Sites, they must defend them for a period of time to win the match.
 -----------------------------------------------------------------------
 
--- Provide data to replay system through this script
-import("replay/replaystatviewer.scar")
-
------------------------------------------------------------------------
--- Data
------------------------------------------------------------------------
 
 _religious = {
-	module = "Religious",		-- Module name
 	can_tick = true,
 	last_person_standing = false,	-- true = fixed teams, false = dynamic diplomacy (i.e. only 1 player can win)
 	conversion_radius = 10.0,	-- Radius around holy sites within which a monk/unit must be to capture/neutralize it - must match value in Holy Site strategic_point_ext
@@ -62,8 +55,6 @@ _religious = {
 		sfx_victory_timer_final = "sfx_ui_victory_countdown_update_final",
 		sfx_victory_timer_mix_event = "mus_shared_victory_countdown_mix_event",
 		sfx_victory_timer_mix_reset_event = "mus_shared_victory_countdown_mix_event_reset",
-		defeat = "ReligiousDefeatEvent", 											-- Enemy team wins
-		victory = "ReligiousVictoryEvent", 											-- Player's team wins
 	},
 	progress = {
 		min = 0,
@@ -72,11 +63,6 @@ _religious = {
 
 }
 
------------------------------------------------------------------------
--- Scripting framework
------------------------------------------------------------------------
-
-Core_RegisterModule(_religious.module)
 
 -----------------------------------------------------------------------
 -- Callbacks
@@ -132,9 +118,6 @@ function Religious_OnInit()
 		-- Remove win condition module
 		Core_UnregisterModule(_religious.module)
 	else
-		-- Initialize replay stats
-		ReplayStatViewer_PopulateReplayStatTabs({"ReligiousTrackerTemplate"})
-		ReplayStatViewer_RegisterPlayerDataContextUpdater(Religious_UpdatePlayerStats)
 	end
 end
 	
@@ -164,10 +147,7 @@ function Religious_OnPlayerDefeated(player, reason)
 	-- If win was due to Religion
 	if reason == WR_RELIGIOUS then
 		
-		if Player_IsAlive(player.id) then
-			-- Kill player
-			World_KillPlayer(player.id, KPR_Lost)
-		end
+
 	end
 	
 	-- If player is local player
@@ -190,11 +170,6 @@ function Religious_OnGameOver()
 	
 end
 	
--- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
-function Religious_UpdatePlayerStats(player, scarModel)	
-	scarModel.Relics_Target = #_religious.sites
-	scarModel.Relics_Current = Religious_SitesOwnedByPlayer(player)
-end
 
 -----------------------------------------------------------------------
 -- Rules
@@ -1228,10 +1203,6 @@ function Religious_WinnerPresentation(playerID)
 			GAMEOVER_OBJECTIVE_TIME, {
 			_playerID = playerID, 
 			_icon = _religious.icons.objective, 
-			_endType = Loc_GetString(11161277), 		-- "VICTORY"
-			_message = Loc_Empty(), 					-- Unused
-			_sound = _religious.sfx.victory,
-			_videoURI = "stinger_victory"
 		})
 	end
 end
@@ -1260,10 +1231,6 @@ function Religious_LoserPresentation(playerID)
 			GAMEOVER_OBJECTIVE_TIME, {
 			_playerID = playerID, 
 			_icon = _religious.icons.objective, 
-			_endType = Loc_GetString(11165094),			-- "DEFEAT" 
-			_message = Loc_Empty(),						-- Unused 
-			_sound = _religious.sfx.defeat,
-			_videoURI = "stinger_defeat"
 		})
 	end
 end

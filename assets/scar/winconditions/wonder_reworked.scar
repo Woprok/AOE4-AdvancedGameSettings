@@ -8,12 +8,6 @@
 -- and defending it for 10 minutes. 
 -----------------------------------------------------------------------
 
--- Provide data to replay system through this script
-import("replay/replaystatviewer.scar")
-
------------------------------------------------------------------------
--- Data
------------------------------------------------------------------------
 
 _wonder = {
 	solo_victory = false,		-- only builder wins if true
@@ -31,7 +25,6 @@ _wonder = {
 		age4 = "wonder_imperial_age",
 	},
 	FOWRadius = 12.0,
-	event_cue_delay = 2.0,
 	sfx = {
 		construction_start_player_team = "mus_stinger_wonder_win_build_start_ally",
 		construction_start_enemy_team = "mus_stinger_wonder_win_build_start_enemy",
@@ -82,13 +75,6 @@ _wonder = {
 		style = ECV_Queue | ECV_Title,
 	},	
 }
-
------------------------------------------------------------------------
--- Scripting framework 
------------------------------------------------------------------------
-
-Core_RegisterModule("Wonder")
-
 -----------------------------------------------------------------------
 -- Callbacks
 -----------------------------------------------------------------------
@@ -152,8 +138,6 @@ function Wonder_OnInit()
 		Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", true)
 	end
 	
-	ReplayStatViewer_PopulateReplayStatTabs({"WonderTrackerTemplate"})
-	ReplayStatViewer_RegisterPlayerDataContextUpdater(Wonder_UpdatePlayerStats)
 end
 
 
@@ -182,33 +166,13 @@ function Wonder_Start()
 end
 
 
--- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
-function Wonder_UpdatePlayerStats(player, scarModel)	
-	if not player.isEliminated and player._wonder.entity_id ~= nil and Entity_IsValid(player._wonder.entity_id) then 
-		if Timer_Exists(player._wonder.timer_victory_deterministic) then 
-			scarModel.Wonder_Target = _wonder.time_victory 								-- in sec
-			scarModel.Wonder_Current = Timer_GetRemaining(player._wonder.timer_victory_deterministic) -- in sec	
-			return
-		elseif Entity_GetBuildingProgress(Entity_FromID(player._wonder.entity_id)) < 1.0 then
-			scarModel.Wonder_Target = _wonder.time_victory 	-- in sec
-			scarModel.Wonder_Current = 0 					-- in sec	0 : under construction
-			return
-		end
-	end
-	scarModel.Wonder_Target = 0 	-- in sec
-	scarModel.Wonder_Current = -1 	-- in sec	-1 : not constructed
-end
 
 
 -- Callback invoked by Core_SetPlayerDefeated() when a player is eliminated.
 function Wonder_OnPlayerDefeated(player, reason)	
 	-- If win was due to Wonder
 	if reason == WR_WONDER then
-		
-		if Player_IsAlive(player.id) then
-			-- Kill player
-			World_KillPlayer(player.id, KPR_Lost)
-		end
+
 	end
 end
 
@@ -372,7 +336,7 @@ function Wonder_OnEntityKilled(context)
 								-- Set cue sfx
 								cue.sfx = _wonder.sfx.destroyed_player
 								-- Trigger event cue
-								Rule_AddOneShot(Wonder_CreateEventCue, _wonder.event_cue_delay, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
+								Rule_AddOneShot(Wonder_CreateEventCue, AGS_EVENT_CUE_DELAY, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
 								
 							-- If wonder owner is not local player
 							else
@@ -385,7 +349,7 @@ function Wonder_OnEntityKilled(context)
 									-- Set cue sfx
 									cue.sfx = _wonder.sfx.destroyed_ally
 									-- Trigger event cue
-									Rule_AddOneShot(Wonder_CreateEventCue, _wonder.event_cue_delay, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
+									Rule_AddOneShot(Wonder_CreateEventCue, AGS_EVENT_CUE_DELAY, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
 									
 								-- If wonder owner is local player's enemy
 								else
@@ -395,7 +359,7 @@ function Wonder_OnEntityKilled(context)
 									-- Set cue sfx
 									cue.sfx = _wonder.sfx.destroyed_enemy
 									-- Trigger event cue
-									Rule_AddOneShot(Wonder_CreateEventCue, _wonder.event_cue_delay, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
+									Rule_AddOneShot(Wonder_CreateEventCue, AGS_EVENT_CUE_DELAY, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
 									
 								end
 							end
@@ -419,7 +383,7 @@ function Wonder_OnEntityKilled(context)
 							cue.sfx = _wonder.sfx.destroyed_player
 							
 							-- Trigger event cue
-							Rule_AddOneShot(Wonder_CreateEventCue, _wonder.event_cue_delay, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})
+							Rule_AddOneShot(Wonder_CreateEventCue, AGS_EVENT_CUE_DELAY, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})
 							
 						-- If wonder owner is not local player
 						else 
@@ -433,7 +397,7 @@ function Wonder_OnEntityKilled(context)
 								cue.sfx = _wonder.sfx.destroyed_ally
 								
 								-- Trigger event cue
-								Rule_AddOneShot(Wonder_CreateEventCue, _wonder.event_cue_delay, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
+								Rule_AddOneShot(Wonder_CreateEventCue, AGS_EVENT_CUE_DELAY, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
 								
 							-- If wonder owner is local player's enemy
 							else
@@ -447,7 +411,7 @@ function Wonder_OnEntityKilled(context)
 									cue.sfx = _wonder.sfx.destroyed_enemy
 									
 									-- Trigger event cue
-									Rule_AddOneShot(Wonder_CreateEventCue, _wonder.event_cue_delay, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
+									Rule_AddOneShot(Wonder_CreateEventCue, AGS_EVENT_CUE_DELAY, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
 								
 								-- If attacking player is local player's ally
 								elseif Player_ObserveRelationship(player_local.id, player_attacker) == R_ALLY then
@@ -458,7 +422,7 @@ function Wonder_OnEntityKilled(context)
 									cue.sfx = _wonder.sfx.destroyed_enemy
 									
 									-- Trigger event cue
-									Rule_AddOneShot(Wonder_CreateEventCue, _wonder.event_cue_delay, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
+									Rule_AddOneShot(Wonder_CreateEventCue, AGS_EVENT_CUE_DELAY, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
 									
 								-- If attacking player is local player's enemy
 								else
@@ -469,7 +433,7 @@ function Wonder_OnEntityKilled(context)
 									cue.sfx = _wonder.sfx.destroyed_enemy
 									
 									-- Trigger event cue
-									Rule_AddOneShot(Wonder_CreateEventCue, _wonder.event_cue_delay, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
+									Rule_AddOneShot(Wonder_CreateEventCue, AGS_EVENT_CUE_DELAY, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
 									
 								end
 							end
@@ -528,7 +492,7 @@ function Wonder_OnDamageReceived(context)
 						cue.sfx = _wonder.sfx.damaged_player_team
 						
 						--Notify player that Wonder is under attack
-						Rule_AddOneShot(Wonder_CreateEventCue, _wonder.event_cue_delay, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})
+						Rule_AddOneShot(Wonder_CreateEventCue, AGS_EVENT_CUE_DELAY, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})
 						
 						-- If wonder owner is not local player
 					else
@@ -542,7 +506,7 @@ function Wonder_OnDamageReceived(context)
 							cue.sfx = _wonder.sfx.damaged_player_team
 							
 							--Notify player that ally's Wonder is under attack
-							Rule_AddOneShot(Wonder_CreateEventCue, _wonder.event_cue_delay, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
+							Rule_AddOneShot(Wonder_CreateEventCue, AGS_EVENT_CUE_DELAY, { title = cue.title, queue_icon = "icons\\event_queue_high_priority", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})
 							
 						end
 					end
@@ -916,10 +880,6 @@ function Wonder_WinnerPresentation(playerID)
 			GAMEOVER_OBJECTIVE_TIME, {
 			_playerID = playerID, 
 			_icon = _wonder.icons.objective, 
-			_endType = Loc_GetString(11161277), 		-- "VICTORY"
-			_message = Loc_Empty(), 					-- Unused
-			_sound = "DefendWonderVictoryEvent", 
-			_videoURI = "stinger_victory"
 		})
 	end
 end
@@ -949,10 +909,6 @@ function Wonder_LoserPresentation(playerID)
 			GAMEOVER_OBJECTIVE_TIME, {
 			_playerID = playerID, 
 			_icon = _wonder.icons.objective, 
-			_endType = Loc_GetString(11165094),			-- "DEFEAT" 
-			_message = Loc_Empty(), 					-- Unused
-			_sound = "DefendWonderDefeatEvent", 
-			_videoURI = "stinger_defeat"
 		})
 	end
 end

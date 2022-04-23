@@ -6,56 +6,68 @@
 -- Description:
 -- Contains visuals and helpers for conditions such as treaty and conquest.
 ---------------------------------------------------------------------------------------------------
+AGS_EVENT_CUE_DELAY = 2.0
 
-AGS_LOOSER_DEFEAT = {
-	icon = nil,
+AGS_PRESENTATION_DEFEAT = {
+	icon_defeat = nil,
+	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
+	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
 	-- DEFEAT
 	title = Loc_GetString(11165094),
 	message = Loc_Empty(),
-	sound = "mus_stinger_landmark_objective_complete_fail",
-	video = "stinger_defeat",		
+	sound_defeat = "mus_stinger_landmark_objective_complete_fail",
+	sound_conquest = "ConquestDefeatEvent",
+	sound_wonder = "DefendWonderDefeatEvent",
+	sound_religious = "ReligiousDefeatEvent",
+	video = "stinger_defeat",	
+	callback = AGS_RevealUI,
+	
 }
-AGS_LOOSER_DEFEAT_CONQUEST = {
-	icon = nil,
-	-- DEFEAT
-	title = Loc_GetString(11165094),
-	message = Loc_Empty(),
-	sound = "ConquestDefeatEvent",
-	video = "stinger_defeat",		
-}
-AGS_LOOSER_ELIMINATED = {
-	icon = nil,
+AGS_PRESENTATION_ELIMINATION = {
+	icon_defeat = nil,
+	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
+	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
 	-- ELIMINATED
 	title = Loc_GetString(11165821),
 	message = Loc_Empty(),
-	sound = "mus_stinger_landmark_objective_complete_fail",
-	video = "stinger_eliminated",		
+	sound_defeat = "mus_stinger_landmark_objective_complete_fail",
+	sound_conquest = "ConquestDefeatEvent",
+	sound_wonder = "DefendWonderDefeatEvent",
+	sound_religious = "ReligiousDefeatEvent",
+	video = "stinger_eliminated",	
+	callback = AGS_RevealUI,
+	
 }
-AGS_LOOSER_ELIMINATED_CONQUEST = {
-	icon = nil,
-	-- ELIMINATED
-	title = Loc_GetString(11165821),
-	message = Loc_Empty(),
-	sound = "ConquestDefeatEvent",
-	video = "stinger_eliminated",		
-}
-AGS_WINNER_VICTORY = {
-	icon = nil,
+AGS_PRESENTATION_VICTORY = {
+	icon_victory = nil,
+	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
+	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
 	-- VICTORY
 	title = Loc_GetString(11161277),
 	message = Loc_Empty(),
-	sound = "mus_stinger_landmark_objective_complete_success",
-	video = "stinger_victory",		
-}
-AGS_WINNER_VICTORY_CONQUEST = {
-	icon = "icons\\races\\common\\victory_conditions\\victory_condition_conquest", 
-	-- VICTORY
-	title = Loc_GetString(11161277),
-	message = Loc_Empty(),
-	sound = "ConquestVictoryEvent",
-	video = "stinger_victory",		
+	sound_victory = "mus_stinger_landmark_objective_complete_success",
+	sound_conquest = "ConquestVictoryEvent",
+	sound_wonder = "DefendWonderVictoryEvent",
+	sound_religious = "ReligiousVictoryEvent",
+	video = "stinger_victory",	
+	callback = AGS_RevealUI,	
 }
 
+
+AGS_OBJECTIVE_CONQUEST = {
+	-- "Destroy all enemy landmarks"
+	title = "$11159056", 
+	description = Loc_Empty,
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
+	data_template = "ConquestObjectiveTemplate",
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "conquestObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
 AGS_OBJECTIVE_REGICIDE = {
 	-- Your King must survive.
 	title = "$11218487", 
@@ -88,9 +100,16 @@ AGS_CUE_TITLE_SURRENDERED_ID = 11161289
 -- "%1PLAYER_NAME% surrendered in solidarity with his teammate"
 AGS_CUE_TITLE_TEAM_SOLIDARITY_ID = "$64c5019a145c4e4da448dbd3adeea61e:329"
 
-AGS_CUE_CORE = {	
+-- "Enemy attacking Landmark"
+AGS_CUE_TITLE_LANDMARK_A_SELF_ID = 11198265
+-- "Enemy attacking %1PLAYER_NAME%'s Landmark"
+AGS_CUE_TITLE_LANDMARK_A_TEAM_ID = 11198266
+
+AGS_CUE_CORE = {
+eventType = -1,	
 	-- should match the defaults set in AE under tuning.ui.event_cues
-	lifetime = 10.0,		
+	lifetime = 10.0,
+	repeatCount = 0,
 	-- should match the defaults set in AE under tuning.ui.event_cues
 	repeatTime = 30.0,		
 	title = Loc_Empty(),
@@ -102,8 +121,10 @@ AGS_CUE_CORE = {
 	style = ECV_Queue | ECV_Title,
 }
 AGS_CUE_SURRENDER = {	
+eventType = -1,	
 	-- should match the defaults set in AE under tuning.ui.event_cues
-	lifetime = 10.0,		
+	lifetime = 10.0,	
+	repeatCount = 0,	
 	-- should match the defaults set in AE under tuning.ui.event_cues
 	repeatTime = 30.0,		
 	title = Loc_Empty(),
@@ -114,6 +135,7 @@ AGS_CUE_SURRENDER = {
 	template = "high_priority", 
 	style = ECV_Queue | ECV_Title,
 }
+
 AGS_SFX = {
 	eliminated_self = "Conquest_friendly_eliminated",
 	eliminated_ally = "Conquest_friendly_eliminated",
@@ -128,6 +150,7 @@ AGS_WR_NONE = WR_NONE
 AGS_WR_ANNIHILATION = WR_ANNIHILATION
 AGS_WR_ELIMINATION = WR_ELIMINATION
 AGS_WR_SURRENDER = WR_SURRENDER
+AGS_WR_CONQUEST = WR_CONQUEST
 AGS_WR_REGICIDE = 4
 AGS_WR_TEAM_SOLIDARITY = 5
 
@@ -151,8 +174,15 @@ function AGS_EndGame()
 end
 
 function AGS_SetObjective(objective, state, visibility)
-	Obj_SetState(objective, state)
-	Obj_SetVisible(objective, visibility)
+	if objective == nil then
+		AGS_Print("AGS: OBJECTIVE WAS NOT DEFINED!")
+	end
+	if state ~= nil then
+		Obj_SetState(objective, state)
+	end
+	if visibility ~= nil then
+		Obj_SetVisible(objective, visibility)
+	end
 	-- Sets the progress element of the objective to visible so players can see it
 	--Obj_SetProgressVisible(_mod.objective, true)		
 	-- Sets the objective progress type to a counter
@@ -236,14 +266,47 @@ function AGS_PlaySFX(source_player_id)
 	end
 end
 
--- Show event queue notification.
-function AGS_CreateCue(cue_template, title_id, player_name)
+function AGS_FormatText(title_id, player_name)
+	return Loc_FormatText(title_id, player_name)
+end
+
+function AGS_CreateCueComplex(cue_template, high_priority, title, color)
+	if high_priority then
+		AGS_CreateCueCustomized(cue_template, title, color, cue_template.icon, ECV_Queue)
+		AGS_CreateCueCustomized(cue_template, title, color, cue_template.icon_high_priority, ECV_Title)
+	else
+		AGS_CreateCueCustomized(cue_template, title, color, cue_template.icon, ECV_Queue)
+	end
+end
+
+function AGS_CreateCueCustomized(cue_template, title, color, icon, style)
 	UI_CreateEventCueClickable(
-		-1, 
+		cue_template.eventType, 
 		cue_template.lifetime, 
-		0, 
+		cue_template.repeatCount, 
 		cue_template.repeatTime, 
-		Loc_FormatText(title_id, player_name), 
+		title, 
+		cue_template.desc, 
+		cue_template.template, 
+		icon, 
+		cue_template.sfx, 
+		color.r, 
+		color.g, 
+		color.b, 
+		color.a, 
+		style, 
+		nothing
+	)	
+end
+
+-- Show event queue notification.
+function AGS_CreateCue(cue_template, title)
+	UI_CreateEventCueClickable(
+		cue_template.eventType, 
+		cue_template.lifetime, 
+		cue_template.repeatCount, 
+		cue_template.repeatTime, 
+		title, 
 		cue_template.desc, 
 		cue_template.template, 
 		cue_template.icon, 
@@ -294,8 +357,13 @@ function AGS_Presenation(player_id, presentation)
 				_endType = presentation.title,
 				_message = presentation.message,
 				_sound = presentation.sound,
-				_videoURI = presentation.video
+				_videoURI = presentation.video,
+				_callback = presentation.callback,
 			}
 		)
 	end
+end
+
+function AGS_RevealUI()
+	Taskbar_SetVisibility(true)
 end

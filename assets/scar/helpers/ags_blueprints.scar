@@ -673,3 +673,17 @@ function AGS_CountItems(table)
 	end
 	return 0
 end
+
+function AGS_IsACapital(entity_id)		
+	return Entity_GetStateModelBool(entity_id, "town_center_is_capital") or Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL)
+end
+
+function AGS_IsALandmark(entity_id)		
+	return Entity_IsOfType(entity_id, AGS_BP_LANDMARK) and not Entity_IsOfType(entity_id, AGS_BP_WONDER)	
+end
+
+function AGS_IsAWonder(entity_id)		
+	return Entity_IsOfType(entity_id, AGS_BP_LANDMARK) and Entity_IsOfType(entity_id, AGS_BP_WONDER)	
+end
+
+
