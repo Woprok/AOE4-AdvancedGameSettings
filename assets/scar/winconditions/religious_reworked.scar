@@ -1,21 +1,5 @@
------------------------------------------------------------------------
--- Authors:
--- Relic
--- Woprock
---
--- Description:
--- Religious Win Condition 
--- Players (or Teams) use Monks to capture Holy Sites around the map.
--- When the player or team captures all Holy Sites, they must defend them for a period of time to win the match.
------------------------------------------------------------------------
-
-
 _religious = {
-	can_tick = true,
-	last_person_standing = false,	-- true = fixed teams, false = dynamic diplomacy (i.e. only 1 player can win)
-	conversion_radius = 10.0,	-- Radius around holy sites within which a monk/unit must be to capture/neutralize it - must match value in Holy Site strategic_point_ext
 	update_interval = 0.125,
-	time_victory = 10 * 60,		-- Countdown time to victory after all sites are captured (in seconds)	
 	timer_victory = "capture_victory_timer",
 	countdown_notifications = {	-- Points during countdown at which to update audio.   
 		{ time = 3 * 60 },		-- Arrange in decreasing order since music intensity increases when the last one triggers
@@ -26,7 +10,7 @@ _religious = {
 		objective = "icons\\races\\common\\victory_conditions\\victory_condition_religious",  
 	},	
 	ebp = {
-		holy_site = BP_GetEntityBlueprint("holy_site"),
+		holy_site = BP_GetEntityBlueprint(AGS_BP_SACRED_SITE),
 	},
 	objective = {
 		control = nil,			-- ID of holy site control objective (win condition)
@@ -67,34 +51,8 @@ _religious = {
 -----------------------------------------------------------------------
 -- Callbacks
 -----------------------------------------------------------------------
-
-function Religious_UpdateConditions()
-	_religious.time_victory = AGS_GLOBAL_SETTINGS.ReligousTimer * 60 -- in seconds
-end
-
-function Religious_TreatyStarted()
-	_religious.can_tick = false	
-end
-function Religious_TreatyEnded()
-	_religious.can_tick = true
-end
-
--- Callback invoked when Diplomacy is enabled (indicates whether win condition should be based on player or team).
-function Religious_DiplomacyEnabled(is_enabled)
-	_religious.last_person_standing = is_enabled
-end
-
 -- Callback invoked by OnInit() in core.scar
 function Religious_OnInit()
-
-	-- Get local player
-	player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
-	
-	-- Create new EGroup
-	local eg = EGroup_CreateUnique()
-	-- Get all Holy Sites
-	World_GetBlueprintEntities(_religious.ebp.holy_site, eg)	
-	
 	-- For every Holy Site
 	for i = 1, EGroup_CountSpawned(eg) do
 		
@@ -111,63 +69,22 @@ function Religious_OnInit()
 		-- Store data globally
 		table.insert(_religious.sites, site)
 	end
-	
-	-- If no Holy Sites were found
-	if #_religious.sites == 0 then
-		print(string.format("Religious_OnInit() %d holy sites found", #_religious.sites))
-		-- Remove win condition module
-		Core_UnregisterModule(_religious.module)
-	else
-	end
 end
 	
 -- Callback invoked by _StartMission() in core.scar
 function Religious_Start()
-
-	-- Override victory countdown period if 'timer' command line parameter and value are provided
-	if Misc_IsCommandLineOptionSet("timer") and tonumber(Misc_GetCommandLineString("timer")) ~= nil then
-		_religious.time_victory = tonumber(Misc_GetCommandLineString("timer")) * 60
-	end
-	
 	-- Initialize Objectives
 	Religious_AddObjective()
 	-- Update Objective Progress
 	Religious_UpdateObjectiveCounter()
 	-- Update on interval
 	Rule_AddInterval(Religious_Update, _religious.update_interval)
-	-- Update when Holy Site ownership changes
-	Rule_AddGlobalEvent(Religious_OnHolySiteChange, GE_StrategicPointChanged)
-	Rule_AddGlobalEvent(Religious_OnLocalPlayerChanged, GE_LocalPlayerChanged)
-	
-end
-
--- Callback invoked by Core_SetPlayerDefeated() in core.scar when a player is eliminated.
-function Religious_OnPlayerDefeated(player, reason)
-	
-	-- If win was due to Religion
-	if reason == WR_RELIGIOUS then
-		
-
-	end
-	
-	-- If player is local player
-	if player.isLocal then
-		-- Remove their objectives
-		Religious_RemoveObjectives()
-	end
 end
 
 -- Callback invoked by Core_OnGameOver() in core.scar when a win condition has been satisfied. 
 function Religious_OnGameOver()
 	-- Remove update rule to disable UI elements before end-of-match flow starts.
 	Rule_Remove(Religious_Update)
-	
-	Rule_RemoveGlobalEvent(Religious_OnLocalPlayerChanged)
-	
-	-- Stop music
-	Rule_AddOneShot(Religious_StopMusic, 1)
-	-- need the delay to have the correct order of operations to stop the music	
-	
 end
 	
 
@@ -683,13 +600,6 @@ function Religious_OnHolySiteChange(context)
 	end
 end
 
--- Called when local player is changed
-function Religious_OnLocalPlayerChanged(context)
-	
-	player_local = Core_GetPlayersTableEntry(context.player)
-	
-end
-
 -----------------------------------------------------------------------
 -- Utility functions
 -----------------------------------------------------------------------
@@ -771,24 +681,6 @@ end
 -- Creates the primary objective associated with this win condition.
 function Religious_AddObjective()
 
-	-- Store primary objective template
-	local data_template = "HolySiteOrObjectiveDataTemplate"
-	-- If a primary objective has not been set
-	if _first_primary_objective == nil then
-		-- Store primary default template
-		data_template = "HolySiteObjectiveDataTemplate"
-	end
-	
-	-- Create victory objective
-	_religious.objective.control = Obj_Create(player_local.id,
-		11169980, 			-- "Control all Holy Sites"
-		Loc_Empty(),
-		_religious.icons.objective,
-		data_template,
-		player_local.raceName,
-		OT_Primary,
-		0,
-		"religiousObj")
 	-- Configure objective
 	Obj_SetState(_religious.objective.control, OS_Incomplete)
 	Obj_SetCounterType(_religious.objective.control, COUNTER_CountUpTo)
@@ -797,24 +689,14 @@ function Religious_AddObjective()
 	Obj_SetProgress(_religious.objective.control, 0 / #_religious.sites)
 	Obj_SetVisible(_religious.objective.control, true)
 	
-	-- If first primary objective has not been set
-	if _first_primary_objective == nil then 
-		-- Assign this objective as primary
-		_first_primary_objective = _religious.objective.control
-	end
-
 	-- For every Holy Site 
 	for i, site in pairs(_religious.sites) do
 		-- Create sub objective
-		site.objective = Obj_Create(player_local.id,
-			Loc_FormatText(11184017, i),					-- "Site %1NUMBER%"
-			Loc_Empty(),
-			_religious.icons.objective,
-			"HolySiteSecondaryObjectiveDataTemplate",
-			player_local.raceName,
-			OT_Secondary,
-			_religious.objective.control,
-			"holySiteObj")
+		site.objective = Obj_Create(
+			-- this is first that needs additional text params?
+			Loc_FormatText(11184017, i),
+			-- this needs to assign parent
+			_religious.objective.control)
 		-- Configure sub objective
 		Obj_SetProgress(site.objective, site.progress)
 		Obj_SetProgressVisible(site.objective, true)
@@ -1010,7 +892,7 @@ function Religious_UpdateObjectiveState()
 		if Timer_GetRemaining(_religious.timer_victory) == 0 then
 		
 		-- Stop Music
-		Rule_AddOneShot(Religious_StopMusic, 1)
+	Music_PersistentStop() 	--delayed 1
 		-- need the delay to have the correct order of operations to stop the music
 				
 			-- Trigger game over
@@ -1173,70 +1055,4 @@ function Religious_FlashAllHolySites()
 		Rule_RemoveMe()
 
 	end
-end
-
-
------------------------------------------------------------------------
--- Win/Lose Presentation Functions
------------------------------------------------------------------------
-
-function Religious_WinnerPresentation(playerID)
-	
-	-- Get player
-	local player = Core_GetPlayersTableEntry(playerID)
-	
-	-- If player is local
-	if player.isLocal then	
-		
-		-- Hide UI elements
-		Misc_ClearSelection()
-		Taskbar_SetVisibility(false)		
-		
-		-- Show objective complete popup
-		Obj_SetState(_religious.objective.control, OS_Complete)
-		Obj_CreatePopup(_religious.objective.control, 11169980)		-- "Control all Holy Sites"
-		Music_PlayStinger(MUS_STING_PRIMARY_OBJ_COMPLETE_ENDGAME)
-		Religious_RemoveObjectives()
-		
-		-- Show victory stinger
-		Rule_AddOneShot(_gameOver_message, 
-			GAMEOVER_OBJECTIVE_TIME, {
-			_playerID = playerID, 
-			_icon = _religious.icons.objective, 
-		})
-	end
-end
-
-
-function Religious_LoserPresentation(playerID)
-	
-	-- Get player
-	local player = Core_GetPlayersTableEntry(playerID)
-	
-	-- If player is local
-	if player.isLocal then	
-		
-		-- Hide UI elements
-		Misc_ClearSelection()
-		Taskbar_SetVisibility(false)	
-		
-		-- Show objective failed popup
-		Obj_SetState(_religious.objective.control, OS_Failed)
-		Obj_CreatePopup(_religious.objective.control, 11183992)	-- "Neutralize a Holy Site"
-		Music_PlayStinger(MUS_STING_PRIMARY_OBJ_FAIL)
-		Religious_RemoveObjectives()
-	
-		-- Show defeat stinger
-		Rule_AddOneShot(_gameOver_message,
-			GAMEOVER_OBJECTIVE_TIME, {
-			_playerID = playerID, 
-			_icon = _religious.icons.objective, 
-		})
-	end
-end
-
-function Religious_StopMusic()
-	--Stop music
-	Music_PersistentStop() 
-	
 end

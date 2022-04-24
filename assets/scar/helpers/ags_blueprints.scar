@@ -26,6 +26,7 @@ AGS_BP_SHEEP = "sheep"
 AGS_BP_TREE = "tree"
 AGS_BP_LANDMARK = "wonder"
 AGS_BP_WONDER = "wonder_imperial_age"
+AGS_BP_SACRED_SITE = "holy_site"
 -- All buildings should be tagged with this otherwise winconditions & others will not work.
 AGS_BP_BUILDING = "building"
 -- All untis should be tagged with this otherwise winconditions & others will not work.

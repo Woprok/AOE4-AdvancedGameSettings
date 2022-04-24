@@ -5,10 +5,17 @@
 --
 -- Description:
 -- Religious win condition.
+-- Players (or Teams) use Monks to capture Holy Sites around the map.
+-- When the player or team captures all Holy Sites, they must defend them for a period of time to win the match.
 ---------------------------------------------------------------------------------------------------
 
 AGS_RELIGIOUS_MODULE = "AGS_Religious"
-
+AGS_RELIGIOUS_ACTIVE_CHECKS = true
+AGS_RELIGIOUS_OBJECTIVE = nil
+AGS_RELIGIOUS_VICTORY_TIMER = 10 * 60
+-- Radius around holy sites within which a monk/unit must be to capture/neutralize it - must match value in Holy Site strategic_point_ext.
+AGS_RELIGIOUS_CONVERSION_RADIUS = 10.0
+AGS_RELIGIOUS_SACRED_SITE_EGROUP = nil
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
@@ -18,9 +25,73 @@ Core_RegisterModule(AGS_RELIGIOUS_MODULE)
 function AGS_Religious_UpdateModuleSettings()
 	if not AGS_GLOBAL_SETTINGS.Religious then
 		Core_UnregisterModule(AGS_RELIGIOUS_MODULE)
+		return
 	end
+	AGS_RELIGIOUS_VICTORY_TIMER = AGS_GLOBAL_SETTINGS.ReligiousTimer * 60
+end
+
+function AGS_Religious_Preset()
+	-- Create new group and allocate all sacred sites to it.
+	AGS_RELIGIOUS_SACRED_SITE_EGROUP = EGroup_CreateUnique()
+	World_GetBlueprintEntities(BP_GetEntityBlueprint(AGS_BP_SACRED_SITE), eg)	
+	if EGroup_Count(eg) == 0 then
+		Core_UnregisterModule(AGS_RELIGIOUS_MODULE)
+		return	
+	end
+end
+
+function AGS_Religious_Start()
+	AGS_Religious_StartProgressTracking()
+end
+
+function AGS_Religious_TreatyStarted()
+	AGS_RELIGIOUS_ACTIVE_CHECKS = false
+end
+
+function AGS_Religious_TreatyEnded()
+	AGS_RELIGIOUS_ACTIVE_CHECKS = true
+end
+
+function AGS_Religious_OnPlayerDefeated(player, reason)
+	if reason == AGS_WR_RELIGIOUS then 
+		AGS_Religious_Notification(player)
+		AGS_Religious_CheckVictory()
+	end
+end
+
+function AGS_Religious_OnGameOver()
+	AGS_Religious_StopProgressTracking()
+	Music_PersistentStop() 
+	-- Stop music, should be delayed by 1 for correct order of operations to be really stopped ?
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_Religious_StartProgressTracking()
+	Rule_AddGlobalEvent(AGS_Religious_OnHolySiteChange, GE_StrategicPointChanged)	
+	
+end
+function AGS_Religious_StopProgressTracking()
+	Rule_RemoveGlobalEvent(AGS_Religious_OnHolySiteChange)		
+end
+
+function AGS_Religious_WinnerPresentation(player_id)
+	-- TODO SET ENDGAME STATE SHOULD USE SAME OBJECTIVE AS THE ONE IN THE OBJECTIVE BUILT WAS USED
+		--Obj_CreatePopup(_religious.objective.control, 11169980)		-- "Control all Holy Sites"
+	AGS_Presenation(player_id, AGS_WINNER_VICTORY)
+	AGS_SetEndGameState(AGS_RELIGIOUS_OBJECTIVE, false, OS_Complete, MUS_STING_PRIMARY_OBJ_COMPLETE_ENDGAME)
+	AGS_Religious_RemoveAllObjectives()
+end
+
+function AGS_Religious_LoserPresenation(player_id)
+	-- TODO SET ENDGAME STATE SHOULD USE SAME OBJECTIVE AS THE ONE IN THE OBJECTIVE BUILT WAS USED
+		--Obj_CreatePopup(_religious.objective.control, 11183992)	-- "Neutralize a Holy Site"
+	if AGS_LoserPresenation(player_id, AGS_LOOSER_DEFEAT, AGS_LOOSER_ELIMINATED) then
+		AGS_SetEndGameState(AGS_RELIGIOUS_OBJECTIVE, false, OS_Failed, MUS_STING_PRIMARY_OBJ_FAIL)
+	else
+		AGS_SetEndGameState(AGS_RELIGIOUS_OBJECTIVE, false, OS_Failed, MUS_STING_PRIMARY_OBJ_FAIL)
+		AGS_Religious_RemoveAllObjectives()
+	end	
+end
