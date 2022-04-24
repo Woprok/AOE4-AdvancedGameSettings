@@ -43,6 +43,14 @@ function AGS_Conquest_OnPlayerDefeated(player, reason)
 	end
 end
 
+function AGS_Conquest_TreatyStarted()
+	AGS_CONQUEST_ACTIVE_CHECKS = false
+end
+
+function AGS_Conquest_TreatyEnded()
+	AGS_CONQUEST_ACTIVE_CHECKS = true
+end
+
 -- Update objectives when player added to team or relationship changed. Might be enough for RC.
 function AGS_Conquest_OnPlayerJoinedTeam(playerData)
 	AGS_Conquest_UpdateObjective()
@@ -223,7 +231,7 @@ function AGS_Conquest_OnDamageReceived(context)
 	end
 	-- Builder and attacker can't be world owned. Why ?
 	if World_OwnsEntity(context.victim) or World_OwnsEntity(context.attacker) then
-	
+		return
 	end
 	-- Excludes everythng that is not tracked by wincondition.
 	if not AGS_IsObjectiveTarget(context.victim) then
@@ -234,29 +242,32 @@ function AGS_Conquest_OnDamageReceived(context)
 		return
 	end	
 	-- Get building ID and owner
-	local id = Entity_GetID(context.victim)
+	local entity_uwid = Entity_GetID(context.victim)
 	local owner = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(context.victim))
 	-- Owner must always have this landmark registered for us to do anything with it ?
-	if owner.landmarks[id] == nil then
+	if owner.landmarks[entity_uwid] == nil then
 		return
 	end
 	-- If Landmark is being repaired (also triggers OnDamageReceived)
 	if context.isRepairing then		
 		-- If inactive Landmark is fully repaired
-		if Entity_GetHealthPercentage(context.victim) == 1 and owner.landmarks[id].landmark_active == false then			
+		if Entity_GetHealthPercentage(context.victim) == 1 and owner.landmarks[entity_uwid].landmark_active == false then			
 			-- Track Landmark as active
-			owner.landmarks[id].landmark_active = true			
+			owner.landmarks[entity_uwid].landmark_active = true			
 		end		
 		return		
 	end
-	
+	-- If player destroyed own building do not notify him. TODO This needs to fire for other !
+	--if context.attacker == context.victim then
+	--	return						
+	--end
 	-- No notifications for eliminated player.
 	if Core_IsPlayerEliminated(Game_GetLocalPlayer()) then
 		return
 	end
 	-- Notifications are done only about alive players and standing landmarks.
-	if not Core_IsPlayerEliminated(owner.id) and Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then
-		AGS_Conquest_DamageNotification(context, owner, id)	
+	if not Core_IsPlayerEliminated(owner.id) and Entity_GetStateModelBool(Entity_FromID(entity_uwid), "landmark_active") then
+		AGS_Conquest_DamageNotification(context, owner, entity_uwid)	
 	end
 end
 
@@ -278,23 +289,23 @@ AGS_CUE_LANDMARK_DAMAGE = {
 	style = ECV_Queue | ECV_Title,
 }
 
-function AGS_Conquest_DamageNotification(context, owner, id)
+function AGS_Conquest_DamageNotification(context, owner, entity_uwid)
 	-- Store last attacker in landmark data.
-	owner.landmarks[id].last_attacker = Entity_GetPlayerOwner(context.attacker)
+	owner.landmarks[entity_uwid].last_attacker = Entity_GetPlayerOwner(context.attacker)
 	-- If attacking player is local player or his ally do nothing.
-	if owner.landmarks[id].last_attacker.isLocal or AGS_IsMutualRelation(Game_GetLocalPlayer(), owner.landmarks[id].last_attacker, R_ALLY) then
+	if owner.landmarks[entity_uwid].last_attacker.isLocal or AGS_IsMutualRelation(Game_GetLocalPlayer(), owner.landmarks[entity_uwid].last_attacker, R_ALLY) then
 		return
 	end
 	
 	-- Timer is in progress.
-	if Timer_Exists(owner.landmarks[id].damage_timer) and Timer_GetRemaining(owner.landmarks[id].damage_timer) > 0.0 then
+	if Timer_Exists(owner.landmarks[entity_uwid].damage_timer) and Timer_GetRemaining(owner.landmarks[entity_uwid].damage_timer) > 0.0 then
 		return
 	end
 	-- If timer does not exists this will create it for selected entity and start next countdown.
-	Timer_Start(owner.landmarks[id].damage_timer, AGS_CONQUEST_DAMAGE_INTERVAL)	
+	Timer_Start(owner.landmarks[entity_uwid].damage_timer, AGS_CONQUEST_DAMAGE_INTERVAL)	
 	
 	-- Create cue.
-	local uiColour = Player_GetUIColour(owner.landmarks[id].last_attacker)
+	local uiColour = Player_GetUIColour(owner.landmarks[entity_uwid].last_attacker)
 	local title = nil
 	local high_priority = true
 	-- Notify owner.
@@ -306,7 +317,7 @@ function AGS_Conquest_DamageNotification(context, owner, id)
 		high_priority = false
 	end	
 	if title ~= nil then
-		-- TODO DELAY IF AND BODY ? BY event_cue_delay == 2.0 see Conquest_CreateEventCue
+		-- TODO DELAY IF AND BODY ? BY AGS_EVENT_CUE_DELAY see Conquest_CreateEventCue
 		if not Core_IsPlayerEliminated(Game_GetLocalPlayer()) then
 			AGS_CreateCueComplex(AGS_CUE_LANDMARK_DAMAGE, high_priority, title, uiColour)
 		end

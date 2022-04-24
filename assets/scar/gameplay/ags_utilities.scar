@@ -51,7 +51,7 @@ function AGS_Utilities_OnInit()
 	AGS_Utilities_OnLocalPlayerChanged(Game_GetLocalPlayer())
 	Rule_AddGlobalEvent(AGS_Utilities_OnLocalPlayerChanged, GE_LocalPlayerChanged)
 	
-	ReplayStatViewer_PopulateReplayStatTabs({"CurrentResourcesTemplate", "IncomeTemplate", "MilitaryTemplate"})		
+	AGS_Utilities_StandardReplay()	
 end
 
 function AGS_Utilities_OnPlayerDefeated(player, reason)
@@ -91,16 +91,23 @@ end
 --	return false
 --end
 
-
--- TODO INTEGRATE INTO THIS CLASS UNTIL WE CAN REWORK REPLAYS
--- Replay stats
-		-- Initialize replay stats
+-- Initialize replay stats
+function AGS_Utilities_StandardReplay()
+	if AGS_GLOBAL_SETTINGS.Religious then
 		ReplayStatViewer_PopulateReplayStatTabs({"ReligiousTrackerTemplate"})
 		ReplayStatViewer_RegisterPlayerDataContextUpdater(Religious_UpdatePlayerStats)
-ReplayStatViewer_PopulateReplayStatTabs({"ConquestTrackerTemplate"})
-ReplayStatViewer_RegisterPlayerDataContextUpdater(Conquest_UpdatePlayerStats)
-	ReplayStatViewer_PopulateReplayStatTabs({"WonderTrackerTemplate"})
-	ReplayStatViewer_RegisterPlayerDataContextUpdater(Wonder_UpdatePlayerStats)
+	end
+	if AGS_GLOBAL_SETTINGS.Conquest then
+		ReplayStatViewer_PopulateReplayStatTabs({"ConquestTrackerTemplate"})
+		ReplayStatViewer_RegisterPlayerDataContextUpdater(Conquest_UpdatePlayerStats)
+	end
+	if AGS_GLOBAL_SETTINGS.Wonder then
+		ReplayStatViewer_PopulateReplayStatTabs({"WonderTrackerTemplate"})
+		ReplayStatViewer_RegisterPlayerDataContextUpdater(Wonder_UpdatePlayerStats)
+	end
+	ReplayStatViewer_PopulateReplayStatTabs({"CurrentResourcesTemplate", "IncomeTemplate", "MilitaryTemplate"})	
+end
+
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Religious_UpdatePlayerStats(player, scarModel)	
 	scarModel.Relics_Target = #_religious.sites
@@ -122,6 +129,7 @@ function Conquest_UpdatePlayerStats(player, scarModel)
 	scarModel.Conquest_Target = landmarks_built
 	scarModel.Conquest_Current = landmarks_remaining
 end
+
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Wonder_UpdatePlayerStats(player, scarModel)	
 	if not player.isEliminated and player._wonder.entity_id ~= nil and Entity_IsValid(player._wonder.entity_id) then 

@@ -57,8 +57,18 @@ AGS_PRESENTATION_VICTORY = {
 	callback = AGS_RevealUI,	
 }
 
+-- Reasons: 
+AGS_WR_NONE = WR_NONE 
+AGS_WR_ANNIHILATION = WR_ANNIHILATION
+AGS_WR_ELIMINATION = WR_ELIMINATION
+AGS_WR_SURRENDER = WR_SURRENDER
+AGS_WR_CONQUEST = WR_CONQUEST
+AGS_WR_WONDER = WR_WONDER
+AGS_WR_REGICIDE = 4
+AGS_WR_TEAM_SOLIDARITY = 5
 
 AGS_OBJECTIVE_CONQUEST = {
+	reason = WR_CONQUEST,
 	-- "Destroy all enemy landmarks"
 	title = "$11159056", 
 	description = Loc_Empty,
@@ -69,7 +79,60 @@ AGS_OBJECTIVE_CONQUEST = {
 	telemetry = "conquestObj",
 	alert = "icons\\event_queue_high_priority_large",
 }
+AGS_OBJECTIVE_WONDER_BUILD = {
+	reason = WR_WONDER,
+	-- "Build a Wonder"
+	title = "$11159068", 
+	description = Loc_Empty,
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	data_template = "WonderObjectiveTemplate",
+	data_template_secondary = "WonderOrObjectiveTemplate",
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "wonderObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+AGS_OBJECTIVE_WONDER_SELF = {
+	reason = WR_WONDER,
+	-- "Defend your Wonder"
+	title = "$11159071", 
+	description = Loc_Empty,
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	data_template = "WonderObjectiveTemplate",
+	data_template_secondary = "WonderObjectiveTemplate",
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "defendWonderObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+AGS_OBJECTIVE_WONDER_TEAM = {
+	reason = WR_WONDER,
+	-- "Defend %1PLAYER_NAME%'s Wonder"	
+	title = 11159070, 
+	description = Loc_Empty,
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	data_template = "WonderObjectiveTemplate",
+	data_template_secondary = "WonderObjectiveTemplate",
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "defendWonderObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+AGS_OBJECTIVE_WONDER_ENEMY = {
+	reason = WR_WONDER,
+	-- "Destroy %1PLAYER_NAME%'s Wonder"
+	title = 11159069, 
+	description = Loc_Empty,
+	icon = "icons/objectives/objectives_warning_small",
+	data_template = "WonderObjectiveTemplate",
+	data_template_secondary = "WonderObjectiveTemplate",
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "destroyWonderObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
 AGS_OBJECTIVE_REGICIDE = {
+	reason = AGS_WR_REGICIDE,
 	-- Your King must survive.
 	title = "$11218487", 
 	description = Loc_Empty,
@@ -81,6 +144,7 @@ AGS_OBJECTIVE_REGICIDE = {
 	alert = "icons\\event_queue_high_priority_large",
 }
 AGS_OBJECTIVE_TEAMSOLIDARITY = {
+	reason = AGS_WR_TEAM_SOLIDARITY,
 	-- Your teammates must survive.
 	title = "$64c5019a145c4e4da448dbd3adeea61e:330", 
 	description = Loc_Empty,
@@ -115,6 +179,24 @@ AGS_CUE_TITLE_LANDMARK_K_ENEMY_SELF_ID = 11198590
 AGS_CUE_TITLE_LANDMARK_K_ENEMY_TEAM_ID = 11198591
 -- "Enemy destroyed %1PLAYER_NAME%'s landmark"
 AGS_CUE_TITLE_LANDMARK_K_ENEMY_OTHER_ID = 11201826
+
+
+-- "Enemy attacking Wonder"
+AGS_CUE_TITLE_WONDER_A_SELF_ID = 11198265
+-- "Enemy attacking %1PLAYER_NAME%'s Wonder"
+AGS_CUE_TITLE_WONDER_A_TEAM_ID = 11198637
+
+-- "%1PLAYER_NAME% is building a Wonder"
+AGS_CUE_TITLE_WONDER_BUILD_ALLY_ID = 11159074
+-- "%1PLAYER_NAME% is building a Wonder"
+AGS_CUE_TITLE_WONDER_BUILD_ENEMY_ID = 11159074
+
+-- "Defend your Wonder"
+AGS_CUE_TITLE_WONDER_SELF_ID = 11159071
+-- "Defend %1PLAYER_NAME%'s Wonder"
+AGS_CUE_TITLE_WONDER_TEAM_ID = 11159070
+-- "Destroy %1PLAYER_NAME%'s Wonder"
+AGS_CUE_TITLE_WONDER_ENEMY_ID = 11159069
 
 AGS_CUE_CORE = {
 	eventType = -1,	
@@ -155,19 +237,14 @@ AGS_SFX = {
 ---------------------------------------------------------------------------------------------------
 -- Helpers:
 ---------------------------------------------------------------------------------------------------
--- Reasons: 
-AGS_WR_NONE = WR_NONE 
-AGS_WR_ANNIHILATION = WR_ANNIHILATION
-AGS_WR_ELIMINATION = WR_ELIMINATION
-AGS_WR_SURRENDER = WR_SURRENDER
-AGS_WR_CONQUEST = WR_CONQUEST
-AGS_WR_REGICIDE = 4
-AGS_WR_TEAM_SOLIDARITY = 5
 
 function AGS_IsPrimaryObjective(reason)
 	-- Conquest is always primary objective.
 	if reason == AGS_WR_CONQUEST then
 		return true
+	end
+	if reason == AGS_WR_WONDER then
+		return not AGS_GLOBAL_SETTINGS.Conquest and not AGS_GLOBAL_SETTINGS.Religious
 	end
 	
 	return false
@@ -191,8 +268,8 @@ end
 function AGS_EndGame()	
 	Core_OnGameOver()
 end
-
-function AGS_SetObjective(objective, state, visibility, progress, counter)
+-- COUNTER_TimerDecreasing or COUNTER_CountUpTo
+function AGS_SetObjective(objective, state, visibility, progress, counter, popup)
 	if objective == nil then
 		AGS_Print("AGS: OBJECTIVE WAS NOT DEFINED!")
 	end
@@ -212,16 +289,16 @@ function AGS_SetObjective(objective, state, visibility, progress, counter)
 	if counter ~= nil then
 		Obj_SetCounterType(objective, counter)
 	end
-	
-	-- Set the starting objective progress to 1 because we spawn a House for the player in Mod_SpawnBuilding()
-	--Obj_SetCounterCount(_mod.objective, 1)
-	-- Set the maximum objective progress
-	--Obj_SetCounterMax(_mod.objective, _mod.objective_requirement)
-	-- Set the objective progress bar percentage value
-	--Obj_SetProgress(_mod.objective, 1 / _mod.objective_requirement)
 end
 
-function AGS_SetObjectiveProgress(objective, current_count, max_count, progress_percentage)
+function AGS_SetObjectivePopUp(objective_id, objective_data)
+	-- Show big popup about this objective.
+	if popup ~= nil then
+		Obj_CreatePopup(objective_id, objective_data.title)
+	end
+end
+
+function AGS_SetObjectiveProgress(objective, current_count, max_count, progress_percentage, timer)
 	-- Current progress done.
 	if current_count ~= nil then
 		Obj_SetCounterCount(objective, current_count)
@@ -233,6 +310,10 @@ function AGS_SetObjectiveProgress(objective, current_count, max_count, progress_
 	-- Percentage completed.
 	if progress_percentage ~= nil then
 		Obj_SetProgress(objective, progress_percentage)
+	end
+	
+	if timer ~= nil then
+		Obj_SetCounterTimerSeconds(objective, nil, nil, nil, timer)
 	end
 end
 
@@ -393,13 +474,22 @@ function AGS_CreateCue(cue_template, title)
 	)	
 end
 
-function AGS_CreateObjective(objective, player_id, player_civ)
+function AGS_CreateObjective(objective, player_id, player_civ, title_player)
+	local template = objective.data_template
+	if AGS_IsPrimaryObjective(objective.reason) then
+		template = objective.data_template_secondary
+	end
+	local title = objective.title
+		if title_player ~= nil then
+		title = AGS_FormatText(title, title_player)
+	end
+	
 	return Obj_Create(
 		player_id, -- Most likely always local player ?
-		objective.title,
+		title,
 		objective.description(), 	
 		objective.icon, 
-		objective.data_template, 
+		template, 
 		player_civ, 
 		objective.priority, -- objective type e.g. primary or secondary
 		objective.parent, -- parent objective

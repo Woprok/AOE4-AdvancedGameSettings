@@ -5,10 +5,16 @@
 --
 -- Description:
 -- Wonder win condition.
+-- The classic 'wonder' win condition in which the player wins by building a wonder and defending it for some time.
 ---------------------------------------------------------------------------------------------------
 
 AGS_WONDER_MODULE = "AGS_Wonder"
-
+AGS_WONDER_OBJECTIVE = nil 
+AGS_WONDER_ACTIVE_CHECKS = true
+AGS_WONDER_FOW_REVEAL_RADIUS = 12
+-- Minimum time since wonder was last damaged to trigger 'Wonder under attack' notification.
+AGS_WONDER_DAMAGE_INTERVAL = 30.0
+AGS_WONDER_VICTORY_TIMER = 15 * 60
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
@@ -19,8 +25,701 @@ function AGS_Wonder_UpdateModuleSettings()
 	if not AGS_GLOBAL_SETTINGS.Wonder then
 		Core_UnregisterModule(AGS_WONDER_MODULE)
 	end
+	AGS_WONDER_VICTORY_TIMER = AGS_GLOBAL_SETTINGS.WonderTimer * 60
+end
+
+function AGS_Wonder_Start()
+	AGS_Wonder_StartProgressTracking()
+	AGS_Wonder_Enable()
+	AGS_Wonder_CreateObjectiveBuild()
+	AGS_Wonder_ChangeConstruction(AGS_WONDER_ACTIVE_CHECKS)
+end
+
+function AGS_Wonder_TreatyStarted()
+	AGS_WONDER_ACTIVE_CHECKS = false
+	AGS_Wonder_ChangeConstruction(AGS_WONDER_ACTIVE_CHECKS)
+end
+
+function AGS_Wonder_TreatyEnded()
+	AGS_WONDER_ACTIVE_CHECKS = true
+	AGS_Wonder_ChangeConstruction(AGS_WONDER_ACTIVE_CHECKS)
+end
+
+function AGS_Wonder_OnPlayerDefeated(player, reason)
+	if reason == AGS_WR_WONDER then 
+		AGS_Wonder_Notification(player)
+		AGS_Wonder_CheckVictory()
+	end
+end
+
+function AGS_Wonder_OnGameOver()
+	AGS_Wonder_RemoveAllObjectives()
+	AGS_Wonder_StopProgressTracking()
+	AGS_Wonder_KillTimers()
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_Wonder_Enable()
+	-- Create place for timers
+	for _, player in pairs(PLAYERS) do
+		player._wonder = {
+			entity_uwid = nil,
+			objective_id = nil,
+			objective_active = false,
+			timer_victory_deterministic = string.format("wonder_victory_timer_%d", player.index),			
+			damage_timer = string.format("wonder_damage_timer_%d", player.index),
+		}
+	end	
+end
+-- Switches wonder for treaty and allows wonder rush.
+function AGS_Wonder_ChangeConstruction(enable_construction)
+	for _, player in pairs(PLAYERS) do
+		Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", enable_construction)	
+		-- Wonder rush is enabled.
+		if AGS_GLOBAL_SETTINGS.WonderTimer == 0 then
+			Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", true)			
+		end		
+	end
+end
+
+function AGS_Wonder_KillTimers()
+	for _, player in pairs(PLAYERS) do 
+		if Timer_Exists(player._wonder.timer_victory_deterministic) then
+			Timer_End(player._wonder.timer_victory_deterministic)
+		end
+	end	
+end
+--Removes all objectives regardless of wonder state.
+function AGS_Wonder_RemoveAllObjectives()
+	for i, player in pairs(PLAYERS) do 
+		if player._wonder.objective_id ~= nil then
+			Obj_SetVisible(player._wonder.objective_id, false)
+		end		
+	end
+end
+
+function AGS_Wonder_StartProgressTracking()
+	Rule_AddGlobalEvent(AGS_Wonder_OnConstructionStart, GE_ConstructionStart)
+	Rule_AddGlobalEvent(AGS_Wonder_OnConstructionComplete, GE_ConstructionComplete)
+	Rule_AddGlobalEvent(AGS_Wonder_OnDamageReceived, GE_DamageReceived)
+	Rule_AddGlobalEvent(AGS_Wonder_OnEntityKilled, GE_EntityKilled)
+	--Rule_AddGlobalEvent(AGS_Wonder_OnEntityLandmarkDestroyed, GE_EntityLandmarkDestroyed)
+	Rule_AddInterval(AGS_Wonder_TimerCheck, 1.0)
+end
+
+function AGS_Wonder_StopProgressTracking()
+	Rule_RemoveGlobalEvent(AGS_Wonder_OnConstructionStart)
+	Rule_RemoveGlobalEvent(AGS_Wonder_OnConstructionComplete)
+	Rule_RemoveGlobalEvent(AGS_Wonder_OnDamageReceived)
+	Rule_RemoveGlobalEvent(AGS_Wonder_OnEntityKilled)
+	--Rule_RemoveGlobalEvent(AGS_Wonder_OnEntityLandmarkDestroyed)
+	Rule_Remove(AGS_Wonder_TimerCheck)
+end
+
+function AGS_Wonder_ShowObjective()
+
+end
+
+function AGS_Wonder_CreateObjectiveBuild()
+	local player_id = Game_GetLocalPlayer()
+	local player_civ = Player_GetRaceName(player_id)
+	if AGS_WONDER_OBJECTIVE == nil then
+		AGS_WONDER_OBJECTIVE = AGS_CreateObjective(AGS_OBJECTIVE_WONDER_BUILD, player_id, player_civ)
+	end
+	AGS_SetObjective(AGS_WONDER_OBJECTIVE, OS_Incomplete, true, nil, nil)
+end
+function AGS_Wonder_CloseObjectiveBuild()
+	AGS_SetObjective(AGS_WONDER_OBJECTIVE, nil, false, nil, nil)
+end
+
+function AGS_Wonder_CreateObjectiveBuilt(wonder_owner, entity_id)
+	local player_id = Game_GetLocalPlayer()
+	local player_civ = Player_GetRaceName(player_id)
+	local player_local = Core_GetPlayersTableEntry(player_id)
+
+	local newWonderObj = nil
+	if wonder_owner.isLocal then
+		newWonderObj = AGS_CreateObjective(AGS_OBJECTIVE_WONDER_SELF, player_id, player_civ, nil)
+		Sound_Play2D("mus_stinger_wonder_win_countdown_player")	
+		AGS_SetObjectivePopUp(newWonderObj, AGS_OBJECTIVE_WONDER_SELF)
+	elseif AGS_IsMutualRelation(player_id, wonder_owner.id, R_ALLY) then
+		newWonderObj = AGS_CreateObjective(AGS_OBJECTIVE_WONDER_TEAM, player_id, player_civ, player_local.playerName)
+		Sound_Play2D("mus_stinger_wonder_win_countdown_ally")
+		AGS_SetObjectivePopUp(newWonderObj, AGS_FormatText(11159070, player_local.playerName))
+	else
+		newWonderObj = AGS_CreateObjective(AGS_OBJECTIVE_WONDER_ENEMY, player_id, player_civ, player_local.playerName)
+		Sound_Play2D("mus_stinger_wonder_win_countdown_enemy")
+		AGS_SetObjectivePopUp(newWonderObj, AGS_FormatText(11159069, player_local.playerName))
+	end
+	wonder_owner._wonder.objective_id = newWonderObj
+	wonder_owner._wonder.objective_active = true
+	AGS_SetObjective(newWonderObj, OS_Incomplete, true, nil, COUNTER_TimerDecreasing)
+end
+-- Triggered by entity killed. Removes player specific objective.
+function AGS_Wonder_CloseObjectiveBuilt(wonder_owner, entity_id)
+	local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+		
+	if Timer_Exists(wonder_owner._wonder.timer_victory_deterministic) then
+		Timer_End(wonder_owner._wonder.timer_victory_deterministic)
+	end
+	
+	if player_local.isEliminated then
+		return
+	end
+	
+	Music_UnlockIntensity()
+	
+	wonder_owner._wonder.objective_active = false
+	AGS_SetObjective(newWonderObj, OS_Failed, false, nil, nil)
+	-- Local will need back old objective.
+	if wonder_owner.isLocal then
+		AGS_Wonder_CreateObjectiveBuild()
+	end
+end
+
+-- Remove will just hide it, this should be enough.
+function AGS_Wonder_RemoveObjective()
+	local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())	
+	-- If player is alive, has no wonder, is not defending wonder show build.
+	if not player_local.isEliminated and player._wonder.entity_id ~= nil and player._wonder.objective_id == nil then
+		AGS_SetObjective(AGS_WONDER_OBJECTIVE, OS_Incomplete, true, nil, nil)	
+	else
+		AGS_SetObjective(AGS_WONDER_OBJECTIVE, OS_Complete, false, nil, nil)	
+	end
+end
+
+
+function AGS_Wonder_WinnerPresentation(player_id)
+	-- TODO SET ENDGAME STATE SHOULD USE SAME OBJECTIVE AS THE ONE IN THE OBJECTIVE BUILT WAS USED
+	AGS_Presenation(player_id, AGS_WINNER_VICTORY)
+	AGS_SetEndGameState(AGS_WONDER_OBJECTIVE, false, OS_Complete, MUS_STING_PRIMARY_OBJ_COMPLETE_ENDGAME)
+	AGS_Wonder_RemoveAllObjectives()
+end
+
+function AGS_Wonder_LoserPresenation(player_id)
+	-- TODO SET ENDGAME STATE SHOULD USE SAME OBJECTIVE AS THE ONE IN THE OBJECTIVE BUILT WAS USED
+	if AGS_LoserPresenation(player_id, AGS_LOOSER_DEFEAT, AGS_LOOSER_ELIMINATED) then
+		AGS_SetEndGameState(AGS_WONDER_OBJECTIVE, false, OS_Failed, MUS_STING_PRIMARY_OBJ_FAIL)
+	else
+		AGS_SetEndGameState(AGS_WONDER_OBJECTIVE, false, OS_Failed, MUS_STING_PRIMARY_OBJ_FAIL)
+		AGS_Wonder_RemoveAllObjectives()
+	end	
+end
+
+-- Check if there is single remaining allied group.
+-- Finished Wonder will eliminate each player, this will fire multiple times.
+-- Last time it fires should mean that all players who are not allied with owner are eliminated.
+-- In case of wonder rush this is fired also for player allies being eliminated.
+-- TODO
+function AGS_Wonder_CheckVictory()
+	if not AGS_WONDER_ACTIVE_CHECKS then
+		return
+	end
+	
+	local winners = AGS_DoesWinnerGroupExists()
+	if winners == nil then
+		return
+	end
+	
+	for _, winner_id in pairs(winners) do 
+		AGS_SetPlayerVictorious(winner_id, AGS_Wonder_WinnerPresentation, AGS_WR_WONDER)
+	end
+	
+	AGS_EndGame()
+end
+
+function AGS_Wonder_Notification(player)
+	--local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+	---- Play always for now.
+	--AGS_PlaySFX(player.id)
+	---- If local is still in the game show message in right corner.
+	--if player ~= nil and not player_local.isEliminated then 
+	--	AGS_CreateCue(AGS_CUE_CORE, AGS_FormatText(AGS_CUE_TITLE_WONDER_ID, player.playerName))
+	--end
+end
+
+
+---------------------------------------------------------------------------------------------------
+-- Wonder Checks:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Wonder_ConstructionCompleted(player, entity_id)
+	if player.isEliminated then
+		return
+	end	
+	-- Start the victory timer across all peers, including those already defeated
+	AGS_Wonder_InitializeTimer(player_owner)
+	
+	AGS_Wonder_CreateObjectiveBuilt(player, entity_id)
+end
+
+function AGS_Wonder_InitializeTimer(player_owner)
+	if not Timer_Exists(player_owner._wonder.timer_victory_deterministic) then 
+		Timer_Start(player_owner._wonder.timer_victory_deterministic, AGS_WONDER_VICTORY_TIMER)
+		player_owner._wonder.notifications = {
+		-- Points during countdown at which to display loss warning.
+		-- Arrange in decreasing order since music intensity increases when the last one triggers.
+			{ 
+				time = 3 * 60,
+				triggered = false,
+				sfx = "sfx_ui_victory_countdown_update_first",
+				music_intensity = MUSIC_TENSE,
+				music_intesity_param = -1,
+				music_special = nil,
+				-- "%1MINUTES_REMAINING% minutes until Wonder Victory"
+				text_victory = 11197864,
+				-- "%1MINUTES_REMAINING% minutes until Wonder Defeat"
+				text_defeat = 11197865,
+				text_param = 3,
+			},		
+			{ 
+				time = 2 * 60, 
+				triggered = false,
+				sfx = "sfx_ui_victory_countdown_update_second",
+				music_intensity = MUSIC_TENSE_COMBAT_RARE,	
+				music_intesity_param = -1,	
+				music_special = nil,
+				-- "%1MINUTES_REMAINING% minutes until Wonder Victory"
+				text_victory = 11197864,
+				-- "%1MINUTES_REMAINING% minutes until Wonder Defeat"
+				text_defeat = 11197865,
+				text_param = 2,
+			},
+			{ 
+				time = 1 * 60,
+				triggered = false,
+				sfx = "sfx_ui_victory_countdown_update_final",	
+				music_intensity = MUSIC_RARE,		
+				music_intesity_param = 1 * 60,
+				music_special = "mus_shared_victory_countdown_mix_event",				
+				-- "1 minute until Wonder Victory"
+				text_victory = 11197866,
+				-- "1 minute until Wonder Defeat"
+				text_defeat = 11197867,
+				text_param = 1,			
+			},
+		}
+	end
+end
+-- Check if any timer finished.
+function AGS_Wonder_TimerCheck()
+	-- Determine current status of timers. Potentially ending the game at this chec.
+	for _, player in pairs(PLAYERS) do
+		if player._wonder.objective_active ~= nil and
+		   Timer_Exists(player._wonder.timer_victory_deterministic) and 
+		   Timer_GetRemaining(player._wonder.timer_victory_deterministic) == 0 then
+			AGS_Wonder_VictoryTriggered(player)
+			-- Timer should be stopped once we have a winner.
+			Rule_RemoveMe()
+			return
+		end
+	end
+	-- Victory was not triggered yet, we will update game status to reflect timer change from last frame.
+	AGS_Wonder_UpdateTimerGameStatus()
+end
+-- Wonder victory was triggered by a wonder timer finishing.
+function AGS_Wonder_VictoryTriggered(owner_player)
+	-- Eliminate all non-allied players.
+	for _, enemies in pairs(AGS_GetHostileOrNeutralAlivePlayers(owner_player.id)) do
+		AGS_SetPlayerDefeated(enemies.id, AGS_Wonder_LoserPresenation, AGS_WR_WONDER)
+	end
+	-- Eliminate all allied players that do not belong to a specific group.
+	-- TODO
+	
+end
+
+function AGS_Wonder_UpdateTimerGameStatus()
+	for _, player in pairs(PLAYERS) do		
+		if player.isEliminated then
+			-- Remove objectives related to this player
+			AGS_Wonder_CloseObjectiveBuild()
+			AGS_Wonder_CloseObjectiveBuilt()
+			player._wonder.objective_active = false
+			-- If wonder timer exists. End and reset timer
+			if Timer_Exists(player._wonder.timer_victory_deterministic) then				
+				Timer_End(player._wonder.timer_victory_deterministic)
+				Player_SetStateModelFloat(player.id, "wonder_timer", 0)
+			end
+		else
+			AGS_Wonder_UpdateBuilt(player)
+		end				
+	end
+end
+	
+AGS_CUE_WONDER_NOTIFICATIONS = {
+	eventType = -1,	
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	lifetime = 10.0,		
+	repeatCount = 0,
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	repeatTime = 20.0,		
+	title = Loc_Empty(),
+	desc = Loc_Empty(),
+	sfx = "sfx_ui_victory_countdown_update_first",
+	icon = "icons\\event_queue_high_priority",
+	icon_high_priority = "icons\\event_queue_high_priority_large",
+	template = "event_with_player_color", 
+	style = ECV_Queue | ECV_Title,
+}	
+
+function AGS_Wonder_NotificationTimer(owner, notification)
+	local isPotentialWinner = AGS_IsMutualRelation(Game_GetLocalPlayer(), owner.id, R_ALLY) --TODO proper check for wonder rush and dynamic.
+	local uiColour = Player_GetUIColour(owner.id)
+	local high_priority = true
+	local title = nil
+	local sfx = notification.sfx
+	
+	-- Increase music tempo.
+	Music_LockIntensity(notification.music_intensity, notification.music_intensity_param)
+	if isPotentialWinner then
+		title = AGS_FormatText(notification.text_victory, notification.text_param)
+	else
+		title = AGS_FormatText(notification.text_defeat, notification.text_param)
+		if notification.music_special ~= nil then
+			-- Trigger Mix Event.
+			Sound_Play2D(notification.music_special)	
+		end
+	end
+	
+	AGS_CreateCueComplex(AGS_CUE_WONDER_NOTIFICATIONS, high_priority, title, uiColour, sfx)
+end
+
+function AGS_Wonder_UpdateBuilt(player)
+	local wonder = player._wonder
+	if wonder == nil or wonder.entity_uwid == nil or not Entity_IsValid(wonder.entity_uwid) or wonder.objective_id == nil then
+		return
+	end	
+	
+	-- "wonder_timer" is set across all peers, including those already defeated.
+	if Timer_Exists(wonder.timer_victory_deterministic) then 
+		AGS_SetObjectiveProgress(wonder.objective_id, nil, nil, nil, Timer_GetRemaining(wonder.timer_victory_deterministic))
+		Player_SetStateModelFloat(player.id, "wonder_timer", Timer_GetRemaining(wonder.timer_victory_deterministic))	
+	end		
+	
+	for i = 1, #wonder.notifications do
+		-- If threshold notification has not been triggered AND timer is in threshold window
+		if not wonder.countdown_notifications[i].triggered and 
+		   wonder.countdown_notifications[i].time >= Timer_GetRemaining(wonder.timer_victory_deterministic) then 
+			-- Mark as triggered.
+			wonder.countdown_notifications[i].triggered = true
+			AGS_Wonder_NotificationTimer(player, wonder.countdown_notifications[i])
+		end
+	end
+	
+	-- If countdown reaches 0 stop the music.
+	if Timer_GetRemaining(wonder.timer_victory_deterministic) == 0 then
+		Music_PersistentStop()		
+	end
+end
+
+function AGS_Wonder_Construction(context, isFinished)
+	if context.player == nil or context.entity == nil then
+		return
+	end
+	local player = Core_GetPlayersTableEntry(context.player)
+	local entity_id = context.entity 
+	
+	-- We are looking only for wonders.
+	if not AGS_IsAWonder(entity_id) then
+		return
+	end
+	
+	-- Store entity_uwid on player.
+	player._wonder.entity_uwid = Entity_GetID(entity)
+	-- Reveal Wonder location.
+	if not player.isEliminated then
+		FOW_RevealArea(Entity_GetPosition(entity_id), AGS_WONDER_FOW_REVEAL_RADIUS, -1.0)
+	end
+	
+	if not isFinished then
+		AGS_Wonder_ConstructionNotification(player, entity_id)
+	else
+		AGS_Wonder_ConstructionCompleted(player, entity_id)
+	end
+end
+
+function AGS_Wonder_OnConstructionStart(context)
+	AGS_Wonder_Construction(context, false)
+end
+function AGS_Wonder_OnConstructionComplete(context)
+	AGS_Wonder_Construction(context, true)	
+end
+function AGS_Wonder_OnEntityKilled(context)
+	if context.victimOwner == nil or context.victim == nil then
+		return
+	end
+	-- Get entity owner
+	local player_owner = Core_GetPlayersTableEntry(context.victimOwner)	
+	local entity_id = context.victim
+	-- We are looking only for wonders.
+	if not AGS_IsAWonder(entity_id) then
+		return
+	end
+	-- Exclude scuttling of incomplete buildings		
+	if Entity_GetBuildingProgress(context.victim) < 1.0 then
+		return
+	end
+	
+	-- If entity owner's wonder id matches the destroyed building
+	if player_owner._wonder.entity_uwid ~= Entity_GetID(entity_id) then
+		AGS_Print("This would mean an critical error as we somehow have 2 wonders for one player.")
+		-- At this point we can just throw a towel or something...
+	end
+	
+	player_owner._wonder.entity_uwid = nil
+	-- Unreveal FOW around destroyed wonder
+	FOW_UnRevealArea(Entity_GetPosition(entity_id))
+	-- Close objective and make it failed or something.
+	AGS_Wonder_CloseObjectiveBuilt(player_owner, entity_id)
+	
+	-- Reset and change to normal? mix.
+	Music_UnlockIntensity()
+	ResetMinimumIntensityMusicUnforced()
+	Sound_Play2D("mus_shared_victory_countdown_mix_event_reset")
+	AGS_Wonder_DestroyedNotification(context, player_owner)
+	AGS_Wonder_Destroyed(player_owner)
+end
+
+function AGS_Wonder_Destroyed(owner)
+	-- TODO condition for insta death on wonder death.
+end
+
+function AGS_Wonder_ConstructionNotification(player, entity_id)
+	-- If player_local is alive we will show notification otherwise we are done.
+	local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+	if player_local.isEliminated then
+		return
+	end			
+	-- Local player does not need to be notified about his own action.
+	if player.isLocal then
+		return
+	end
+	-- Only if construction is in the progress. 
+	if Entity_GetBuildingProgress(entity) >= 1.0 then
+		return
+	end
+	
+	local title = nil
+	local uiColour = Player_GetUIColour(player.id)
+	local sfx = nil
+	local high_priority = true
+	
+	-- Ally is building an wonder.
+	if AGS_IsMutualRelation(player_local.id, player.id, R_ALLY) then
+		title = AGS_FormatText(AGS_CUE_TITLE_WONDER_BUILD_ALLY_ID, player.playerName) 
+		sfx = "mus_stinger_wonder_win_build_start_ally"
+	-- Enemy is building an wonder.
+	else
+		title = AGS_FormatText(AGS_CUE_TITLE_WONDER_BUILD_ENEMY_ID, player.playerName) 
+		sfx = "mus_stinger_wonder_win_build_start_enemy"		
+	end
+	
+	AGS_CreateCueComplex(AGS_CUE_WONDER_CONSTRUCTION, high_priority, title, uiColour, sfx)	
+end
+
+AGS_CUE_WONDER_CONSTRUCTION = {	
+	eventType = -1,	
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	lifetime = 10.0,		
+	repeatCount = 0,
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	repeatTime = 20.0,		
+	title = Loc_Empty(),
+	desc = Loc_Empty(),
+	sfx = "mus_stinger_wonder_win_build_start_ally",
+	icon = "icons\\event_queue_high_priority",
+	icon_high_priority = "icons\\event_queue_high_priority_large",
+	color = {r = 255, g = 255, b = 255, a = 255},
+	--template = "high_priority", 
+	template = "event_with_player_color",
+	style = ECV_Queue | ECV_Title,
+}
+
+
+function AGS_Wonder_OnDamageReceived(context)
+	-- Excludes razing buildings as they do not have an attacker ?
+	if context == nil or context.attacker == nil or context.victim == nil or context.attackerOwner == nil then 
+		return 
+	end
+	-- Neutral entities are not interesting.
+	if World_OwnsEntity(context.victim) then
+		return
+	end
+	
+	local entity_id = context.victim
+	-- We are looking only for wonders.
+	if not AGS_IsAWonder(entity_id) then
+		return
+	end
+	-- Exclude scuttling of incomplete buildings.
+	if Entity_IsBuilding(context.victim) and Entity_GetBuildingProgress(context.victim) < 1.0 then
+		return
+	end		
+	-- If Landmark is being repaired (also triggers OnDamageReceived)
+	if context.isRepairing then		
+		return
+	end
+	
+	-- If player destroyed own building. TODO This needs to fire for other !
+	--if context.attacker == context.victim then
+	--	return						
+	--end
+	if Core_IsPlayerEliminated(Game_GetLocalPlayer()) then
+		return
+	end
+	
+	local entity_uwid = Entity_GetID(context.victim)
+	local owner = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(context.victim))
+	-- Notifications are done only about alive players and standing wonders
+	if not Core_IsPlayerEliminated(owner.id) and Entity_GetHealth(entity_id) then
+		AGS_Wonder_DamageNotification(context, owner, entity_uwid)	
+	end	
+end
+
+AGS_CUE_WONDER_DAMAGE = {	
+	eventType = -1,	
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	lifetime = 10.0,		
+	repeatCount = 0,
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	repeatTime = 20.0,		
+	title = Loc_Empty(),
+	desc = Loc_Empty(),
+	sfx = "mus_stinger_wonder_building_damaged",
+	icon = "icons\\event_queue_high_priority",
+	icon_high_priority = "icons\\event_queue_high_priority_large",
+	color = {r = 255, g = 255, b = 255, a = 255},
+	--template = "high_priority", 
+	template = "event_with_player_color",
+	style = ECV_Queue | ECV_Title,
+}
+
+function AGS_Wonder_DamageNotification(context, owner, entity_uwid)	
+
+	-- Timer is in progress.
+	if Timer_Exists(owner._wonder.damage_timer) and Timer_GetRemaining(owner._wonder.damage_timer) > 0.0 then
+		return
+	end
+	-- If timer does not exists this will create it for selected entity and start next countdown.
+	Timer_Start(owner._wonder.damage_timer, AGS_WONDER_DAMAGE_INTERVAL)	
+	
+	-- Create cue.
+	local uiColour = Player_GetUIColour(context.attackerOwner)
+	local title = nil
+	local high_priority = true
+	-- Notify owner.
+	if owner.isLocal then
+		title = AGS_FormatText(AGS_CUE_TITLE_WONDER_A_SELF_ID)
+	-- Notify his ally.
+	elseif AGS_IsMutualRelation(Game_GetLocalPlayer(), owner.id, R_ALLY) then
+		title = AGS_FormatText(AGS_CUE_TITLE_WONDER_A_TEAM_ID, owner.playerName)	
+		high_priority = false
+	end	
+	if title ~= nil then
+		-- TODO DELAY IF AND BODY ? BY AGS_EVENT_CUE_DELAY see Conquest_CreateEventCue
+		if not Core_IsPlayerEliminated(Game_GetLocalPlayer()) then
+			AGS_CreateCueComplex(AGS_CUE_WONDER_DAMAGE, high_priority, title, uiColour)
+		end
+	end
+end
+-- "Wonder destroyed"
+AGS_CUE_TITLE_WONDER_KILLED_BY_SELF = 11159075
+-- "%1PLAYER_NAME%'s Wonder destroyed"
+AGS_CUE_TITLE_WONDER_KILLED_BY_SELF_TEAM = 11159076
+-- "%1PLAYER_NAME%'s Wonder destroyed"
+AGS_CUE_TITLE_WONDER_KILLED_BY_SELF_ENEMY = 11159076
+-- "Enemy destroyed Wonder"
+AGS_CUE_TITLE_WONDER_KILLED_OUR_BY_ENEMY = 11198645
+-- "Enemy destroyed %1PLAYER_NAME%'s Wonder"
+AGS_CUE_TITLE_WONDER_KILLED_TEAM_BY_ENEMY = 11198646
+-- "Destroyed %1PLAYER_NAME%'s Wonder"
+AGS_CUE_TITLE_WONDER_KILLED_ENEMY_BY_SELF = 11198647
+-- "Ally destroyed %1PLAYER_NAME%'s Wonder"
+AGS_CUE_TITLE_WONDER_KILLED_ENEMY_BY_TEAM = 11198648
+-- "Enemy destroyed %1PLAYER_NAME%'s Wonder"
+AGS_CUE_TITLE_WONDER_KILLED_ENEMY_BY_ENEMY = 11198649
+AGS_SFX_DESTOYED_PLAYER = "mus_stinger_wonder_win_interrupted_player"
+AGS_SFX_DESTOYED_TEAM = "mus_stinger_wonder_win_interrupted_ally"
+AGS_SFX_DESTOYED_ENEMY = "mus_stinger_wonder_win_interrupted_enemy"
+AGS_CUE_WONDER_DESTOYED = {	
+	eventType = -1,	
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	lifetime = 10.0,		
+	repeatCount = 0,
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	repeatTime = 20.0,		
+	title = Loc_Empty(),
+	desc = Loc_Empty(),
+	sfx = "mus_stinger_wonder_build_destroy_player_neg",
+	icon = "icons\\event_queue_high_priority",
+	icon_high_priority = "icons\\event_queue_high_priority_large",
+	color = {r = 255, g = 255, b = 255, a = 255},
+	--template = "high_priority", 
+	template = "event_with_player_color",
+	style = ECV_Queue | ECV_Title,
+}
+
+function AGS_Wonder_DestroyedNotification(context, owner)
+	local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+	if player_local.isEliminated then
+		return
+	end 
+	if owner.isEliminated then
+		return
+	end
+	if context.killer == nil then
+		return
+	end
+	local player_attacker = Entity_GetPlayerOwner(context.killer)
+	local is_self_kill = context.killer == context.victim
+	-- Create cue.
+	local uiColour = nil
+	if is_self_kill then
+		uiColour = Player_GetUIColour(owner)
+	else
+		uiColour = Player_GetUIColour(player_attacker)
+	end
+	local title = nil
+	local sfx = nil
+	local high_priority = true
+	
+	if owner.isLocal then
+		sfx = AGS_SFX_DESTOYED_PLAYER
+		if is_self_kill then
+			title = AGS_FormatText(AGS_CUE_TITLE_WONDER_KILLED_BY_SELF)
+			high_priority = false
+		else
+			title = AGS_FormatText(AGS_CUE_TITLE_WONDER_KILLED_OUR_BY_ENEMY, owner.playerName)
+			high_priority = true
+		end
+	elseif AGS_IsMutualRelation(owner.id, player_local.id, R_ALLY) then
+		sfx = AGS_SFX_DESTOYED_TEAM
+		if is_self_kill then
+			title = AGS_FormatText(AGS_CUE_TITLE_WONDER_KILLED_BY_SELF_TEAM, owner.playerName)
+			high_priority = false
+		else
+			title = AGS_FormatText(AGS_CUE_TITLE_WONDER_KILLED_TEAM_BY_ENEMY, owner.playerName)
+			high_priority = false
+		end
+	else
+		sfx = AGS_SFX_DESTOYED_ENEMY
+		if is_self_kill then
+			title = AGS_FormatText(AGS_CUE_TITLE_WONDER_KILLED_BY_SELF_ENEMY, owner.playerName)
+			high_priority = false
+		else
+			if player_attacker == player_local.id then
+				title = AGS_FormatText(AGS_CUE_TITLE_WONDER_KILLED_ENEMY_BY_SELF, owner.playerName)
+			elseif AGS_IsMutualRelation(player_local.id, player_attacker, R_ALLY) then
+				title = AGS_FormatText(AGS_CUE_TITLE_WONDER_KILLED_ENEMY_BY_TEAM, owner.playerName)
+			else
+				title = AGS_FormatText(AGS_CUE_TITLE_WONDER_KILLED_ENEMY_BY_ENEMY, owner.playerName)
+			end
+			high_priority = false
+		end
+	end
+	
+	AGS_CreateCueComplex(AGS_CUE_WONDER_DESTOYED, high_priority, title, uiColour, sfx)	
+end
