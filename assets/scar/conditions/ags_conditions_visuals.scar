@@ -7,6 +7,7 @@
 -- Contains visuals and helpers for conditions such as treaty and conquest.
 ---------------------------------------------------------------------------------------------------
 AGS_EVENT_CUE_DELAY = 2.0
+AGS_PRESENTATION_DELAY = 2.0
 
 AGS_PRESENTATION_DEFEAT = {
 	icon_defeat = nil,
@@ -104,9 +105,19 @@ AGS_CUE_TITLE_TEAM_SOLIDARITY_ID = "$64c5019a145c4e4da448dbd3adeea61e:329"
 AGS_CUE_TITLE_LANDMARK_A_SELF_ID = 11198265
 -- "Enemy attacking %1PLAYER_NAME%'s Landmark"
 AGS_CUE_TITLE_LANDMARK_A_TEAM_ID = 11198266
+-- "Enemy destroyed Landmark"
+AGS_CUE_TITLE_LANDMARK_K_SELF_ID = 11198267
+-- "Enemy destroyed %1PLAYER_NAME%'s Landmark"
+AGS_CUE_TITLE_LANDMARK_K_TEAM_ID = 11198268
+-- "Destroyed %1PLAYER_NAME%'s landmark"
+AGS_CUE_TITLE_LANDMARK_K_ENEMY_SELF_ID = 11198590
+-- "Ally destroyed %1PLAYER_NAME%'s landmark"
+AGS_CUE_TITLE_LANDMARK_K_ENEMY_TEAM_ID = 11198591
+-- "Enemy destroyed %1PLAYER_NAME%'s landmark"
+AGS_CUE_TITLE_LANDMARK_K_ENEMY_OTHER_ID = 11201826
 
 AGS_CUE_CORE = {
-eventType = -1,	
+	eventType = -1,	
 	-- should match the defaults set in AE under tuning.ui.event_cues
 	lifetime = 10.0,
 	repeatCount = 0,
@@ -121,7 +132,7 @@ eventType = -1,
 	style = ECV_Queue | ECV_Title,
 }
 AGS_CUE_SURRENDER = {	
-eventType = -1,	
+	eventType = -1,	
 	-- should match the defaults set in AE under tuning.ui.event_cues
 	lifetime = 10.0,	
 	repeatCount = 0,	
@@ -144,7 +155,6 @@ AGS_SFX = {
 ---------------------------------------------------------------------------------------------------
 -- Helpers:
 ---------------------------------------------------------------------------------------------------
-
 -- Reasons: 
 AGS_WR_NONE = WR_NONE 
 AGS_WR_ANNIHILATION = WR_ANNIHILATION
@@ -153,6 +163,15 @@ AGS_WR_SURRENDER = WR_SURRENDER
 AGS_WR_CONQUEST = WR_CONQUEST
 AGS_WR_REGICIDE = 4
 AGS_WR_TEAM_SOLIDARITY = 5
+
+function AGS_IsPrimaryObjective(reason)
+	-- Conquest is always primary objective.
+	if reason == AGS_WR_CONQUEST then
+		return true
+	end
+	
+	return false
+end
 
 -- Sets a player as defeated, invoking presentation and calling OnPlayerDefeated. 
 function AGS_SetPlayerDefeated(player_id, presentation_function, defeat_reason)
@@ -173,20 +192,27 @@ function AGS_EndGame()
 	Core_OnGameOver()
 end
 
-function AGS_SetObjective(objective, state, visibility)
+function AGS_SetObjective(objective, state, visibility, progress, counter)
 	if objective == nil then
 		AGS_Print("AGS: OBJECTIVE WAS NOT DEFINED!")
 	end
+	-- Current state of an objective.
 	if state ~= nil then
 		Obj_SetState(objective, state)
 	end
+	-- Is objective visible ?
 	if visibility ~= nil then
 		Obj_SetVisible(objective, visibility)
 	end
-	-- Sets the progress element of the objective to visible so players can see it
-	--Obj_SetProgressVisible(_mod.objective, true)		
-	-- Sets the objective progress type to a counter
-	--Obj_SetCounterType(_mod.objective, COUNTER_CountUpTo)
+	-- Is objective progress visible ?
+	if progress ~= nil then
+		Obj_SetProgressVisible(objective, progress)
+	end
+	-- How is progress displayed ?
+	if counter ~= nil then
+		Obj_SetCounterType(objective, counter)
+	end
+	
 	-- Set the starting objective progress to 1 because we spawn a House for the player in Mod_SpawnBuilding()
 	--Obj_SetCounterCount(_mod.objective, 1)
 	-- Set the maximum objective progress
@@ -194,6 +220,22 @@ function AGS_SetObjective(objective, state, visibility)
 	-- Set the objective progress bar percentage value
 	--Obj_SetProgress(_mod.objective, 1 / _mod.objective_requirement)
 end
+
+function AGS_SetObjectiveProgress(objective, current_count, max_count, progress_percentage)
+	-- Current progress done.
+	if current_count ~= nil then
+		Obj_SetCounterCount(objective, current_count)
+	end
+	-- Maximum progress that can be done.
+	if max_count ~= nil then
+		Obj_SetCounterMax(objective, max_count)
+	end
+	-- Percentage completed.
+	if progress_percentage ~= nil then
+		Obj_SetProgress(objective, progress_percentage)
+	end
+end
+
 -- Returns nil or winner id list
 function AGS_DoesWinnerGroupExists()
 	local winner_group = nil
@@ -252,6 +294,34 @@ end
 function AGS_GetAllAliveTeammates(player_id)
 	-- TODO return list of static allies ids
 end
+
+-- Friendly players are all that share mutual alliance with source player.
+-- This will return list without the source player.
+function AGS_GetFriendlyAlivePlayers(source_player_id)
+	local allies = { }
+	for _, player in pairs(PLAYERS) do
+		if source_player_id ~= player.id and not player.isEliminated then
+			if AGS_IsMutualRelation(source_player_id, player.id, R_ALLY) then
+				table.insert(enemies, player)				
+			end
+		end
+	end
+	return allies
+end
+-- Hostile and Neutral players are generally considered enemies.
+-- So this will return list of all players that are not mutual allies of source player.
+function AGS_GetHostileOrNeutralAlivePlayers(source_player_id)
+	local enemies = { }
+	for _, player in pairs(PLAYERS) do
+		if source_player_id ~= player.id and not player.isEliminated then
+			if not AGS_IsMutualRelation(source_player_id, player.id, R_ALLY) then
+				table.insert(enemies, player)				
+			end
+		end
+	end
+	return enemies
+end
+
 ---------------------------------------------------------------------------------------------------
 -- Visuals:
 ---------------------------------------------------------------------------------------------------
@@ -270,16 +340,19 @@ function AGS_FormatText(title_id, player_name)
 	return Loc_FormatText(title_id, player_name)
 end
 
-function AGS_CreateCueComplex(cue_template, high_priority, title, color)
+function AGS_CreateCueComplex(cue_template, high_priority, title, color, sfx)
+	if sfx == nil then
+		sfx = cue_template.sfx
+	end
 	if high_priority then
-		AGS_CreateCueCustomized(cue_template, title, color, cue_template.icon, ECV_Queue)
-		AGS_CreateCueCustomized(cue_template, title, color, cue_template.icon_high_priority, ECV_Title)
+		AGS_CreateCueCustomized(cue_template, title, color, cue_template.icon, ECV_Queue, sfx)
+		AGS_CreateCueCustomized(cue_template, title, color, cue_template.icon_high_priority, ECV_Title, sfx)
 	else
-		AGS_CreateCueCustomized(cue_template, title, color, cue_template.icon, ECV_Queue)
+		AGS_CreateCueCustomized(cue_template, title, color, cue_template.icon, ECV_Queue, sfx)
 	end
 end
 
-function AGS_CreateCueCustomized(cue_template, title, color, icon, style)
+function AGS_CreateCueCustomized(cue_template, title, color, icon, style, sfx)
 	UI_CreateEventCueClickable(
 		cue_template.eventType, 
 		cue_template.lifetime, 
@@ -289,7 +362,7 @@ function AGS_CreateCueCustomized(cue_template, title, color, icon, style)
 		cue_template.desc, 
 		cue_template.template, 
 		icon, 
-		cue_template.sfx, 
+		sfx, 
 		color.r, 
 		color.g, 
 		color.b, 
@@ -334,18 +407,32 @@ function AGS_CreateObjective(objective, player_id, player_civ)
 	)
 end
 
+-- os_state is OS_Complete/Incomplete/Failed
+function AGS_SetEndGameState(objective, show_taskbar, os_state, music_sfx)
+	Misc_ClearSelection()
+	Taskbar_SetVisibility(show_taskbar)
+	Obj_SetState(objective, os_state)
+	Obj_CreatePopup(objective, objective.title)	
+	Music_PlayStinger(music_sfx)
+end
+
+-- Returns true if player is considered eliminated instead of defeat. False for defeat.
 function AGS_LoserPresenation(player_id, defeat_presentation, elimnation_presentation)
 	if AGS_GLOBAL_SETTINGS.WinnerGroup == AGS_WG_MAN then
 		AGS_Presenation(player_id, defeat_presentation)
 	elseif AGS_GLOBAL_SETTINGS.WinnerGroup == AGS_WG_TEAM and AGS_CountAliveAllies(player_id) > 0 then 
-		AGS_Presenation(player_id, elimnation_presentation)		
+		AGS_Presenation(player_id, elimnation_presentation)
+		return true		
 	elseif AGS_GLOBAL_SETTINGS.WinnerGroup == AGS_WG_DYNAMIC then
 		AGS_Presenation(player_id, defeat_presentation)
 	else
 		AGS_Presenation(player_id, defeat_presentation)		
-	end
+	end	
+	-- default is false
+	return false
 end
 
+-- TODO delay this by AGS_PRESENTATION_DELAY at some point somewhere.
 function AGS_Presenation(player_id, presentation)
 	if player_id == Game_GetLocalPlayer() then
 		Rule_AddOneShot(
