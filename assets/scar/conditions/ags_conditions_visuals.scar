@@ -84,6 +84,11 @@ AGS_OBJECTIVE_RELIGIOUS = {
 	reason = AGS_WR_RELIGIOUS,
 	-- "Control all Holy Sites"
 	title = 11169980, 
+	title_capture = 11169980, 
+	-- "Neutralize a Holy Site"
+	title_neutralize = 11183992,
+	-- "Defend all Holy Sites"
+	title_defend = 11190384,
 	description = Loc_Empty,
 	icon = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
 	data_template = "HolySiteObjectiveDataTemplate",
@@ -270,6 +275,9 @@ function AGS_IsPrimaryObjective(reason)
 	if reason == AGS_WR_CONQUEST then
 		return true
 	end
+	if reason == AGS_WR_RELIGIOUS then
+		return not AGS_GLOBAL_SETTINGS.Conquest
+	end
 	if reason == AGS_WR_WONDER then
 		return not AGS_GLOBAL_SETTINGS.Conquest and not AGS_GLOBAL_SETTINGS.Religious
 	end
@@ -296,7 +304,7 @@ function AGS_EndGame()
 	Core_OnGameOver()
 end
 -- COUNTER_TimerDecreasing or COUNTER_CountUpTo
-function AGS_SetObjective(objective, state, visibility, progress, counter, popup)
+function AGS_SetObjective(objective, state, visibility, progress, counter, title)
 	if objective == nil then
 		AGS_Print("AGS: OBJECTIVE WAS NOT DEFINED!")
 	end
@@ -316,11 +324,15 @@ function AGS_SetObjective(objective, state, visibility, progress, counter, popup
 	if counter ~= nil then
 		Obj_SetCounterType(objective, counter)
 	end
+	-- Dynamic change of displayed title ?
+	if title ~= nil then
+		Obj_SetTitle(objective, title)
+	end
 end
 
 function AGS_SetObjectivePopUp(objective_id, objective_data)
 	-- Show big popup about this objective.
-	if popup ~= nil then
+	if objective_data ~= nil then
 		Obj_CreatePopup(objective_id, objective_data.title)
 	end
 end
@@ -340,7 +352,7 @@ function AGS_SetObjectiveProgress(objective, current_count, max_count, progress_
 	end
 	
 	if timer ~= nil then
-		Obj_SetCounterTimerSeconds(objective, nil, nil, nil, timer)
+		Obj_SetCounterTimerSeconds(objective, timer)
 	end
 end
 
@@ -501,14 +513,18 @@ function AGS_CreateCue(cue_template, title)
 	)	
 end
 
-function AGS_CreateObjective(objective, player_id, player_civ, title_player)
+function AGS_CreateObjective(objective, player_id, player_civ, title_param, parent)
 	local template = objective.data_template
 	if AGS_IsPrimaryObjective(objective.reason) then
 		template = objective.data_template_secondary
 	end
 	local title = objective.title
-		if title_player ~= nil then
-		title = AGS_FormatText(title, title_player)
+		if title_param ~= nil then
+		title = AGS_FormatText(title, title_param)
+	end
+	
+	if parent == nil then
+		parent = objective.parent
 	end
 	
 	return Obj_Create(
@@ -519,7 +535,7 @@ function AGS_CreateObjective(objective, player_id, player_civ, title_player)
 		template, 
 		player_civ, 
 		objective.priority, -- objective type e.g. primary or secondary
-		objective.parent, -- parent objective
+		parent, -- parent objective
 		objective.telemetry
 	)
 end

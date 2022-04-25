@@ -31,6 +31,8 @@ AGS_BP_SACRED_SITE = "holy_site"
 AGS_BP_BUILDING = "building"
 -- All untis should be tagged with this otherwise winconditions & others will not work.
 AGS_BP_UNIT_CLASS = "annihilation_condition"
+AGS_BP_GAIA = "gaia"
+AGS_BP_MOVING_BUILDINGS = "mongol_moving_structure"
 
 AGS_ENTITY_TABLE = {
 	neutral = {
