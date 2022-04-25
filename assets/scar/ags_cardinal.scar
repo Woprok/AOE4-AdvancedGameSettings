@@ -45,19 +45,7 @@ import("gameplay/ags_town_center_limit.scar")
 import("gameplay/ags_tree_bombardment.scar")
 import("gameplay/ags_map_vision.scar")
 import("gameplay/ags_shared_vision.scar")
--- Low priority tutorial goals for new players.
-import("training/coretraininggoals.scar")
-import("training/frenchtraininggoals.scar")
-import("training/englishtraininggoals.scar")
-import("training/sultanatetraininggoals.scar")
-import("training/rustraininggoals.scar")
-import("training/mongoltraininggoals.scar")
-import("training/chinesetraininggoals.scar")
-import("training/abbasidtraininggoals.scar")
--- Additional UI support for match.
-import("gameplay/event_cues.scar")
-import("gameplay/currentageui.scar")
-import("gameplay/chi/current_dynasty_ui.scar")
+
 -- Conditions can be loaded as last, they might require others to propagete first.
 
 import("conditions/ags_conditions_visuals.scar") -- helpers and visuals
@@ -77,6 +65,19 @@ import("gameplay/ags_utilities.scar")
 -- gameplay systems
 import("gameplay/diplomacy_reworked.scar")
 
+-- Additional UI support for match.
+import("gameplay/event_cues.scar")
+import("gameplay/currentageui.scar")
+import("gameplay/chi/current_dynasty_ui.scar")
+-- Low priority tutorial goals for new players.
+import("training/coretraininggoals.scar")
+import("training/frenchtraininggoals.scar")
+import("training/englishtraininggoals.scar")
+import("training/sultanatetraininggoals.scar")
+import("training/rustraininggoals.scar")
+import("training/mongoltraininggoals.scar")
+import("training/chinesetraininggoals.scar")
+import("training/abbasidtraininggoals.scar")
 
 ---------------------------------------------------------------------------------------------------
 -- GUIDELINES AND SOME HELP

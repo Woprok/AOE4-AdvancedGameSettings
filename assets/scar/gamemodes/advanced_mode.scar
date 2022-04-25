@@ -1,39 +1,26 @@
------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 -- Authors:
 -- Relic
 -- Woprock
 --
 -- Description:
--- Initialization handle for all options selected by user.
------------------------------------------------------------------------
+-- Entry point for an gamemode.
+-- Contains only gamemode specific functionality.
+-- Everything else is imported as part of "ags_cardinal.scar"
+---------------------------------------------------------------------------------------------------
 
 import("ags_cardinal.scar")
 
------------------------------------------------------------------------
--- Scripting framework 
------------------------------------------------------------------------
-
-Core_RegisterModule("AdvancedMode")		-- Call this before importing vision.scar so StandardMode_OnGameSetup() is called before Vision_OnGameSetup()   
-
-
-
------------------------------------------------------------------------
--- Data
------------------------------------------------------------------------
-
-_match = {
-	options = {},
-	is_cheat_enabled = false,
-	is_diplomacy_enabled = false,
-}
-
------------------------------------------------------------------------
--- Callbacks
------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+Core_RegisterModule("AdvancedMode")	
 
 function AdvancedMode_OnGameSetup()
 	
 	Setup_GetWinConditionOptions(_match.options)
+	
+	AGS_Print(_match.options)
 	
 	-- Win condition options
 	if _match.options.section_inner_win_conditions then	
@@ -50,8 +37,6 @@ function AdvancedMode_OnGameSetup()
 		_match.is_diplomacy_enabled = _match.options.section_diplomacy.option_diplomacy_dynamic 
 		-- diplomacy enabled -> true is dynamic relations, false is locked teams	
 	end
-	
-	
 	
 	AGS_Print(AGS_GLOBAL_SETTINGS)
 	Core_CallDelegateFunctions("SetupSettings", _match.options)
