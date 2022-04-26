@@ -177,8 +177,8 @@ AGS_OBJECTIVE_REGICIDE = {
 }
 AGS_OBJECTIVE_TEAMSOLIDARITY = {
 	reason = AGS_WR_TEAM_SOLIDARITY,
-	-- Your teammates must survive.
-	title = "$64c5019a145c4e4da448dbd3adeea61e:330", 
+	-- Protect your teammates.
+	title = "$64c5019a145c4e4da448dbd3adeea61e:230", 
 	description = Loc_Empty,
 	icon = "icons\\objectives\\objectives_leader",
 	data_template = DT_PRIMARY_DEFAULT,
@@ -195,7 +195,7 @@ AGS_CUE_TITLE_REGICIDED_ID = 11165820
 -- "%1PLAYER_NAME% surrendered"
 AGS_CUE_TITLE_SURRENDERED_ID = 11161289
 -- "%1PLAYER_NAME% surrendered in solidarity with his teammate"
-AGS_CUE_TITLE_TEAM_SOLIDARITY_ID = "$64c5019a145c4e4da448dbd3adeea61e:329"
+AGS_CUE_TITLE_TEAM_SOLIDARITY_ID = "$64c5019a145c4e4da448dbd3adeea61e:231"
 
 -- "Enemy attacking Landmark"
 AGS_CUE_TITLE_LANDMARK_A_SELF_ID = 11198265

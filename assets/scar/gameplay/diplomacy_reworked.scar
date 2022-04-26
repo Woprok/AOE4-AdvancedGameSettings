@@ -47,7 +47,7 @@ function Diplomacy_DiplomacyEnabled(is_enabled)
 				total_taxes = {amount = 0},
 				total_cost = {amount = 0},
 				players = {},
-				headerRelations = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:133"),
+				headerRelations = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:234"),
 			},
 			cue = {							-- Event cue template (shown when player changes relationship or receives tribute) 
 				lifetime = 10.0,
@@ -84,9 +84,9 @@ function Diplomacy_DiplomacyEnabled(is_enabled)
 				{ resource_type = RT_Stone,image = "pack://application:,,,/WPFGUI;component/icons/resources/resource_stone_icon.png", help = 11164970},
 			},
 			relations = {
-				{ relation_type = R_ALLY, image = "pack://application:,,,/WPFGUI;component/icons/common/orders/rally.png", help = "$64c5019a145c4e4da448dbd3adeea61e:123", title = "$64c5019a145c4e4da448dbd3adeea61e:135" },
-				{ relation_type = R_NEUTRAL, image = "pack://application:,,,/WPFGUI;component/icons/races/common/buildings/market.png", help = "$64c5019a145c4e4da448dbd3adeea61e:124", title = "$64c5019a145c4e4da448dbd3adeea61e:136" },
-				{ relation_type = R_ENEMY, image = "pack://application:,,,/WPFGUI;component/icons/races/common/buildings/barracks.png", help = "$64c5019a145c4e4da448dbd3adeea61e:125", title = "$64c5019a145c4e4da448dbd3adeea61e:137" },
+				{ relation_type = R_ALLY, image = "pack://application:,,,/WPFGUI;component/icons/common/orders/rally.png", help = "$64c5019a145c4e4da448dbd3adeea61e:239", title = "$64c5019a145c4e4da448dbd3adeea61e:235" },
+				{ relation_type = R_NEUTRAL, image = "pack://application:,,,/WPFGUI;component/icons/races/common/buildings/market.png", help = "$64c5019a145c4e4da448dbd3adeea61e:240", title = "$64c5019a145c4e4da448dbd3adeea61e:236" },
+				{ relation_type = R_ENEMY, image = "pack://application:,,,/WPFGUI;component/icons/races/common/buildings/barracks.png", help = "$64c5019a145c4e4da448dbd3adeea61e:241", title = "$64c5019a145c4e4da448dbd3adeea61e:237" },
 			},
 			age = {						-- Loc_string lookup table (indexed by age)
 				Loc_GetString(11180928),					-- I
@@ -778,7 +778,7 @@ function Diplomacy_CreateDataContext()
 				is_diplomacy_visible = not player.isLocal,			
 				is_tribute_enabled = _diplomacy.tribute.is_enabled and _diplomacy.tribute.is_market_built,-- and not player.isLocal,
 				relationTooltip = Diplomacy_RelationToTooltipConverter(player_local, player),
-				relationToolTipHeader = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:138"),
+				relationToolTipHeader = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:238"),
 				is_ally = Player_ObserveRelationship(player.id, player_local.id) == R_ALLY,
 				is_neutral = Player_ObserveRelationship(player.id, player_local.id) == R_NEUTRAL,
 				is_enemy = Player_ObserveRelationship(player.id, player_local.id) == R_ENEMY,

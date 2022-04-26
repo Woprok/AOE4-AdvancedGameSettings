@@ -32,7 +32,7 @@ AGS_TREATY_EVENTCUE = {
 function AGS_Treaty_ShowTimer(minutes_remaining)
 	local cue = AGS_TREATY_EVENTCUE.cueCountdown
 	local uiColour = Player_GetUIColour(Game_GetLocalPlayer())
-	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:155", minutes_remaining)			
+	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:232", minutes_remaining)			
 	cue.sfx = AGS_TREATY_EVENTCUE.sfx_treaty_timer_first
 	Rule_AddOneShot(AGS_Treaty_CreateEventCue, 0, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})	
 end
@@ -40,7 +40,7 @@ end
 function AGS_Treaty_EndTimer()
 	local cue = AGS_TREATY_EVENTCUE.cueCountdown
 	local uiColour = Player_GetUIColour(Game_GetLocalPlayer())
-	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:154")			
+	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:233")			
 	cue.sfx = AGS_TREATY_EVENTCUE.sfx_treaty_timer_final
 	Rule_AddOneShot(AGS_Treaty_CreateEventCue, 0, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})	
 end
