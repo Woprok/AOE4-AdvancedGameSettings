@@ -863,11 +863,11 @@ function AGS_GlobalSettings_SetSimulationSpeed(simulation_speed)
 	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_2 then
 		AGS_GLOBAL_SETTINGS.SimulationSpeed = 2.00
 	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_3 then
-		AGS_GLOBAL_SETTINGS.SimulationSpeed = 3.0
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 3.00
 	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_4 then
-		AGS_GLOBAL_SETTINGS.SimulationSpeed = 4.0
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 4.00
 	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_5 then
-		AGS_GLOBAL_SETTINGS.SimulationSpeed = 5.0
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 5.00
 	end
 end
 
