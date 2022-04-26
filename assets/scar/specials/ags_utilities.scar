@@ -4,31 +4,59 @@
 -- Woprock
 --
 -- Description:
--- Handles small calls that are not currently moderated.
+-- Contains additional match support created by relic that is currently not expected to be rewritten.
 ---------------------------------------------------------------------------------------------------
 
--- section_inner_win_conditions(option_win_condition_conquest, option_win_condition_religious, option_win_condition_wonder)
--- section_diplomacy(option_diplomacy_teams, option_diplomacy_tribute)
--- section_endgame(option_allow_spectators)
--- section_starting_conditions(
--- 		reveal_fow_on_elimination
+-- Replay System.
+import("replay/replaystatviewer.scar")
+-- Notification system.
+import("gameplay/event_cues.scar")
+-- Age UI.
+import("gameplay/currentageui.scar")
+-- Chinese Dynasty UI.
+import("gameplay/chi/current_dynasty_ui.scar")
+-- Score UI.
+import("gameplay/score.scar")
+-- Cheat support for dev mode.
+import("gameplay/cheat.scar") 
+-- Tutorial goals available to new players.
+import("training/coretraininggoals.scar")
+import("training/frenchtraininggoals.scar")
+import("training/englishtraininggoals.scar")
+import("training/sultanatetraininggoals.scar")
+import("training/rustraininggoals.scar")
+import("training/mongoltraininggoals.scar")
+import("training/chinesetraininggoals.scar")
+import("training/abbasidtraininggoals.scar")
+
+---------------------------------------------------------------------------------------------------
+-- Options:
+-- Relic uses in code behind certain options, that can be set and will then apply their effect.
+-- This is list of all options that we were able to reverse engineer.
+---------------------------------------------------------------------------------------------------
+-- section_inner_win_conditions
+--	 	option_win_condition_conquest
+--	 	option_win_condition_religious
+--	 	option_win_condition_wonder
+-- section_diplomacy
+--	 	option_diplomacy_teams (Refers to option called Locked Teams)
+--	 	option_diplomacy_tribute
+-- section_endgame (Never implemented option to allow / disallow spectating after elimination.)
+--		option_allow_spectators
+-- section_starting_conditions
+-- 		reveal_fow_on_elimination (Exact path is used for Core_RevealFOWOnEliminationEnabled)
 --		option_fow[option_fow_concealed, option_fow_explore, option_fow_reveal]
 --		option_score
--- 		option_start_age 
---		option_vision[option_vision_default],
+-- 		option_start_age[option_start_nomad, option_start_age_1, option_start_age_2, option_start_age_3, option_start_age_4]
+--		option_vision[option_vision_default]
 --		option_speed[option_speed_2x, option_speed_3x, option_speed_20x, option_speed_50x, option_speed_100x]
---		option_initial_units[initial_units_none]
---		option_starting_resources
+--		option_initial_units[initial_units_none, initial_units_standard]
+--		option_starting_resources[resources_standard, resources_high, resources_very_high, resources_max] (Automatically binded)
 --		option_timer[option_timer_reset]
--- )
+---------------------------------------------------------------------------------------------------
 
 AGS_UTILITIES_MODULE = "AGS_Utilities"
 AGS_UTILITIES_LOCAL_PLAYER = nil
-
--- Replay System
-import("gameplay/score.scar")
-import("replay/replaystatviewer.scar")
-import("gameplay/cheat.scar") 
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -37,7 +65,7 @@ import("gameplay/cheat.scar")
 Core_RegisterModule(AGS_UTILITIES_MODULE)	
 
 function AGS_Utilities_SetupSettings(options)
-	-- Set player behaviour when eliminated
+	-- Set player behaviour when eliminated.
 	if options.section_endgame then 
 		allow_spectators = options.section_endgame.option_allow_spectators
 	end

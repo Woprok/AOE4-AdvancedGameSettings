@@ -7,6 +7,35 @@
 -- Contains all option definitions and their current values.
 -- Referenceable by any other script.
 ---------------------------------------------------------------------------------------------------
+AGS_GS_TEAM_VICTORY_FFA = 0
+AGS_GS_TEAM_VICTORY_STANDARD = 1
+AGS_GS_TEAM_VICTORY_DYNAMIC = 2
+AGS_GS_SETTLEMENT_SCATTERED = 0
+AGS_GS_SETTLEMENT_NOMADIC = 1
+AGS_GS_SETTLEMENT_SETTLED = 2
+AGS_GS_WONDER_SCALE_COST_DISABLED = -1
+AGS_GS_TEAM_VISION_NONE = 0
+AGS_GS_TEAM_VISION_REQUIRES_MARKET = 1
+AGS_GS_TEAM_VISION_ALWAYS = 2
+AGS_GS_MAP_VISION_CONCEALED = 0
+AGS_GS_MAP_VISION_EXPLORED = 1
+AGS_GS_MAP_VISION_REVEALED = 2
+AGS_GS_AGE_NONE = 0
+AGS_GS_AGE_DARK = 1
+AGS_GS_AGE_FEUDAL = 2
+AGS_GS_AGE_CASTLE = 3
+AGS_GS_AGE_IMPERIAL = 4
+AGS_GS_AGE_LATE_IMPERIAL = 5
+AGS_GS_RESOURCES_NONE = 0
+AGS_GS_RESOURCES_NORMAL = 1
+AGS_GS_RESOURCES_HIGH = 2
+AGS_GS_RESOURCES_VERY_HIGH = 3
+AGS_GS_RESOURCES_MAXIMUM = 4
+AGS_GS_TC_RESTRICTIONS_NONE = 0
+AGS_GS_TC_RESTRICTIONS_NORMAL = 1
+AGS_GS_TC_RESTRICTIONS_LANDMARKS = 2
+
+
 AGS_WG_MAN = 0
 AGS_WG_TEAM = 1
 AGS_WG_DYNAMIC = 2
@@ -29,15 +58,72 @@ AGS_MAP_REVEALED = 2
 
 AGS_GLOBAL_SETTINGS = {
 	Annihilation = true, -- Player loses everything.
-	Surrender = true, -- Player surrenders.
 	Elimination = true, -- Player quits.
-	Conquest = true,
-	Religious = true,
-	Wonder = true,
-	Regicide = false,
-	--Score = false,
+	Surrender = true, -- Player surrenders.
+	Conquest = true, -- Player objective conquest.
+	Regicide = false, -- Player kind defeat.
+	Religious = true, -- Player control sites.
+	Wonder = true, -- Player defend wonder.
+	Score = false, -- Player achieve highest score.
 	
-	TeamSolidarity = false,
+	Settlement = AGS_GS_SETTLEMENT_SETTLED, -- Initial start of each player.
+	Treaty = 0, -- Duration of treaty period.
+	TeamVictory = AGS_GS_TEAM_VICTORY_STANDARD, -- Who is considered potential winner.
+	TeamSolidarity = false, -- Team is eliminated together.
+	
+	ConquestSettings = {
+		Capital = true,
+		Landmarks = true,
+		TownCenters = false,
+		Keeps - false,
+		Wonder = false,
+	},
+	ReligiousSettings = {
+		Timer = 10,
+		ResumableTimer = false,
+	},
+	WonderSettings = {
+		Timer = 15,
+		LastStand = false,
+		ScaleCost = AGS_GS_WONDER_SCALE_COST_DISABLED,
+	},
+	ScoreSettings = {
+		Timer = 60,
+		ShowPlacement = false,
+	},
+	
+	Tributes = true,
+	Diplomacy = false,
+	TeamVision = AGS_GS_TEAM_VISION_ALWAYS,
+	MapVision = AGS_GS_MAP_VISION_CONCEALED,
+	
+	StartingAge = AGS_GS_AGE_DARK_AGE,
+	EndingAge = AGS_GS_AGE_LATE_IMPERIAL,
+	TechnologyAge = AGS_GS_AGE_NONE,
+	StartingResources = AGS_GS_RESOURCES_NORMAL,
+	RevealFowOnElimination = true,
+	
+	ScoreVisibility = false,
+	MinimumPopulation = 0,
+	MaximumPopulation = 200,
+	StartingVillagers = 6,
+	StartingKeeps = 0,
+	EarlyMarket = false,
+	TreeBombardment = false,
+	GameRates = 1.00,
+	TownCenterRestrictions = AGS_GS_TC_RESTRICTIONS_NONE,
+	
+	StartingKings = 0, 
+	Ding = false,
+	SimulationSpeed = 1.00,
+	
+	StartingScouts = 1, -- undefined
+	StartingSheeps = 1, -- undefined
+	StartingTownCenters = 1, -- undefined
+	
+	
+	
+	
 	TreatyTimer = 0,
 	ReligousTimer = 10,
 	WonderTimer = 15,
@@ -49,26 +135,15 @@ AGS_GLOBAL_SETTINGS = {
 	
 	StartAge = 1,
 	FinalAge = 5,
-	TechnologyAge = 0,
 	
-	GameRates = 1.00,
-	SimulationSpeed = 1.0,
 	PopulationCapacity = 200,
 	
-	StartingVillagers = 6,
-	StartingScouts = 1, -- undefined
-	StartingSheeps = 1, -- undefined
-	StartingTownCenters = 1, -- undefined
-	StartingKeeps = 1, -- undefined
-	StartingKings = 1, -- undefined
 	StartType = AGS_ST_SETTLED,
 	
 	SpawnKeep = false,
 	SpawnKing = false,
 	
 	CanDing = false,
-	EarlyMarket = false,
-	TreeBombardment = false,
 	RestrictTownCenters = AGS_RTC_NONE,
 	CanTest = false, -- undefined
 	
@@ -85,480 +160,723 @@ AGS_GLOBAL_SETTINGS = {
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
 
-Core_RegisterModule("AGS_Settings")	
+Core_RegisterModule("AGS_GlobalSettings")	
 
-function AGS_Settings_SetupSettings(options)	
+function AGS_GlobalSettings_SetupSettings(options)	
 	-- Options can not be null.
 	if not options then
 		return
 	end
 	
-	-- Do each category of settings defined in gamemode.
-	-- Undefined categories will use global settings.
-	local category = nil
+	if options.section_inner_win_conditions then
+		AGS_GlobalSettings_DefineWinConditions(options.section_inner_win_conditions)
+	end
 	
 	if options.section_inner_win_conditions then
-		category = options.section_inner_win_conditions
-	
-		if category.option_win_condition_conquest ~= nil then
-			AGS_SetConquest(category.option_win_condition_conquest)
-		end
-		
-		if category.option_win_condition_religious ~= nil then
-			AGS_SetReligious(category.option_win_condition_religious)
-		end
-		
-		if category.option_win_condition_wonder ~= nil then
-			AGS_SetWonder(category.option_win_condition_wonder)
-		end
-		
-		if category.option_win_condition_regicide ~= nil then
-			AGS_SetRegicide(category.option_win_condition_regicide)
-		end		
-		
-		--if category.option_win_condition_score ~= nil then
-		--	AGS_SetScore(category.option_win_condition_score)
-		--end		
+		AGS_GlobalSettings_DefineGameConditions(options.section_inner_game_conditions)
 	end
 	
-	if options.section_outer_win_conditions then
-		category = options.section_outer_win_conditions
-		
-		if category.option_religious_timer then
-			AGS_SetReligousTimer(category.option_religious_timer)
-		end
-		
-		if category.option_wonder_timer then
-			AGS_SetWonderTimer(category.option_wonder_timer)
-		end
-		
-		if category.option_team_solidarity ~= nil then
-			AGS_SetTeamSolidarity(category.option_team_solidarity)
-		end
+	if options.section_outer_win_settings then
+		AGS_GlobalSettings_DefineWinSettings(options.section_outer_win_settings)
 	end
 	
-	if options.section_starting_conditions then 	
-		category = options.section_starting_conditions		
-		
-		if category.option_start_age then
-			AGS_SetStartAge(category.option_start_age)
-		end
-		
-		if category.option_score ~= nil then
-			AGS_SetVisibleScore(category.option_score)
-		end
-				
-		if category.option_fow ~= nil then
-			AGS_SetMapVision(category.option_fow)
-		end
-		
-		if category.option_vision ~= nil then
-			AGS_SetSharedVision(category.option_vision)
-		end
-	end
-		
-	if options.section_custom_conditions then
-		category = options.section_custom_conditions	
-		
-		if category.tech_level then
-			AGS_SetTechnologyAge(category.tech_level)
-		end
-		
-		if category.option_start_type then
-			AGS_SetStartType(category.option_start_type)
-		end
-		
-		if category.option_max_age then 
-			AGS_SetFinalAge(category.option_max_age)
-		end
-		
-		if category.option_speed then
-			AGS_SetGameRates(category.option_speed)
-		end
-		
-		if category.option_pop then
-			AGS_SetPopulationCapacity(category.option_pop)
-		end
-		
-		if category.option_speed_rate then
-			AGS_SetSimulationSpeed(category.option_speed_rate)
-		end
+	if options.section_outer_game_settings then
+		AGS_GlobalSettings_DefineGameSettings(options.section_outer_game_settings)
 	end
 	
-	if options.section_custom_conditions_2 then
-		category = options.section_custom_conditions_2	
-		
-		if category.spawn_villager then
-			AGS_SetStartingVillagers(category.spawn_villager)
-		end		
-				
-		if category.spawn_king ~= nil then
-			AGS_SetSpawnKing(category.spawn_king)		
-		end	
-		
-		if category.spawn_keep ~= nil then
-			AGS_SetSpawnKeep(category.spawn_keep)
-		end
-	end		
-	
-	if options.section_diplomacy then
-		category = options.section_diplomacy
-		
-		if category.option_diplomacy_treaty then 
-			AGS_SetTreatyTimer(category.option_diplomacy_treaty)
-		end
-		
-		if category.option_diplomacy_tribute ~= nil then 
-			AGS_SetCanTribute(category.option_diplomacy_tribute)
-		end
-		
-		if category.option_diplomacy_dynamic ~= nil then
-			AGS_SetCanDiplomacy(category.option_diplomacy_dynamic)
-		end
-		
-		--if category.option_diplomacy_teams ~= nil then
-		--	AGS_SetLastManStanding(category.option_diplomacy_teams)
-		--end
-	
+	if options.section_outer_match_settings then
+		AGS_GlobalSettings_DefineMatchSettings(options.section_outer_match_settings)
 	end
 	
-	if options.section_custom_other then
-		category = options.section_custom_other	
-		
-		if category.can_ding ~= nil then
-			AGS_SetCanDing(category.can_ding)
-		end
-		
-		if category.early_market ~= nil then
-			AGS_SetEarlyMarket(category.early_market)
-		end
-		
-		if category.siege_tree_bombardment ~= nil then
-			AGS_SetTreeBombardment(category.siege_tree_bombardment)
-		end
-		
-		if category.restrict_town_centers then
-			AGS_SetRestrictTownCenters(category.restrict_town_centers)
-		end
-	end	
+	if options.section_outer_legacy_settings then
+		AGS_GlobalSettings_DefineLegacySettings(options.section_outer_legacy_settings)
+	end
 end
 
 ---------------------------------------------------------------------------------------------------
--- Functions:
+-- Switch Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_SetConquest(option_win_condition_conquest)
-	AGS_GLOBAL_SETTINGS.Conquest = option_win_condition_conquest
-end
-function AGS_SetReligious(option_win_condition_religious)
-	AGS_GLOBAL_SETTINGS.Religious = option_win_condition_religious
-end
-function AGS_SetWonder(option_win_condition_wonder)
-	AGS_GLOBAL_SETTINGS.Wonder = option_win_condition_wonder
-end
-function AGS_SetRegicide(option_win_condition_regicide)
-	AGS_GLOBAL_SETTINGS.Regicide = option_win_condition_regicide
-end
---function AGS_SetScore(option_win_condition_score)
---	AGS_GLOBAL_SETTINGS.Score = option_win_condition_score
---end
-
-function AGS_SetTeamSolidarity(option_team_solidarity)
-	AGS_GLOBAL_SETTINGS.TeamSolidarity = option_team_solidarity
-end
-
-function AGS_SetWonderTimer(option_wonder_timer)
-	if option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_instant then
-		AGS_GLOBAL_SETTINGS.WonderTimer = 0
-	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_3 then
-		AGS_GLOBAL_SETTINGS.WonderTimer = 3
-	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_5 then
-		AGS_GLOBAL_SETTINGS.WonderTimer = 5
-	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_8 then
-		AGS_GLOBAL_SETTINGS.WonderTimer = 8
-	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_10 then
-		AGS_GLOBAL_SETTINGS.WonderTimer = 10
-	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_12 then
-		AGS_GLOBAL_SETTINGS.WonderTimer = 12
-	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_15 then
-		AGS_GLOBAL_SETTINGS.WonderTimer = 15
-	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_20 then
-		AGS_GLOBAL_SETTINGS.WonderTimer = 20
-	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_25 then
-		AGS_GLOBAL_SETTINGS.WonderTimer = 25
-	elseif option_wonder_timer.enum_value == option_wonder_timer.enum_items.wonder_30 then
-		AGS_GLOBAL_SETTINGS.WonderTimer = 30
+function AGS_GlobalSettings_DefineWinConditions(category)	
+	if category.option_win_condition_annihilation ~= nil then
+		AGS_GLOBAL_SETTINGS.Annihilation = category.option_win_condition_annihilation
 	end
-end
-
-function AGS_SetReligousTimer(option_religious_timer)
-	if option_religious_timer.enum_value == option_religious_timer.enum_items.religious_3 then
-		AGS_GLOBAL_SETTINGS.ReligousTimer = 3
-	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_5 then
-		AGS_GLOBAL_SETTINGS.ReligousTimer = 5
-	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_8 then
-		AGS_GLOBAL_SETTINGS.ReligousTimer = 8
-	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_10 then
-		AGS_GLOBAL_SETTINGS.ReligousTimer = 10
-	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_12 then
-		AGS_GLOBAL_SETTINGS.ReligousTimer = 12
-	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_15 then
-		AGS_GLOBAL_SETTINGS.ReligousTimer = 15
-	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_20 then
-		AGS_GLOBAL_SETTINGS.ReligousTimer = 20
-	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_25 then
-		AGS_GLOBAL_SETTINGS.ReligousTimer = 25
-	elseif option_religious_timer.enum_value == option_religious_timer.enum_items.religious_30 then
-		AGS_GLOBAL_SETTINGS.ReligousTimer = 30
+	if category.option_win_condition_elimination ~= nil then
+		AGS_GLOBAL_SETTINGS.Elimination = category.option_win_condition_elimination
 	end
-end
-
-function AGS_SetCanTribute(option_diplomacy_tribute)
-	AGS_GLOBAL_SETTINGS.CanTribute = option_diplomacy_tribute
-end
-
-function AGS_SetCanDiplomacy(option_diplomacy_dynamic)
-	AGS_GLOBAL_SETTINGS.CanDiplomacy = option_diplomacy_dynamic
-end
-
---function AGS_SetLastManStanding(option_diplomacy_teams)
---	AGS_GLOBAL_SETTINGS.LastManStanding = option_diplomacy_teams
---end
-
-function AGS_SetTreatyTimer(option_diplomacy_treaty)
-	if option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_no then
-		AGS_GLOBAL_SETTINGS.TreatyTimer = 0
-	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_5 then
-		AGS_GLOBAL_SETTINGS.TreatyTimer = 5
-	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_10 then
-		AGS_GLOBAL_SETTINGS.TreatyTimer = 10
-	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_20 then
-		AGS_GLOBAL_SETTINGS.TreatyTimer = 20
-	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_30 then
-		AGS_GLOBAL_SETTINGS.TreatyTimer = 30
-	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_45 then
-		AGS_GLOBAL_SETTINGS.TreatyTimer = 45
-	elseif option_diplomacy_treaty.enum_value == option_diplomacy_treaty.enum_items.treaty_60 then
-		AGS_GLOBAL_SETTINGS.TreatyTimer = 60
+	if category.option_win_condition_surrender ~= nil then
+		AGS_GLOBAL_SETTINGS.Surrender = category.option_win_condition_surrender
 	end
-end
-
-function AGS_SetSharedVision(option_vision)	
-	if option_vision.enum_value == option_vision.enum_items.option_vision_always then
-		AGS_GLOBAL_SETTINGS.SharedVision = AGS_SV_ALWAYS 
-	elseif option_vision.enum_value == option_vision.enum_items.option_vision_market then
-		AGS_GLOBAL_SETTINGS.SharedVision = AGS_SV_MARKET 
-	elseif option_vision.enum_value == option_vision.enum_items.option_vision_default then
-		AGS_GLOBAL_SETTINGS.SharedVision = AGS_SV_NEVER 	
+	if category.option_win_condition_conquest ~= nil then
+		AGS_GLOBAL_SETTINGS.Conquest = category.option_win_condition_conquest
 	end
-end
-
-function AGS_SetMapVision(option_fow)	
-	if option_fow.enum_value == option_fow.enum_items.option_fow_concealed then
-		AGS_GLOBAL_SETTINGS.MapVision = AGS_MAP_HIDDEN 
-	elseif option_fow.enum_value == option_fow.enum_items.option_fow_explore then
-		AGS_GLOBAL_SETTINGS.MapVision = AGS_MAP_EXPLORED 
-	elseif option_fow.enum_value == option_fow.enum_items.option_fow_reveal then
-		AGS_GLOBAL_SETTINGS.MapVision = AGS_MAP_REVEALED 	
+	if category.option_win_condition_regicide ~= nil then
+		AGS_GLOBAL_SETTINGS.Regicide = category.option_win_condition_regicide
 	end
-end
-
-function AGS_SetVisibleScore(option_score)
-	AGS_GLOBAL_SETTINGS.VisibleScore = option_score
-end
-
-function AGS_SetStartType(option_start_type)
-	if option_start_type.enum_value == option_start_type.enum_items.standard then
-		AGS_GLOBAL_SETTINGS.StartType = AGS_ST_SETTLED
-	elseif option_start_type.enum_value == option_start_type.enum_items.slow_nomad then
-		AGS_GLOBAL_SETTINGS.StartType = AGS_ST_NOMAD
-	elseif option_start_type.enum_value == option_start_type.enum_items.scattered_villagers then
-		AGS_GLOBAL_SETTINGS.StartType = AGS_ST_SCATTERED
+	if category.option_win_condition_religious ~= nil then
+		AGS_GLOBAL_SETTINGS.Religious = category.option_win_condition_religious
+	end
+	if category.option_win_condition_wonder ~= nil then
+		AGS_GLOBAL_SETTINGS.Wonder = category.option_win_condition_wonder
+	end
+	if category.option_win_condition_score ~= nil then
+		AGS_GLOBAL_SETTINGS.Score = category.option_win_condition_score
 	end	
 end
 
-function AGS_SetSpawnKing(spawn_king)
-	AGS_GLOBAL_SETTINGS.SpawnKing = spawn_king
-end
-
-function AGS_SetSpawnKeep(spawn_keep)
-	AGS_GLOBAL_SETTINGS.SpawnKeep = spawn_keep
-end
-
-function AGS_SetCanDing(can_ding)
-	AGS_GLOBAL_SETTINGS.CanDing = can_ding
-end
-
-function AGS_SetEarlyMarket(early_market)
-	AGS_GLOBAL_SETTINGS.EarlyMarket = early_market
-end
-
-function AGS_SetTreeBombardment(tree_bombardment)
-	AGS_GLOBAL_SETTINGS.TreeBombardment = tree_bombardment
-end
-
-function AGS_SetRestrictTownCenters(restrict_town_centers)
-	if restrict_town_centers.enum_value == restrict_town_centers.enum_items.none then
-		AGS_GLOBAL_SETTINGS.RestrictTownCenters = AGS_RTC_NONE 
-	elseif restrict_town_centers.enum_value == restrict_town_centers.enum_items.normal then
-		AGS_GLOBAL_SETTINGS.RestrictTownCenters = AGS_RTC_NORMAL 
-	elseif restrict_town_centers.enum_value == restrict_town_centers.enum_items.landmark then
-		AGS_GLOBAL_SETTINGS.RestrictTownCenters = AGS_RTC_LANDMARK
-	end		
-end
-
-function AGS_SetFinalAge(option_max_age)	
-	-- AGE_DARK
-	if option_max_age.enum_value == option_max_age.enum_items.option_max_age_1 then
-		AGS_GLOBAL_SETTINGS.FinalAge = 1 
-	-- AGE_FEUDAL
-	elseif option_max_age.enum_value == option_max_age.enum_items.option_max_age_2 then
-		AGS_GLOBAL_SETTINGS.FinalAge = 2 
-	-- AGE_CASTLE
-	elseif option_max_age.enum_value == option_max_age.enum_items.option_max_age_3 then
-		AGS_GLOBAL_SETTINGS.FinalAge = 3 
-	-- AGE_IMPERIAL
-	elseif option_max_age.enum_value == option_max_age.enum_items.option_max_age_4 then
-		AGS_GLOBAL_SETTINGS.FinalAge = 4 
-	-- POST_AGE_IMPERIAL
-	elseif option_max_age.enum_value == option_max_age.enum_items.option_max_age_5 then
-		AGS_GLOBAL_SETTINGS.FinalAge = 5 
-	end				
-end
-
-function AGS_SetStartAge(option_start_age)	
-	-- AGE_DARK
-	if option_start_age.enum_value == option_start_age.enum_items.option_start_age_1 then
-		AGS_GLOBAL_SETTINGS.StartAge = 1 
-	-- AGE_FEUDAL
-	elseif option_start_age.enum_value == option_start_age.enum_items.option_start_age_2 then
-		AGS_GLOBAL_SETTINGS.StartAge = 2 
-	-- AGE_CASTLE
-	elseif option_start_age.enum_value == option_start_age.enum_items.option_start_age_3 then
-		AGS_GLOBAL_SETTINGS.StartAge = 3 
-	-- AGE_IMPERIAL
-	elseif option_start_age.enum_value == option_start_age.enum_items.option_start_age_4 then
-		AGS_GLOBAL_SETTINGS.StartAge = 4 		
+function AGS_GlobalSettings_DefineGameConditions(category)
+	if category.option_game_condition_settlement then
+		AGS_GlobalSettings_SetSettlement(category.option_game_condition_settlement)
+	end
+	if category.option_game_condition_treaty then
+		AGS_GlobalSettings_SetTreaty(category.option_game_condition_treaty)
+	end
+	if category.option_game_condition_team_victory then
+		AGS_GlobalSettings_SetTreaty(category.option_game_condition_team_victory)
+	end
+	if category.option_game_condition_team_solidarity ~= nil then
+		AGS_GLOBAL_SETTINGS.TeamSolidarity = category.option_game_condition_team_solidarity
 	end
 end
 
-function AGS_SetTechnologyAge(tech_level)
-	-- NONE
-	if tech_level.enum_value == tech_level.enum_items.none then
-		AGS_GLOBAL_SETTINGS.TechnologyAge = 0 
-	-- ONE LESS THEN STARTING
-	elseif tech_level.enum_value == tech_level.enum_items.previous_age then
-		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GLOBAL_SETTINGS.StartAge - 1 
-	-- SAME AS STARTING
-	elseif tech_level.enum_value == tech_level.enum_items.current_age then
-		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GLOBAL_SETTINGS.StartAge 
-	end		
-end
-
-function AGS_SetSimulationSpeed(option_speed_rate)
-	if option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_50 then
-		AGS_GLOBAL_SETTINGS.SimulationSpeed = 0.50
-	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_75 then
-		AGS_GLOBAL_SETTINGS.SimulationSpeed = 0.75
-	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_90 then
-		AGS_GLOBAL_SETTINGS.SimulationSpeed = 0.90
-	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_100 then
-		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.00
-	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_110 then
-		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.10
-	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_125 then
-		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.25
-	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_150 then
-		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.50
-	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_200 then
-		AGS_GLOBAL_SETTINGS.SimulationSpeed = 2.00
-	elseif option_speed_rate.enum_value == option_speed_rate.enum_items.option_speed_rate_percentage_300 then
-		AGS_GLOBAL_SETTINGS.SimulationSpeed = 3.00
+function AGS_GlobalSettings_DefineWinSettings(category)		
+	if category.option_win_setting_conquest_capital ~= nil then
+		AGS_GLOBAL_SETTINGS.ConquestSettings.Capital = category.option_win_setting_conquest_capital
+	end	
+	if category.option_win_setting_conquest_landmarks ~= nil then
+		AGS_GLOBAL_SETTINGS.ConquestSettings.Landmarks = category.option_win_setting_conquest_landmarks
+	end	
+	if category.option_win_setting_conquest_town_centers ~= nil then
+		AGS_GLOBAL_SETTINGS.ConquestSettings.TownCenters = category.option_win_setting_conquest_town_centers
+	end	
+	if category.option_win_setting_conquest_keeps ~= nil then
+		AGS_GLOBAL_SETTINGS.ConquestSettings.Keeps = category.option_win_setting_conquest_keeps
+	end
+	if category.option_win_setting_conquest_wonder ~= nil then
+		AGS_GLOBAL_SETTINGS.ConquestSettings.Wonder = category.option_win_setting_conquest_wonder
+	end	
+	if category.option_win_setting_religious_timer then
+		AGS_GlobalSettings_SetReligiousTimer(category.option_win_setting_religious_timer)
+	end
+	if category.option_win_setting_religious_resumable_timer ~= nil then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.ResumableTimer = category.option_win_setting_religious_resumable_timer
+	end
+	if category.option_win_setting_wonder_timer then
+		AGS_GlobalSettings_SetWonderTimer(category.option_win_setting_wonder_timer)
+	end
+	if category.option_win_setting_wonder_last_stand ~= nil then
+		AGS_GLOBAL_SETTINGS.WonderSettings.LastStand = category.option_win_setting_wonder_last_stand
+	end
+	if category.option_win_setting_wonder_scale_cost then
+		AGS_GlobalSettings_SetWonderScaleCost(category.option_win_setting_wonder_scale_cost)
+	end	
+	if category.option_win_setting_score_timer then
+		AGS_GlobalSettings_SetScoreTimer(category.option_win_setting_score_timer)
+	end
+	if category.option_win_setting_score_show_placement ~= nil then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.ShowPlacement = category.option_win_setting_score_show_placement
 	end
 end
 
-function AGS_SetGameRates(option_speed)
-	if option_speed.enum_value == option_speed.enum_items.option_speed_025x then
-		AGS_GLOBAL_SETTINGS.GameRates = 0.25
-	elseif option_speed.enum_value == option_speed.enum_items.option_speed_050x then
-		AGS_GLOBAL_SETTINGS.GameRates = 0.50	
-	elseif option_speed.enum_value == option_speed.enum_items.option_speed_075x then
-		AGS_GLOBAL_SETTINGS.GameRates = 0.75	
-	elseif option_speed.enum_value == option_speed.enum_items.option_speed_1x then
-		AGS_GLOBAL_SETTINGS.GameRates = 1.00	
-	elseif option_speed.enum_value == option_speed.enum_items.option_speed_2x then
-		AGS_GLOBAL_SETTINGS.GameRates = 2.00
-	elseif option_speed.enum_value == option_speed.enum_items.option_speed_3x then
-		AGS_GLOBAL_SETTINGS.GameRates = 3.00	
-	elseif option_speed.enum_value == option_speed.enum_items.option_speed_5x then
-		AGS_GLOBAL_SETTINGS.GameRates = 5.00	
-	elseif option_speed.enum_value == option_speed.enum_items.option_speed_10x then
-		AGS_GLOBAL_SETTINGS.GameRates = 10.00
-	elseif option_speed.enum_value == option_speed.enum_items.option_speed_100x then
-		AGS_GLOBAL_SETTINGS.GameRates = 100.00
+function AGS_GlobalSettings_DefineGameSettings(category)
+	if category.option_game_setting_tributes ~= nil then
+		AGS_GLOBAL_SETTINGS.Tributes = category.option_game_setting_tributes
+	end
+	if category.option_game_setting_diplomacy ~= nil then
+		AGS_GLOBAL_SETTINGS.Diplomacy = category.option_game_setting_diplomacy
+	end
+	if category.option_game_setting_team_vision then
+		AGS_GlobalSettings_SetTeamVision(category.option_game_setting_team_vision)
+	end	
+	if category.option_game_setting_map_vision then
+		AGS_GlobalSettings_SetMapVision(category.option_game_setting_map_vision)
+	end
+	if category.option_game_setting_starting_age then
+		AGS_GlobalSettings_SetStartingAge(category.option_game_setting_starting_age)
+	end	
+	if category.option_game_setting_ending_age then
+		AGS_GlobalSettings_SetEndingAge(category.option_game_setting_ending_age)
+	end	
+	if category.option_game_setting_technology_age then
+		AGS_GlobalSettings_SetTechnologyAge(category.option_game_setting_technology_age)
+	end	
+	if category.option_game_setting_starting_resources then
+		AGS_GlobalSettings_SetStartingResources(category.option_game_setting_starting_resources)
+	end
+	if category.option_game_setting_reveal_fow_on_elimination ~= nil then
+		AGS_GLOBAL_SETTINGS.RevealFowOnElimination = category.option_game_setting_reveal_fow_on_elimination
 	end
 end
 
-function AGS_SetPopulationCapacity(option_pop)
-	if option_pop.enum_value == option_pop.enum_items.option_pop_25 then
-		AGS_GLOBAL_SETTINGS.PopulationCapacity = 25
-	elseif option_pop.enum_value == option_pop.enum_items.option_pop_50 then
-		AGS_GLOBAL_SETTINGS.PopulationCapacity = 50
-	elseif option_pop.enum_value == option_pop.enum_items.option_pop_75 then
-		AGS_GLOBAL_SETTINGS.PopulationCapacity = 75
-	elseif option_pop.enum_value == option_pop.enum_items.option_pop_100 then
-		AGS_GLOBAL_SETTINGS.PopulationCapacity = 100
-	elseif option_pop.enum_value == option_pop.enum_items.option_pop_150 then
-		AGS_GLOBAL_SETTINGS.PopulationCapacity = 150
-	elseif option_pop.enum_value == option_pop.enum_items.option_pop_200 then
-		AGS_GLOBAL_SETTINGS.PopulationCapacity = 200
-	elseif option_pop.enum_value == option_pop.enum_items.option_pop_250 then
-		AGS_GLOBAL_SETTINGS.PopulationCapacity = 250
-	elseif option_pop.enum_value == option_pop.enum_items.option_pop_300 then
-		AGS_GLOBAL_SETTINGS.PopulationCapacity = 300
-	elseif option_pop.enum_value == option_pop.enum_items.option_pop_400 then
-		AGS_GLOBAL_SETTINGS.PopulationCapacity = 400
-	elseif option_pop.enum_value == option_pop.enum_items.option_pop_500 then
-		AGS_GLOBAL_SETTINGS.PopulationCapacity = 500
-	elseif option_pop.enum_value == option_pop.enum_items.option_pop_1000 then
-		AGS_GLOBAL_SETTINGS.PopulationCapacity = 1000
-	elseif option_pop.enum_value == option_pop.enum_items.option_pop_10000 then
-		AGS_GLOBAL_SETTINGS.PopulationCapacity = 10000
+function AGS_GlobalSettings_DefineMatchSettings(category)
+	if category.option_match_setting_show_score ~= nil then
+		AGS_GLOBAL_SETTINGS.ScoreVisibility = category.option_match_setting_show_score
+	end
+	if category.option_match_setting_min_population then
+		AGS_GlobalSettings_SetMinimumPopulation(category.option_match_setting_min_population)
+	end
+	if category.option_match_setting_max_population then
+		AGS_GlobalSettings_SetMaximumPopulation(category.option_match_setting_max_population)
+	end
+	if category.option_match_setting_starting_villagers then
+		AGS_GlobalSettings_SetStartingVillagers(category.option_match_setting_starting_villagers)
+	end
+	if category.option_match_setting_starting_keeps then
+		AGS_GlobalSettings_SetStartingKeeps(category.option_match_setting_starting_keeps)
+	end
+	if category.option_match_setting_early_market ~= nil then
+		AGS_GLOBAL_SETTINGS.EarlyMarket = category.option_match_setting_early_market
+	end
+	if category.option_match_setting_tree_bombardment ~= nil then
+		AGS_GLOBAL_SETTINGS.TreeBombardment = category.option_match_setting_tree_bombardment
+	end
+	if category.option_match_setting_game_rates then
+		AGS_GlobalSettings_SetGameRates(category.option_match_setting_game_rates)
+	end
+	if category.option_match_setting_town_center_restrictions then
+		AGS_GlobalSettings_SetTownCenterRestricts(category.option_match_setting_town_center_restrictions)
 	end
 end
 
-function AGS_SetStartingVillagers(spawn_villager)
-	if spawn_villager.enum_value == spawn_villager.enum_items.villager_1 then
+function AGS_GlobalSettings_DefineLegacySettings(category)
+	if category.option_legacy_setting_starting_kings then
+		AGS_GlobalSettings_SetStartingKings(category.option_legacy_setting_starting_kings)
+	end
+	if category.option_legacy_setting_ding ~= nil then
+		AGS_GLOBAL_SETTINGS.Ding = category.option_legacy_setting_ding
+	end
+	if category.option_legacy_setting_simulation_speed then
+		AGS_GlobalSettings_SetSimulationSpeed(category.option_legacy_setting_simulation_speed)
+	end
+end
+---------------------------------------------------------------------------------------------------
+-- Assignment Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_GlobalSettings_SetSettlement(settlement)
+	if settlement.enum_value == settlement.enum_items.settlement_scattered then
+		AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_SCATTERED
+	elseif settlement.enum_value == settlement.enum_items.settlement_nomadic then
+		AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_NOMADIC
+	elseif settlement.enum_value == settlement.enum_items.settlement_settled then
+		AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_SETTLED
+	end
+end
+
+function AGS_GlobalSettings_SetTreaty(treaty)
+	if treaty.enum_value == treaty.enum_items.treaty_0 then
+		AGS_GLOBAL_SETTINGS.Treaty = 0
+	elseif treaty.enum_value == treaty.enum_items.treaty_5 then
+		AGS_GLOBAL_SETTINGS.Treaty = 5
+	elseif treaty.enum_value == treaty.enum_items.treaty_10 then
+		AGS_GLOBAL_SETTINGS.Treaty = 10
+	elseif treaty.enum_value == treaty.enum_items.treaty_15 then
+		AGS_GLOBAL_SETTINGS.Treaty = 15
+	elseif treaty.enum_value == treaty.enum_items.treaty_20 then
+		AGS_GLOBAL_SETTINGS.Treaty = 20
+	elseif treaty.enum_value == treaty.enum_items.treaty_25 then
+		AGS_GLOBAL_SETTINGS.Treaty = 25
+	elseif treaty.enum_value == treaty.enum_items.treaty_30 then
+		AGS_GLOBAL_SETTINGS.Treaty = 30
+	elseif treaty.enum_value == treaty.enum_items.treaty_35 then
+		AGS_GLOBAL_SETTINGS.Treaty = 35
+	elseif treaty.enum_value == treaty.enum_items.treaty_40 then
+		AGS_GLOBAL_SETTINGS.Treaty = 40
+	elseif treaty.enum_value == treaty.enum_items.treaty_45 then
+		AGS_GLOBAL_SETTINGS.Treaty = 45
+	elseif treaty.enum_value == treaty.enum_items.treaty_50 then
+		AGS_GLOBAL_SETTINGS.Treaty = 50
+	elseif treaty.enum_value == treaty.enum_items.treaty_55 then
+		AGS_GLOBAL_SETTINGS.Treaty = 55
+	elseif treaty.enum_value == treaty.enum_items.treaty_60 then
+		AGS_GLOBAL_SETTINGS.Treaty = 60
+	end
+end
+
+function AGS_GlobalSettings_SetTeamVictory(team_victory)
+	if team_victory.enum_value == team_victory.enum_items.team_victory_ffa then
+		AGS_GLOBAL_SETTINGS.TeamVictory = AGS_GS_TEAM_VICTORY_FFA
+	elseif team_victory.enum_value == team_victory.enum_items.team_victory_standard then
+		AGS_GLOBAL_SETTINGS.TeamVictory = AGS_GS_TEAM_VICTORY_STANDARD
+	elseif team_victory.enum_value == team_victory.enum_items.team_victory_dynamic then
+		AGS_GLOBAL_SETTINGS.TeamVictory = AGS_GS_TEAM_VICTORY_DYNAMIC
+	end
+end
+
+function AGS_GlobalSettings_SetReligiousTimer(religious_timer)
+	if religious_timer.enum_value == religious_timer.enum_items.religious_timer_0 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 0
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_1 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 1
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_2 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 2
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_3 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 3
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_4 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 4
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_5 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 5
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_6 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 6
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_7 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 7
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_8 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 8
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_9 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 9
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_10 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 10
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_11 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 11
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_12 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 12
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_13 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 13
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_14 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 14
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_15 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 15
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_20 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 20
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_25 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 25
+	elseif religious_timer.enum_value == religious_timer.enum_items.religious_timer_30 then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer = 30
+	end
+end
+
+function AGS_GlobalSettings_SetWonderTimer(wonder_timer)
+	if wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_0 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 0
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_1 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 1          
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_2 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 2          
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_3 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 3          
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_4 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 4          
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_5 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 5          
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_6 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 6          
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_7 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 7          
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_8 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 8          
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_9 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 9          
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_10 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 10         
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_11 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 11         
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_12 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 12         
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_13 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 13         
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_14 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 14         
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_15 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 15         
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_20 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 20         
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_25 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 25         
+	elseif wonder_timer.enum_value == wonder_timer.enum_items.wonder_timer_30 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.Timer = 30
+	end
+end
+
+function AGS_GlobalSettings_SetWonderScaleCost(scale_cost)
+	if scale_cost.enum_value == scale_cost.enum_items.scale_cost_disabled then
+		AGS_GLOBAL_SETTINGS.ScaleCost = AGS_GS_WONDER_SCALE_COST_DISABLED
+	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_0 then
+		AGS_GLOBAL_SETTINGS.ScaleCost = 0
+	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_250 then
+		AGS_GLOBAL_SETTINGS.ScaleCost = 250
+	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_375 then
+		AGS_GLOBAL_SETTINGS.ScaleCost = 375
+	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_500 then
+		AGS_GLOBAL_SETTINGS.ScaleCost = 500
+	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_750 then
+		AGS_GLOBAL_SETTINGS.ScaleCost = 750
+	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_1000 then
+		AGS_GLOBAL_SETTINGS.ScaleCost = 1000
+	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_1500 then
+		AGS_GLOBAL_SETTINGS.ScaleCost = 1500
+	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_2000 then
+		AGS_GLOBAL_SETTINGS.ScaleCost = 2000
+	end
+end
+
+function AGS_GlobalSettings_SetScoreTimer(score_timer)
+	if score_timer.enum_value == score_timer.enum_items.score_timer_5 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 5
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_15 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 15   
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_20 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 20   
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_25 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 25   
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_30 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 30   
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_35 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 35    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_40 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 40    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_45 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 45    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_50 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 50    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_55 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 55    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_60 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 60    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_65 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 65    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_70 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 70    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_75 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 75    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_80 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 80    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_85 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 85    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_90 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 90    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_95 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 95    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_110 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 110    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_115 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 115    
+	elseif score_timer.enum_value == score_timer.enum_items.score_timer_120 then
+		AGS_GLOBAL_SETTINGS.ScoreSettings.Timer = 120        
+	end
+end
+
+function AGS_GlobalSettings_SetTeamVision(team_vision)
+	if team_vision.enum_value == team_vision.enum_items.team_vision_none then
+		AGS_GLOBAL_SETTINGS.TeamVision = AGS_GS_TEAM_VISION_NONE
+	elseif team_vision.enum_value == team_vision.enum_items.team_vision_requires_market then
+		AGS_GLOBAL_SETTINGS.TeamVision = AGS_GS_TEAM_VISION_REQUIRES_MARKET
+	elseif team_vision.enum_value == team_vision.enum_items.team_vision_always then
+		AGS_GLOBAL_SETTINGS.TeamVision = AGS_GS_TEAM_VISION_ALWAYS
+	end
+end
+
+function AGS_GlobalSettings_SetMapVision(map_vision)
+	if map_vision.enum_value == map_vision.enum_items.map_vision_concealed then
+		AGS_GLOBAL_SETTINGS.MapVision = AGS_GS_MAP_VISION_CONCEALED
+	elseif map_vision.enum_value == map_vision.enum_items.map_vision_explored then
+		AGS_GLOBAL_SETTINGS.MapVision = AGS_GS_MAP_VISION_EXPLORED
+	elseif map_vision.enum_value == map_vision.enum_items.map_vision_revealed then
+		AGS_GLOBAL_SETTINGS.MapVision = AGS_GS_MAP_VISION_REVEALED
+	end
+end
+
+function AGS_GlobalSettings_SetStartingAge(starting_age)	
+	if starting_age.enum_value == starting_age.enum_items.starting_age_1 then
+		AGS_GLOBAL_SETTINGS.StartingAge = AGS_GS_AGE_DARK 
+	elseif starting_age.enum_value == starting_age.enum_items.starting_age_2 then
+		AGS_GLOBAL_SETTINGS.StartingAge = AGS_GS_AGE_FEUDA 
+	elseif starting_age.enum_value == starting_age.enum_items.starting_age_3 then
+		AGS_GLOBAL_SETTINGS.StartingAge = AGS_GS_AGE_CASTLE 
+	elseif starting_age.enum_value == starting_age.enum_items.starting_age_4 then
+		AGS_GLOBAL_SETTINGS.StartingAge = AGS_GS_AGE_IMPERIAL 		
+	end
+end
+
+function AGS_GlobalSettings_SetEndingAge(ending_age)	
+	if ending_age.enum_value == ending_age.enum_items.ending_age_1 then
+		AGS_GLOBAL_SETTINGS.EndingAge = AGS_GS_AGE_DARK 
+	elseif ending_age.enum_value == ending_age.enum_items.ending_age_2 then
+		AGS_GLOBAL_SETTINGS.EndingAge = AGS_GS_AGE_FEUDA 
+	elseif ending_age.enum_value == ending_age.enum_items.ending_age_3 then
+		AGS_GLOBAL_SETTINGS.EndingAge = AGS_GS_AGE_CASTLE 
+	elseif ending_age.enum_value == ending_age.enum_items.ending_age_4 then
+		AGS_GLOBAL_SETTINGS.EndingAge = AGS_GS_AGE_IMPERIAL 	
+	elseif ending_age.enum_value == ending_age.enum_items.ending_age_5 then
+		AGS_GLOBAL_SETTINGS.EndingAge = AGS_GS_AGE_LATE_IMPERIAL 		
+	end
+end
+
+function AGS_GlobalSettings_SetTechnologyAge(technology_age)	
+	if technology_age.enum_value == technology_age.enum_items.technology_age_0 then
+		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_NONE
+	elseif technology_age.enum_value == technology_age.enum_items.technology_age_1 then
+		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_DARK 
+	elseif technology_age.enum_value == technology_age.enum_items.technology_age_2 then
+		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_FEUDA 
+	elseif technology_age.enum_value == technology_age.enum_items.technology_age_3 then
+		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_CASTLE 
+	elseif technology_age.enum_value == technology_age.enum_items.technology_age_4 then
+		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_IMPERIAL 		
+	end
+end
+
+function AGS_GlobalSettings_SetStartingResources(starting_resources)
+	if starting_resources.enum_value == starting_resources.enum_items.starting_resources_none then
+		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_NORMAL	
+	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_normal then
+		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_NORMAL
+	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_high then
+		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_HIGH
+	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_very_high then
+		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_VERY_HIGH
+	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_maximum then
+		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_MAXIMUM
+	end
+end
+
+function AGS_GlobalSettings_SetMinimumPopulation(min_population)
+	if min_population.enum_value == min_population.enum_items.min_population_0 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 0
+	elseif min_population.enum_value == min_population.enum_items.min_population_25 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 25
+	elseif min_population.enum_value == min_population.enum_items.min_population_50 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 50
+	elseif min_population.enum_value == min_population.enum_items.min_population_75 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 75
+	elseif min_population.enum_value == min_population.enum_items.min_population_100 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 100
+	elseif min_population.enum_value == min_population.enum_items.min_population_125 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 125
+	elseif min_population.enum_value == min_population.enum_items.min_population_150 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 150
+	elseif min_population.enum_value == min_population.enum_items.min_population_175 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 175
+	elseif min_population.enum_value == min_population.enum_items.min_population_200 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 200
+	elseif min_population.enum_value == min_population.enum_items.min_population_225 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 225
+	elseif min_population.enum_value == min_population.enum_items.min_population_250 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 250
+	elseif min_population.enum_value == min_population.enum_items.min_population_275 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 275
+	elseif min_population.enum_value == min_population.enum_items.min_population_300 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 300
+	elseif min_population.enum_value == min_population.enum_items.min_population_350 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 350
+	elseif min_population.enum_value == min_population.enum_items.min_population_400 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 400
+	elseif min_population.enum_value == min_population.enum_items.min_population_450 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 450
+	elseif min_population.enum_value == min_population.enum_items.min_population_500 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 500
+	elseif min_population.enum_value == min_population.enum_items.min_population_550 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 550
+	elseif min_population.enum_value == min_population.enum_items.min_population_600 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 600
+	elseif min_population.enum_value == min_population.enum_items.min_population_650 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 650
+	elseif min_population.enum_value == min_population.enum_items.min_population_700 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 700
+	elseif min_population.enum_value == min_population.enum_items.min_population_750 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 750
+	elseif min_population.enum_value == min_population.enum_items.min_population_800 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 800
+	elseif min_population.enum_value == min_population.enum_items.min_population_850 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 850
+	elseif min_population.enum_value == min_population.enum_items.min_population_900 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 900
+	elseif min_population.enum_value == min_population.enum_items.min_population_950 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 950
+	elseif min_population.enum_value == min_population.enum_items.min_population_1000 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 1000
+	elseif min_population.enum_value == min_population.enum_items.min_population_10000 then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = 10000
+	end
+end
+
+function AGS_GlobalSettings_SetMaximumPopulation(max_population)
+	if max_population.enum_value == max_population.enum_items.max_population_25 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 25
+	elseif max_population.enum_value == max_population.enum_items.max_population_50 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 50
+	elseif max_population.enum_value == max_population.enum_items.max_population_75 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 75
+	elseif max_population.enum_value == max_population.enum_items.max_population_100 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 100
+	elseif max_population.enum_value == max_population.enum_items.max_population_125 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 125
+	elseif max_population.enum_value == max_population.enum_items.max_population_150 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 150
+	elseif max_population.enum_value == max_population.enum_items.max_population_175 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 175
+	elseif max_population.enum_value == max_population.enum_items.max_population_200 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 200
+	elseif max_population.enum_value == max_population.enum_items.max_population_225 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 225
+	elseif max_population.enum_value == max_population.enum_items.max_population_250 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 250
+	elseif max_population.enum_value == max_population.enum_items.max_population_275 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 275
+	elseif max_population.enum_value == max_population.enum_items.max_population_300 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 300
+	elseif max_population.enum_value == max_population.enum_items.max_population_350 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 350
+	elseif max_population.enum_value == max_population.enum_items.max_population_400 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 400
+	elseif max_population.enum_value == max_population.enum_items.max_population_450 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 450
+	elseif max_population.enum_value == max_population.enum_items.max_population_500 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 500
+	elseif max_population.enum_value == max_population.enum_items.max_population_550 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 550
+	elseif max_population.enum_value == max_population.enum_items.max_population_600 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 600
+	elseif max_population.enum_value == max_population.enum_items.max_population_650 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 650
+	elseif max_population.enum_value == max_population.enum_items.max_population_700 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 700
+	elseif max_population.enum_value == max_population.enum_items.max_population_750 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 750
+	elseif max_population.enum_value == max_population.enum_items.max_population_800 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 800
+	elseif max_population.enum_value == max_population.enum_items.max_population_850 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 850
+	elseif max_population.enum_value == max_population.enum_items.max_population_900 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 900
+	elseif max_population.enum_value == max_population.enum_items.max_population_950 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 950
+	elseif max_population.enum_value == max_population.enum_items.max_population_1000 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 1000
+	elseif max_population.enum_value == max_population.enum_items.max_population_10000 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 10000
+	end
+end
+
+function AGS_GlobalSettings_SetStartingVillagers(starting_villagers)
+	if starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_0 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 0
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_1 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 1
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_2 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_2 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 2
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_3 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_3 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 3
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_4 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_4 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 4
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_5 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_5 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 5
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_6 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_6 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 6
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_7 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_7 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 7
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_8 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_8 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 8
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_9 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_9 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 9
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_10 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_10 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 10
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_20 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_15 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 15
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_20 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 20
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_30 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_25 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 25
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_30 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 30
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_40 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_35 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 35
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_40 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 40
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_50 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_45 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 45
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_50 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 50
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_75 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_75 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 75
-	elseif spawn_villager.enum_value == spawn_villager.enum_items.villager_100 then
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_100 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 100
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_200 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 200
 	end
+end
+
+function AGS_GlobalSettings_SetStartingKeeps(starting_keeps)
+	if starting_keeps ~= nil and starting_keeps then
+		AGS_GLOBAL_SETTINGS.StartingKeeps = 1				
+	else
+		AGS_GLOBAL_SETTINGS.StartingKeeps = 0
+	end
+end
+
+function AGS_GlobalSettings_SetStartingKings(starting_kings)
+	if starting_kings ~= nil and starting_kings then
+		AGS_GLOBAL_SETTINGS.StartingKings = 1		
+	else
+		AGS_GLOBAL_SETTINGS.StartingKings = 0
+	end
+end
+
+function AGS_GlobalSettings_SetGameRates(game_rates)
+	if game_rates.enum_value == game_rates.enum_items.game_rates_075 then
+		AGS_GLOBAL_SETTINGS.GameRates = 0.75
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_080 then
+		AGS_GLOBAL_SETTINGS.GameRates = 0.80
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_085 then
+		AGS_GLOBAL_SETTINGS.GameRates = 0.85
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_090 then
+		AGS_GLOBAL_SETTINGS.GameRates = 0.90
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_095 then
+		AGS_GLOBAL_SETTINGS.GameRates = 0.95
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_1 then
+		AGS_GLOBAL_SETTINGS.GameRates = 1.00
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_2 then
+		AGS_GLOBAL_SETTINGS.GameRates = 2.00
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_3 then
+		AGS_GLOBAL_SETTINGS.GameRates = 3.0
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_4 then
+		AGS_GLOBAL_SETTINGS.GameRates = 4.0
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_5 then
+		AGS_GLOBAL_SETTINGS.GameRates = 5.0
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_6 then
+		AGS_GLOBAL_SETTINGS.GameRates = 6.0
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_7 then
+		AGS_GLOBAL_SETTINGS.GameRates = 7.0
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_8 then
+		AGS_GLOBAL_SETTINGS.GameRates = 8.0
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_9 then
+		AGS_GLOBAL_SETTINGS.GameRates = 9.0
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_10 then
+		AGS_GLOBAL_SETTINGS.GameRates = 10.0
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_20 then
+		AGS_GLOBAL_SETTINGS.GameRates = 20.0
+	end
+end
+
+function AGS_GlobalSettings_SetSimulationSpeed(simulation_speed)
+	if simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_075 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 0.75
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_080 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 0.80
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_085 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 0.85
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_090 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 0.90
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_095 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 0.95
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_1 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.00
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_2 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 2.00
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_3 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 3.0
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_4 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 4.0
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_5 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 5.0
+	end
+end
+
+function AGS_GlobalSettings_SetTownCenterRestricts(tc_restrictions)
+	if tc_restrictions.enum_value == tc_restrictions.enum_items.none then
+		AGS_GLOBAL_SETTINGS.TownCenterRestrictions = AGS_GS_TC_RESTRICTIONS_NONE 
+	elseif tc_restrictions.enum_value == tc_restrictions.enum_items.normal then
+		AGS_GLOBAL_SETTINGS.TownCenterRestrictions = AGS_GS_TC_RESTRICTIONS_NORMAL 
+	elseif tc_restrictions.enum_value == tc_restrictions.enum_items.landmark then
+		AGS_GLOBAL_SETTINGS.TownCenterRestrictions = AGS_GS_TC_RESTRICTIONS_LANDMARKS
+	end		
 end

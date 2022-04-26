@@ -1,325 +1,230 @@
 ﻿ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
-1,,,Mod name.,,,Advanced Game Settings
-2,,,Mod description.,,,"Extends standard Age of Empires 4 game mode with more game options.\r\n\r\nAdditional features included in current version of the mod:\r\nWin Conditions\r\n- Regicide (Defeat Kings.)\r\n- Sudden Death (Destroy Landmark Town Centers. Additional non-landmark town centers are disabled.)\r\nWin Conditions Options\r\n- Sacred Timer\r\n- Wonder Timer\r\n- Team Solidarity (All teammates are eliminated if one is removed from game.)\r\nDiplomacy Options\r\n- Treaty Timer\r\n- Enable Tribute\r\n- Enable Diplomacy\r\nMatch Options\r\n- Start Type (Settled, Slow Nomad, Scattered Villagers)\r\n- Last Age\r\n- Game Rates\r\n- Technology Level\r\n- Game Simulation Speed (Only for single player)\r\n- Population Capacity\r\nUnits Options\r\n- Spawn King\r\n- Spawn Castle\r\n- Starting Villagers\r\nOther\r\n- Ding (Easter Egg)\r\n- Early Market\r\n- Destroyable Trees\r\nCurrent option also enables you to recreate game modes such as Deathmatch, Wonder Rush...\r\n\r\nSource code, feedback, bug reports or contribution to mode can be done at: https://github.com/search?q=AOE4-AdvancedGameSettings (This is link to search results, due to chat filter my git nickname is censored, It should be always first result.)\r\n"
-3,,,,,,Advanced Game Settings
+1,,,,,,Advanced Game Settings
+2,,,,,,"Extends standard Age of Empires 4 game mode with more game options.\r\n\r\nAdditional features included in current version of the mod:\r\nWin Conditions\r\n- Regicide (Defeat Kings.)\r\n- Sudden Death (Destroy Landmark Town Centers. Additional non-landmark town centers are disabled.)\r\nWin Conditions Options\r\n- Sacred Timer\r\n- Wonder Timer\r\n- Team Solidarity (All teammates are eliminated if one is removed from game.)\r\nDiplomacy Options\r\n- Treaty Timer\r\n- Enable Tribute\r\n- Enable Diplomacy\r\nMatch Options\r\n- Start Type (Settled, Slow Nomad, Scattered Villagers)\r\n- Last Age\r\n- Game Rates\r\n- Technology Level\r\n- Game Simulation Speed (Only for single player)\r\n- Population Capacity\r\nUnits Options\r\n- Spawn King\r\n- Spawn Castle\r\n- Starting Villagers\r\nOther\r\n- Ding (Easter Egg)\r\n- Early Market\r\n- Destroyable Trees\r\nCurrent option also enables you to recreate game modes such as Deathmatch, Wonder Rush...\r\n\r\nSource code, feedback, bug reports or contribution to mode can be done at: https://github.com/search?q=AOE4-AdvancedGameSettings (This is link to search results, due to chat filter my git nickname is censored, It should be always first result.)\r\n"
+3,,,,,,Advanced Game Settings provides you with a variety of match options and win conditions to customize your game and play it how you want to.\r\nHELP:\r\nTo see all options you need to scroll down.\r\nOptions tagged as SP are not supported in multiplayer matches.\r\nFull description for all options can be found at https://github.com/Woprok/AOE4-AdvancedGameSettings \r\n
 4,,,,,,Win Conditions
-5,,,,,,Advanced Match Options
-6,,,,,,Match Options
-7,,,,,,Reveal On Elimination
-8,,,,,,Reveal Fog of War to eliminated players
-9,,,,,,Reveal Fog of War to eliminated players
-10,,,,,,Initial state of the map
-11,,,,,,Initial state of the map
-12,,,,,,Map State
-13,,,,,,Concealed
-14,,,,,,Concealed
-15,,,,,,Explored
-16,,,,,,Explored
-17,,,,,,Revealed
-18,,,,,,Revealed
-19,,,,,,Player Scores are visible when Pinned Player Information is On
-20,,,,,,Player Scores are visible when Pinned Player Information is On
-21,,,,,,Display Player Scores
-22,,,,,,Advanced Game Settings provides you with a variety of match options and win conditions to customize your game and play it how you want to.\r\nHELP:\r\nTo see all options you need to scroll down.\r\nOptions tagged as SP are not supported in multiplayer matches.\r\nFull description for all options can be found at https://github.com/Woprok/AOE4-AdvancedGameSettings \r\n
-23,,,,,,Landmarks
-24,,,,,,Destroy all enemy Landmarks
-25,,,,,,Landmarks
-26,,,,,,Wonder
-27,,,,,,Build and defend Wonder
-28,,,,,,Wonder
-29,,,,,,Control all the Sacred Sites
-30,,,,,,Sacred
-31,,,,,,Sacred
-32,,,,,,Starting Resources
-33,,,,,,Resources allotted to each player at match start
-34,,,,,,Resources allotted to each player at match start
-35,,,,,,Standard
-36,,,,,,Standard
-37,,,,,,High
-38,,,,,,High
-39,,,,,,Vey High
-40,,,,,,Vey High
-41,,,,,,Maximum
-42,,,,,,Maximum
-43,,,,,,Starting Age
-44,,,,,,Age at which players start the match
-45,,,,,,Age at which players start the match
-46,,,,,,Age I
-47,,,,,,Age I
-48,,,,,,Age II
-49,,,,,,Age II
-50,,,,,,Age III
-51,,,,,,Age III
-52,,,,,,Age IV
-53,,,,,,Age IV
-54,,,,,,Regicide
-55,,,,,,Regicide
-56,,,,,,Kill all the enemy Kings
-57,,,,,,Start Type
-58,,,,,,Start Type
-59,,,,,,Defines if player start with Town Center or they are left with only villagers. Settled option starts players with built town center. Slow Nomad provides players time to choose perfect location before settling in. Scattered Villagers places all villagers randomly on the map.
-60,,,,,,Last Age
-61,,,,,,Last Age
-62,,,,,,Set max age allowed for each player
-63,,,,,,Age IV
-64,,,,,,Age IV
-65,,,,,,Age III
-66,,,,,,Age III
-67,,,,,,Age II
-68,,,,,,Age II
-69,,,,,,Age I
-70,,,,,,Age I
-71,,,,,,Game Rates
-72,,,,,,Game Rates
-73,,,,,,"Modifies game rates for gathering, production, research, building."
-74,,,,,,10x
-75,,,,,,10x
-76,,,,,,5x
-77,,,,,,5x
-78,,,,,,3x
-79,,,,,,3x
-80,,,,,,2x
-81,,,,,,2x
-82,,,,,,1x
-83,,,,,,1x
-84,,,,,,Maximum reachable population.
-85,,,,,,Population Capacity
-86,,,,,,Population Capacity
-87,,,,,,50
-88,,,,,,50
-89,,,,,,100
-90,,,,,,100
-91,,,,,,150
-92,,,,,,150
-93,,,,,,200
-94,,,,,,200
-95,,,,,,300
-96,,,,,,300
-97,,,,,,400
-98,,,,,,400
-99,,,,,,500
-100,,,,,,500
-101,,,,,,1000
-102,,,,,,1000
-103,,,,,,10000
-104,,,,,,10000
-105,,,,,,Spawn Keep
-106,,,,,,Spawn Keep
-107,,,,,,Spawn Keep next to each player Town Center
-108,,,,,,Spawn King next to each player Town Center
-109,,,,,,Spawn King
-110,,,,,,Spawn King
-111,,,,,,Additional Units and Buildings
-112,,,,,,Relations
-113,,,,,,Ally
-114,,,,,,Neutral
-115,,,,,,Enemy
-116,,,,,,Tributes
-117,,,,,,Tributes
-118,,,,,,Allow players to send resources to other players.
-119,,,,,,Diplomacy
-120,,,,,,Diplomacy
-121,,,,,,"Allow players to set custom relations with each other. Players will not be in teams, even if teams are selected before the start of the game."
-122,,,,,,Players & Relationships
-123,,,,,,Become friendly to %1PLAYER_NAME%
-124,,,,,,Become neutral to %1PLAYER_NAME%
-125,,,,,,Become hostile to %1PLAYER_NAME%
-126,,,,,,Relationships
-127,,,,,,Left or right click to change.
-128,,,,,,%1PLAYER_NAME% considers %2PLAYER_NAME% friendly.
-129,,,,,,%1PLAYER_NAME% considers %2PLAYER_NAME% irrelevant (neutral).
-130,,,,,,%1PLAYER_NAME% considers %2PLAYER_NAME% enemy.
-132,,,,,,Diplomacy
-133,,,diplomacy_reworked,,,Relations
-135,,,diplomacy_reworked,,,Friendship
-136,,,diplomacy_reworked,,,Neutrality
-137,,,diplomacy_reworked,,,Hostility
-138,,,diplomacy_reworked,,,Current stance
-139,,,,,,Treaty
-140,,,,,,Treaty
-141,,,,,,Enforced peaceful relation between players for selected amount of time.
-142,,,,,,10 minutes
-143,,,,,,10 minutes
-144,,,,,,5 minutes
-145,,,,,,5 minutes
-146,,,,,,20 minutes
-147,,,,,,20 minutes
-148,,,,,,30 minutes
-149,,,,,,30 minutes
-150,,,,,,45 minutes
-151,,,,,,45 minutes
-152,,,,,,60 minutes
-153,,,,,,60 minutes
-154,,,custom_options,,,"Treaty is over, prepare for bloodshed."
-155,,,custom_options,,,%1MINUTES_REMAINING% minutes until Treaty Ends\r\n
-156,,,,,,No Treaty
-157,,,,,,No Treaty
-158,,,,,,Sacred Timer
-159,,,,,,Sacred Timer
-160,,,,,,Amount of time needed to win with Sacred victory. Note: Treaty disallows timer ticking.
-161,,,,,,Wonder Timer
-162,,,,,,Wonder Timer
-163,,,,,,Amount of time needed to win with Wonder victory. Note: Treaty disallows timer ticking. Instant will work during treaty.
-164,,,,,,Instant
-165,,,,,,Instant
-166,,,,,,10 minutes
-167,,,,,,10 minutes
-168,,,,,,15 minutes
-169,,,,,,15 minutes
-170,,,,,,20 minutes
-171,,,,,,20 minutes
-172,,,,,,30 minutes
-173,,,,,,30 minutes
-174,,,,,,5 minutes
-175,,,,,,5 minutes
-176,,,,,,10 minutes
-177,,,,,,10 minutes
-178,,,,,,15 minutes
-179,,,,,,15 minutes
-180,,,,,,20 minutes
-181,,,,,,20 minutes
-182,,,,,,30 minutes
-183,,,,,,30 minutes
-184,,,,,,25 minutes
-185,,,,,,25 minutes
-186,,,,,,25 minutes
-187,,,,,,25 minutes
-188,,,,,,5 minutes
-189,,,,,,5 minutes
-190,,,,,,Win Conditions Settings
-191,,,,,,Game Simulation Speed
-192,,,,,,Game Simulation Speed
-193,,,,,,Alters game simulation speed. WARNING: DO NOT USE HIGHER SPEEDS IN MULTIPLAYER. SERVER IS NOT ABLE TO KEEP UP FOR FLUENT GAMEPLAY.
-194,,,,,,Slowest
-195,,,,,,Slowest
-196,,,,,,Normal
-197,,,,,,Normal
-198,,,,,,Faster (SP)
-199,,,,,,Faster
-200,,,,,,Slower
-201,,,,,,Slower
-202,,,,,,Slow
-203,,,,,,Slow
-204,,,,,,Fast (SP)
-205,,,,,,Fast
-206,,,,,,Fastest (SP)
-207,,,,,,Fastest
-208,,,,,,Turbo (SP)
-209,,,,,,Turbo
-210,,,,,,Madness (SP)
-211,,,,,,Madness
-212,,,,,,0.75x
-213,,,,,,0.75x
-214,,,,,,0.50x
-215,,,,,,0.50x
-216,,,,,,0.25x
-217,,,,,,0.25x
-218,,,,,,100x
-219,,,,,,100x
-220,,,,,,Technology Level
-221,,,,,,Technology Level
-222,,,,,,"Starting age determines which technologies should player receive at the start of the game. None is default behavior, where everything has to be researched. Previous grants player all techs for previous age. Current age gives player all techs for current age."
-223,,,,,,None
-224,,,,,,None
-225,,,,,,Previous Age
-226,,,,,,Previous Age
-227,,,,,,Current Age
-228,,,,,,Current Age
-229,,,,,,Ding
-230,,,,,,Ding
-231,,,,,,Ding
-232,,,,,,
-233,,,,,,Settled
-234,,,,,,Settled
-235,,,,,,Slow Nomad
-236,,,,,,Slow Nomad
-237,,,,,,Scattered Villagers
-238,,,,,,Scattered Villagers
-239,,,,,,Solidarity
-240,,,,,,Solidarity
-241,,,,,,Team Solidarity
-242,,,,,,Team Solidarity
-243,,,,,,All allied players are eliminated whenever one of them surrenders or is eliminated.
-244,,,,,,test
-245,,,,,,test
-246,,,,,,test
-247,,,,,,Classic Game Settings
-248,,,,,,"Temporary version without nomad option, that break AI."
-249,,,,,,Other
-250,,,,,,Starting Villagers
-251,,,,,,Starting Villagers
-252,,,,,,Change the amount of starting villagers for each player. Affects all Start Types.
-253,,,,,,1
-254,,,,,,1
-255,,,,,,2
-256,,,,,,2
-257,,,,,,3
-258,,,,,,3
-259,,,,,,6
-260,,,,,,6
-261,,,,,,5
-262,,,,,,5
-263,,,,,,4
-264,,,,,,4
-265,,,,,,7
-266,,,,,,7
-267,,,,,,8
-268,,,,,,8
-269,,,,,,9
-270,,,,,,9
-271,,,,,,10
-272,,,,,,10
-273,,,,,,15
-274,,,,,,15
-275,,,,,,20
-276,,,,,,20
-277,,,,,,30
-278,,,,,,30
-279,,,,,,40
-280,,,,,,40
-281,,,,,,50
-282,,,,,,50
-283,,,,,,75
-284,,,,,,75
-285,,,,,,100
-286,,,,,,100
-287,,,,,,Sudden Death
-288,,,,,,Sudden Death
-289,,,,,,Destroy all enemy Capitals
-290,,,sudden_death,,,Destroy all enemy capitals
-291,,,,,,Early Market
-292,,,,,,Early Market
-293,,,,,,Enables Market in Age I
-294,,,,,,Destroyable Trees
-295,,,,,,Siege and Ships with Attack Ground command can destroy trees.
-296,,,,,,Destroyable Trees
-297,,,,,,3 minutes
-298,,,,,,8 minutes
-300,,,,,,12 minutes
-302,,,,,,25
-304,,,,,,75
-306,,,,,,250
-307,,,,,,test
-308,,,,,,test
-309,,,,,,Town Centers Restriction
-310,,,,,,Town Centers Restriction
-311,,,,,,Restrict construction of additional town centers other than capital town center. None allows constructing all TCs. Normal TCs limits players to landmarks. All TCs disabled all TCs other than capital TC. 
-312,,,,,,No restriction
-313,,,,,,No restriction
-314,,,,,,Normal TCs
-315,,,,,,Normal TCs
-316,,,,,,All TCs
-317,,,,,,All TCs
-318,,,,,,Post Age IV
-319,,,,,,Post Age IV
-320,,,,,,Shared Vision
-321,,,,,,Shared Vision
-322,,,,,,"Teammates share vision by default, this allows you to restrict it."
-323,,,,,,Always
-324,,,,,,Always
-325,,,,,,Requires Market
-326,,,,,,Requires Market
-327,,,,,,Never
-328,,,,,,Never
-329,,,ags_conditions_visuals,,,%1PLAYER_NAME% surrendered in solidarity
-330,,,ags_conditions_visuals,,,Your teammates must survive.
+5,,,,,,Annihilation
+6,,,,,,Destroy all enemies
+7,,,,,,Elimination
+8,,,,,,Prevail longer then all your enemies
+9,,,,,,Surrender
+10,,,,,,Do not surrender
+11,,,,,,Conquest
+12,,,,,,Conquer all enemy objectives
+13,,,,,,Regicide
+14,,,,,,Defeat all enemy Kings
+15,,,,,,Religious
+16,,,,,,Control all the Sacred Sites
+17,,,,,,Wonder
+18,,,,,,Build and defend the Wonder
+19,,,,,,Score
+20,,,,,,Achieve highest score before timer ends
+21,,,,,,Game Conditions
+22,,,,,,Settlement
+23,,,,,,Initial settlement
+24,,,,,,Scattered
+25,,,,,,Nomadic
+26,,,,,,Settled
+27,,,,,,Treaty
+28,,,,,,Period of peace
+29,,,,,,Disabled
+30,,,,,,5 minutes
+31,,,,,,10 minutes
+32,,,,,,15 minutes
+33,,,,,,20 minutes
+34,,,,,,25 minutes
+35,,,,,,30 minutes
+36,,,,,,35 minutes
+37,,,,,,40 minutes
+38,,,,,,45 minutes
+39,,,,,,50 minutes
+40,,,,,,55 minutes
+41,,,,,,60 minutes
+42,,,,,,65 minutes
+43,,,,,,70 minutes
+44,,,,,,75 minutes
+45,,,,,,80 minutes
+46,,,,,,85 minutes
+47,,,,,,90 minutes
+48,,,,,,95 minutes
+49,,,,,,100 minutes
+50,,,,,,105 minutes
+51,,,,,,110 minutes
+52,,,,,,115 minutes
+53,,,,,,120 minutes
+54,,,,,,Team Victory
+55,,,,,,Enables for teams to win a game
+56,,,,,,Free For All
+57,,,,,,Initial Teams
+58,,,,,,Dynamic Teams
+59,,,,,,Team Solidarity
+60,,,,,,One for all. All for one.
+61,,,,,,Win Settings
+62,,,,,,Conquest Capital
+63,,,,,,Conquest requires destruction of first town center to eliminate player
+64,,,,,,Conquest Landmarks
+65,,,,,,Conquest requires destruction of all age up landmarks to eliminate player
+66,,,,,,Conquest Town Centers
+67,,,,,,Conquest requires destruction of all additional town centers to eliminate player
+68,,,,,,Conquest Keeps
+69,,,,,,Conquest requires destruction of all keeps to eliminate player
+70,,,,,,Conquest Wonder
+71,,,,,,Conquest requires destruction of the wonder to eliminate player
+72,,,,,,Religious Timer
+73,,,,,,Time required to hold all sacred sites
+74,,,,,,Instant
+75,,,,,,1 minute
+76,,,,,,2 minutes
+77,,,,,,3 minutes
+78,,,,,,4 minutes
+79,,,,,,6 minutes
+80,,,,,,7 minutes
+81,,,,,,8 minutes
+82,,,,,,9 minutes
+83,,,,,,11 minutes
+84,,,,,,12 minutes
+85,,,,,,13 minutes
+86,,,,,,14 minutes
+87,,,,,,Religious Resumable Timer
+88,,,,,,Timer continues from the moment it was interrupted on recapture
+89,,,,,,Wonder Timer
+90,,,,,,Time required to defend wonder
+91,,,,,,Wonder Last Stand
+92,,,,,,Destroying finished wonder will eliminate owner
+93,,,,,,Wonder Scale Cost
+94,,,,,,Scale cost of wonder based on amount of players. This defines additional amount of all resources per player. Price starts at 3000 of each resource.
+95,,,,,,0 per player
+96,,,,,,250 per player
+97,,,,,,375 per player
+98,,,,,,500 per player
+99,,,,,,750 per player
+100,,,,,,1000 per player
+101,,,,,,1500 per player
+102,,,,,,2000 per player
+103,,,,,,Game Settings
+104,,,,,,Tributes
+105,,,,,,Players can send resources to allies
+106,,,,,,Diplomacy
+107,,,,,,Players can set their own alliances
+108,,,,,,Team Vision
+109,,,,,,Shared vision between allies
+110,,,,,,None
+111,,,,,,Requires Market
+112,,,,,,Always
+113,,,,,,Map Vision
+114,,,,,,Starting vision over the map
+115,,,,,,Concealed
+116,,,,,,Explored
+117,,,,,,Revealed
+118,,,,,,Starting Age
+119,,,,,,Initial age for all players
+120,,,,,,Dark Age
+121,,,,,,Feudal Age
+122,,,,,,Castle Age
+123,,,,,,Imperial Age
+124,,,,,,Late-Imperial Age
+125,,,,,,Ending Age
+126,,,,,,Final age for all players
+127,,,,,,Technology Age
+128,,,,,,Initial technologies researched for all players
+129,,,,,,Starting Resources
+130,,,,,,Starting resources for all players
+131,,,,,,Normal
+132,,,,,,High
+133,,,,,,Very High
+134,,,,,,Maximum
+135,,,,,,Reveal FOW on Elimination
+136,,,,,,Removes FOW for eliminated player
+137,,,,,,Match Settings
+138,,,,,,Show Score
+139,,,,,,Player Scores are visible when Pinned Player Information is On
+140,,,,,,Score Show Placement
+141,,,,,,Show current place in score mode ranking. Score victory condition does not use same metric as default score.
+142,,,,,,Score Timer
+143,,,,,,Time after which will score decide the game
+144,,,,,,Minimum Population Capacity
+145,,,,,,Changes initial population capacity without houses. Will not exceed maximum population capacity.
+146,,,,,,Maximum Population Capacity
+147,,,,,,Changes maximum population capacity. Requires houses to reach it.
+148,,,,,,0
+149,,,,,,25
+150,,,,,,50
+151,,,,,,75
+152,,,,,,100
+153,,,,,,125
+154,,,,,,150
+155,,,,,,175
+156,,,,,,200
+157,,,,,,225
+158,,,,,,250
+159,,,,,,275
+160,,,,,,300
+161,,,,,,350
+162,,,,,,400
+163,,,,,,450
+164,,,,,,500
+165,,,,,,550
+166,,,,,,600
+167,,,,,,650
+168,,,,,,700
+169,,,,,,750
+170,,,,,,800
+171,,,,,,850
+172,,,,,,900
+173,,,,,,950
+174,,,,,,1000
+175,,,,,,10000
+176,,,,,,Starting Villagers
+177,,,,,,Changes initial villager count for each player
+178,,,,,,1
+179,,,,,,2
+180,,,,,,3
+181,,,,,,4
+182,,,,,,5
+183,,,,,,6
+184,,,,,,7
+185,,,,,,8
+186,,,,,,9
+187,,,,,,10
+188,,,,,,15
+189,,,,,,20
+190,,,,,,30
+191,,,,,,35
+192,,,,,,40
+193,,,,,,45
+194,,,,,,Starting Keep
+195,,,,,,Every players starts with a Keep near start
+196,,,,,,Legacy Settings
+197,,,,,,Starting King
+198,,,,,,Every players starts with a King near start
+199,,,,,,Ding
+200,,,,,,Easter Egg
+201,,,,,,Early Market
+202,,,,,,Allows construction of the market in Dark Age
+203,,,,,,Tree Bombardment
+204,,,,,,Allows siege and ships with target ground to destroy trees
+205,,,,,,Simulation Speed
+206,,,,,,Changes game simulation ticks. This option can not be used in multiplayer and will be disabled.
+207,,,,,,Game Rates
+208,,,,,,"Multiplies all of the following gathering rates, construction speed, repair rate, production speed and movement speed by selected value."
+209,,,,,,1x
+210,,,,,,2x
+211,,,,,,3x
+212,,,,,,4x
+213,,,,,,5x
+214,,,,,,6x
+215,,,,,,7x
+216,,,,,,8x
+217,,,,,,9x
+218,,,,,,10x
+219,,,,,,0.95x
+220,,,,,,0.90x
+221,,,,,,0.85x
+222,,,,,,0.80x
+223,,,,,,0.75x
+224,,,,,,20x
+225,,,,,,Town Center Restrictions
+226,,,,,,Disables construction of additional Town Centers
+227,,,,,,None
+228,,,,,,Normal
+229,,,,,,Landmarks

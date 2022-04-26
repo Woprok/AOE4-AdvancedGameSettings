@@ -10,45 +10,33 @@
 
 ---------------------------------------------------------------------------------------------------
 -- Imports:
--- Order of imports defines oder of event handles. Beware of it when intruducing dependencies.
+-- Order of imports can define oder of event handles. Beware of it when intruducing dependencies.
 ---------------------------------------------------------------------------------------------------
 
--- Core import that enables match to start.
+-- Required for a gamemode to work.
 import("cardinal.scar")
--- Core import that holds all AGS data workflow.
+-- AGS requires specific data setup..
 import("ags_global_settings.scar")
--- Core import that contains helpers for all AGS scripts.
+-- AGS scripts use many helpers to reduce code bloat.
 import("helpers/ags_blueprints.scar")
--- Necessary import for AI hacks.
+import("conditions/ags_conditions_visuals.scar") -- TODO split helpers and visuals
+-- AGS supports AI with few adjustments.
 import("ai/ags_ai.scar")
--- High priority start conditions.
+-- Starting conditions are generally loaded during PresetSpawn.
 import("startconditions/ags_start_nomad.scar")
 import("startconditions/ags_start_scattered.scar")
 import("startconditions/ags_start_settled.scar")
 import("startconditions/ags_start_keep.scar")
 import("startconditions/ags_start_king.scar")
--- Low priority start conditions.
+-- Supporting start conditions.
 import("startconditions/ags_initial_age.scar")
 import("startconditions/ags_technologies.scar")
 import("startconditions/ags_final_age.scar")
--- Low priority that requires other modules.
 import("startconditions/ags_reveal_spawn.scar")
--- Low priority gameplay customizations that do not have dependencies.
-import("gameplay/ags_ding.scar")
-import("gameplay/ags_early_market.scar")
-import("gameplay/ags_game_rates.scar")
-import("gameplay/ags_population_capacity.scar")
-import("gameplay/ags_score.scar")
-import("gameplay/ags_simulation_speed.scar")
-import("gameplay/ags_testing.scar")
-import("gameplay/ags_town_center_limit.scar")
-import("gameplay/ags_tree_bombardment.scar")
-import("gameplay/ags_map_vision.scar")
-import("gameplay/ags_shared_vision.scar")
+-- Partially reworked Diplomacy & Tributes. -- TODO team system rework
+import("gameplay/diplomacy_reworked.scar")
 
--- Conditions can be loaded as last, they might require others to propagete first.
-
-import("conditions/ags_conditions_visuals.scar") -- helpers and visuals
+-- Conditions are loaded after starting conditions.
 import("conditions/ags_treaty.scar") -- peace phase
 import("conditions/ags_annihilation.scar") -- player needs stuff to play
 import("conditions/ags_surrender.scar") -- player can leave game
@@ -59,59 +47,54 @@ import("conditions/ags_wonder.scar") -- wonder building objectives
 import("conditions/ags_regicide.scar") -- stab king objectives
 import("conditions/ags_teamsolidarity.scar") -- team needs everyone
 
--- Unfinished rework continues after that
-import("gameplay/ags_utilities.scar")
+-- Gameplay options are loaded as last.
+import("gameplay/ags_ding.scar")
+import("gameplay/ags_early_market.scar")
+import("gameplay/ags_game_rates.scar")
+import("gameplay/ags_population_capacity.scar")
+import("gameplay/ags_score_visibility.scar")
+import("gameplay/ags_simulation_speed.scar")
+import("gameplay/ags_town_center_limit.scar")
+import("gameplay/ags_tree_bombardment.scar")
+import("gameplay/ags_map_vision.scar")
+import("gameplay/ags_shared_vision.scar")
 
--- gameplay systems
-import("gameplay/diplomacy_reworked.scar")
-
--- Additional UI support for match.
-import("gameplay/event_cues.scar")
-import("gameplay/currentageui.scar")
-import("gameplay/chi/current_dynasty_ui.scar")
--- Low priority tutorial goals for new players.
-import("training/coretraininggoals.scar")
-import("training/frenchtraininggoals.scar")
-import("training/englishtraininggoals.scar")
-import("training/sultanatetraininggoals.scar")
-import("training/rustraininggoals.scar")
-import("training/mongoltraininggoals.scar")
-import("training/chinesetraininggoals.scar")
-import("training/abbasidtraininggoals.scar")
+-- Wrapper around all default match options, that will have minimal changes done to them.
+import("specials/ags_utilities.scar")
+-- Special container for testing and unfinished functionality.
+import("specials/ags_testing.scar")
 
 ---------------------------------------------------------------------------------------------------
--- GUIDELINES AND SOME HELP
+-- AGS LIBRARY GUIDELINES AND INFORMATIONS
 ---------------------------------------------------------------------------------------------------
--- Core_CallDelegateFunctions("<suffix>")
+-- AGS Core_CallDelegateFunctions("<suffix>") Calls:
 ---------------------------------------------------------------------------------------------------
--- AGS Calls:
----------------------------------------------------------------------------------------------------
--- ENTITY & UNIT SPAWNED 
+-- ENTITY & UNIT SPAWNED DURING PRESETSPAWN
 -------------------------------------------------
 -- EntitySpawned({pbg = entity_blueprint, player = player_id, entity = spawned_entity}) 
 -- UnitsSpawned(player_id, position: home_position, sgroup: units)
 -------------------------------------------------
--- AI PLAYER UPDATES
+-- AI PLAYER UPDATES ANYTIME DURING PRESTART
 -------------------------------------------------
 -- AdjustAIPlayer(player_id, ADJUSTREASON: reason)
 -------------------------------------------------
--- SETTINGS & MODULE ADJUSTMENTS
+-- SETTINGS & MODULE ADJUSTMENTS DURING ON GAME SETUP
 -------------------------------------------------
 -- SetupSettings(wincondition_options: options)
 -- AdjustSettings 
 -- ModuleSettings
 -------------------------------------------------
--- INITIALIZATION BEFORE START
+-- INITIALIZATION DURING PRESET
 -------------------------------------------------
 -- PresetSpawn 
 -- PresetPostSpawn 
 -------------------------------------------------
--- TREATY CONTROL
+-- CONDITION CONTROL AFTER THE START
 -------------------------------------------------
 -- TreatyStarted
 -- TreatyEnded
 ---------------------------------------------------------------------------------------------------
--- Relic Calls:
+-- Relic Core_CallDelegateFunctions("<suffix>") Calls:
 ---------------------------------------------------------------------------------------------------
 -- INITIALIZATION IN ORDER
 -------------------------------------------------
@@ -162,28 +145,6 @@ import("training/abbasidtraininggoals.scar")
 -- UnitEntry_SpawnUnit_Finish
 -- UnitEntry_RegisterEntryMethods
 -- OnConstructionComplete // Was invoked only be Relic StartConditions after TC was spawned.
----------------------------------------------------------------------------------------------------
--- Expected Order:
--- 1. OnGameSetup
--- 2. SetupSettings
--- 3. AdjustSettings
--- 4. UpdateModuleSettings
---
--- 20. PreInit
--- 21. OnInit
--- 22. PostInit
---
--- 30. Preset
--- 31. PresetSpawn
--- 32. PresetPostSpawn
---
--- 40. PreStart
--- 41. Start
---
--- 50. TreatyStarted
--- 51. TreatyEnded
---
--- 100. OnGameOver
 ---------------------------------------------------------------------------------------------------
 -- Global events should be handled by OnEvent methods, here is list that is currently used.
 ---------------------------------------------------------------------------------------------------

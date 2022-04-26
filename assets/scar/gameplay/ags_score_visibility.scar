@@ -7,29 +7,29 @@
 -- Enables score showed during match.
 ---------------------------------------------------------------------------------------------------
 
-AGS_SCORE_MODULE = "AGS_Score"
+AGS_SCORE_VISIBILITY_MODULE = "AGS_ScoreVisibility"
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
 
-Core_RegisterModule(AGS_SCORE_MODULE)	
+Core_RegisterModule(AGS_SCORE_VISIBILITY_MODULE)	
 
-function AGS_Score_UpdateModuleSettings()
+function AGS_ScoreVisibilityUpdateModuleSettings()
 	if not AGS_GLOBAL_SETTINGS.VisibleScore then
-		Core_UnregisterModule(AGS_SCORE_MODULE)
+		Core_UnregisterModule(AGS_SCORE_VISIBILITY_MODULE)
 	end
 end
 
-function AGS_Score_PresetPostSpawn()
-	AGS_Score_Visible()
+function AGS_ScoreVisibilityPresetPostSpawn()
+	AGS_ScoreVisibilityVisible()
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 	
-function AGS_Score_Visible()
+function AGS_ScoreVisibilityVisible()
 	for _, player in pairs(PLAYERS) do
 		player.scarModel.show_actual_score = true
 		UI_SetPlayerDataContext(player.id, player.scarModel)
