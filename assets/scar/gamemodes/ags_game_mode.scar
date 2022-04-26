@@ -14,32 +14,14 @@ import("ags_cardinal.scar")
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
-Core_RegisterModule("AdvancedMode")	
+Core_RegisterModule("AGS_GameMode")	
 
-function AdvancedMode_OnGameSetup()
-	
-	Setup_GetWinConditionOptions(_match.options)
-	
-	AGS_Print(_match.options)
-	
-	-- Win condition options
-	if _match.options.section_inner_win_conditions then	
-		if not _match.options.section_inner_win_conditions.option_win_condition_sudden_death then
-			Core_UnregisterModule("SuddenDeath")
-		end	
-	end
-	
-	--Diplomacy options
-	if _match.options.section_diplomacy then
-		_match.options.section_diplomacy.option_diplomacy_teams = 
-		not _match.options.section_diplomacy.option_diplomacy_dynamic 
-		-- inverse the value for this as original checkbox has reverse logic ?
-		_match.is_diplomacy_enabled = _match.options.section_diplomacy.option_diplomacy_dynamic 
-		-- diplomacy enabled -> true is dynamic relations, false is locked teams	
-	end
-	
+function AGS_GameMode_OnGameSetup()
+	local options = { }
+	Setup_GetWinConditionOptions(options)
+		
 	AGS_Print(AGS_GLOBAL_SETTINGS)
-	Core_CallDelegateFunctions("SetupSettings", _match.options)
+	Core_CallDelegateFunctions("SetupSettings", options)
 	AGS_Print(AGS_GLOBAL_SETTINGS)
 	Core_CallDelegateFunctions("AdjustSettings")
 	AGS_Print(AGS_GLOBAL_SETTINGS)
@@ -47,7 +29,7 @@ function AdvancedMode_OnGameSetup()
 	AGS_Print(AGS_GLOBAL_SETTINGS)
 end
 
-function AdvancedMode_OnInit()
+function AGS_GameMode_OnInit()
 	Core_CallDelegateFunctions("DiplomacyEnabled", AGS_GLOBAL_SETTINGS.CanDiplomacy)
 	Core_CallDelegateFunctions("TributeEnabled", AGS_GLOBAL_SETTINGS.CanTribute)
 	
@@ -56,20 +38,19 @@ function AdvancedMode_OnInit()
 	end		
 end
 
-function AdvancedMode_PostInit()
+function AGS_GameMode_PostInit()
 	if AGS_GLOBAL_SETTINGS.CanDiplomacy then
 		Diplomacy_AllPlayer_DestroyTeamsFinalize()
 	end
 end
 --this should contain initialization for units, buildings, upgrades but it might cause issue for conditions
-function AdvancedMode_Preset() 	
+function AGS_GameMode_Preset() 	
 	Core_CallDelegateFunctions("PresetSpawn")
 	Core_CallDelegateFunctions("PresetPostSpawn")
 end
 
-function AdvancedMode_Start()
-	AGS_Print(AGS_GLOBAL_SETTINGS)
+function AGS_GameMode_Start()
 end
 
-function AdvancedMode_OnGameOver()	
+function AGS_GameMode_OnGameOver()	
 end
