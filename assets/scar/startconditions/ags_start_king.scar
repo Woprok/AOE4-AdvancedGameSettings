@@ -16,7 +16,7 @@ AGS_SPAWN_KING_MODULE = "AGS_SpawnKing"
 Core_RegisterModule(AGS_SPAWN_KING_MODULE)	
 
 function AGS_SpawnKing_UpdateModuleSettings()
-	if not AGS_GLOBAL_SETTINGS.SpawnKing then
+	if AGS_GLOBAL_SETTINGS.StartingKings == 0 then
 		Core_UnregisterModule(AGS_SPAWN_KING_MODULE)
 	end
 end

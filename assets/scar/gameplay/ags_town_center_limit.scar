@@ -16,17 +16,17 @@ AGS_TOWN_CENTER_LIMIT_MODULE = "AGS_TownCenterLimit"
 Core_RegisterModule(AGS_TOWN_CENTER_LIMIT_MODULE)	
 
 function AGS_TownCenterLimit_UpdateModuleSettings()
-	if AGS_GLOBAL_SETTINGS.RestrictTownCenters == AGS_RTC_NONE then
+	if AGS_GLOBAL_SETTINGS.TownCenterRestrictions == AGS_GS_TC_RESTRICTIONS_NONE then
 		Core_UnregisterModule(AGS_TOWN_CENTER_LIMIT_MODULE)
 	end
 end
 
 function AGS_TownCenterLimit_PresetPostSpawn()
-	if AGS_GLOBAL_SETTINGS.RestrictTownCenters == AGS_RTC_NONE then
+	if AGS_GLOBAL_SETTINGS.TownCenterRestrictions == AGS_GS_TC_RESTRICTIONS_NONE then
 		return
-	elseif AGS_GLOBAL_SETTINGS.RestrictTownCenters == AGS_RTC_NORMAL then
+	elseif AGS_GLOBAL_SETTINGS.TownCenterRestrictions == AGS_GS_TC_RESTRICTIONS_NORMAL then
 		AGS_TownCenterLimit_RestrictNormal()		
-	elseif AGS_GLOBAL_SETTINGS.RestrictTownCenters == AGS_RTC_LANDMARK then
+	elseif AGS_GLOBAL_SETTINGS.TownCenterRestrictions == AGS_GS_TC_RESTRICTIONS_LANDMARKS then
 		AGS_TownCenterLimit_RestrictAll()
 	end	
 end

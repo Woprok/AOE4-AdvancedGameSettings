@@ -185,7 +185,7 @@ function AGS_Annihilation_IsAbleToProduce(player)
 	local has_squads_in_queue = false
 	local has_resources_for_generic_production = false
 	-- Check whether player has an ally that can send resources to produce something
-	local has_ally_with_resources = AGS_GLOBAL_SETTINGS.CanTribute and AGS_Annihilation_PlayerCanReceiveTribute(player.id)
+	local has_ally_with_resources = AGS_GLOBAL_SETTINGS.Tributes and AGS_Annihilation_PlayerCanReceiveTribute(player.id)
 	-- Check if player has a unit in production or sufficient resources to produce something. 
 	local entities = Player_GetEntities(player.id)
 	for i = 1, EGroup_CountSpawned(entities) do

@@ -68,13 +68,13 @@ end
 Core_RegisterModule(AGS_TREATY_MODULE)	
 
 function AGS_Treaty_UpdateModuleSettings()
-	if AGS_GLOBAL_SETTINGS.TreatyTimer == 0 then
+	if AGS_GLOBAL_SETTINGS.Treaty == 0 then
 		Core_UnregisterModule(AGS_TREATY_MODULE)
 	end
 end
 
 function AGS_Treaty_Start()
-	AGS_Treaty_Create(AGS_GLOBAL_SETTINGS.TreatyTimer)
+	AGS_Treaty_Create(AGS_GLOBAL_SETTINGS.Treaty)
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ function AGS_Treaty_Create(treaty_duration)
 	
 	-- Disables fighting between players via diplomacy.	
 	Diplomacy_AllPlayer_SaveAndChangeToFriends()
-	Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.CanTribute, false)
+	Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.Tributes, false)
 	
 	-- Notify everyone of treaty rules are in place.	
 	Core_CallDelegateFunctions("TreatyStarted")
@@ -121,7 +121,7 @@ function AGS_Treaty_End()
 		AGS_Treaty_EndTimer()	
 		
 		Diplomacy_AllPlayer_LoadFromSave()
-		Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.CanTribute, AGS_GLOBAL_SETTINGS.CanDiplomacy)
+		Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.Tributes, AGS_GLOBAL_SETTINGS.Diplomacy)
 		-- Notify everyone of treaty rules ended.	
 		Core_CallDelegateFunctions("TreatyEnded")		
 	end

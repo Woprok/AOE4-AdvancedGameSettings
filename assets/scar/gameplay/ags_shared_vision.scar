@@ -19,7 +19,7 @@ AGS_SHARED_VISION_MODULE = "AGS_SharedVision"
 Core_RegisterModule(AGS_SHARED_VISION_MODULE)	
 
 function AGS_SharedVision_UpdateModuleSettings()
-	if AGS_GLOBAL_SETTINGS.SharedVision == AGS_SV_NEVER then
+	if AGS_GLOBAL_SETTINGS.SharedVision == AGS_GS_TEAM_VISION_NONE then
 		Core_UnregisterModule(AGS_SHARED_VISION_MODULE)
 	end
 end
@@ -77,11 +77,11 @@ end
 
 function AGS_SharedVision_DefineConditions()
 	AGS_SharedVision_Disable()
-	if AGS_GLOBAL_SETTINGS.SharedVision == AGS_SV_ALWAYS then 
+	if AGS_GLOBAL_SETTINGS.SharedVision == AGS_GS_TEAM_VISION_ALWAYS then 
 		AGS_SharedVision_NoRequirements()
-	elseif AGS_GLOBAL_SETTINGS.SharedVision == AGS_SV_MARKET then 
+	elseif AGS_GLOBAL_SETTINGS.SharedVision == AGS_GS_TEAM_VISION_REQUIRES_MARKET then 
 		AGS_SharedVision_TrackRequirements()
-	elseif AGS_GLOBAL_SETTINGS.SharedVision == AGS_SV_NEVER then
+	elseif AGS_GLOBAL_SETTINGS.SharedVision == AGS_GS_TEAM_VISION_NONE then
 		return
 	end
 end

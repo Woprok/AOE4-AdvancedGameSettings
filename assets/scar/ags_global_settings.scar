@@ -7,54 +7,44 @@
 -- Contains all option definitions and their current values.
 -- Referenceable by any other script.
 ---------------------------------------------------------------------------------------------------
+-- CONSTANTS
+---------------------------------------------------------------------------------------------------
+-- Team Victory
 AGS_GS_TEAM_VICTORY_FFA = 0
 AGS_GS_TEAM_VICTORY_STANDARD = 1
 AGS_GS_TEAM_VICTORY_DYNAMIC = 2
+-- Settlement
 AGS_GS_SETTLEMENT_SCATTERED = 0
 AGS_GS_SETTLEMENT_NOMADIC = 1
 AGS_GS_SETTLEMENT_SETTLED = 2
+-- Wonder
 AGS_GS_WONDER_SCALE_COST_DISABLED = -1
+-- Team Vision
 AGS_GS_TEAM_VISION_NONE = 0
 AGS_GS_TEAM_VISION_REQUIRES_MARKET = 1
 AGS_GS_TEAM_VISION_ALWAYS = 2
+-- Map Vision
 AGS_GS_MAP_VISION_CONCEALED = 0
 AGS_GS_MAP_VISION_EXPLORED = 1
 AGS_GS_MAP_VISION_REVEALED = 2
+-- Age
 AGS_GS_AGE_NONE = 0
 AGS_GS_AGE_DARK = 1
 AGS_GS_AGE_FEUDAL = 2
 AGS_GS_AGE_CASTLE = 3
 AGS_GS_AGE_IMPERIAL = 4
 AGS_GS_AGE_LATE_IMPERIAL = 5
+-- Resources
 AGS_GS_RESOURCES_NONE = 0
 AGS_GS_RESOURCES_NORMAL = 1
 AGS_GS_RESOURCES_HIGH = 2
 AGS_GS_RESOURCES_VERY_HIGH = 3
 AGS_GS_RESOURCES_MAXIMUM = 4
+-- Town Centers
 AGS_GS_TC_RESTRICTIONS_NONE = 0
 AGS_GS_TC_RESTRICTIONS_NORMAL = 1
 AGS_GS_TC_RESTRICTIONS_LANDMARKS = 2
-
-
-AGS_WG_MAN = 0
-AGS_WG_TEAM = 1
-AGS_WG_DYNAMIC = 2
-
-AGS_SV_ALWAYS = 0
-AGS_SV_MARKET = 1
-AGS_SV_NEVER = 2
-
-AGS_ST_SETTLED = 0
-AGS_ST_NOMAD = 1
-AGS_ST_SCATTERED = 2
-
-AGS_RTC_NONE = 0
-AGS_RTC_NORMAL = 1
-AGS_RTC_LANDMARK = 2
-
-AGS_MAP_HIDDEN = 0
-AGS_MAP_EXPLORED = 1
-AGS_MAP_REVEALED = 2
+---------------------------------------------------------------------------------------------------
 
 AGS_GLOBAL_SETTINGS = {
 	Annihilation = true, -- Player loses everything.
@@ -116,44 +106,15 @@ AGS_GLOBAL_SETTINGS = {
 	StartingKings = 0, 
 	Ding = false,
 	SimulationSpeed = 1.00,
+	EmpoweredKings = false,
 	
 	StartingScouts = 1, -- undefined
 	StartingSheeps = 1, -- undefined
 	StartingTownCenters = 1, -- undefined
-	
-	
-	
-	
-	TreatyTimer = 0,
-	ReligousTimer = 10,
-	WonderTimer = 15,
-	
-	CanTribute = true, -- Enables sending tributes.
-	CanDiplomacy = false, -- Enables changing relations.
-	WinnerGroup = AGS_WG_TEAM, -- 0 one guy, 1 static team, 2 dynamic team.
-	--LastManStanding = false, -- Should be selectable between Last_X_Standing: Man, Team, DynamicTeam.
-	
-	StartAge = 1,
-	FinalAge = 5,
-	
-	PopulationCapacity = 200,
-	
-	StartType = AGS_ST_SETTLED,
-	
-	SpawnKeep = false,
-	SpawnKing = false,
-	
-	CanDing = false,
-	RestrictTownCenters = AGS_RTC_NONE,
-	CanTest = false, -- undefined
-	
 	CanReveal = true, -- undefined
 	RevealRadius = 70, -- undefined
 	RevealDuration = 0.25, -- undefined
-	MapVision = AGS_MAP_HIDDEN,
-	SharedVision = AGS_SV_ALWAYS,
-	
-	VisibleScore = false,
+	IsTestMode = false, -- undefined
 }
 
 ---------------------------------------------------------------------------------------------------
@@ -221,7 +182,7 @@ function AGS_GlobalSettings_DefineWinConditions(category)
 	end
 	if category.option_win_condition_score ~= nil then
 		AGS_GLOBAL_SETTINGS.Score = category.option_win_condition_score
-	end	
+	end	 
 end
 
 function AGS_GlobalSettings_DefineGameConditions(category)

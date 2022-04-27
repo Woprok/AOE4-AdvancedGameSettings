@@ -16,7 +16,7 @@ AGS_INITIAL_AGE_MODULE = "AGS_InitialAge"
 Core_RegisterModule(AGS_INITIAL_AGE_MODULE)	
 
 function AGS_InitialAge_UpdateModuleSettings()
-	if AGS_GLOBAL_SETTINGS.StartAge == 0 then
+	if AGS_GLOBAL_SETTINGS.StartingAge == AGS_GS_AGE_NONE then
 		Core_UnregisterModule(AGS_INITIAL_AGE_MODULE)
 	end
 end
@@ -36,16 +36,16 @@ function AGS_InitialAge_UpgradeAllPlayers()
 end
 
 function AGS_InitialAge_UpgradePlayer(player_id)
-	if AGS_GLOBAL_SETTINGS.StartAge >= 1 then 
+	if AGS_GLOBAL_SETTINGS.StartingAge >= AGS_GS_AGE_DARK then 
 		AGS_InitialAge_ApplyAge(player_id, AGS_UPGRADE_AGES[AGS_UP_DARK])
 	end
-	if AGS_GLOBAL_SETTINGS.StartAge >= 2 then 
+	if AGS_GLOBAL_SETTINGS.StartingAge >= AGS_GS_AGE_FEUDAL then 
 		AGS_InitialAge_ApplyAge(player_id, AGS_UPGRADE_AGES[AGS_UP_FEUDAL])
 	end
-	if AGS_GLOBAL_SETTINGS.StartAge >= 3 then 
+	if AGS_GLOBAL_SETTINGS.StartingAge >= AGS_GS_AGE_CASTLE then 
 		AGS_InitialAge_ApplyAge(player_id, AGS_UPGRADE_AGES[AGS_UP_CASTLE])
 	end
-	if AGS_GLOBAL_SETTINGS.StartAge >= 4 then 
+	if AGS_GLOBAL_SETTINGS.StartingAge >= AGS_GS_AGE_IMPERIAL then 
 		AGS_InitialAge_ApplyAge(player_id, AGS_UPGRADE_AGES[AGS_UP_IMPERIAL])
 	end
 end

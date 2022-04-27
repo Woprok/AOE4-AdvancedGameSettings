@@ -16,7 +16,7 @@ AGS_SCORE_VISIBILITY_MODULE = "AGS_ScoreVisibility"
 Core_RegisterModule(AGS_SCORE_VISIBILITY_MODULE)	
 
 function AGS_ScoreVisibilityUpdateModuleSettings()
-	if not AGS_GLOBAL_SETTINGS.VisibleScore then
+	if not AGS_GLOBAL_SETTINGS.ScoreVisibility then
 		Core_UnregisterModule(AGS_SCORE_VISIBILITY_MODULE)
 	end
 end

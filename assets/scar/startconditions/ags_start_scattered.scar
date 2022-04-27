@@ -21,7 +21,7 @@ AGS_SCATTERED_VILLAGERS_MODULE = "AGS_ScatteredVillagers"
 Core_RegisterModule(AGS_SCATTERED_VILLAGERS_MODULE)	
 
 function AGS_ScatteredVillagers_UpdateModuleSettings()
-	if AGS_GLOBAL_SETTINGS.StartType ~= AGS_ST_SCATTERED then
+	if AGS_GLOBAL_SETTINGS.Settlement ~= AGS_GS_SETTLEMENT_SCATTERED then
 		Core_UnregisterModule(AGS_SCATTERED_VILLAGERS_MODULE)
 	end
 end

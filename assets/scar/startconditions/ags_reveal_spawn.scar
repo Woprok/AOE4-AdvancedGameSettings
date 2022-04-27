@@ -16,7 +16,7 @@ AGS_REVEAL_SPAWN_MODULE = "AGS_RevealSpawn"
 Core_RegisterModule(AGS_REVEAL_SPAWN_MODULE)	
 
 function AGS_RevealSpawn_UpdateModuleSettings()
-	if not AGS_GLOBAL_SETTINGS.CanReveal or AGS_GLOBAL_SETTINGS.StartType ~= AGS_ST_SETTLED then
+	if not AGS_GLOBAL_SETTINGS.CanReveal or AGS_GLOBAL_SETTINGS.Settlement ~= AGS_GS_SETTLEMENT_SETTLED then
 		Core_UnregisterModule(AGS_REVEAL_SPAWN_MODULE)
 	end
 end

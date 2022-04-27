@@ -25,7 +25,7 @@ function AGS_Wonder_UpdateModuleSettings()
 	if not AGS_GLOBAL_SETTINGS.Wonder then
 		Core_UnregisterModule(AGS_WONDER_MODULE)
 	end
-	AGS_WONDER_VICTORY_TIMER = AGS_GLOBAL_SETTINGS.WonderTimer * 60
+	AGS_WONDER_VICTORY_TIMER = AGS_GLOBAL_SETTINGS.WonderSettings.Timer * 60
 end
 
 function AGS_Wonder_Start()
@@ -79,7 +79,7 @@ function AGS_Wonder_ChangeConstruction(enable_construction)
 	for _, player in pairs(PLAYERS) do
 		Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", enable_construction)	
 		-- Wonder rush is enabled.
-		if AGS_GLOBAL_SETTINGS.WonderTimer == 0 then
+		if AGS_WONDER_VICTORY_TIMER == 0 then
 			Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", true)			
 		end		
 	end

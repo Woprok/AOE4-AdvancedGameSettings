@@ -16,7 +16,7 @@ AGS_POPULATION_CAPACITY_MODULE = "AGS_PopulationCapacity"
 Core_RegisterModule(AGS_POPULATION_CAPACITY_MODULE)	
 
 function AGS_PopulationCapacity_UpdateModuleSettings()
-	if AGS_GLOBAL_SETTINGS.PopulationCapacity == 200 then
+	if AGS_GLOBAL_SETTINGS.MaximumPopulation == 200 then
 		Core_UnregisterModule(AGS_POPULATION_CAPACITY_MODULE)
 	end
 end

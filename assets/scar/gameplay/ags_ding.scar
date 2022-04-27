@@ -18,7 +18,7 @@ AGS_DING_DELAY = 15
 Core_RegisterModule(AGS_DING_MODULE)	
 
 function AGS_Ding_UpdateModuleSettings()
-	if not AGS_GLOBAL_SETTINGS.CanDing then
+	if not AGS_GLOBAL_SETTINGS.Ding then
 		Core_UnregisterModule(AGS_DING_MODULE)
 	end
 end

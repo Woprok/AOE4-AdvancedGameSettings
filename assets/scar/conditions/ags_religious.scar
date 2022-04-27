@@ -77,7 +77,7 @@ function AGS_Religious_UpdateModuleSettings()
 		Core_UnregisterModule(AGS_RELIGIOUS_MODULE)
 		return
 	end
-	AGS_RELIGIOUS_VICTORY_TIME = AGS_GLOBAL_SETTINGS.ReligiousTimer * 60
+	AGS_RELIGIOUS_VICTORY_TIME = AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer * 60
 end
 
 function AGS_Religious_PresetPostSpawn()

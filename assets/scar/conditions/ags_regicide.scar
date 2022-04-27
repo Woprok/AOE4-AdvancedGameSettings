@@ -22,7 +22,7 @@ Core_RegisterModule(AGS_REGICIDE_MODULE)
 -- If Regicide is enabled in settings, force king option to be true.
 function AGS_Regicide_AdjustSettings()
 	if AGS_GLOBAL_SETTINGS.Regicide then
-		AGS_GLOBAL_SETTINGS.SpawnKing = true
+		AGS_GLOBAL_SETTINGS.StartingKings = 1
 	end
 end
 -- Unregister Regicide and prevent it from being initialized.

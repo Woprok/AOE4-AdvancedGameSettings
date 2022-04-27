@@ -16,7 +16,7 @@ AGS_SPAWN_KEEP_MODULE = "AGS_SpawnKeep"
 Core_RegisterModule(AGS_SPAWN_KEEP_MODULE)	
 
 function AGS_SpawnKeep_UpdateModuleSettings()
-	if not AGS_GLOBAL_SETTINGS.SpawnKeep then
+	if AGS_GLOBAL_SETTINGS.StartingKeeps == 0 then
 		Core_UnregisterModule(AGS_SPAWN_KEEP_MODULE)
 	end
 end

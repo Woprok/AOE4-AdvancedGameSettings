@@ -16,7 +16,7 @@ AGS_MAP_VISION_MODULE = "AGS_MapVision"
 Core_RegisterModule(AGS_MAP_VISION_MODULE)	
 
 function AGS_MapVision_UpdateModuleSettings()
-	if AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_HIDDEN then
+	if AGS_GLOBAL_SETTINGS.MapVision == AGS_GS_MAP_VISION_CONCEALED then
 		Core_UnregisterModule(AGS_MAP_VISION_MODULE)
 	end
 end
@@ -30,11 +30,11 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_MapVision_RevealMap()
-	if AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_HIDDEN then 
+	if AGS_GLOBAL_SETTINGS.MapVision == AGS_GS_MAP_VISION_CONCEALED then 
 		return
-	elseif AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_EXPLORED then 
+	elseif AGS_GLOBAL_SETTINGS.MapVision == AGS_GS_MAP_VISION_EXPLORED then 
 		FOW_ExploreAll()
-	elseif AGS_GLOBAL_SETTINGS.MapVision == AGS_MAP_REVEALED then
+	elseif AGS_GLOBAL_SETTINGS.MapVision == AGS_GS_MAP_VISION_REVEALED then
 		FOW_ForceRevealAllUnblockedAreas()
 	end
 end

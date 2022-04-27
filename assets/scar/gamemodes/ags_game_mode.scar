@@ -30,16 +30,16 @@ function AGS_GameMode_OnGameSetup()
 end
 
 function AGS_GameMode_OnInit()
-	Core_CallDelegateFunctions("DiplomacyEnabled", AGS_GLOBAL_SETTINGS.CanDiplomacy)
-	Core_CallDelegateFunctions("TributeEnabled", AGS_GLOBAL_SETTINGS.CanTribute)
+	Core_CallDelegateFunctions("DiplomacyEnabled", AGS_GLOBAL_SETTINGS.Diplomacy)
+	Core_CallDelegateFunctions("TributeEnabled", AGS_GLOBAL_SETTINGS.Tributes)
 	
-	if AGS_GLOBAL_SETTINGS.CanDiplomacy then
+	if AGS_GLOBAL_SETTINGS.Diplomacy then
 		Diplomacy_AllPlayer_DestroyTeams()
 	end		
 end
 
 function AGS_GameMode_PostInit()
-	if AGS_GLOBAL_SETTINGS.CanDiplomacy then
+	if AGS_GLOBAL_SETTINGS.Diplomacy then
 		Diplomacy_AllPlayer_DestroyTeamsFinalize()
 	end
 end

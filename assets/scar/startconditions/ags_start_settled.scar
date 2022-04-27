@@ -16,7 +16,7 @@ AGS_SETTLED_MODULE = "AGS_Settled"
 Core_RegisterModule(AGS_SETTLED_MODULE)	
 
 function AGS_Settled_UpdateModuleSettings()
-	if AGS_GLOBAL_SETTINGS.StartType ~= AGS_ST_SETTLED then
+	if AGS_GLOBAL_SETTINGS.Settlement ~= AGS_GS_SETTLEMENT_SETTLED then
 		Core_UnregisterModule(AGS_SETTLED_MODULE)
 	end
 end

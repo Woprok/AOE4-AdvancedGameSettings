@@ -228,16 +228,18 @@
 227,,,,,,None
 228,,,,,,Normal
 229,,,,,,Landmarks
-230,,,,,,Protect your teammates.
-231,,,,,,%1PLAYER_NAME% surrendered in solidarity with his teammate
-232,,,,,,%1MINUTES_REMAINING% minutes until Treaty Ends
-233,,,,,,"Treaty is over, prepare for bloodshed."
-234,,,,,,Relations
-235,,,,,,Friendship
-236,,,,,,Neutrality
-237,,,,,,Hostility
-238,,,,,,Current stance
-239,,,,,,Become friendly to %1PLAYER_NAME%
-240,,,,,,Become neutral to %1PLAYER_NAME%
-241,,,,,,Become hostile to %1PLAYER_NAME%
+230,,,,Team Solidarity,,Protect your teammates.
+231,,,,Team Solidarity,,%1PLAYER_NAME% surrendered in solidarity with his teammate
+232,,,,Treaty,,%1MINUTES_REMAINING% minutes until Treaty Ends
+233,,,,Treaty,,"Treaty is over, prepare for bloodshed."
+234,,,,Diplomacy,,Relations
+235,,,,Diplomacy,,Friendship
+236,,,,Diplomacy,,Neutrality
+237,,,,Diplomacy,,Hostility
+238,,,,Diplomacy,,Current stance
+239,,,,Diplomacy,,Become friendly to %1PLAYER_NAME%
+240,,,,Diplomacy,,Become neutral to %1PLAYER_NAME%
+241,,,,Diplomacy,,Become hostile to %1PLAYER_NAME%
 242,,,,,,Scattered Summary
+243,,,,,,Empowered King
+244,,,,,,King will have additional bonuses and abilities

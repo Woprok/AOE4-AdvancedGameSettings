@@ -360,7 +360,7 @@ end
 function AGS_DoesWinnerGroupExists()
 	local winner_group = nil
 	-- TODO for case single and static teams
-	if AGS_GLOBAL_SETTINGS.WinnerGroup == AGS_WG_DYNAMIC then
+	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_DYNAMIC then
 		winner_group = AGS_GetDynamicTeamWinners()
 	end	
 	return winner_group
@@ -551,12 +551,12 @@ end
 
 -- Returns true if player is considered eliminated instead of defeat. False for defeat.
 function AGS_LoserPresenation(player_id, defeat_presentation, elimnation_presentation)
-	if AGS_GLOBAL_SETTINGS.WinnerGroup == AGS_WG_MAN then
+	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_FFA then
 		AGS_Presenation(player_id, defeat_presentation)
-	elseif AGS_GLOBAL_SETTINGS.WinnerGroup == AGS_WG_TEAM and AGS_CountAliveAllies(player_id) > 0 then 
+	elseif AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_STANDARD and AGS_CountAliveAllies(player_id) > 0 then 
 		AGS_Presenation(player_id, elimnation_presentation)
 		return true		
-	elseif AGS_GLOBAL_SETTINGS.WinnerGroup == AGS_WG_DYNAMIC then
+	elseif AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_DYNAMIC then
 		AGS_Presenation(player_id, defeat_presentation)
 	else
 		AGS_Presenation(player_id, defeat_presentation)		
