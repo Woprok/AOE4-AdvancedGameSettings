@@ -54,7 +54,7 @@ AGS_GS_TC_RESTRICTIONS_LANDMARKS = 2
 -- Local player should never change. And be ready after Initialization Phase.
 -- Local player is used for UI & visual logic. Gameplay logic should never use it as it will cause desync.
 AGS_GS_LOCAL_PLAYER = nil
-
+AGS_GLOBAL_SETTINGS_MODULE = "AGS_GlobalSettings"
 AGS_GLOBAL_SETTINGS = {
 	Annihilation = true, -- Player loses everything.
 	Elimination = true, -- Player quits.
@@ -97,7 +97,7 @@ AGS_GLOBAL_SETTINGS = {
 	TeamVision = AGS_GS_TEAM_VISION_ALWAYS,
 	MapVision = AGS_GS_MAP_VISION_CONCEALED,
 	
-	StartingAge = AGS_GS_AGE_DARK_AGE,
+	StartingAge = AGS_GS_AGE_DARK,
 	EndingAge = AGS_GS_AGE_LATE_IMPERIAL,
 	TechnologyAge = AGS_GS_AGE_NONE,
 	StartingResources = AGS_GS_RESOURCES_NORMAL,
@@ -132,7 +132,7 @@ AGS_GLOBAL_SETTINGS = {
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
 
-Core_RegisterModule("AGS_GlobalSettings")	
+Core_RegisterModule(AGS_GLOBAL_SETTINGS_MODULE)	
 -- Takes wincondition settings and applies them to global settings collection AGS_GLOBAL_SETTINGS.
 function AGS_GlobalSettings_SetupSettings(options)	
 	-- Options can not be null.
@@ -589,7 +589,7 @@ function AGS_GlobalSettings_SetStartingAge(starting_age)
 	if starting_age.enum_value == starting_age.enum_items.starting_age_1 then
 		AGS_GLOBAL_SETTINGS.StartingAge = AGS_GS_AGE_DARK 
 	elseif starting_age.enum_value == starting_age.enum_items.starting_age_2 then
-		AGS_GLOBAL_SETTINGS.StartingAge = AGS_GS_AGE_FEUDA 
+		AGS_GLOBAL_SETTINGS.StartingAge = AGS_GS_AGE_FEUDAL 
 	elseif starting_age.enum_value == starting_age.enum_items.starting_age_3 then
 		AGS_GLOBAL_SETTINGS.StartingAge = AGS_GS_AGE_CASTLE 
 	elseif starting_age.enum_value == starting_age.enum_items.starting_age_4 then
@@ -601,7 +601,7 @@ function AGS_GlobalSettings_SetEndingAge(ending_age)
 	if ending_age.enum_value == ending_age.enum_items.ending_age_1 then
 		AGS_GLOBAL_SETTINGS.EndingAge = AGS_GS_AGE_DARK 
 	elseif ending_age.enum_value == ending_age.enum_items.ending_age_2 then
-		AGS_GLOBAL_SETTINGS.EndingAge = AGS_GS_AGE_FEUDA 
+		AGS_GLOBAL_SETTINGS.EndingAge = AGS_GS_AGE_FEUDAL 
 	elseif ending_age.enum_value == ending_age.enum_items.ending_age_3 then
 		AGS_GLOBAL_SETTINGS.EndingAge = AGS_GS_AGE_CASTLE 
 	elseif ending_age.enum_value == ending_age.enum_items.ending_age_4 then
@@ -617,7 +617,7 @@ function AGS_GlobalSettings_SetTechnologyAge(technology_age)
 	elseif technology_age.enum_value == technology_age.enum_items.technology_age_1 then
 		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_DARK 
 	elseif technology_age.enum_value == technology_age.enum_items.technology_age_2 then
-		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_FEUDA 
+		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_FEUDAL 
 	elseif technology_age.enum_value == technology_age.enum_items.technology_age_3 then
 		AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_CASTLE 
 	elseif technology_age.enum_value == technology_age.enum_items.technology_age_4 then

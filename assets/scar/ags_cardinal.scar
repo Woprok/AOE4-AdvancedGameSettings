@@ -11,12 +11,12 @@
 
 -- Required for any gamemode to work.
 import("cardinal.scar")
-
+AGS_CARDINAL_MODULE = "AGS_Cardinal"
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
 -- First to register, first to execute after original cardinal.
-Core_RegisterModule("AGS_Cardinal")	
+Core_RegisterModule(AGS_CARDINAL_MODULE)	
 -- OnGameSetup is split for AGS to additional 3 phases.
 function AGS_Cardinal_OnGameSetup()
 	local options = { }
@@ -91,12 +91,15 @@ import("gameplay/ags_map_vision.scar")
 import("gameplay/ags_no_dock.scar")
 import("gameplay/ags_population_capacity.scar")
 --import("gameplay/ags_reveal_fow_on_elimination.scar")
+--import("gameplay/ags_reveal_spawn.scar")
 --import("gameplay/ags_score_visibility.scar")
 --import("gameplay/ags_shared_vision.scar")
 import("gameplay/ags_simulation_speed.scar")
+import("gameplay/ags_starting_age.scar")
 import("gameplay/ags_starting_resources.scar")
+import("gameplay/ags_technology_age.scar")
 import("gameplay/ags_town_center_restrictions.scar")
---import("gameplay/ags_tree_bombardment.scar")
+import("gameplay/ags_tree_bombardment.scar")
 
 -- Wrapper around all default match options, that will have minimal changes done to them.
 --import("specials/ags_utilities.scar")

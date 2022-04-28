@@ -40,7 +40,7 @@ function AGS_TreeBombardment_UpdateModuleSettings()
 	end
 end
 
-function AGS_TreeBombardment_Start()
+function AGS_TreeBombardment_PrepareStart()
 	Rule_AddGlobalEvent(AGS_TreeBombardment_OnProjectileLanded, GE_ProjectileLanded)
 	Rule_AddGlobalEvent(AGS_TreeBombardment_OnProjectileFired, GE_ProjectileFired)
 end
@@ -55,15 +55,18 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Executes after small delay.
 function AGS_TreeBombardment_OnProjectileFired(projectile)	
+	if projectile == nil or projectile.attacker == nil or projectile.target == nil then
+		return
+	end
 	for i, siege_type in pairs(AGS_TREE_BOMBARDMENT.siege_on_fired) do
-		if projectile.attacker ~= nil and Entity_IsOfType(projectile.attacker, siege_type) then 		
+		if Entity_IsOfType(projectile.attacker, siege_type) then 		
 			Rule_AddOneShot(AGS_TreeBombardment_OnExpectedLanding, AGS_TREE_BOMBARDMENT.on_fired_delay, { target = projectile.target })
 			break
 		end
 	end	
 end
 -- Bridge between interfaces.
-function AGS_TreeBombardment_OnExpectedLanding(context, data)	
+function AGS_TreeBombardment_OnExpectedLanding(context, data)
 	if data.target.EntityID ~= nil then		
 		local e = Entity_FromID(data.target.EntityID)
 		projectile_target = Entity_GetPosition(e)
@@ -74,9 +77,12 @@ function AGS_TreeBombardment_OnExpectedLanding(context, data)
 end
 -- Executes immediately.
 function AGS_TreeBombardment_OnProjectileLanded(projectile)	
+	if projectile == nil or projectile.attacker == nil or projectile.target == nil then
+		return
+	end
 	for i, siege_type in pairs(AGS_TREE_BOMBARDMENT.siege_on_landed) do
-		if projectile.attacker ~= nil and Entity_IsOfType(projectile.attacker, siege_type) then 			
-			AGS_TreeBombardment_DestroyTreeGroup(projectile.target)				
+		if Entity_IsOfType(projectile.attacker, siege_type) then 			
+			AGS_TreeBombardment_OnExpectedLanding(nil, { target = projectile.target })				
 			break
 		end
 	end	

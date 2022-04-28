@@ -7,52 +7,45 @@
 -- Advances players to selected starting age.
 ---------------------------------------------------------------------------------------------------
 
-AGS_INITIAL_AGE_MODULE = "AGS_InitialAge"
+AGS_STARTING_AGE_MODULE = "AGS_StartingAge"
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
 
-Core_RegisterModule(AGS_INITIAL_AGE_MODULE)	
+Core_RegisterModule(AGS_STARTING_AGE_MODULE)	
 
-function AGS_InitialAge_UpdateModuleSettings()
+function AGS_StartingAge_UpdateModuleSettings()
 	if AGS_GLOBAL_SETTINGS.StartingAge == AGS_GS_AGE_NONE then
-		Core_UnregisterModule(AGS_INITIAL_AGE_MODULE)
+		Core_UnregisterModule(AGS_STARTING_AGE_MODULE)
 	end
 end
 
-function AGS_InitialAge_PresetPostSpawn()
-	AGS_InitialAge_UpgradeAllPlayers()
+function AGS_StartingAge_PresetFinalize()
+	AGS_StartingAge_UpgradeAllPlayers()
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_InitialAge_UpgradeAllPlayers()	
+function AGS_StartingAge_UpgradeAllPlayers()	
 	for _, player in pairs(PLAYERS) do	
-		AGS_InitialAge_UpgradePlayer(player.id)
+		AGS_StartingAge_UpgradePlayer(player.id)
 	end
 end
 
-function AGS_InitialAge_UpgradePlayer(player_id)
+function AGS_StartingAge_UpgradePlayer(player_id)
 	if AGS_GLOBAL_SETTINGS.StartingAge >= AGS_GS_AGE_DARK then 
-		AGS_InitialAge_ApplyAge(player_id, AGS_UPGRADE_AGES[AGS_UP_DARK])
+		AGS_ApplyUpgrade(player_id, AGS_UPGRADE_AGES[AGS_UP_DARK])
 	end
 	if AGS_GLOBAL_SETTINGS.StartingAge >= AGS_GS_AGE_FEUDAL then 
-		AGS_InitialAge_ApplyAge(player_id, AGS_UPGRADE_AGES[AGS_UP_FEUDAL])
+		AGS_ApplyUpgrade(player_id, AGS_UPGRADE_AGES[AGS_UP_FEUDAL])
 	end
 	if AGS_GLOBAL_SETTINGS.StartingAge >= AGS_GS_AGE_CASTLE then 
-		AGS_InitialAge_ApplyAge(player_id, AGS_UPGRADE_AGES[AGS_UP_CASTLE])
+		AGS_ApplyUpgrade(player_id, AGS_UPGRADE_AGES[AGS_UP_CASTLE])
 	end
 	if AGS_GLOBAL_SETTINGS.StartingAge >= AGS_GS_AGE_IMPERIAL then 
-		AGS_InitialAge_ApplyAge(player_id, AGS_UPGRADE_AGES[AGS_UP_IMPERIAL])
-	end
-end
-
-function AGS_InitialAge_ApplyAge(player_id, upgrade)
-	local bp_upgrade = BP_GetUpgradeBlueprint(upgrade)
-	if not Player_HasUpgrade(player_id, bp_upgrade) then
-		Player_CompleteUpgrade(player_id, bp_upgrade)				
+		AGS_ApplyUpgrade(player_id, AGS_UPGRADE_AGES[AGS_UP_IMPERIAL])
 	end
 end

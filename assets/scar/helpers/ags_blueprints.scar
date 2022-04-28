@@ -712,3 +712,17 @@ function AGS_IsLocalGame()
 	end
 	return true
 end
+
+function AGS_ApplyUpgrade(player_id, upgrade)
+	local bp_upgrade = BP_GetUpgradeBlueprint(upgrade)
+	if not Player_HasUpgrade(player_id, bp_upgrade) then
+		Player_CompleteUpgrade(player_id, bp_upgrade)				
+	end
+end
+
+function AGS_RemoveUpgrade(player_id, upgrade)
+	local bp_upgrade = BP_GetUpgradeBlueprint(upgrade)
+	if not Player_HasUpgrade(player_id, bp_upgrade) then
+		Player_CompleteUpgrade(player_id, bp_upgrade)				
+	end
+end
