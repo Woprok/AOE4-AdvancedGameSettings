@@ -109,6 +109,7 @@ AGS_GLOBAL_SETTINGS = {
 	StartingVillagers = 6,
 	StartingKeeps = 0,
 	EarlyMarket = false,
+	NoDock = false,
 	TreeBombardment = false,
 	GameRates = 1.00,
 	TownCenterRestrictions = AGS_GS_TC_RESTRICTIONS_NONE,
@@ -178,9 +179,10 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Called when local player is changed.
 function AGS_GlobalSettings_OnLocalPlayerChanged(context)
+	-- Game almost always sends only ID, we will convert it to player from global table.
 	if context ~= nil and context.player ~= nil then
 		AGS_GS_LOCAL_PLAYER = Core_GetPlayersTableEntry(context.player)
-		AGS_Print("Local Player: ", AGS_GS_LOCAL_PLAYER)
+		AGS_Print("Local Player:", AGS_GS_LOCAL_PLAYER)
 	end
 end
 
@@ -320,6 +322,9 @@ function AGS_GlobalSettings_DefineMatchSettings(category)
 	end
 	if category.option_match_setting_early_market ~= nil then
 		AGS_GLOBAL_SETTINGS.EarlyMarket = category.option_match_setting_early_market
+	end
+	if category.option_match_setting_no_dock ~= nil then
+		AGS_GLOBAL_SETTINGS.NoDock = category.option_match_setting_no_dock
 	end
 	if category.option_match_setting_tree_bombardment ~= nil then
 		AGS_GLOBAL_SETTINGS.TreeBombardment = category.option_match_setting_tree_bombardment

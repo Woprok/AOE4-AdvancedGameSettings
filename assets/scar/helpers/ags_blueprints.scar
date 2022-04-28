@@ -33,6 +33,7 @@ AGS_BP_BUILDING = "building"
 AGS_BP_UNIT_CLASS = "annihilation_condition"
 AGS_BP_GAIA = "gaia"
 AGS_BP_MOVING_BUILDINGS = "mongol_moving_structure"
+AGS_BP_DOCK = "scar_dock"
 
 AGS_ENTITY_TABLE = {
 	neutral = {
@@ -47,6 +48,8 @@ AGS_ENTITY_TABLE = {
 		villager = "unit_villager_1_eng",
 		scout = "unit_scout_1_eng",
 		king = "unit_king_1_eng",
+		scar_dock = "building_unit_naval_eng",
+		
 	},
 	chinese = {
 		castle = "building_defense_keep_chi",
@@ -55,7 +58,8 @@ AGS_ENTITY_TABLE = {
 		market = "building_econ_market_control_chi",
 		villager = "unit_villager_1_chi",
 		scout = "unit_scout_1_chi",
-		king = "unit_king_1_chi",		
+		king = "unit_king_1_chi",	
+		scar_dock = "building_unit_naval_chi",	
 	},
 	french = {
 		castle = "building_defense_keep_fre",
@@ -65,6 +69,7 @@ AGS_ENTITY_TABLE = {
 		villager = "unit_villager_1_fre",
 		scout = "unit_scout_1_fre",
 		king = "unit_king_1_fre",
+		scar_dock = "building_unit_naval_fre",
 	},
 	hre = {
 		castle = "building_defense_keep_hre",
@@ -75,6 +80,7 @@ AGS_ENTITY_TABLE = {
 		villager = "unit_villager_1_hre",
 		scout = "unit_scout_1_hre",
 		king = "unit_king_1_hre",
+		scar_dock = "building_unit_naval_hre",
 	},
 	rus = {	
 		castle = "building_defense_keep_control_rus",
@@ -84,6 +90,7 @@ AGS_ENTITY_TABLE = {
 		villager = "unit_villager_1_rus",
 		scout = "unit_scout_1_rus",
 		king = "unit_king_1_rus",
+		scar_dock = "building_unit_naval_rus",
 	},
 	abbasid = {
 		castle = "building_defense_keep_control_abb",
@@ -93,6 +100,7 @@ AGS_ENTITY_TABLE = {
 		villager = "unit_villager_1_abb",
 		scout = "unit_scout_1_abb",
 		king = "unit_king_1_abb",
+		scar_dock = "building_unit_naval_abb",
 	},
 	mongol = {
 		castle = "building_defense_keep_control_nov",
@@ -103,6 +111,7 @@ AGS_ENTITY_TABLE = {
 		villager = "unit_villager_1_mon",
 		scout = "unit_khan_1_mon",
 		king = "unit_king_1_mon",
+		scar_dock = "building_unit_naval_mon",
 	},
 	sultanate = {
 		castle = "building_defense_keep_control_sul",
@@ -112,6 +121,7 @@ AGS_ENTITY_TABLE = {
 		villager = "unit_villager_1_sul",
 		scout = "unit_scout_1_sul",
 		king = "unit_king_1_sul",
+		scar_dock = "building_unit_naval_sul",
 	},
 }
 

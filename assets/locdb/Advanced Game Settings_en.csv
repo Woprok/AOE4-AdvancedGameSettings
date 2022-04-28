@@ -247,4 +247,5 @@
 246,,,,,,"Should team lose a player, remaining members will share his population capacity and resources"
 247,,,,,,Population
 248,,,,,,Population & Resources
-249,,,,,,
+249,,,,,,No Dock
+250,,,,,,"Disables construction of docks in any age, not advised to be used on maps that separate players only by water."

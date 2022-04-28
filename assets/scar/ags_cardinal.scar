@@ -22,13 +22,10 @@ function AGS_Cardinal_OnGameSetup()
 	local options = { }
 	Setup_GetWinConditionOptions(options)
 		
-	AGS_Print(AGS_GLOBAL_SETTINGS)
 	Core_CallDelegateFunctions("SetupSettings", options)
-	AGS_Print(AGS_GLOBAL_SETTINGS)
 	Core_CallDelegateFunctions("AdjustSettings")
 	AGS_Print(AGS_GLOBAL_SETTINGS)
 	Core_CallDelegateFunctions("UpdateModuleSettings")
-	AGS_Print(AGS_GLOBAL_SETTINGS)
 end
 -- OnInit invokes custom handle for AGS modules.
 function AGS_Cardinal_OnInit()
@@ -82,15 +79,16 @@ import("ags_global_settings.scar")
 --import("conditions/ags_teamsolidarity.scar") -- team needs everyone
 
 -- Gameplay options are loaded as last.
---import("gameplay/ags_ding.scar")
---import("gameplay/ags_early_market.scar")
+import("gameplay/ags_ding.scar")
+import("gameplay/ags_early_market.scar")
 --import("gameplay/ags_game_rates.scar")
+--import("gameplay/ags_map_vision.scar")
+import("gameplay/ags_no_dock.scar")
 --import("gameplay/ags_population_capacity.scar")
 --import("gameplay/ags_score_visibility.scar")
 --import("gameplay/ags_simulation_speed.scar")
 --import("gameplay/ags_town_center_limit.scar")
 --import("gameplay/ags_tree_bombardment.scar")
---import("gameplay/ags_map_vision.scar")
 --import("gameplay/ags_shared_vision.scar")
 
 -- Wrapper around all default match options, that will have minimal changes done to them.
@@ -208,10 +206,12 @@ import("ags_global_settings.scar")
 ---------------------------------------------------------------------------------------------------
 -- Called function list for debug purposes during rework
 ---------------------------------------------------------------------------------------------------
--- Setup_GetWinConditionOptions, Core_CallDelegateFunctions, 
--- Rule_AddGlobalEvent, Rule_RemoveGlobalEvent
+-- Setup_GetWinConditionOptions, Core_CallDelegateFunctions, UI_AllTerritoryHide
+-- Rule_AddGlobalEvent, Rule_RemoveGlobalEvent, Rule_AddInterval, Rule_Exists, Rule_Remove, Rule_AddOneShot
 -- Game_GetLocalPlayer
---
+-- Misc_IsSGroupSelected, Misc_IsEGroupSelected
+-- Player_GetEntitiesFromType, Player_GetSquadsFromType
+-- Util_StartQuickIntel
 --
 --
 --

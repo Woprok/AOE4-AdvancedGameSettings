@@ -54,8 +54,8 @@ function AGS_Ding_DelayedQueue()
 end
 
 function AGS_Ding_Attempt()		
-	local egroup = Player_GetEntitiesFromType(Game_GetLocalPlayer(), AGS_BP_TC)
-	local sgroup_vil = Player_GetSquadsFromType(Game_GetLocalPlayer(), AGS_BP_VILLAGER)
+	local egroup = Player_GetEntitiesFromType(AGS_GS_LOCAL_PLAYER.id, AGS_BP_TC)
+	local sgroup_vil = Player_GetSquadsFromType(AGS_GS_LOCAL_PLAYER.id, AGS_BP_VILLAGER)
 	
 	if Misc_IsEGroupSelected(egroup, false) then		
 		Util_StartQuickIntel(ACTOR.NARR, "DING DING DING DING DING DING DING DING DING DING")

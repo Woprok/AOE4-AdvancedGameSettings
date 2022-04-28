@@ -4,33 +4,33 @@
 -- Woprock
 --
 -- Description:
--- Enables market in any age.
+-- Disables dock in any age.
 ---------------------------------------------------------------------------------------------------
 
-AGS_EARLY_MARKET_MODULE = "AGS_EarlyMarket"
+AGS_NO_DOCK_MODULE = "AGS_NoDock"
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
 
-Core_RegisterModule(AGS_EARLY_MARKET_MODULE)	
+Core_RegisterModule(AGS_NO_DOCK_MODULE)	
 
-function AGS_EarlyMarket_UpdateModuleSettings()
-	if not AGS_GLOBAL_SETTINGS.EarlyMarket then
-		Core_UnregisterModule(AGS_EARLY_MARKET_MODULE)
+function AGS_NoDock_UpdateModuleSettings()
+	if not AGS_GLOBAL_SETTINGS.NoDock then
+		Core_UnregisterModule(AGS_NO_DOCK_MODULE)
 	end
 end
 
-function AGS_EarlyMarket_PresetFinalize()
-	AGS_EarlyMarket_Unlock()
+function AGS_NoDock_PresetFinalize()
+	AGS_NoDock_Unlock()
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_EarlyMarket_Unlock()
+function AGS_NoDock_Unlock()
 	for _, player in pairs(PLAYERS) do
-		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player.raceName, AGS_BP_MARKET), ITEM_UNLOCKED)
+		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player.raceName, AGS_BP_DOCK), ITEM_REMOVED)
 	end
 end
