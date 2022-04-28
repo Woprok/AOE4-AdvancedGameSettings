@@ -95,7 +95,7 @@ import("gameplay/ags_population_capacity.scar")
 --import("gameplay/ags_shared_vision.scar")
 import("gameplay/ags_simulation_speed.scar")
 import("gameplay/ags_starting_resources.scar")
---import("gameplay/ags_town_center_limit.scar")
+import("gameplay/ags_town_center_restrictions.scar")
 --import("gameplay/ags_tree_bombardment.scar")
 
 -- Wrapper around all default match options, that will have minimal changes done to them.
@@ -227,3 +227,4 @@ import("gameplay/ags_starting_resources.scar")
 -- FOW_ExploreAll, FOW_ForceRevealAllUnblockedAreas
 -- Modifier_ApplyToPlayer, Modifier_Create
 -- Game_GetSimRate, Game_SetSimRate
+-- Player_SetResource

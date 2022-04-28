@@ -882,11 +882,11 @@ function AGS_GlobalSettings_SetSimulationSpeed(simulation_speed)
 end
 
 function AGS_GlobalSettings_SetTownCenterRestricts(tc_restrictions)
-	if tc_restrictions.enum_value == tc_restrictions.enum_items.none then
+	if tc_restrictions.enum_value == tc_restrictions.enum_items.town_center_restriction_none then
 		AGS_GLOBAL_SETTINGS.TownCenterRestrictions = AGS_GS_TC_RESTRICTIONS_NONE 
-	elseif tc_restrictions.enum_value == tc_restrictions.enum_items.normal then
+	elseif tc_restrictions.enum_value == tc_restrictions.enum_items.town_center_restriction_normal then
 		AGS_GLOBAL_SETTINGS.TownCenterRestrictions = AGS_GS_TC_RESTRICTIONS_NORMAL 
-	elseif tc_restrictions.enum_value == tc_restrictions.enum_items.landmark then
+	elseif tc_restrictions.enum_value == tc_restrictions.enum_items.town_center_restriction_landmarks then
 		AGS_GLOBAL_SETTINGS.TownCenterRestrictions = AGS_GS_TC_RESTRICTIONS_LANDMARKS
 	end		
 end

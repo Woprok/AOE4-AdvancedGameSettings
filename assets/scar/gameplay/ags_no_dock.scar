@@ -22,14 +22,14 @@ function AGS_NoDock_UpdateModuleSettings()
 end
 
 function AGS_NoDock_PresetFinalize()
-	AGS_NoDock_Unlock()
+	AGS_NoDock_Lock()
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_NoDock_Unlock()
+function AGS_NoDock_Lock()
 	for _, player in pairs(PLAYERS) do
 		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player.raceName, AGS_BP_DOCK), ITEM_REMOVED)
 	end
