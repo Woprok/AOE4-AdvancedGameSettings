@@ -81,8 +81,8 @@ import("ags_global_settings.scar")
 -- Gameplay options are loaded as last.
 import("gameplay/ags_ding.scar")
 import("gameplay/ags_early_market.scar")
---import("gameplay/ags_game_rates.scar")
---import("gameplay/ags_map_vision.scar")
+import("gameplay/ags_game_rates.scar")
+import("gameplay/ags_map_vision.scar")
 import("gameplay/ags_no_dock.scar")
 --import("gameplay/ags_population_capacity.scar")
 --import("gameplay/ags_score_visibility.scar")
@@ -212,6 +212,6 @@ import("gameplay/ags_no_dock.scar")
 -- Misc_IsSGroupSelected, Misc_IsEGroupSelected
 -- Player_GetEntitiesFromType, Player_GetSquadsFromType
 -- Util_StartQuickIntel
---
---
---
+-- Player_SetEntityProductionAvailability
+-- FOW_ExploreAll, FOW_ForceRevealAllUnblockedAreas
+-- Modifier_ApplyToPlayer, Modifier_Create

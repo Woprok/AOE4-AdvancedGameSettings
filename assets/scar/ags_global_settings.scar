@@ -837,23 +837,23 @@ function AGS_GlobalSettings_SetGameRates(game_rates)
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_2 then
 		AGS_GLOBAL_SETTINGS.GameRates = 2.00
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_3 then
-		AGS_GLOBAL_SETTINGS.GameRates = 3.0
+		AGS_GLOBAL_SETTINGS.GameRates = 3.00
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_4 then
-		AGS_GLOBAL_SETTINGS.GameRates = 4.0
+		AGS_GLOBAL_SETTINGS.GameRates = 4.00
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_5 then
-		AGS_GLOBAL_SETTINGS.GameRates = 5.0
+		AGS_GLOBAL_SETTINGS.GameRates = 5.00
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_6 then
-		AGS_GLOBAL_SETTINGS.GameRates = 6.0
+		AGS_GLOBAL_SETTINGS.GameRates = 6.00
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_7 then
-		AGS_GLOBAL_SETTINGS.GameRates = 7.0
+		AGS_GLOBAL_SETTINGS.GameRates = 7.00
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_8 then
-		AGS_GLOBAL_SETTINGS.GameRates = 8.0
+		AGS_GLOBAL_SETTINGS.GameRates = 8.00
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_9 then
-		AGS_GLOBAL_SETTINGS.GameRates = 9.0
+		AGS_GLOBAL_SETTINGS.GameRates = 9.00
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_10 then
-		AGS_GLOBAL_SETTINGS.GameRates = 10.0
+		AGS_GLOBAL_SETTINGS.GameRates = 10.00
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_20 then
-		AGS_GLOBAL_SETTINGS.GameRates = 20.0
+		AGS_GLOBAL_SETTINGS.GameRates = 20.00
 	end
 end
 

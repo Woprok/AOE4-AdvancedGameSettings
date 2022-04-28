@@ -21,7 +21,7 @@ function AGS_MapVision_UpdateModuleSettings()
 	end
 end
 
-function AGS_MapVision_PresetPostSpawn()
+function AGS_MapVision_PresetFinalize()
 	AGS_MapVision_RevealMap()
 end
 

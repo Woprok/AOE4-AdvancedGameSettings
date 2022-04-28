@@ -22,7 +22,7 @@ function AGS_GameRates_UpdateModuleSettings()
 	end
 end
 
-function AGS_GameRates_Preset()	
+function AGS_GameRates_PresetFinalize()	
 	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_BUILDING_CLASS))	
 	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_UNIT_CLASS))	
 end
