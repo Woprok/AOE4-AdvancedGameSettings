@@ -39,6 +39,10 @@ function AGS_Cardinal_Preset()
 	Core_CallDelegateFunctions("PresetExecute")
 	Core_CallDelegateFunctions("PresetFinalize")
 end
+-- PreStart is followed by 1 frame delay with normal Start.
+function AGS_Cardinal_PreStart()
+	Core_CallDelegateFunctions("PrepareStart")
+end
 
 ---------------------------------------------------------------------------------------------------
 -- Imports:
@@ -81,15 +85,18 @@ import("ags_global_settings.scar")
 -- Gameplay options are loaded as last.
 import("gameplay/ags_ding.scar")
 import("gameplay/ags_early_market.scar")
+--import("gameplay/ags_ending_age.scar")
 import("gameplay/ags_game_rates.scar")
 import("gameplay/ags_map_vision.scar")
 import("gameplay/ags_no_dock.scar")
 import("gameplay/ags_population_capacity.scar")
+--import("gameplay/ags_reveal_fow_on_elimination.scar")
 --import("gameplay/ags_score_visibility.scar")
---import("gameplay/ags_simulation_speed.scar")
+--import("gameplay/ags_shared_vision.scar")
+import("gameplay/ags_simulation_speed.scar")
+import("gameplay/ags_starting_resources.scar")
 --import("gameplay/ags_town_center_limit.scar")
 --import("gameplay/ags_tree_bombardment.scar")
---import("gameplay/ags_shared_vision.scar")
 
 -- Wrapper around all default match options, that will have minimal changes done to them.
 --import("specials/ags_utilities.scar")
@@ -126,6 +133,10 @@ import("gameplay/ags_population_capacity.scar")
 -- PresetInitialize
 -- PresetExecute 
 -- PresetFinalize
+-------------------------------------------------
+-- CONDITION CONTROL RIGHT BEFORE THE START CALL
+-------------------------------------------------
+-- PrepareStart
 -------------------------------------------------
 -- CONDITION CONTROL AFTER THE START
 -------------------------------------------------
@@ -215,3 +226,4 @@ import("gameplay/ags_population_capacity.scar")
 -- Player_SetEntityProductionAvailability
 -- FOW_ExploreAll, FOW_ForceRevealAllUnblockedAreas
 -- Modifier_ApplyToPlayer, Modifier_Create
+-- Game_GetSimRate, Game_SetSimRate

@@ -23,7 +23,7 @@ function AGS_Ding_UpdateModuleSettings()
 	end
 end
 
-function AGS_Ding_Start()
+function AGS_Ding_PrepareStart()
 	AGS_Ding_Queue()
 end
 

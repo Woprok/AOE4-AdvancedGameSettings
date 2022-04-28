@@ -19,7 +19,7 @@ AGS_AI_ADJUSTREASON_NOMAD = 1
 Core_RegisterModule(AGS_AI_MODULE)	
 
 function AGS_AI_UnitsSpawned(player_id, home_position, units)
-	if not AGS_AI_IsLocalGame() or not AGS_AI_IsAI(player_id) then
+	if not AGS_IsLocalGame() or not AGS_AI_IsAI(player_id) then
 		return
 	end
 	
@@ -43,13 +43,6 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
-
-function AGS_AI_IsLocalGame()
-	if World_IsMultiplayerGame() then
-		return false
-	end
-	return true
-end
 
 function AGS_AI_IsAI(player_id)
 	if not AI_IsAIPlayer(player_id) then

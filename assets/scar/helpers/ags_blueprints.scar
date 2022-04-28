@@ -706,4 +706,9 @@ function AGS_IsAWonder(entity_id)
 	return Entity_IsOfType(entity_id, AGS_BP_LANDMARK) and Entity_IsOfType(entity_id, AGS_BP_WONDER)	
 end
 
-
+function AGS_IsLocalGame()
+	if World_IsMultiplayerGame() then
+		return false
+	end
+	return true
+end

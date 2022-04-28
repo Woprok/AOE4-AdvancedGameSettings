@@ -8,7 +8,6 @@
 ---------------------------------------------------------------------------------------------------
 
 AGS_POPULATION_CAPACITY_MODULE = "AGS_PopulationCapacity"
-AGS_POPULATION_CAPACITY_MONGOL_GER_BONUS = 100
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -45,7 +44,7 @@ end
 
 function AGS_PopulationCapacity_SetMinPopulation(player, pop_size)
 	local value = pop_size
-	-- Mongols will receive buff to gers, making them equal to houses in pop bonus.
+	-- Mongols receive always maximum to maintain their unique bonus.
 	if player.raceName == AGS_CIV_MONGOL then
 		value = AGS_GLOBAL_SETTINGS.MaximumPopulation - 200
 	end

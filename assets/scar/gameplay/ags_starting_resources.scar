@@ -1,0 +1,50 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Adds players resources.
+---------------------------------------------------------------------------------------------------
+
+AGS_STARTING_RESOURCES_MODULE = "AGS_StartingResources"
+AGS_STARTING_RESOURCES_VALUES = {
+	{ Key = AGS_GS_RESOURCES_NONE, Food = 0, Wood = 0,  Gold = 0, Stone = 0, },
+	{ Key = AGS_GS_RESOURCES_NORMAL, Food = 0, Wood = 0,  Gold = 0, Stone = 0, },
+	{ Key = AGS_GS_RESOURCES_HIGH, Food = 2000, Wood = 2000,  Gold = 1000, Stone = 800, },
+	{ Key = AGS_GS_RESOURCES_VERY_HIGH, Food = 50000, Wood = 50000,  Gold = 25000, Stone = 10000, },
+	{ Key = AGS_GS_RESOURCES_MAXIMUM, Food = 100000, Wood = 100000,  Gold = 100000, Stone = 100000, },
+}
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_STARTING_RESOURCES_MODULE)	
+
+function AGS_StartingResources_UpdateModuleSettings()
+	if AGS_GLOBAL_SETTINGS.StartingResources == AGS_GS_RESOURCES_NORMAL then
+		Core_UnregisterModule(AGS_STARTING_RESOURCES_MODULE)
+	end
+end
+
+function AGS_StartingResources_PrepareStart()
+	AGS_StartingResources_SetResources(AGS_GLOBAL_SETTINGS.StartingResources)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_StartingResources_SetResources(key)
+	for _, resources in pairs(AGS_STARTING_RESOURCES_VALUES) do
+		if resources.Key == AGS_GLOBAL_SETTINGS.StartingResources then			
+			for _, player in pairs(PLAYERS) do
+				Player_SetResource(player.id, RT_Food, resources.Food)
+				Player_SetResource(player.id, RT_Wood, resources.Wood)		
+				Player_SetResource(player.id, RT_Gold, resources.Gold)		
+				Player_SetResource(player.id, RT_Stone, resources.Stone)		
+			end	
+		end
+	end
+end

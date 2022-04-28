@@ -627,7 +627,7 @@ end
 
 function AGS_GlobalSettings_SetStartingResources(starting_resources)
 	if starting_resources.enum_value == starting_resources.enum_items.starting_resources_none then
-		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_NORMAL	
+		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_NONE	
 	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_normal then
 		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_NORMAL
 	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_high then
