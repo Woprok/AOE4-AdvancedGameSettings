@@ -6,6 +6,7 @@
 -- Description:
 -- Contains all option definitions and their current values.
 -- Referenceable by any other script.
+-- Maintains local player reference during the whole game.
 ---------------------------------------------------------------------------------------------------
 -- CONSTANTS
 ---------------------------------------------------------------------------------------------------
@@ -17,6 +18,10 @@ AGS_GS_TEAM_VICTORY_DYNAMIC = 2
 AGS_GS_SETTLEMENT_SCATTERED = 0
 AGS_GS_SETTLEMENT_NOMADIC = 1
 AGS_GS_SETTLEMENT_SETTLED = 2
+-- Team Balance
+AGS_GS_TEAM_BALANCE_NONE = 0
+AGS_GS_TEAM_BALANCE_POPULATION = 1
+AGS_GS_TEAM_BALANCE_RESOURCES = 2
 -- Wonder
 AGS_GS_WONDER_SCALE_COST_DISABLED = -1
 -- Team Vision
@@ -45,6 +50,10 @@ AGS_GS_TC_RESTRICTIONS_NONE = 0
 AGS_GS_TC_RESTRICTIONS_NORMAL = 1
 AGS_GS_TC_RESTRICTIONS_LANDMARKS = 2
 ---------------------------------------------------------------------------------------------------
+-- Contains current local player dynamically maintaned whole game. 
+-- Local player should never change. And be ready after Initialization Phase.
+-- Local player is used for UI & visual logic. Gameplay logic should never use it as it will cause desync.
+AGS_GS_LOCAL_PLAYER = nil
 
 AGS_GLOBAL_SETTINGS = {
 	Annihilation = true, -- Player loses everything.
@@ -60,12 +69,13 @@ AGS_GLOBAL_SETTINGS = {
 	Treaty = 0, -- Duration of treaty period.
 	TeamVictory = AGS_GS_TEAM_VICTORY_STANDARD, -- Who is considered potential winner.
 	TeamSolidarity = false, -- Team is eliminated together.
+	MaintainTeamBalance = AGS_GS_TEAM_BALANCE_NONE,
 	
 	ConquestSettings = {
 		Capital = true,
 		Landmarks = true,
 		TownCenters = false,
-		Keeps - false,
+		Keeps = false,
 		Wonder = false,
 	},
 	ReligiousSettings = {
@@ -122,7 +132,7 @@ AGS_GLOBAL_SETTINGS = {
 ---------------------------------------------------------------------------------------------------
 
 Core_RegisterModule("AGS_GlobalSettings")	
-
+-- Takes wincondition settings and applies them to global settings collection AGS_GLOBAL_SETTINGS.
 function AGS_GlobalSettings_SetupSettings(options)	
 	-- Options can not be null.
 	if not options then
@@ -151,6 +161,26 @@ function AGS_GlobalSettings_SetupSettings(options)
 	
 	if options.section_outer_legacy_settings then
 		AGS_GlobalSettings_DefineLegacySettings(options.section_outer_legacy_settings)
+	end
+end
+
+function AGS_GlobalSettings_EarlyInitializations()
+	AGS_GlobalSettings_OnLocalPlayerChanged({ player = Game_GetLocalPlayer() })
+	Rule_AddGlobalEvent(AGS_GlobalSettings_OnLocalPlayerChanged, GE_LocalPlayerChanged)
+end
+
+function AGS_GlobalSettings_OnGameOver()
+	Rule_RemoveGlobalEvent(AGS_GlobalSettings_OnLocalPlayerChanged)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Called when local player is changed.
+function AGS_GlobalSettings_OnLocalPlayerChanged(context)
+	if context ~= nil and context.player ~= nil then
+		AGS_GS_LOCAL_PLAYER = Core_GetPlayersTableEntry(context.player)
+		AGS_Print("Local Player: ", AGS_GS_LOCAL_PLAYER)
 	end
 end
 
@@ -197,6 +227,9 @@ function AGS_GlobalSettings_DefineGameConditions(category)
 	end
 	if category.option_game_condition_team_solidarity ~= nil then
 		AGS_GLOBAL_SETTINGS.TeamSolidarity = category.option_game_condition_team_solidarity
+	end
+	if category.option_game_condition_maintain_team_balance then
+		AGS_GlobalSettings_SetMaintainTeamBalance(category.option_game_condition_maintain_team_balance)
 	end
 end
 
@@ -310,9 +343,20 @@ function AGS_GlobalSettings_DefineLegacySettings(category)
 		AGS_GlobalSettings_SetSimulationSpeed(category.option_legacy_setting_simulation_speed)
 	end
 end
+
 ---------------------------------------------------------------------------------------------------
 -- Assignment Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_GlobalSettings_SetMaintainTeamBalance(maintain_team_balance)
+	if maintain_team_balance.enum_value == maintain_team_balance.enum_items.maintain_team_balance_none then
+		AGS_GLOBAL_SETTINGS.MaintainTeamBalance = AGS_GS_TEAM_BALANCE_NONE
+	elseif maintain_team_balance.enum_value == maintain_team_balance.enum_items.maintain_team_balance_population then
+		AGS_GLOBAL_SETTINGS.MaintainTeamBalance = AGS_GS_TEAM_BALANCE_POPULATION
+	elseif maintain_team_balance.enum_value == maintain_team_balance.enum_items.maintain_team_balance_resources then
+		AGS_GLOBAL_SETTINGS.MaintainTeamBalance = AGS_GS_TEAM_BALANCE_RESOURCES
+	end
+end
 
 function AGS_GlobalSettings_SetSettlement(settlement)
 	if settlement.enum_value == settlement.enum_items.settlement_scattered then

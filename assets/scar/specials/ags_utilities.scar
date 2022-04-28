@@ -20,14 +20,14 @@ import("gameplay/score.scar")
 -- Cheat support for dev mode.
 import("gameplay/cheat.scar") 
 -- Tutorial goals available to new players.
-import("training/coretraininggoals.scar")
-import("training/frenchtraininggoals.scar")
-import("training/englishtraininggoals.scar")
-import("training/sultanatetraininggoals.scar")
-import("training/rustraininggoals.scar")
-import("training/mongoltraininggoals.scar")
-import("training/chinesetraininggoals.scar")
-import("training/abbasidtraininggoals.scar")
+-- import("training/coretraininggoals.scar")
+-- import("training/frenchtraininggoals.scar")
+-- import("training/englishtraininggoals.scar")
+-- import("training/sultanatetraininggoals.scar")
+-- import("training/rustraininggoals.scar")
+-- import("training/mongoltraininggoals.scar")
+-- import("training/chinesetraininggoals.scar")
+-- import("training/abbasidtraininggoals.scar")
 
 ---------------------------------------------------------------------------------------------------
 -- Options:
@@ -41,22 +41,21 @@ import("training/abbasidtraininggoals.scar")
 -- section_diplomacy
 --	 	option_diplomacy_teams (Refers to option called Locked Teams)
 --	 	option_diplomacy_tribute
--- section_endgame (Never implemented option to allow / disallow spectating after elimination.)
+-- section_endgame (Allow / disallow spectating after elimination. Most likely not working at all.)
 --		option_allow_spectators
 -- section_starting_conditions
--- 		reveal_fow_on_elimination (Exact path is used for Core_RevealFOWOnEliminationEnabled)
+-- 		reveal_fow_on_elimination (Exact path is used for Core_RevealFOWOnEliminationEnabled, required by default winconditions)
 --		option_fow[option_fow_concealed, option_fow_explore, option_fow_reveal]
 --		option_score
 -- 		option_start_age[option_start_nomad, option_start_age_1, option_start_age_2, option_start_age_3, option_start_age_4]
 --		option_vision[option_vision_default]
 --		option_speed[option_speed_2x, option_speed_3x, option_speed_20x, option_speed_50x, option_speed_100x]
 --		option_initial_units[initial_units_none, initial_units_standard]
---		option_starting_resources[resources_standard, resources_high, resources_very_high, resources_max] (Automatically binded)
+--		option_starting_resources[resources_standard, resources_high, resources_very_high, resources_max] (Automatically binded by statetree)
 --		option_timer[option_timer_reset]
 ---------------------------------------------------------------------------------------------------
 
 AGS_UTILITIES_MODULE = "AGS_Utilities"
-AGS_UTILITIES_LOCAL_PLAYER = nil
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -71,53 +70,14 @@ function AGS_Utilities_SetupSettings(options)
 	end
 end
 
-function AGS_Utilities_Start()
-end
 function AGS_Utilities_OnInit()
-	UI_AllTerritoryHide()
-	
-	AGS_Utilities_OnLocalPlayerChanged(Game_GetLocalPlayer())
-	Rule_AddGlobalEvent(AGS_Utilities_OnLocalPlayerChanged, GE_LocalPlayerChanged)
 	
 	AGS_Utilities_StandardReplay()	
-end
-
-function AGS_Utilities_OnPlayerDefeated(player, reason)
-	-- Reveal all on local player defeated.
-	local localPlayer = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
-	if player == localPlayer and Core_RevealFOWOnEliminationEnabled() then
-		FOW_UIRevealAll()
-	end
-end
-
-function AGS_Utilities_OnGameOver()
-	Rule_AddGlobalEvent(AGS_Utilities_OnLocalPlayerChanged)
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
--- Called when local player is changed.
-function AGS_Utilities_OnLocalPlayerChanged(context)
-	if context ~= nil and context.player ~= nil then
-		AGS_UTILITIES_LOCAL_PLAYER = Core_GetPlayersTableEntry(context.player)
-	end
-end
-
--- used in conquest and surrender winconditions
---? @shortdesc Returns the value of the "Reveal FOW on Elimination" match option
---function Core_RevealFOWOnEliminationEnabled()
---	local reveal_fow_on_elimination = false
---	
---	local matchOptions = {}
---	Setup_GetWinConditionOptions(matchOptions)
---	
---	if matchOptions.section_starting_conditions then
---		return matchOptions.section_starting_conditions.reveal_fow_on_elimination
---	end
---		
---	return false
---end
 
 -- Initialize replay stats
 function AGS_Utilities_StandardReplay()

@@ -1,0 +1,35 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Handles revealing map after being eliminated.
+---------------------------------------------------------------------------------------------------
+
+AGS_REVEAL_FOW_ON_ELIMINATION_MODULE = "AGS_RevealFowOnElimination"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+function AGS_RevealFowOnElimination_UpdateModuleSettings()
+	if not AGS_GLOBAL_SETTINGS.RevealFowOnElimination then
+		Core_UnregisterModule(AGS_REVEAL_FOW_ON_ELIMINATION_MODULE)
+	end
+end
+
+function AGS_RevealFowOnElimination_OnPlayerDefeated(player, reason)
+	AGS_RevealFowOnElimination_Reveal(player)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_RevealFowOnElimination_Reveal(player)
+	-- Originally it would check it via Core_RevealFOWOnEliminationEnabled(), but that won't work with AGS.
+	if player == AGS_GS_LOCAL_PLAYER then
+		FOW_UIRevealAll()
+	end
+end

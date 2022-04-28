@@ -142,9 +142,9 @@
 141,,,,,,Show current place in score mode ranking. Score victory condition does not use same metric as default score.
 142,,,,,,Score Timer
 143,,,,,,Time after which will score decide the game
-144,,,,,,Minimum Population Capacity
+144,,,,,,Min Population Capacity
 145,,,,,,Changes initial population capacity without houses. Will not exceed maximum population capacity.
-146,,,,,,Maximum Population Capacity
+146,,,,,,Max Population Capacity
 147,,,,,,Changes maximum population capacity. Requires houses to reach it.
 148,,,,,,0
 149,,,,,,25
@@ -243,3 +243,8 @@
 242,,,,,,Scattered Summary
 243,,,,,,Empowered King
 244,,,,,,King will have additional bonuses and abilities
+245,,,,,,Maintain Team Balance
+246,,,,,,"Should team lose a player, remaining members will share his population capacity and resources"
+247,,,,,,Population
+248,,,,,,Population & Resources
+249,,,,,,

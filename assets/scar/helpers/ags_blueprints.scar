@@ -662,8 +662,11 @@ function AGS_SpawnSquad(player_id, sgroup_name, bp_squad, position, position_off
 	
 	return squad_group	
 end
-function AGS_Print(data)
-	Util_PrintObject(data, 10)
+function AGS_Print(text, opt_data)
+	Util_PrintObject(text, 10)
+	if opt_data ~= nil then
+		Util_PrintObject(opt_data, 10)	
+	end
 end
 -- relation can be R_ALLY, R_ENEMY, R_NEUTRAL
 function AGS_IsMutualRelation(first_id, second_id, relation)

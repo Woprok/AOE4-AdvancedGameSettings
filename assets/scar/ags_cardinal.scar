@@ -6,70 +6,104 @@
 -- Description:
 -- Overwrites any cardinal inherited functions to ensure AGS functionality.
 -- Keep global knowledge of AGS focused here for easy reference.
+-- Calls all AGS delegates
 ---------------------------------------------------------------------------------------------------
+
+-- Required for any gamemode to work.
+import("cardinal.scar")
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+-- First to register, first to execute after original cardinal.
+Core_RegisterModule("AGS_Cardinal")	
+-- OnGameSetup is split for AGS to additional 3 phases.
+function AGS_Cardinal_OnGameSetup()
+	local options = { }
+	Setup_GetWinConditionOptions(options)
+		
+	AGS_Print(AGS_GLOBAL_SETTINGS)
+	Core_CallDelegateFunctions("SetupSettings", options)
+	AGS_Print(AGS_GLOBAL_SETTINGS)
+	Core_CallDelegateFunctions("AdjustSettings")
+	AGS_Print(AGS_GLOBAL_SETTINGS)
+	Core_CallDelegateFunctions("UpdateModuleSettings")
+	AGS_Print(AGS_GLOBAL_SETTINGS)
+end
+-- OnInit invokes custom handle for AGS modules.
+function AGS_Cardinal_OnInit()
+	UI_AllTerritoryHide()
+	Core_CallDelegateFunctions("EarlyInitializations")	
+	Core_CallDelegateFunctions("LateInitializations")	
+end
+-- Preset is safe state for anything that should be done before start. Such as additional entities, vision etc.
+function AGS_Cardinal_Preset() 	
+	Core_CallDelegateFunctions("PresetInitialize")
+	Core_CallDelegateFunctions("PresetExecute")
+	Core_CallDelegateFunctions("PresetFinalize")
+end
 
 ---------------------------------------------------------------------------------------------------
 -- Imports:
 -- Order of imports can define oder of event handles. Beware of it when intruducing dependencies.
 ---------------------------------------------------------------------------------------------------
-
--- Required for a gamemode to work.
-import("cardinal.scar")
--- AGS requires specific data setup..
-import("ags_global_settings.scar")
--- AGS scripts use many helpers to reduce code bloat.
+-- AGS Scripts require multiple helpers to operate:
 import("helpers/ags_blueprints.scar")
-import("conditions/ags_conditions_visuals.scar") -- TODO split helpers and visuals
+-- AGS Scripts read settings from single configuration.
+import("ags_global_settings.scar")
+
+
+--import("conditions/ags_conditions_visuals.scar") -- TODO split helpers and visuals
 -- AGS supports AI with few adjustments.
-import("ai/ags_ai.scar")
+--import("ai/ags_ai.scar")
 -- Starting conditions are generally loaded during PresetSpawn.
-import("startconditions/ags_start_nomad.scar")
-import("startconditions/ags_start_scattered.scar")
-import("startconditions/ags_start_settled.scar")
-import("startconditions/ags_start_keep.scar")
-import("startconditions/ags_start_king.scar")
+--import("startconditions/ags_start_nomad.scar")
+--import("startconditions/ags_start_scattered.scar")
+--import("startconditions/ags_start_settled.scar")
+--import("startconditions/ags_start_keep.scar")
+--import("startconditions/ags_start_king.scar")
 -- Supporting start conditions.
-import("startconditions/ags_initial_age.scar")
-import("startconditions/ags_technologies.scar")
-import("startconditions/ags_final_age.scar")
-import("startconditions/ags_reveal_spawn.scar")
+--import("startconditions/ags_initial_age.scar")
+--import("startconditions/ags_technologies.scar")
+--import("startconditions/ags_final_age.scar")
+--import("startconditions/ags_reveal_spawn.scar")
 -- Partially reworked Diplomacy & Tributes. -- TODO team system rework
-import("gameplay/diplomacy_reworked.scar")
+--import("gameplay/diplomacy_reworked.scar")
 
 -- Conditions are loaded after starting conditions.
-import("conditions/ags_treaty.scar") -- peace phase
-import("conditions/ags_annihilation.scar") -- player needs stuff to play
-import("conditions/ags_surrender.scar") -- player can leave game
-import("conditions/ags_elimination.scar") -- player can rage quit
-import("conditions/ags_conquest.scar") -- conquest objectives
-import("conditions/ags_religious.scar") -- sacred site objectives
-import("conditions/ags_wonder.scar") -- wonder building objectives
-import("conditions/ags_regicide.scar") -- stab king objectives
-import("conditions/ags_teamsolidarity.scar") -- team needs everyone
+--import("conditions/ags_treaty.scar") -- peace phase
+--import("conditions/ags_annihilation.scar") -- player needs stuff to play
+--import("conditions/ags_surrender.scar") -- player can leave game
+--import("conditions/ags_elimination.scar") -- player can rage quit
+--import("conditions/ags_conquest.scar") -- conquest objectives
+--import("conditions/ags_religious.scar") -- sacred site objectives
+--import("conditions/ags_wonder.scar") -- wonder building objectives
+--import("conditions/ags_regicide.scar") -- stab king objectives
+--import("conditions/ags_teamsolidarity.scar") -- team needs everyone
 
 -- Gameplay options are loaded as last.
-import("gameplay/ags_ding.scar")
-import("gameplay/ags_early_market.scar")
-import("gameplay/ags_game_rates.scar")
-import("gameplay/ags_population_capacity.scar")
-import("gameplay/ags_score_visibility.scar")
-import("gameplay/ags_simulation_speed.scar")
-import("gameplay/ags_town_center_limit.scar")
-import("gameplay/ags_tree_bombardment.scar")
-import("gameplay/ags_map_vision.scar")
-import("gameplay/ags_shared_vision.scar")
+--import("gameplay/ags_ding.scar")
+--import("gameplay/ags_early_market.scar")
+--import("gameplay/ags_game_rates.scar")
+--import("gameplay/ags_population_capacity.scar")
+--import("gameplay/ags_score_visibility.scar")
+--import("gameplay/ags_simulation_speed.scar")
+--import("gameplay/ags_town_center_limit.scar")
+--import("gameplay/ags_tree_bombardment.scar")
+--import("gameplay/ags_map_vision.scar")
+--import("gameplay/ags_shared_vision.scar")
 
 -- Wrapper around all default match options, that will have minimal changes done to them.
-import("specials/ags_utilities.scar")
+--import("specials/ags_utilities.scar")
 -- Special container for testing and unfinished functionality.
-import("specials/ags_testing.scar")
+--import("specials/ags_testing.scar")
 
 ---------------------------------------------------------------------------------------------------
 -- AGS LIBRARY GUIDELINES AND INFORMATIONS
 ---------------------------------------------------------------------------------------------------
 -- AGS Core_CallDelegateFunctions("<suffix>") Calls:
 ---------------------------------------------------------------------------------------------------
--- ENTITY & UNIT SPAWNED DURING PRESETSPAWN
+-- ENTITY & UNIT SPAWNED DURING PRESET EXECUTE
 -------------------------------------------------
 -- EntitySpawned({pbg = entity_blueprint, player = player_id, entity = spawned_entity}) 
 -- UnitsSpawned(player_id, position: home_position, sgroup: units)
@@ -84,10 +118,16 @@ import("specials/ags_testing.scar")
 -- AdjustSettings 
 -- ModuleSettings
 -------------------------------------------------
+-- INITIALIZATION DURING ONINIT (Primarily for UI)
+-------------------------------------------------
+-- EarlyInitializations
+-- LateInitializations
+-------------------------------------------------
 -- INITIALIZATION DURING PRESET
 -------------------------------------------------
--- PresetSpawn 
--- PresetPostSpawn 
+-- PresetInitialize
+-- PresetExecute 
+-- PresetFinalize
 -------------------------------------------------
 -- CONDITION CONTROL AFTER THE START
 -------------------------------------------------
@@ -98,20 +138,20 @@ import("specials/ags_testing.scar")
 ---------------------------------------------------------------------------------------------------
 -- INITIALIZATION IN ORDER
 -------------------------------------------------
--- OnGameSetup
--- OnGameRestore
--- PreInit
--- OnInit
--- PostInit
--- SetupVariables
--- SetDifficulty
--- SetRestrictions
--- Preset
--- InitComplete
--- PreStart
--- Start
--- PreGameOver
--- OnGameOver
+-- OnGameSetup			// Used for our setup
+-- OnGameRestore        //
+-- PreInit              //
+-- OnInit               // Used for certain UI initialization as these are better to be done before filling module data
+-- PostInit             //
+-- SetupVariables       //
+-- SetDifficulty        //
+-- SetRestrictions      //
+-- Preset               // Used for all initialization before the start of the game
+-- InitComplete         //
+-- PreStart             //
+-- Start                // Used for all initialization at the start of the game
+-- PreGameOver          //
+-- OnGameOver           // Used to cleanup all resouces and event handles
 -------------------------------------------------
 -- DIPLOMACY STATE
 -------------------------------------------------
@@ -119,17 +159,17 @@ import("specials/ags_testing.scar")
 -- OnTributeSent
 -- DiplomacyEnabled
 -- OnRelationshipChanged // due to non existing GE_RelationChanged
--- OnPlayerLeftTeam
--- OnTeamCreated
--- OnTeamRemoved
--- OnPlayerJoinedTeam
+-- OnTeamCreated		//! never used as the method that can invoke them is never called
+-- OnTeamRemoved        //! never used as the method that can invoke them is never called
+-- OnPlayerJoinedTeam   //! never used as the method that can invoke them is never called
+-- OnPlayerLeftTeam     //! never used as the method that can invoke them is never called
 -------------------------------------------------
 -- PLAYER MATCH STATE
 -------------------------------------------------
--- OnLeaveGameMatchRequested
--- OnSurrenderMatchRequested
+-- OnLeaveGameMatchRequested //! does not look like ever invoked
+-- OnSurrenderMatchRequested 
 -- OnPlayerDefeated
--- OnTeamDefeated
+-- OnTeamDefeated //! never used as this was used only in combat mode
 -- OnPlayerAITakeover
 -------------------------------------------------
 -- IRRELEVANT
@@ -144,7 +184,7 @@ import("specials/ags_testing.scar")
 -- UnitEntry_SpawnUnit
 -- UnitEntry_SpawnUnit_Finish
 -- UnitEntry_RegisterEntryMethods
--- OnConstructionComplete // Was invoked only be Relic StartConditions after TC was spawned.
+-- OnConstructionComplete //! was invoked only be Relic StartConditions after TC was spawned.
 ---------------------------------------------------------------------------------------------------
 -- Global events should be handled by OnEvent methods, here is list that is currently used.
 ---------------------------------------------------------------------------------------------------
@@ -166,3 +206,12 @@ import("specials/ags_testing.scar")
 -- TODO:
 -- Go and organize Player_, Core_ methods better as Core_GetPlayersTableEntry is shortcut for Player_
 ---------------------------------------------------------------------------------------------------
+-- Called function list for debug purposes during rework
+---------------------------------------------------------------------------------------------------
+-- Setup_GetWinConditionOptions, Core_CallDelegateFunctions, 
+-- Rule_AddGlobalEvent, Rule_RemoveGlobalEvent
+-- Game_GetLocalPlayer
+--
+--
+--
+--
