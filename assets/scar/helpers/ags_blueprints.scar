@@ -34,6 +34,8 @@ AGS_BP_UNIT_CLASS = "annihilation_condition"
 AGS_BP_GAIA = "gaia"
 AGS_BP_MOVING_BUILDINGS = "mongol_moving_structure"
 AGS_BP_DOCK = "scar_dock"
+AGS_BP_HOUSE = "house"
+AGS_BP_HOUSE_UNIT = "house_moving"
 
 AGS_ENTITY_TABLE = {
 	neutral = {
@@ -112,6 +114,8 @@ AGS_ENTITY_TABLE = {
 		scout = "unit_khan_1_mon",
 		king = "unit_king_1_mon",
 		scar_dock = "building_unit_naval_mon",
+		house = "building_house_mon",
+		house_moving = "building_house_moving_mon"
 	},
 	sultanate = {
 		castle = "building_defense_keep_control_sul",

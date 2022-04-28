@@ -27,11 +27,11 @@ function AGS_Nomad_UpdateModuleSettings()
 	end
 end
 
-function AGS_Nomad_PresetSpawn()
+function AGS_Nomad_PresetExecute()
 	AGS_Nomad_OnSpawn()
 end
 
-function AGS_Nomad_PresetPostSpawn()
+function AGS_Nomad_PresetFinalize()
 	for _, player in pairs(PLAYERS) do	
 		-- Insist that player do not have capital.
 		Player_SetStateModelFloat(player.id, "has_capital", 0)

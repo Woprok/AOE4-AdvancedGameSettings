@@ -8,6 +8,7 @@
 ---------------------------------------------------------------------------------------------------
 
 AGS_POPULATION_CAPACITY_MODULE = "AGS_PopulationCapacity"
+AGS_POPULATION_CAPACITY_MONGOL_GER_BONUS = 100
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -16,93 +17,46 @@ AGS_POPULATION_CAPACITY_MODULE = "AGS_PopulationCapacity"
 Core_RegisterModule(AGS_POPULATION_CAPACITY_MODULE)	
 
 function AGS_PopulationCapacity_UpdateModuleSettings()
-	if AGS_GLOBAL_SETTINGS.MaximumPopulation == 200 then
+	if AGS_GLOBAL_SETTINGS.MaximumPopulation == 200 and AGS_GLOBAL_SETTINGS.MinimumPopulation == 0 then
 		Core_UnregisterModule(AGS_POPULATION_CAPACITY_MODULE)
 	end
 end
 
-function AGS_PopulationCapacity_PresetPostSpawn()
-	AGS_PopulationCapacity_Change(AGS_GLOBAL_SETTINGS.PopulationCapacity)
+function AGS_PopulationCapacity_AdjustSettings()
+	if AGS_GLOBAL_SETTINGS.MinimumPopulation > AGS_GLOBAL_SETTINGS.MaximumPopulation then
+		AGS_GLOBAL_SETTINGS.MinimumPopulation = AGS_GLOBAL_SETTINGS.MaximumPopulation
+	end
+end
+
+function AGS_PopulationCapacity_PresetFinalize()
+	AGS_PopulationCapacity_Change()
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_PopulationCapacity_Change(pop_size)
+function AGS_PopulationCapacity_Change()
 	for _, player in pairs(PLAYERS) do		
-		local value =  - (200 - pop_size)	
-		local player_civ = Player_GetRaceName(player.id)
-		AGS_PopulationCapacity_SetMaxCapPopulation(player, value)
-		if player_civ == AGS_CIV_MONGOL then
-			AGS_PopulationCapacity_SetMaxPopulation(player, value)
-		end	
+		AGS_PopulationCapacity_ApplyMaxCapPopulation(player, AGS_GLOBAL_SETTINGS.MaximumPopulation)
+		AGS_PopulationCapacity_SetMinPopulation(player, AGS_GLOBAL_SETTINGS.MinimumPopulation) 
 	end
 end
 
-function AGS_PopulationCapacity_SetMaxPopulation(player, pop_size)
-	Player_SetExactMaxPopulation(player.id, CT_Personnel, pop_size)
-	--Player_SetExactMaxPopulation(player.id, CT_Vehicle, pop_size)
+function AGS_PopulationCapacity_SetMinPopulation(player, pop_size)
+	local value = pop_size
+	-- Mongols will receive buff to gers, making them equal to houses in pop bonus.
+	if player.raceName == AGS_CIV_MONGOL then
+		value = AGS_GLOBAL_SETTINGS.MaximumPopulation - 200
+	end
+	AGS_PopulationCapacity_ApplyMinPopulation(player, value)	
 end
 
-function AGS_PopulationCapacity_SetMaxCapPopulation(player, pop_size)
-	Player_SetExactMaxCapPopulation(player.id, CT_Personnel, pop_size)
-	--Player_SetExactMaxCapPopulation(player.id, CT_Vehicle, pop_size)
+function AGS_PopulationCapacity_ApplyMinPopulation(player, pop_size)
+	Modifier_ApplyToPlayer(Modifier_Create(MAT_Player, "personnel_cap_player_modifier", MUT_Addition, false, pop_size, ""), player.id, 0)
 end
 
---? @shortdesc Sets the current personnel or vehicle cap for a player. The captype is either CT_Personnel or CT_Vehicle (you can't adjust Medic caps just yet).
---? @extdesc Note that any modifiers that adjust the current cap will be applied on top of this.  Also note, the current cap cannot go higher than the max cap.
---? @args PlayerID playerid, Integer captype, Integer newcap
---? @result Void
-function Player_SetExactMaxPopulation(playerid, captype, value)	
-	if scartype(playerid) ~= ST_PLAYER then fatal("Player_SetMaxPopulation: Invalid PlayerID") end
-	local index = World_GetPlayerIndex(playerid)	
-	if (captype == CT_Vehicle) then		
-		if( _player_vehicle_cap == nil ) then	
-			_player_vehicle_cap = {}
-		else
-			Modifier_Remove( _player_vehicle_cap[index] )
-		end
-		local modifier = Modifier_Create(MAT_Player, "vehicle_cap_player_modifier", MUT_Addition, false, value, "")
-		_player_vehicle_cap[index] = Modifier_ApplyToPlayer( modifier, playerid, 0 )		
-	elseif (captype == CT_Personnel) then		
-		if( _player_personnel_cap == nil ) then	
-			_player_personnel_cap = {}
-		else
-			Modifier_Remove( _player_personnel_cap[index] )
-		end
-		local modifier = Modifier_Create(MAT_Player, "personnel_cap_player_modifier", MUT_Addition, false, value, "")
-		_player_personnel_cap[index] = Modifier_ApplyToPlayer( modifier, playerid, 0 )		
-	else		
-		fatal("Player_SetMaxPopulation: Invalid cap type")		
-	end	
-end
-
---? @shortdesc Sets the current personnel or vehicle max-cap for a player. The captype is either CT_Personnel or CT_Vehicle (you can't adjust Medic caps just yet).
---? @extdesc Note that any modifiers that adjust the current max cap will be applied on top of this.  Also note, this is only adjusting the max cap, not the current cap,
---? @extdesc you will have to call Player_SetMaxPopulation to adjust the current max population to do this.
---? @args PlayerID playerid, Integer captype, Integer newcap
---? @result Void
-function Player_SetExactMaxCapPopulation(playerid, captype, value)
-	if scartype(playerid) ~= ST_PLAYER then fatal("Player_SetMaxPopulation: Invalid PlayerID") end
-	local index = World_GetPlayerIndex(playerid)	
-	if (captype == CT_Vehicle) then		
-		if( _player_vehicle_max_cap == nil ) then	
-			_player_vehicle_max_cap = {}
-		else
-			Modifier_Remove( _player_vehicle_max_cap[index] )
-		end
-		local modifier = Modifier_Create(MAT_Player, "max_vehicle_cap_player_modifier", MUT_Addition, false, value, "")
-		_player_vehicle_max_cap[index] = Modifier_ApplyToPlayer( modifier, playerid, 0 )		
-	elseif (captype == CT_Personnel) then		
-		if( _player_personnel_max_cap == nil ) then	
-			_player_personnel_max_cap = {}
-		else
-			Modifier_Remove( _player_personnel_max_cap[index])
-		end
-		local modifier = Modifier_Create(MAT_Player, "max_personnel_cap_player_modifier", MUT_Addition, false, value, "")
-		_player_personnel_max_cap[index] = Modifier_ApplyToPlayer( modifier, playerid, 0 )		
-	else		
-		fatal("Player_SetMaxCapPopulation: Invalid cap type")		
-	end	
+function AGS_PopulationCapacity_ApplyMaxCapPopulation(player, pop_size)
+	local value = - (200 - pop_size)
+	Modifier_ApplyToPlayer(Modifier_Create(MAT_Player, "max_personnel_cap_player_modifier", MUT_Addition, false, value, ""), player.id, 0)
 end

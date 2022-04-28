@@ -23,7 +23,7 @@ function AGS_GameRates_UpdateModuleSettings()
 end
 
 function AGS_GameRates_PresetFinalize()	
-	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_BUILDING_CLASS))	
+	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_BUILDING))	
 	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_UNIT_CLASS))	
 end
 
@@ -44,12 +44,11 @@ function AGS_GameRates_ApplyGameRates(bps)
 				AGS_GameRates_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_gold", AGS_GLOBAL_SETTINGS.GameRates)
 				AGS_GameRates_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_stone", AGS_GLOBAL_SETTINGS.GameRates)
 				AGS_GameRates_ApplyModifier(player.id, ebp, "construction_rate", AGS_GLOBAL_SETTINGS.GameRates)
-				AGS_GameRates_ApplyModifier(player.id, ebp, "repair_rate_modifier", AGS_GLOBAL_SETTINGS.GameRates)	
+				AGS_GameRates_ApplyModifier(player.id, ebp, "repair_rate_modifier", AGS_GLOBAL_SETTINGS.GameRates)
 			end
 		end
 	end
 end
-
 -- Apply function.
 function AGS_GameRates_ApplyModifier(player_id, modifier_ebp, modifier_type, modifier_value)
 	Modifier_ApplyToPlayer(Modifier_Create(MAT_EntityType, modifier_type, MUT_Multiplication, false, modifier_value, modifier_ebp), player_id, 0.0)
