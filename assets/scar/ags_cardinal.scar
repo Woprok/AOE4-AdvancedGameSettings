@@ -85,7 +85,7 @@ import("ags_global_settings.scar")
 -- Gameplay options are loaded as last.
 import("gameplay/ags_ding.scar")
 import("gameplay/ags_early_market.scar")
---import("gameplay/ags_ending_age.scar")
+import("gameplay/ags_ending_age.scar")
 import("gameplay/ags_game_rates.scar")
 import("gameplay/ags_map_vision.scar")
 import("gameplay/ags_no_dock.scar")

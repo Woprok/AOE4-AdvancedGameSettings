@@ -36,6 +36,7 @@ AGS_BP_MOVING_BUILDINGS = "mongol_moving_structure"
 AGS_BP_DOCK = "scar_dock"
 AGS_BP_HOUSE = "house"
 AGS_BP_HOUSE_UNIT = "house_moving"
+AGS_BP_HOW = "house_of_wisdom"
 
 AGS_ENTITY_TABLE = {
 	neutral = {
@@ -103,6 +104,7 @@ AGS_ENTITY_TABLE = {
 		scout = "unit_scout_1_abb",
 		king = "unit_king_1_abb",
 		scar_dock = "building_unit_naval_abb",
+		house_of_wisdom = "building_house_of_wisdom_control_abb",
 	},
 	mongol = {
 		castle = "building_defense_keep_control_nov",
@@ -140,6 +142,18 @@ AGS_CIV_HRE = "hre"
 AGS_CIV_MONGOL = "mongol"
 AGS_CIV_ABBASID = "abbasid"
 AGS_CIV_CHINESE = "chinese"
+
+
+AGS_CIV_PREFIXES = {
+	chinese = "chi_",
+	english = "eng_",
+	french = "fre_",
+	hre = "hre_",
+	mongol = "mon_",
+	rus = "rus_",
+	sultanate = "sul_",
+	abbasid = "abb_",
+}
 
 AGS_UPGRADE_AGES = {
 	AGE_DARK = "dark_age",

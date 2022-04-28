@@ -7,77 +7,99 @@
 -- Restricts players to advance past final age.
 ---------------------------------------------------------------------------------------------------
 
-AGS_FINAL_AGE_MODULE = "AGS_FinalAge"
-AGS_FINAL_AGE_ABB_EW_DARK = BP_GetUpgradeBlueprint("upgrade_add_culture_wing")
-AGS_FINAL_AGE_ABB_MW_DARK = BP_GetUpgradeBlueprint("upgrade_add_economy_wing")
-AGS_FINAL_AGE_ABB_CW_DARK = BP_GetUpgradeBlueprint("upgrade_add_military_wing")
-AGS_FINAL_AGE_ABB_TW_DARK = BP_GetUpgradeBlueprint("upgrade_add_trade_wing")
-AGS_FINAL_AGE_ABB_EW_FEUDAL = BP_GetUpgradeBlueprint("upgrade_add_culture_wing_feudal")
-AGS_FINAL_AGE_ABB_MW_FEUDAL = BP_GetUpgradeBlueprint("upgrade_add_economy_wing_feudal")
-AGS_FINAL_AGE_ABB_CW_FEUDAL = BP_GetUpgradeBlueprint("upgrade_add_military_wing_feudal")
-AGS_FINAL_AGE_ABB_TW_FEUDAL = BP_GetUpgradeBlueprint("upgrade_add_trade_wing_feudal")
-AGS_FINAL_AGE_ABB_EW_CASTLE = BP_GetUpgradeBlueprint("upgrade_add_culture_wing_castle")
-AGS_FINAL_AGE_ABB_MW_CASTLE = BP_GetUpgradeBlueprint("upgrade_add_economy_wing_castle")
-AGS_FINAL_AGE_ABB_CW_CASTLE = BP_GetUpgradeBlueprint("upgrade_add_military_wing_castle")
-AGS_FINAL_AGE_ABB_TW_CASTLE = BP_GetUpgradeBlueprint("upgrade_add_trade_wing_castle")
-AGS_FINAL_AGE_ABB_EW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_culture_wing_imperial")
-AGS_FINAL_AGE_ABB_MW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_economy_wing_imperial")
-AGS_FINAL_AGE_ABB_CW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_military_wing_imperial")
-AGS_FINAL_AGE_ABB_TW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_trade_wing_imperial")
+AGS_ENDING_AGE_MODULE = "AGS_EndingAge"
+AGS_ENDING_AGE_ABB_EW_DARK = BP_GetUpgradeBlueprint("upgrade_add_culture_wing")
+AGS_ENDING_AGE_ABB_MW_DARK = BP_GetUpgradeBlueprint("upgrade_add_economy_wing")
+AGS_ENDING_AGE_ABB_CW_DARK = BP_GetUpgradeBlueprint("upgrade_add_military_wing")
+AGS_ENDING_AGE_ABB_TW_DARK = BP_GetUpgradeBlueprint("upgrade_add_trade_wing")
+AGS_ENDING_AGE_ABB_EW_FEUDAL = BP_GetUpgradeBlueprint("upgrade_add_culture_wing_feudal")
+AGS_ENDING_AGE_ABB_MW_FEUDAL = BP_GetUpgradeBlueprint("upgrade_add_economy_wing_feudal")
+AGS_ENDING_AGE_ABB_CW_FEUDAL = BP_GetUpgradeBlueprint("upgrade_add_military_wing_feudal")
+AGS_ENDING_AGE_ABB_TW_FEUDAL = BP_GetUpgradeBlueprint("upgrade_add_trade_wing_feudal")
+AGS_ENDING_AGE_ABB_EW_CASTLE = BP_GetUpgradeBlueprint("upgrade_add_culture_wing_castle")
+AGS_ENDING_AGE_ABB_MW_CASTLE = BP_GetUpgradeBlueprint("upgrade_add_economy_wing_castle")
+AGS_ENDING_AGE_ABB_CW_CASTLE = BP_GetUpgradeBlueprint("upgrade_add_military_wing_castle")
+AGS_ENDING_AGE_ABB_TW_CASTLE = BP_GetUpgradeBlueprint("upgrade_add_trade_wing_castle")
+AGS_ENDING_AGE_ABB_EW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_culture_wing_imperial")
+AGS_ENDING_AGE_ABB_MW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_economy_wing_imperial")
+AGS_ENDING_AGE_ABB_CW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_military_wing_imperial")
+AGS_ENDING_AGE_ABB_TW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_trade_wing_imperial")
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
 
-Core_RegisterModule(AGS_FINAL_AGE_MODULE)	
+Core_RegisterModule(AGS_ENDING_AGE_MODULE)	
 
-function AGS_FinalAge_UpdateModuleSettings()
-	if AGS_GLOBAL_SETTINGS.EndingAge == 5 then
-		Core_UnregisterModule(AGS_FINAL_AGE_MODULE)
+function AGS_EndingAge_UpdateModuleSettings()
+	if AGS_GLOBAL_SETTINGS.EndingAge == AGS_GS_AGE_LATE_IMPERIAL then
+		Core_UnregisterModule(AGS_ENDING_AGE_MODULE)
 	end
 end
 
-function AGS_FinalAge_PresetPostSpawn()
-	AGS_FinalAge_LockAgeUps()
+function AGS_EndingAge_PresetFinalize()
+	AGS_EndingAge_LockAgeUps()
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_FinalAge_LockAgeUps()
+function AGS_EndingAge_LockAgeUps()
 	for _, player in pairs(PLAYERS) do
-		local player_civ = Player_GetRaceName(player.id)
-		if player_civ == AGS_CIV_ABBASID then
-			AGS_FinalAge_LockAbbasidsAgeUp(player.id, AGS_GLOBAL_SETTINGS.EndingAge)
-		end		
-		Player_SetMaximumAge(player.id, AGS_GLOBAL_SETTINGS.EndingAge)
+		AGS_EndingAge_SetMaximumAge(player, AGS_GLOBAL_SETTINGS.EndingAge)
 	end
 end
 
-function AGS_FinalAge_LockAbbasidsAgeUp(player_id, final_age)
-	if final_age == AGS_GS_AGE_DARK then
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_EW_DARK, ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_MW_DARK, ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_CW_DARK, ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_TW_DARK, ITEM_LOCKED)
+function AGS_EndingAge_SetMaximumAge(player, max_age)
+	local prefix = AGS_CIV_PREFIXES[player.raceName]
+	
+	if player.raceName == AGS_CIV_ABBASID then
+		AGS_EndingAge_RemoveAgeTechnology(player, prefix, max_age)
+	else
+		if max_age < AGS_GS_AGE_FEUDAL then 
+			--Player_SetConstructionMenuAvailability(player.id, prefix.."age2", ITEM_REMOVED)
+			Player_SetConstructionMenuAvailability(player.id, prefix.."age1_wonders", ITEM_REMOVED)
+		end
+		if max_age < AGS_GS_AGE_CASTLE then 
+			Player_SetConstructionMenuAvailability(player.id, prefix.."age3", ITEM_REMOVED)
+			Player_SetConstructionMenuAvailability(player.id, prefix.."age2_wonders", ITEM_REMOVED)
+		end
+		if max_age < AGS_GS_AGE_IMPERIAL then 
+			Player_SetConstructionMenuAvailability(player.id, prefix.."age4", ITEM_REMOVED)
+			Player_SetConstructionMenuAvailability(player.id, prefix.."age3_wonders", ITEM_REMOVED)
+		end
 	end
-	if final_age == AGS_GS_AGE_FEUDAL then
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_EW_FEUDAL, ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_MW_FEUDAL, ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_CW_FEUDAL, ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_TW_FEUDAL, ITEM_LOCKED)
+	
+	Player_SetStateModelInt(player.id, "player_max_age", AGS_GLOBAL_SETTINGS.EndingAge)
+end
+
+function AGS_EndingAge_RemoveAgeTechnology(player, prefix, final_age)
+	if final_age <= AGS_GS_AGE_DARK then
+		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player.raceName, AGS_BP_HOW), ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_EW_DARK, ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_MW_DARK, ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_CW_DARK, ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_TW_DARK, ITEM_REMOVED)
 	end
-	if final_age == AGS_GS_AGE_CASTLE then
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_EW_CASTLE, ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_MW_CASTLE, ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_CW_CASTLE, ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_TW_CASTLE, ITEM_LOCKED)
+	if final_age <= AGS_GS_AGE_FEUDAL then
+		Player_SetConstructionMenuAvailability(player.id, prefix.."age3", ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_EW_FEUDAL, ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_MW_FEUDAL, ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_CW_FEUDAL, ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_TW_FEUDAL, ITEM_REMOVED)
 	end
-	if final_age == AGS_GS_AGE_IMPERIAL then
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_EW_IMPERIAL, ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_MW_IMPERIAL, ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_CW_IMPERIAL, ITEM_LOCKED)
-		Player_SetUpgradeAvailability(player_id, AGS_FINAL_AGE_ABB_TW_IMPERIAL, ITEM_LOCKED)
+	if final_age <= AGS_GS_AGE_CASTLE then
+		Player_SetConstructionMenuAvailability(player.id, prefix.."age4", ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_EW_CASTLE, ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_MW_CASTLE, ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_CW_CASTLE, ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_TW_CASTLE, ITEM_REMOVED)
+	end
+	if final_age <= AGS_GS_AGE_IMPERIAL then
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_EW_IMPERIAL, ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_MW_IMPERIAL, ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_CW_IMPERIAL, ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_TW_IMPERIAL, ITEM_REMOVED)
 	end
 end
