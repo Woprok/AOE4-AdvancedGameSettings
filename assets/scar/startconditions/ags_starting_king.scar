@@ -1,0 +1,79 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Spawns king near default position.
+---------------------------------------------------------------------------------------------------
+
+AGS_STARTING_KING_MODULE = "AGS_StartingKing"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_STARTING_KING_MODULE)	
+
+function AGS_StartingKing_UpdateModuleSettings()
+	AGS_Print("AGS_StartingKing_UpdateModuleSettings")
+	if AGS_GLOBAL_SETTINGS.StartingKings == 0 then
+		Core_UnregisterModule(AGS_STARTING_KING_MODULE)
+	end
+end
+
+function AGS_StartingKing_PresetExecute()
+	AGS_Print("AGS_StartingKing_PresetExecute")
+	AGS_StartingKing_Create()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- This function spawns a king next each player's Town Center
+function AGS_StartingKing_Create()
+	for _, player in pairs(PLAYERS) do		
+		local sbp_king = AGS_GetCivilizationUnit(player.raceName, AGS_BP_KING)				
+		local sname = AGS_SGroupName(player.id, AGS_BP_KING)	
+		local start_adjusted_pos = AGS_GlobalSettings_GetStartPosition(player.id)			
+		local sg_king = AGS_SpawnSquad(player.id, sname, sbp_king, start_adjusted_pos, World_Pos(0, 0, -1), AGS_GLOBAL_SETTINGS.StartingKings)
+			
+		if AGS_GLOBAL_SETTINGS.EmpoweredKings then	
+			for i = 1, SGroup_CountSpawned(sg_king) do
+				AGS_StartingKing_Empower(SGroup_GetSquadAt(sg_king, i), player)
+			end			
+		end
+	end
+end
+
+function AGS_StartingKing_Empower(sid, player)
+	local ebp_king = AGS_GetCivilizationEntity(player.raceName, AGS_BP_KING)
+	local AGS_StartingKing_Buff = function(modifier, value)
+		Modifier_ApplyToPlayer(Modifier_Create(MAT_EntityType, modifier, MUT_Addition, false, value, ebp_king), player.id, 0.0)
+	end
+	local AGS_StartingKing_Nerf = function(modifier, value, ability)
+		Modifier_ApplyToPlayer(Modifier_Create(MAT_Ability, modifier, MUT_Addition, false, value, ability), player.id, 0.0)
+	end
+	local abp = BP_GetAbilityBlueprint("leader_attack_speed_activated_lowcd")
+	Squad_AddAbility(sid, abp)
+	AGS_StartingKing_Nerf("ability_recharge_time_modifier", 105, abp)
+	abp = BP_GetAbilityBlueprint("leader_healing_activated_lowcd")
+	Squad_AddAbility(sid, abp)
+	AGS_StartingKing_Nerf("ability_recharge_time_modifier", 255, abp)	
+	abp = BP_GetAbilityBlueprint("leader_damage_activated")
+	Squad_AddAbility(sid, abp)
+	AGS_StartingKing_Nerf("ability_recharge_time_modifier", 75, abp)	
+	abp = BP_GetAbilityBlueprint("leader_production_mon_activated")
+	Squad_AddAbility(sid, abp)
+	AGS_StartingKing_Nerf("ability_recharge_time_modifier", 225, abp)
+	
+	Squad_RemoveAbility(sid, BP_GetAbilityBlueprint("core_unit_death"))
+	-- Aura +4 Armor +50% Damage
+	Squad_AddAbility(sid, BP_GetAbilityBlueprint("general_aura_armor"))
+	
+	AGS_StartingKing_Buff("armor_scalar_for_ranged_damage", 1)
+	AGS_StartingKing_Buff("armor_scalar_for_melee_damage", 1)
+	AGS_StartingKing_Buff("speed_maximum_modifier", 3.5)
+	AGS_StartingKing_Buff("health_maximum_modifier", 800)
+	AGS_StartingKing_Buff("sight_radius_modifier", 10)
+end

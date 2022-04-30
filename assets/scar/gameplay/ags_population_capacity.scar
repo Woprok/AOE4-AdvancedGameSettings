@@ -16,18 +16,21 @@ AGS_POPULATION_CAPACITY_MODULE = "AGS_PopulationCapacity"
 Core_RegisterModule(AGS_POPULATION_CAPACITY_MODULE)	
 
 function AGS_PopulationCapacity_UpdateModuleSettings()
+	AGS_Print("AGS_PopulationCapacity_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.MaximumPopulation == 200 and AGS_GLOBAL_SETTINGS.MinimumPopulation == 0 then
 		Core_UnregisterModule(AGS_POPULATION_CAPACITY_MODULE)
 	end
 end
 
 function AGS_PopulationCapacity_AdjustSettings()
+	AGS_Print("AGS_PopulationCapacity_AdjustSettings")
 	if AGS_GLOBAL_SETTINGS.MinimumPopulation > AGS_GLOBAL_SETTINGS.MaximumPopulation then
 		AGS_GLOBAL_SETTINGS.MinimumPopulation = AGS_GLOBAL_SETTINGS.MaximumPopulation
 	end
 end
 
 function AGS_PopulationCapacity_PresetFinalize()
+	AGS_Print("AGS_PopulationCapacity_PresetFinalize")
 	AGS_PopulationCapacity_Change()
 end
 

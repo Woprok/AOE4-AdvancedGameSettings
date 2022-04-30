@@ -32,12 +32,14 @@ AGS_ENDING_AGE_ABB_TW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_trade_wing_
 Core_RegisterModule(AGS_ENDING_AGE_MODULE)	
 
 function AGS_EndingAge_UpdateModuleSettings()
+	AGS_Print("AGS_EndingAge_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.EndingAge == AGS_GS_AGE_LATE_IMPERIAL then
 		Core_UnregisterModule(AGS_ENDING_AGE_MODULE)
 	end
 end
 
 function AGS_EndingAge_PresetFinalize()
+	AGS_Print("AGS_EndingAge_PresetFinalize")
 	AGS_EndingAge_LockAgeUps()
 end
 

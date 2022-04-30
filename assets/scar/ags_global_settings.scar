@@ -18,6 +18,7 @@ AGS_GS_TEAM_VICTORY_DYNAMIC = 2
 AGS_GS_SETTLEMENT_SCATTERED = 0
 AGS_GS_SETTLEMENT_NOMADIC = 1
 AGS_GS_SETTLEMENT_SETTLED = 2
+AGS_GS_SETTLEMENT_FORTIFIED = 3
 -- Team Balance
 AGS_GS_TEAM_BALANCE_NONE = 0
 AGS_GS_TEAM_BALANCE_POPULATION = 1
@@ -122,10 +123,16 @@ AGS_GLOBAL_SETTINGS = {
 	StartingScouts = 1, -- undefined
 	StartingSheeps = 1, -- undefined
 	StartingTownCenters = 1, -- undefined
-	CanReveal = true, -- undefined
-	RevealRadius = 70, -- undefined
-	RevealDuration = 0.25, -- undefined
+	RevealSpawn = true, -- undefined
+	RevealSettings = {
+		Radius = 70, -- undefined
+		Duration = 0.25, -- undefined
+	},
 	IsTestMode = false, -- undefined
+	IsAdjustingAI = true, -- undefined
+	EnableUtilities = true, -- undefined
+	AllowLoserSpectation = true, -- undefined
+	UsingPrefabStart = true, -- undefined, is related to .rdo file starting conditions
 }
 
 ---------------------------------------------------------------------------------------------------
@@ -135,6 +142,7 @@ AGS_GLOBAL_SETTINGS = {
 Core_RegisterModule(AGS_GLOBAL_SETTINGS_MODULE)	
 -- Takes wincondition settings and applies them to global settings collection AGS_GLOBAL_SETTINGS.
 function AGS_GlobalSettings_SetupSettings(options)	
+	AGS_Print("AGS_GlobalSettings_SetupSettings")
 	-- Options can not be null.
 	if not options then
 		return
@@ -166,16 +174,18 @@ function AGS_GlobalSettings_SetupSettings(options)
 end
 
 function AGS_GlobalSettings_EarlyInitializations()
+	AGS_Print("AGS_GlobalSettings_EarlyInitializations")
 	AGS_GlobalSettings_OnLocalPlayerChanged({ player = Game_GetLocalPlayer() })
 	Rule_AddGlobalEvent(AGS_GlobalSettings_OnLocalPlayerChanged, GE_LocalPlayerChanged)
 end
 
 function AGS_GlobalSettings_OnGameOver()
+	AGS_Print("AGS_GlobalSettings_OnGameOver")
 	Rule_RemoveGlobalEvent(AGS_GlobalSettings_OnLocalPlayerChanged)
 end
 
 ---------------------------------------------------------------------------------------------------
--- Functions:
+-- Callbacks:
 ---------------------------------------------------------------------------------------------------
 -- Called when local player is changed.
 function AGS_GlobalSettings_OnLocalPlayerChanged(context)
@@ -184,6 +194,38 @@ function AGS_GlobalSettings_OnLocalPlayerChanged(context)
 		AGS_GS_LOCAL_PLAYER = Core_GetPlayersTableEntry(context.player)
 		AGS_Print("Local Player:", AGS_GS_LOCAL_PLAYER)
 	end
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_GlobalSettings_GetStartPosition(player_id)
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_SETTLED and AGS_GLOBAL_SETTINGS.UsingPrefabStart then
+		local group = Player_GetEntitiesFromType(player_id, AGS_BP_TC_CAPITAL)
+		if group ~= nil and EGroup_CountSpawned(group) > 0 then
+			return EGroup_GetPosition(group)	
+		end
+	end
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_FORTIFIED and AGS_GLOBAL_SETTINGS.UsingPrefabStart then
+		local group = Player_GetEntitiesFromType(player_id, AGS_BP_TC_CAPITAL)
+		if group ~= nil and EGroup_CountSpawned(group) > 0 then
+			return EGroup_GetPosition(group)	
+		end
+	end
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_SETTLED then
+		return Player_GetStartingPosition(player_id) 			
+	end
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_NOMADIC then
+		return Player_GetStartingPosition(player_id) 			
+	end
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_SCATTERED then
+		return Player_GetStartingPosition(player_id) 	
+	end
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_FORTIFIED then
+		return Player_GetStartingPosition(player_id) 	
+	end
+	return Player_GetStartingPosition(player_id) 
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -347,6 +389,9 @@ function AGS_GlobalSettings_DefineLegacySettings(category)
 	if category.option_legacy_setting_simulation_speed then
 		AGS_GlobalSettings_SetSimulationSpeed(category.option_legacy_setting_simulation_speed)
 	end
+	if category.option_legacy_setting_empowered_kings ~= nil then
+		AGS_GLOBAL_SETTINGS.EmpoweredKings = category.option_legacy_setting_empowered_kings
+	end
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -370,6 +415,8 @@ function AGS_GlobalSettings_SetSettlement(settlement)
 		AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_NOMADIC
 	elseif settlement.enum_value == settlement.enum_items.settlement_settled then
 		AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_SETTLED
+	elseif settlement.enum_value == settlement.enum_items.settlement_settled_fortified then
+		AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_FORTIFIED		
 	end
 end
 
@@ -800,6 +847,8 @@ function AGS_GlobalSettings_SetStartingVillagers(starting_villagers)
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 75
 	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_100 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 100
+	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_150 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 150
 	elseif starting_villagers.enum_value == starting_villagers.enum_items.starting_villagers_200 then
 		AGS_GLOBAL_SETTINGS.StartingVillagers = 200
 	end

@@ -16,12 +16,14 @@ AGS_SCORE_VISIBILITY_MODULE = "AGS_ScoreVisibility"
 Core_RegisterModule(AGS_SCORE_VISIBILITY_MODULE)	
 
 function AGS_ScoreVisibilityUpdateModuleSettings()
+	AGS_Print("AGS_ScoreVisibilityUpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.ScoreVisibility then
 		Core_UnregisterModule(AGS_SCORE_VISIBILITY_MODULE)
 	end
 end
 
 function AGS_ScoreVisibilityPresetPostSpawn()
+	AGS_Print("AGS_ScoreVisibilityPresetPostSpawn")
 	AGS_ScoreVisibilityVisible()
 end
 

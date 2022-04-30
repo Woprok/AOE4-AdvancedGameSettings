@@ -22,6 +22,7 @@ AGS_TESTING_MODULE = "AGS_Testing"
 Core_RegisterModule(AGS_TESTING_MODULE)	
 
 function AGS_Testing_UpdateModuleSettings()
+	AGS_Print("AGS_Testing_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.IsTestMode then
 		Core_UnregisterModule(AGS_TESTING_MODULE)
 	end
@@ -44,15 +45,14 @@ function AGS_Testing_RemoveUnits()
 		SGroup_DestroyAllSquads(Player_GetSquads(player.id))
 	end
 end
-
-function AGS_Testing_Cheats()
-	AGS_GLOBAL_SETTINGS.is_cheat_enabled = Misc_IsCommandLineOptionSet("cheat")
-	AGS_GLOBAL_SETTINGS.revealMap = Misc_IsCommandLineOptionSet("no_fow")
+-- Returns option from command line like "-cheat" by asking for "cheat"
+function AGS_Testing_HasCommandLineOption(option_name)
+	return Misc_IsCommandLineOptionSet(option_name)
 end
 
 function AGS_Testing_SpawnTest()
 	for i, player in pairs(PLAYERS) do
-		local player_civ = Player_GetRaceName(player.id)
+		local player_civ = player.raceName
 		
 		local snameSHP = AGS_SGroupName(player.id, "danes")
 		local sbp_shp = BP_GetSquadBlueprint("unit_raider_dane")
@@ -69,22 +69,3 @@ function AGS_Testing_SpawnTest()
 		local sbp_shp = BP_GetSquadBlueprint("unit_militia_cmp_chi")
 	end
 end
-
---	Rule_AddGlobalEvent(AGS_Testing_OnEntityKilled, GE_EntityKilled)
---	Rule_AddGlobalEvent(AGS_Testing_OnSquadKilled, GE_SquadKilled)
---	Rule_RemoveGlobalEvent(AGS_Testing_OnEntityKilled)
---	Rule_RemoveGlobalEvent(AGS_Testing_OnSquadKilled)
---function AGS_Testing_OnEntityKilled(context)	
---	Util_StartQuickIntel(ACTOR.NARR, "Entity KILLED")
---	Entity_SetStateModelFloat(context.victim, "death_seconds", 1)
---end
---
---function AGS_Testing_OnSquadKilled(context)	
---	ebpextensions\health_ext<float name="death_seconds" value="19" />
---	Util_StartQuickIntel(ACTOR.NARR, "Squad KILLED")
---	Squad_SetStateModelFloat(context.victim, "death_seconds", 1)
---	--local eg = Player_GetEntitiesFromType(Game_GetLocalPlayer(), "infantry")
---	--local mf = function(gid, idx, eid)
---	--end
---	--EGroup_ForEach(eg, mf)
---end

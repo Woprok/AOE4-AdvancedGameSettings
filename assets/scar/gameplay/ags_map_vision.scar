@@ -16,12 +16,14 @@ AGS_MAP_VISION_MODULE = "AGS_MapVision"
 Core_RegisterModule(AGS_MAP_VISION_MODULE)	
 
 function AGS_MapVision_UpdateModuleSettings()
+	AGS_Print("AGS_MapVision_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.MapVision == AGS_GS_MAP_VISION_CONCEALED then
 		Core_UnregisterModule(AGS_MAP_VISION_MODULE)
 	end
 end
 
 function AGS_MapVision_PresetFinalize()
+	AGS_Print("AGS_MapVision_PresetFinalize")
 	AGS_MapVision_RevealMap()
 end
 

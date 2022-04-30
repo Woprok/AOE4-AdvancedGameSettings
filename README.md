@@ -21,3 +21,17 @@ Be free to also provide ideas or requests via issues/tickets.
 
 # Bug / Issue Reports:    
 Please include as much information as possible. Amount of Opponents, Team Setup, AI Opponents, Game Mode Settings selected.
+
+
+# Known Issues
+
+## AI
+Due to there being no dedicated API for AI this mode can't change AI behaviour to be smarter. 
+Skirmish AI at the moment is not able to manage spawned units and buildings properly. 
+Leaving them idle or assigning incorrect commands.
+If you want this to be improved I suggest to turn your attention to official forum and ask Relic to improve AI.
+
+## King Unit
+Due to this mode being only game mode, it can't change any base aspect of a unit. 
+So T-Posing on death is issue that hopefully Relic will resolve once.
+If you want this to be improved I suggest to turn your attention to official forum and ask Relic to fix it.

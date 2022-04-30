@@ -35,23 +35,26 @@ AGS_TREE_BOMBARDMENT = {
 Core_RegisterModule(AGS_TREE_BOMBARDMENT_MODULE)	
 
 function AGS_TreeBombardment_UpdateModuleSettings()
+	AGS_Print("AGS_TreeBombardment_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.TreeBombardment then
 		Core_UnregisterModule(AGS_TREE_BOMBARDMENT_MODULE)
 	end
 end
 
 function AGS_TreeBombardment_PrepareStart()
+	AGS_Print("AGS_TreeBombardment_PrepareStart")
 	Rule_AddGlobalEvent(AGS_TreeBombardment_OnProjectileLanded, GE_ProjectileLanded)
 	Rule_AddGlobalEvent(AGS_TreeBombardment_OnProjectileFired, GE_ProjectileFired)
 end
 
 function AGS_TreeBombardment_OnGameOver()
+	AGS_Print("AGS_TreeBombardment_OnGameOver")
 	Rule_RemoveGlobalEvent(AGS_TreeBombardment_OnProjectileLanded)
 	Rule_RemoveGlobalEvent(AGS_TreeBombardment_OnProjectileFired)
 end
 
 ---------------------------------------------------------------------------------------------------
--- Functions:
+-- Callbacks:
 ---------------------------------------------------------------------------------------------------
 -- Executes after small delay.
 function AGS_TreeBombardment_OnProjectileFired(projectile)	
@@ -63,16 +66,6 @@ function AGS_TreeBombardment_OnProjectileFired(projectile)
 			Rule_AddOneShot(AGS_TreeBombardment_OnExpectedLanding, AGS_TREE_BOMBARDMENT.on_fired_delay, { target = projectile.target })
 			break
 		end
-	end	
-end
--- Bridge between interfaces.
-function AGS_TreeBombardment_OnExpectedLanding(context, data)
-	if data.target.EntityID ~= nil then		
-		local e = Entity_FromID(data.target.EntityID)
-		projectile_target = Entity_GetPosition(e)
-		AGS_TreeBombardment_DestroyTreeGroup(projectile_target)
-	else
-		AGS_TreeBombardment_DestroyTreeGroup(data.target)		
 	end	
 end
 -- Executes immediately.
@@ -87,6 +80,20 @@ function AGS_TreeBombardment_OnProjectileLanded(projectile)
 		end
 	end	
 end		
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Bridge between interfaces.
+function AGS_TreeBombardment_OnExpectedLanding(context, data)
+	if data.target.EntityID ~= nil then		
+		local e = Entity_FromID(data.target.EntityID)
+		projectile_target = Entity_GetPosition(e)
+		AGS_TreeBombardment_DestroyTreeGroup(projectile_target)
+	else
+		AGS_TreeBombardment_DestroyTreeGroup(data.target)		
+	end	
+end
 -- Remove any tree from projectile_target radius.
 function AGS_TreeBombardment_DestroyTreeGroup(projectile_target)
 	if projectile_target == nil then

@@ -23,12 +23,14 @@ AGS_STARTING_RESOURCES_VALUES = {
 Core_RegisterModule(AGS_STARTING_RESOURCES_MODULE)	
 
 function AGS_StartingResources_UpdateModuleSettings()
+	AGS_Print("AGS_StartingResources_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.StartingResources == AGS_GS_RESOURCES_NORMAL then
 		Core_UnregisterModule(AGS_STARTING_RESOURCES_MODULE)
 	end
 end
 
 function AGS_StartingResources_PrepareStart()
+	AGS_Print("AGS_StartingResources_PrepareStart")
 	AGS_StartingResources_SetResources(AGS_GLOBAL_SETTINGS.StartingResources)
 end
 

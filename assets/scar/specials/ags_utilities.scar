@@ -63,45 +63,32 @@ AGS_UTILITIES_MODULE = "AGS_Utilities"
 
 Core_RegisterModule(AGS_UTILITIES_MODULE)	
 
-function AGS_Utilities_SetupSettings(options)
-	-- Set player behaviour when eliminated.
-	if options.section_endgame then 
-		allow_spectators = options.section_endgame.option_allow_spectators
+function AGS_Utilities_UpdateModuleSettings()
+	AGS_Print("AGS_Utilities_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.EnableUtilities then
+		Core_UnregisterModule(AGS_REVEAL_SPAWN_MODULE)
 	end
 end
 
-function AGS_Utilities_OnInit()
-	
+function AGS_Utilities_AdjustSettings()
+	AGS_Print("AGS_Utilities_AdjustSettings")
+	-- Set player behaviour when eliminated.
+	_allow_spectators = AGS_GLOBAL_SETTINGS.AllowLoserSpectation
+end
+
+function AGS_Utilities_EarlyInitializations()
+	AGS_Print("AGS_Utilities_EarlyInitializations")	
 	AGS_Utilities_StandardReplay()	
 end
 
 ---------------------------------------------------------------------------------------------------
--- Functions:
+-- Callbacks:
 ---------------------------------------------------------------------------------------------------
-
--- Initialize replay stats
-function AGS_Utilities_StandardReplay()
-	if AGS_GLOBAL_SETTINGS.Religious then
-		ReplayStatViewer_PopulateReplayStatTabs({"ReligiousTrackerTemplate"})
-		ReplayStatViewer_RegisterPlayerDataContextUpdater(Religious_UpdatePlayerStats)
-	end
-	if AGS_GLOBAL_SETTINGS.Conquest then
-		ReplayStatViewer_PopulateReplayStatTabs({"ConquestTrackerTemplate"})
-		ReplayStatViewer_RegisterPlayerDataContextUpdater(Conquest_UpdatePlayerStats)
-	end
-	if AGS_GLOBAL_SETTINGS.Wonder then
-		ReplayStatViewer_PopulateReplayStatTabs({"WonderTrackerTemplate"})
-		ReplayStatViewer_RegisterPlayerDataContextUpdater(Wonder_UpdatePlayerStats)
-	end
-	ReplayStatViewer_PopulateReplayStatTabs({"CurrentResourcesTemplate", "IncomeTemplate", "MilitaryTemplate"})	
-end
-
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Religious_UpdatePlayerStats(player, scarModel)	
 	scarModel.Relics_Target = #_religious.sites
 	scarModel.Relics_Current = Religious_SitesOwnedByPlayer(player)
 end
-
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Conquest_UpdatePlayerStats(player, scarModel)
 	local landmarks_built = 0
@@ -117,7 +104,6 @@ function Conquest_UpdatePlayerStats(player, scarModel)
 	scarModel.Conquest_Target = landmarks_built
 	scarModel.Conquest_Current = landmarks_remaining
 end
-
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Wonder_UpdatePlayerStats(player, scarModel)	
 	if not player.isEliminated and player._wonder.entity_id ~= nil and Entity_IsValid(player._wonder.entity_id) then 
@@ -133,4 +119,24 @@ function Wonder_UpdatePlayerStats(player, scarModel)
 	end
 	scarModel.Wonder_Target = 0 	-- in sec
 	scarModel.Wonder_Current = -1 	-- in sec	-1 : not constructed
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Initialize replay stats
+function AGS_Utilities_StandardReplay()
+	if AGS_GLOBAL_SETTINGS.Conquest then
+		ReplayStatViewer_PopulateReplayStatTabs({"ConquestTrackerTemplate"})
+		ReplayStatViewer_RegisterPlayerDataContextUpdater(Conquest_UpdatePlayerStats)
+	end
+	if AGS_GLOBAL_SETTINGS.Religious then
+		ReplayStatViewer_PopulateReplayStatTabs({"ReligiousTrackerTemplate"})
+		ReplayStatViewer_RegisterPlayerDataContextUpdater(Religious_UpdatePlayerStats)
+	end
+	if AGS_GLOBAL_SETTINGS.Wonder then
+		ReplayStatViewer_PopulateReplayStatTabs({"WonderTrackerTemplate"})
+		ReplayStatViewer_RegisterPlayerDataContextUpdater(Wonder_UpdatePlayerStats)
+	end
+	ReplayStatViewer_PopulateReplayStatTabs({"CurrentResourcesTemplate", "IncomeTemplate", "MilitaryTemplate"})	
 end

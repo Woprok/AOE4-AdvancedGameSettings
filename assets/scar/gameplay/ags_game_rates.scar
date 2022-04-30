@@ -17,12 +17,14 @@ AGS_GAME_RATES_MODIFIERS = { }
 Core_RegisterModule(AGS_GAME_RATES_MODULE)	
 
 function AGS_GameRates_UpdateModuleSettings()
+	AGS_Print("AGS_GameRates_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.GameRates == 1.00 then
 		Core_UnregisterModule(AGS_GAME_RATES_MODULE)
 	end
 end
 
 function AGS_GameRates_PresetFinalize()	
+	AGS_Print("AGS_GameRates_PresetFinalize")
 	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_BUILDING))	
 	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_UNIT_CLASS))	
 end

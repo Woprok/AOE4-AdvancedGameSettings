@@ -18,7 +18,8 @@ import("ags_cardinal.scar")
 -- It might be possible to assume that all imported modules are finished with the stage when we are called.
 Core_RegisterModule("AGS_GameMode")	
 
-function AGS_GameMode_LateInitializations()
+function AGS_GameMode_PrepareStart()
+	AGS_Print("AGS_GameMode_PrepareStart")
 	--Core_CallDelegateFunctions("DiplomacyEnabled", AGS_GLOBAL_SETTINGS.Diplomacy)
 	--Core_CallDelegateFunctions("TributeEnabled", AGS_GLOBAL_SETTINGS.Tributes)
 	
@@ -27,5 +28,5 @@ function AGS_GameMode_LateInitializations()
 	--end	
 	--if AGS_GLOBAL_SETTINGS.Diplomacy then
 	--	Diplomacy_AllPlayer_DestroyTeamsFinalize()
-	--end	
+	--end	 
 end

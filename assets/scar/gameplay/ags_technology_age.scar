@@ -16,12 +16,14 @@ AGS_TECHNOLOGY_AGE_MODULE = "AGS_TechnologyAge"
 Core_RegisterModule(AGS_TECHNOLOGY_AGE_MODULE)	
 
 function AGS_TechnologyAge_UpdateModuleSettings()
+	AGS_Print("AGS_TechnologyAge_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.TechnologyAge == AGS_GS_AGE_NONE then
 		Core_UnregisterModule(AGS_TECHNOLOGY_AGE_MODULE)
 	end
 end
 
 function AGS_TechnologyAge_PresetFinalize()
+	AGS_Print("AGS_TechnologyAge_PresetFinalize")
 	AGS_TechnologyAge_UpgradeAllPlayers()
 end
 

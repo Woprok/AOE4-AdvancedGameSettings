@@ -37,7 +37,7 @@ function AGS_Nomad_PresetFinalize()
 		Player_SetStateModelFloat(player.id, "has_capital", 0)
 		-- Player should be able to build structures
 		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)		
-		Core_CallDelegateFunctions("AdjustAIPlayer", player.id, AGS_AI_ADJUSTREASON_NOMAD)
+		Core_CallDelegateFunctions("AdjustAIPlayers", player.id, AGS_AI_ADJUSTREASON_NOMAD)
 	end
 end
 

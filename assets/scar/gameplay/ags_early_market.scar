@@ -16,12 +16,14 @@ AGS_EARLY_MARKET_MODULE = "AGS_EarlyMarket"
 Core_RegisterModule(AGS_EARLY_MARKET_MODULE)	
 
 function AGS_EarlyMarket_UpdateModuleSettings()
+	AGS_Print("AGS_EarlyMarket_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.EarlyMarket then
 		Core_UnregisterModule(AGS_EARLY_MARKET_MODULE)
 	end
 end
 
 function AGS_EarlyMarket_PresetFinalize()
+	AGS_Print("AGS_EarlyMarket_PresetFinalize")
 	AGS_EarlyMarket_Unlock()
 end
 

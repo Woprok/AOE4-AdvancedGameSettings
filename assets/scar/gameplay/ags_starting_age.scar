@@ -16,12 +16,14 @@ AGS_STARTING_AGE_MODULE = "AGS_StartingAge"
 Core_RegisterModule(AGS_STARTING_AGE_MODULE)	
 
 function AGS_StartingAge_UpdateModuleSettings()
+	AGS_Print("AGS_StartingAge_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.StartingAge == AGS_GS_AGE_NONE then
 		Core_UnregisterModule(AGS_STARTING_AGE_MODULE)
 	end
 end
 
-function AGS_StartingAge_PresetFinalize()
+function AGS_StartingAge_LateInitializations()
+	AGS_Print("AGS_StartingAge_LateInitializations")
 	AGS_StartingAge_UpgradeAllPlayers()
 end
 

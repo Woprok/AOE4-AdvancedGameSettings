@@ -16,12 +16,14 @@ AGS_TOWN_CENTER_RESTICTIONS_MODULE = "AGS_TownCenterRestrictions"
 Core_RegisterModule(AGS_TOWN_CENTER_RESTICTIONS_MODULE)	
 
 function AGS_TownCenterRestrictions_UpdateModuleSettings()
+	AGS_Print("AGS_TownCenterRestrictions_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.TownCenterRestrictions == AGS_GS_TC_RESTRICTIONS_NONE then
 		Core_UnregisterModule(AGS_TOWN_CENTER_RESTICTIONS_MODULE)
 	end
 end
 
 function AGS_TownCenterRestrictions_PresetFinalize()
+	AGS_Print("AGS_TownCenterRestrictions_PresetFinalize")
 	if AGS_GLOBAL_SETTINGS.TownCenterRestrictions == AGS_GS_TC_RESTRICTIONS_NONE then
 		return
 	elseif AGS_GLOBAL_SETTINGS.TownCenterRestrictions == AGS_GS_TC_RESTRICTIONS_NORMAL then

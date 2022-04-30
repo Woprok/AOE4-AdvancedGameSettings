@@ -16,12 +16,14 @@ AGS_NO_DOCK_MODULE = "AGS_NoDock"
 Core_RegisterModule(AGS_NO_DOCK_MODULE)	
 
 function AGS_NoDock_UpdateModuleSettings()
+	AGS_Print("AGS_NoDock_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.NoDock then
 		Core_UnregisterModule(AGS_NO_DOCK_MODULE)
 	end
 end
 
 function AGS_NoDock_PresetFinalize()
+	AGS_Print("AGS_NoDock_PresetFinalize")
 	AGS_NoDock_Lock()
 end
 

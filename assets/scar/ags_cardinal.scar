@@ -19,6 +19,7 @@ AGS_CARDINAL_MODULE = "AGS_Cardinal"
 Core_RegisterModule(AGS_CARDINAL_MODULE)	
 -- OnGameSetup is split for AGS to additional 3 phases.
 function AGS_Cardinal_OnGameSetup()
+	AGS_Print("AGS_Cardinal_OnGameSetup")
 	local options = { }
 	Setup_GetWinConditionOptions(options)
 		
@@ -29,19 +30,32 @@ function AGS_Cardinal_OnGameSetup()
 end
 -- OnInit invokes custom handle for AGS modules.
 function AGS_Cardinal_OnInit()
+	AGS_Print("AGS_Cardinal_OnInit")
 	UI_AllTerritoryHide()
 	Core_CallDelegateFunctions("EarlyInitializations")	
+end
+-- OnInit invokes custom handle for AGS modules.
+function AGS_Cardinal_PostInit()
+	AGS_Print("AGS_Cardinal_PostInit")
 	Core_CallDelegateFunctions("LateInitializations")	
 end
 -- Preset is safe state for anything that should be done before start. Such as additional entities, vision etc.
 function AGS_Cardinal_Preset() 	
+	AGS_Print("AGS_Cardinal_Preset")
 	Core_CallDelegateFunctions("PresetInitialize")
 	Core_CallDelegateFunctions("PresetExecute")
 	Core_CallDelegateFunctions("PresetFinalize")
 end
 -- PreStart is followed by 1 frame delay with normal Start.
 function AGS_Cardinal_PreStart()
+	AGS_Print("AGS_Cardinal_PreStart")
 	Core_CallDelegateFunctions("PrepareStart")
+end
+-- PreStart is followed by 1 frame delay with normal Start.
+function AGS_Cardinal_Start()
+	AGS_Print("AGS_Cardinal_Start")
+	Core_CallDelegateFunctions("OnStarting")
+	Core_CallDelegateFunctions("OnPlay")
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -55,19 +69,8 @@ import("ags_global_settings.scar")
 
 
 --import("conditions/ags_conditions_visuals.scar") -- TODO split helpers and visuals
--- AGS supports AI with few adjustments.
---import("ai/ags_ai.scar")
--- Starting conditions are generally loaded during PresetSpawn.
---import("startconditions/ags_start_nomad.scar")
---import("startconditions/ags_start_scattered.scar")
---import("startconditions/ags_start_settled.scar")
---import("startconditions/ags_start_keep.scar")
---import("startconditions/ags_start_king.scar")
--- Supporting start conditions.
---import("startconditions/ags_initial_age.scar")
---import("startconditions/ags_technologies.scar")
---import("startconditions/ags_final_age.scar")
---import("startconditions/ags_reveal_spawn.scar")
+
+
 -- Partially reworked Diplomacy & Tributes. -- TODO team system rework
 --import("gameplay/diplomacy_reworked.scar")
 
@@ -82,6 +85,16 @@ import("ags_global_settings.scar")
 --import("conditions/ags_regicide.scar") -- stab king objectives
 --import("conditions/ags_teamsolidarity.scar") -- team needs everyone
 
+-- Start conditions are creating or destroying entities.
+import("startconditions/ags_start_settled.scar")
+import("startconditions/ags_start_fortified.scar")
+--import("startconditions/ags_start_nomad.scar")
+--import("startconditions/ags_start_scattered.scar")
+import("startconditions/ags_starting_keep.scar")
+import("startconditions/ags_starting_king.scar")
+
+-- AGS supports AI with few adjustments.
+import("ai/ags_ai.scar")
 -- Gameplay options are loaded as last.
 import("gameplay/ags_ding.scar")
 import("gameplay/ags_early_market.scar")
@@ -91,7 +104,7 @@ import("gameplay/ags_map_vision.scar")
 import("gameplay/ags_no_dock.scar")
 import("gameplay/ags_population_capacity.scar")
 --import("gameplay/ags_reveal_fow_on_elimination.scar")
---import("gameplay/ags_reveal_spawn.scar")
+import("gameplay/ags_reveal_spawn.scar")
 --import("gameplay/ags_score_visibility.scar")
 --import("gameplay/ags_shared_vision.scar")
 import("gameplay/ags_simulation_speed.scar")
@@ -102,9 +115,9 @@ import("gameplay/ags_town_center_restrictions.scar")
 import("gameplay/ags_tree_bombardment.scar")
 
 -- Wrapper around all default match options, that will have minimal changes done to them.
---import("specials/ags_utilities.scar")
+import("specials/ags_utilities.scar")
 -- Special container for testing and unfinished functionality.
---import("specials/ags_testing.scar")
+import("specials/ags_testing.scar")
 
 ---------------------------------------------------------------------------------------------------
 -- AGS LIBRARY GUIDELINES AND INFORMATIONS
@@ -118,7 +131,7 @@ import("gameplay/ags_tree_bombardment.scar")
 -------------------------------------------------
 -- AI PLAYER UPDATES ANYTIME DURING PRESTART
 -------------------------------------------------
--- AdjustAIPlayer(player_id, ADJUSTREASON: reason)
+-- AdjustAIPlayers(ADJUSTREASON: reason, opt_specific: player_id)
 -------------------------------------------------
 -- SETTINGS & MODULE ADJUSTMENTS DURING ON GAME SETUP
 -------------------------------------------------
@@ -129,6 +142,9 @@ import("gameplay/ags_tree_bombardment.scar")
 -- INITIALIZATION DURING ONINIT (Primarily for UI)
 -------------------------------------------------
 -- EarlyInitializations
+-------------------------------------------------
+-- INITIALIZATION DURING POSTINIT
+-------------------------------------------------
 -- LateInitializations
 -------------------------------------------------
 -- INITIALIZATION DURING PRESET
@@ -154,7 +170,7 @@ import("gameplay/ags_tree_bombardment.scar")
 -- OnGameRestore        //
 -- PreInit              //
 -- OnInit               // Used for certain UI initialization as these are better to be done before filling module data
--- PostInit             //
+-- PostInit             // Somehow this is causing issues if age upgrades are not applied here.
 -- SetupVariables       //
 -- SetDifficulty        //
 -- SetRestrictions      //

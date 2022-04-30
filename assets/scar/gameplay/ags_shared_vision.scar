@@ -19,31 +19,27 @@ AGS_SHARED_VISION_MODULE = "AGS_SharedVision"
 Core_RegisterModule(AGS_SHARED_VISION_MODULE)	
 
 function AGS_SharedVision_UpdateModuleSettings()
+	AGS_Print("AGS_SharedVision_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.SharedVision == AGS_GS_TEAM_VISION_NONE then
 		Core_UnregisterModule(AGS_SHARED_VISION_MODULE)
 	end
 end
 
 function AGS_SharedVision_PresetPostSpawn()
+	AGS_Print("AGS_SharedVision_PresetPostSpawn")
 	AGS_SharedVision_DefineConditions()
 end
 
 -- Grants shared vision to allies if possible.
 function AGS_SharedVision_Start()	
+	AGS_Print("AGS_SharedVision_Start")
 	for _, player in pairs(PLAYERS) do
 		AGS_SharedVision_UpdateVisionForPlayer(player)
 	end
 end
--- Callback invoked by Core_AddPlayerToTeam()
---function AGS_SharedVision_OnPlayerLeftTeam(player)	
---	AGS_SharedVision_UpdateVisionForPlayer(player) 	
---end
--- Callback invoked by Core_AddPlayerToTeam()
-function AGS_SharedVision_OnPlayerJoinedTeam(player)	
-	AGS_SharedVision_UpdateVisionForPlayer(player) 	
-end
 
 function AGS_SharedVision_OnRelationshipChanged(observer_id, target_id)
+	AGS_Print("AGS_SharedVision_OnRelationshipChanged")
 	if observer_id == nil or target_id == nil then
 		return 
 	end
@@ -56,21 +52,25 @@ function AGS_SharedVision_OnRelationshipChanged(observer_id, target_id)
 	AGS_SharedVision_UpdateVisionBetweenPlayers(playerA, playerB)
 end
 
-function AGS_SharedVision_OnGameOver()
-	AGS_SharedVision_StopTrackRequirements()
-end
-
 function AGS_SharedVision_TreatyStarted()
+	AGS_Print("AGS_SharedVision_TreatyStarted")
 	for _, player in pairs(PLAYERS) do
 		AGS_SharedVision_UpdateVisionForPlayer(player)
 	end
 end
 
 function AGS_SharedVision_TreatyEnded()
+	AGS_Print("AGS_SharedVision_TreatyEnded")
 	for _, player in pairs(PLAYERS) do
 		AGS_SharedVision_UpdateVisionForPlayer(player)
 	end
 end
+
+function AGS_SharedVision_OnGameOver()
+	AGS_Print("AGS_SharedVision_OnGameOver")
+	AGS_SharedVision_StopTrackRequirements()
+end
+
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------

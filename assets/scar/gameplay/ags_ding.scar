@@ -18,34 +18,35 @@ AGS_DING_DELAY = 15
 Core_RegisterModule(AGS_DING_MODULE)	
 
 function AGS_Ding_UpdateModuleSettings()
+	AGS_Print("AGS_Ding_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.Ding then
 		Core_UnregisterModule(AGS_DING_MODULE)
 	end
 end
 
 function AGS_Ding_PrepareStart()
+	AGS_Print("AGS_Ding_PrepareStart")
 	AGS_Ding_Queue()
 end
 
+function AGS_Ding_OnPlayerDefeated(player, reason)
+	AGS_Print("AGS_Ding_OnPlayerDefeated")
+	if player ~= nil and player == AGS_GS_LOCAL_PLAYER then
+		AGS_Ding_Dequeue()
+	end
+end
+
 function AGS_Ding_OnGameOver()
+	AGS_Print("AGS_Ding_OnGameOver")
 	AGS_Ding_Dequeue()
 end
 
 ---------------------------------------------------------------------------------------------------
--- Functions:
+-- Callbacks:
 ---------------------------------------------------------------------------------------------------
 -- Checks each frame for desired event.
 function AGS_Ding_Queue()
 	Rule_AddInterval(AGS_Ding_Attempt, 1)
-end
--- Cleanup.
-function AGS_Ding_Dequeue()
-	if Rule_Exists(AGS_Ding_Attempt) then
-		Rule_Remove(AGS_Ding_Attempt)
-	end
-	if Rule_Exists(AGS_Ding_Queue) then
-		Rule_Remove(AGS_Ding_Queue)
-	end
 end
 -- Queues next after delay
 function AGS_Ding_DelayedQueue()
@@ -54,14 +55,27 @@ function AGS_Ding_DelayedQueue()
 end
 
 function AGS_Ding_Attempt()		
-	local egroup = Player_GetEntitiesFromType(AGS_GS_LOCAL_PLAYER.id, AGS_BP_TC)
+	local egroup_tc = Player_GetEntitiesFromType(AGS_GS_LOCAL_PLAYER.id, AGS_BP_TC)
 	local sgroup_vil = Player_GetSquadsFromType(AGS_GS_LOCAL_PLAYER.id, AGS_BP_VILLAGER)
 	
-	if Misc_IsEGroupSelected(egroup, false) then		
+	if egroup_tc ~= nil and Misc_IsEGroupSelected(egroup_tc, false) then		
 		Util_StartQuickIntel(ACTOR.NARR, "DING DING DING DING DING DING DING DING DING DING")
 		AGS_Ding_DelayedQueue()
-	elseif Misc_IsSGroupSelected(sgroup_vil, false) then		
+	elseif sgroup_vil ~= nil and Misc_IsSGroupSelected(sgroup_vil, false) then		
 		Util_StartQuickIntel(ACTOR.NARR, "Yes, milord? What is it? More work? What?")
 		AGS_Ding_DelayedQueue()
+	end
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Cleanup.
+function AGS_Ding_Dequeue()
+	if Rule_Exists(AGS_Ding_Attempt) then
+		Rule_Remove(AGS_Ding_Attempt)
+	end
+	if Rule_Exists(AGS_Ding_Queue) then
+		Rule_Remove(AGS_Ding_Queue)
 	end
 end

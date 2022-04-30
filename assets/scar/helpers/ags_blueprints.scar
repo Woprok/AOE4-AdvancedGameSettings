@@ -51,8 +51,7 @@ AGS_ENTITY_TABLE = {
 		villager = "unit_villager_1_eng",
 		scout = "unit_scout_1_eng",
 		king = "unit_king_1_eng",
-		scar_dock = "building_unit_naval_eng",
-		
+		scar_dock = "building_unit_naval_eng",		
 	},
 	chinese = {
 		castle = "building_defense_keep_chi",
@@ -646,7 +645,7 @@ function AGS_SGroupName(player_id, unit_category)
 	return "sg_player_" .. unit_category .. "_" .. tostring(player_id)
 end
 -- Spawn entity and return it to caller.
-function AGS_SpawnEntity(player_id, egroup_name, bp_entity, position, position_offset)
+function AGS_SpawnEntity(player_id, egroup_name, bp_entity, position, position_offset, opt_do_rounding)
 	if position == nil then
 		position = Player_GetStartingPosition(player_id)	
 	end
@@ -654,9 +653,14 @@ function AGS_SpawnEntity(player_id, egroup_name, bp_entity, position, position_o
 		position_offset = World_Pos(0, 0, 0)	
 	end	
 	-- Determine proper position and rotation.
-	local nx = 5 * math.floor(math.floor(position.x) / 5)
-	local ny = 5 * math.floor(math.floor(position.y) / 5)
-	local nz = 5 * math.floor(math.floor(position.z) / 5)
+	local nx = position.x
+	local ny = position.y
+	local nz = position.z
+	if opt_do_rounding ~= nil and opt_do_rounding then
+		nx = 5 * math.floor(math.floor(position.x) / 5)
+		ny = 5 * math.floor(math.floor(position.y) / 5)
+		nz = 5 * math.floor(math.floor(position.z) / 5)
+	end
 	local placement = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z)
 	local rotation = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z + 5)
 	-- Spawn

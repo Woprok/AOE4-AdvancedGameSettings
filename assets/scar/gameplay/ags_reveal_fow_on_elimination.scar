@@ -14,12 +14,14 @@ AGS_REVEAL_FOW_ON_ELIMINATION_MODULE = "AGS_RevealFowOnElimination"
 ---------------------------------------------------------------------------------------------------
 
 function AGS_RevealFowOnElimination_UpdateModuleSettings()
+	AGS_Print("AGS_RevealFowOnElimination_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.RevealFowOnElimination then
 		Core_UnregisterModule(AGS_REVEAL_FOW_ON_ELIMINATION_MODULE)
 	end
 end
 
 function AGS_RevealFowOnElimination_OnPlayerDefeated(player, reason)
+	AGS_Print("AGS_RevealFowOnElimination_OnPlayerDefeated")
 	AGS_RevealFowOnElimination_Reveal(player)
 end
 
