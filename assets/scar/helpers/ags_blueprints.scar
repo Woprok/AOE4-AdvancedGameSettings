@@ -37,6 +37,10 @@ AGS_BP_DOCK = "scar_dock"
 AGS_BP_HOUSE = "house"
 AGS_BP_HOUSE_UNIT = "house_moving"
 AGS_BP_HOW = "house_of_wisdom"
+AGS_BP_PALISADE = "palisade_wall"
+AGS_BP_PALISADE_GATE = "palisade_gate"
+AGS_BP_ANY_WALL = "wall"
+AGS_BP_ANY_GATE = "gate"
 
 AGS_ENTITY_TABLE = {
 	neutral = {
@@ -51,7 +55,9 @@ AGS_ENTITY_TABLE = {
 		villager = "unit_villager_1_eng",
 		scout = "unit_scout_1_eng",
 		king = "unit_king_1_eng",
-		scar_dock = "building_unit_naval_eng",		
+		scar_dock = "building_unit_naval_eng",	
+		palisade_wall = "building_defense_palisade_eng",
+		palisade_gate = "building_defense_palisade_gate_eng",
 	},
 	chinese = {
 		castle = "building_defense_keep_chi",
@@ -62,6 +68,8 @@ AGS_ENTITY_TABLE = {
 		scout = "unit_scout_1_chi",
 		king = "unit_king_1_chi",	
 		scar_dock = "building_unit_naval_chi",	
+		palisade_wall = "building_defense_palisade_chi",
+		palisade_gate = "building_defense_palisade_gate_chi",
 	},
 	french = {
 		castle = "building_defense_keep_fre",
@@ -72,6 +80,8 @@ AGS_ENTITY_TABLE = {
 		scout = "unit_scout_1_fre",
 		king = "unit_king_1_fre",
 		scar_dock = "building_unit_naval_fre",
+		palisade_wall = "building_defense_palisade_fre",
+		palisade_gate = "building_defense_palisade_gate_fre",
 	},
 	hre = {
 		castle = "building_defense_keep_hre",
@@ -83,6 +93,8 @@ AGS_ENTITY_TABLE = {
 		scout = "unit_scout_1_hre",
 		king = "unit_king_1_hre",
 		scar_dock = "building_unit_naval_hre",
+		palisade_wall = "building_defense_palisade_hre",
+		palisade_gate = "building_defense_palisade_gate_hre",
 	},
 	rus = {	
 		castle = "building_defense_keep_control_rus",
@@ -93,6 +105,8 @@ AGS_ENTITY_TABLE = {
 		scout = "unit_scout_1_rus",
 		king = "unit_king_1_rus",
 		scar_dock = "building_unit_naval_rus",
+		palisade_wall = "building_defense_palisade_rus",
+		palisade_gate = "building_defense_palisade_gate_rus",
 	},
 	abbasid = {
 		castle = "building_defense_keep_control_abb",
@@ -104,6 +118,8 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_abb",
 		scar_dock = "building_unit_naval_abb",
 		house_of_wisdom = "building_house_of_wisdom_control_abb",
+		palisade_wall = "building_defense_palisade_abb",
+		palisade_gate = "building_defense_palisade_gate_abb",
 	},
 	mongol = {
 		castle = "building_defense_keep_control_nov",
@@ -116,7 +132,7 @@ AGS_ENTITY_TABLE = {
 		king = "unit_king_1_mon",
 		scar_dock = "building_unit_naval_mon",
 		house = "building_house_mon",
-		house_moving = "building_house_moving_mon"
+		house_moving = "building_house_moving_mon",
 	},
 	sultanate = {
 		castle = "building_defense_keep_control_sul",
@@ -127,6 +143,8 @@ AGS_ENTITY_TABLE = {
 		scout = "unit_scout_1_sul",
 		king = "unit_king_1_sul",
 		scar_dock = "building_unit_naval_sul",
+		palisade_wall = "building_defense_palisade_sul",
+		palisade_gate = "building_defense_palisade_gate_sul",
 	},
 }
 
@@ -743,4 +761,22 @@ function AGS_RemoveUpgrade(player_id, upgrade)
 	if not Player_HasUpgrade(player_id, bp_upgrade) then
 		Player_CompleteUpgrade(player_id, bp_upgrade)				
 	end
+end
+
+function AGS_CalculateCenterOffset(start, x_offset, z_offset)
+	local x_val = 0
+	local z_val = 0
+	if start.x >= 0	then
+		x_val = start.x - x_offset
+	else
+		x_val = start.x + x_offset
+	end
+	
+	if start.z >= 0	then	
+		z_val = start.z - z_offset
+	else
+		z_val = start.z + z_offset
+	end
+	
+	return World_Pos(x_val, World_GetHeightAt(x_val, z_val), z_val)
 end

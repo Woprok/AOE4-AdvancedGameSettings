@@ -46,26 +46,8 @@ function AGS_StartingKeep_Create()
 		local ename = AGS_EGroupName(player.id, AGS_BP_KEEP)		
 		
 		local start_adjusted_pos = AGS_GlobalSettings_GetStartPosition(player.id)		
-		center_pos = AGS_StartingKeep_CalculateCenter(start_adjusted_pos)	
+		center_pos = AGS_CalculateCenterOffset(start_adjusted_pos, 25, 25)	
 		
 		AGS_SpawnEntity(player.id, ename, ebp_building, center_pos, nil, false)
 	end
-end
-
-function AGS_StartingKeep_CalculateCenter(start)
-	local x_val = 0
-	local z_val = 0
-	if start.x >= 0	then
-		x_val = start.x - 25
-	else
-		x_val = start.x + 25
-	end
-	
-	if start.z >= 0	then	
-		z_val = start.z - 25
-	else
-		z_val = start.z + 25
-	end
-	
-	return World_Pos(x_val, World_GetHeightAt(x_val, z_val), z_val)
 end

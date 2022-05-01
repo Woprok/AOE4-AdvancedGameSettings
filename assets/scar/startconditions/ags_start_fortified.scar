@@ -8,6 +8,24 @@
 ---------------------------------------------------------------------------------------------------
 
 AGS_FORTIFIED_MODULE = "AGS_Fortified"
+-- Constantrs for square fortification.
+AGS_FORTIFIED_CORNERS = {
+	LeftTop = { x = 75, z = 75 },
+	RightTop = { x = 75, z = -75 },
+	RightBot = { x = -75, z = -75 },
+	LeftBot = { x = -75, z = 75 },
+	LeftTopStep = { x = 0, z = -1 },
+	RightTopStep = { x = -1, z = 0 },
+	RightBotStep = { x = 0, z = 1 },
+	LeftBotStep = { x = 1, z = 0 },
+	WallLength = 150, -- Determined by this table, too lazy to make it completely dynamic.
+	StepCount = 15, -- Equals WallLength/StepSize.
+	StepSize = 10,
+	GateMiddleTop = { x = 75, z = 0 },
+	GateMiddleBot = { x = -75, z = 0 },
+	GateMiddleRight = { x = 0, z = -75 },
+	GateMiddleLeft = { x = 0, z = 75 },
+}
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -30,78 +48,71 @@ end
 
 function AGS_Fortified_OnStarting()
 	AGS_Print("AGS_Fortified_OnStarting")
-	-- Attempt to do a wall cheese.
-	AGS_Fortified_OnWall()
+	-- Attempt to create something other than a cheese.
+	AGS_Fortified_CreateWalls()
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
-AGS_FORTIFIED_CORNERS = {
-	LeftTop = { x = 75, z = 75 },
-	RightTop = { x = 75, z = -75 },
-	RightBot = { x = -75, z = -75 },
-	LeftBot = { x = -75, z = 75 },
-	LeftTopStep = { x = 0, z = -1 },
-	RightTopStep = { x = -1, z = 0 },
-	RightBotStep = { x = 0, z = 1 },
-	LeftBotStep = { x = 1, z = 0 },
-}
-AGS_FORTIFIED_NEUTRALS = {
-	
-	
-}
+-- Last time this was tested it would not work very well with stone walls.
+function AGS_Fortified_CreateWalls()
+	for _, player in pairs(PLAYERS) do
+		if player.raceName ~= AGS_CIV_MONGOL then
+			local palisade_blueprint = AGS_GetCivilizationEntity(player.raceName, AGS_BP_PALISADE)
+			local palisade_gate_blueprint = AGS_GetCivilizationEntity(player.raceName, AGS_BP_PALISADE_GATE)
+			local spawn_position = AGS_GlobalSettings_GetStartPosition(player.id)			
+			AGS_Fortified_WallAroundPosition(player, palisade_blueprint, palisade_gate_blueprint, spawn_position)
+		end		
+	end	
+end
 
-function AGS_Fortified_OnWall()
-	-- Help functions
-	local AGS_Fortified_DespawnTemp = function(gid, idx, eid)
-		AGS_FORTIFIED_NEUTRALS[idx] = Entity_GetPosition(eid)
-		Entity_WarpToPos(eid, World_Pos(0,0,0))
-	end
-	local AGS_Fortified_SpawnTemp = function(gid, idx, eid)
-		Entity_WarpToPos(eid, AGS_FORTIFIED_NEUTRALS[idx])
-	end
-	local neutral_egroup = EGroup_CreateUnique("ags")
-	World_GetAllNeutralEntities(neutral_egroup)
-	EGroup_ForEach(neutral_egroup, AGS_Fortified_DespawnTemp)
-	-- Prefetch
-	local player = AGS_GS_LOCAL_PLAYER
-	local bp = BP_GetEntityBlueprint("building_defense_wall_fre")
-	local spawn_position = AGS_GlobalSettings_GetStartPosition(player.id)
+function AGS_Fortified_WallAroundPosition(player, wall_bp, gate_bp, center_position)
 	-- New vars
-	local step_size = 10
-	local step_count = 150/10
-	-- Plant func
-	local AGS_Fortified_Plant = function(idx_st, idx_end, corner, step)
+	local step_size = AGS_FORTIFIED_CORNERS.StepSize
+	local step_count = AGS_FORTIFIED_CORNERS.StepCount
+	-- Wall helper funcs
+	local AGS_Fortified_Wall = function(idx_end, corner, step)
 		local start_at = World_Pos(0, 0, 0)
 		local close_at = World_Pos(0, 0, 0)
-		start_at = AGS_Fortified_StartCoordinates(spawn_position, corner)
-		AGS_Print("started", start_at)
-		for i=idx_st, idx_end do 
+		start_at = AGS_Fortified_StartCoordinates(center_position, corner)
+		for i=1, idx_end do 
 			close_at = AGS_Fortified_AdjustCoordinates(start_at, step, step_size)
-			LocalCommand_PlayerPlaceAndConstructSlottedSplinePlanned(player.id, bp, start_at, close_at, false, false)
+			LocalCommand_PlayerPlaceAndConstructSlottedSplinePlanned(player.id, wall_bp, start_at, close_at, false, false)
 			start_at = close_at
 		end
-		AGS_Print("finished", start_at)
 	end
-	-- left top corner
-	AGS_Fortified_Plant(1, step_count, AGS_FORTIFIED_CORNERS.LeftTop, AGS_FORTIFIED_CORNERS.LeftTopStep)
-	-- right top corner
-	AGS_Fortified_Plant(1, step_count, AGS_FORTIFIED_CORNERS.RightTop, AGS_FORTIFIED_CORNERS.RightTopStep)
-	-- right bot corner
-	AGS_Fortified_Plant(1, step_count, AGS_FORTIFIED_CORNERS.RightBot, AGS_FORTIFIED_CORNERS.RightBotStep)
-	-- left bot corner
-	AGS_Fortified_Plant(1, step_count, AGS_FORTIFIED_CORNERS.LeftBot, AGS_FORTIFIED_CORNERS.LeftBotStep)
-	-- construct 
-	local walls = Player_GetEntitiesFromType(player.id, "wall")
 	local AGS_Fortified_Construct = function(gid, idx, eid)
-		--Entity_Spawn(eid)
 		Entity_ForceSelfConstruct(eid)
-		--Entity_SnapToGridAndGround(eid, false)
 	end
+	--local AGS_Fortified_Gate = function(corner, x_off, z_off)
+	--	local start_at = AGS_Fortified_StartCoordinates(center_position, corner)
+	--	local face_at = AGS_CalculateCenterOffset(start_at, x_off, z_off)
+	--	LocalCommand_PlayerPlaceAndConstructEntitiesPlanned(player.id, gate_bp, start_at, face_at, false, false)
+	--end
+	-- left top corner
+	AGS_Fortified_Wall(step_count, AGS_FORTIFIED_CORNERS.LeftTop, AGS_FORTIFIED_CORNERS.LeftTopStep)
+	-- right top corner
+	AGS_Fortified_Wall(step_count, AGS_FORTIFIED_CORNERS.RightTop, AGS_FORTIFIED_CORNERS.RightTopStep)
+	-- right bot corner
+	AGS_Fortified_Wall(step_count, AGS_FORTIFIED_CORNERS.RightBot, AGS_FORTIFIED_CORNERS.RightBotStep)
+	-- left bot corner
+	AGS_Fortified_Wall(step_count, AGS_FORTIFIED_CORNERS.LeftBot, AGS_FORTIFIED_CORNERS.LeftBotStep)
+	-- construct 
+	local walls = Player_GetEntitiesFromType(player.id, AGS_BP_ANY_WALL)
 	EGroup_ForEach(walls, AGS_Fortified_Construct)
 	
-	EGroup_ForEach(neutral_egroup, AGS_Fortified_SpawnTemp)
+	-- middle top
+	--AGS_Fortified_Gate(AGS_FORTIFIED_CORNERS.GateMiddleTop, 10, 0)
+	-- middle bot
+	--AGS_Fortified_Gate(AGS_FORTIFIED_CORNERS.GateMiddleBot, 10, 0)
+	-- middle right
+	--AGS_Fortified_Gate(AGS_FORTIFIED_CORNERS.GateMiddleRight, 0, 10)
+	-- middle left
+	--AGS_Fortified_Gate(AGS_FORTIFIED_CORNERS.GateMiddleLeft, 0, 10)
+	-- construct
+	--local gates = Player_GetEntitiesFromType(player.id, AGS_BP_ANY_GATE)
+	--EGroup_ForEach(gates, AGS_Fortified_Construct)
 end
 
 
