@@ -12,6 +12,7 @@ AGS_SCATTER_RADIUS = 1
 AGS_SCATTER_TUNING = 1.8
 AGS_SCATTER_WOOD = 400
 AGS_SCATTER_STONE = 300
+AGS_SCATTER_MAP_CENTER = World_Pos(0, 0, 0)	
 AGS_SCATTERED_VILLAGERS_MODULE = "AGS_ScatteredVillagers"
 
 ---------------------------------------------------------------------------------------------------
@@ -21,61 +22,86 @@ AGS_SCATTERED_VILLAGERS_MODULE = "AGS_ScatteredVillagers"
 Core_RegisterModule(AGS_SCATTERED_VILLAGERS_MODULE)	
 
 function AGS_ScatteredVillagers_UpdateModuleSettings()
+	AGS_Print("AGS_ScatteredVillagers_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.Settlement ~= AGS_GS_SETTLEMENT_SCATTERED then
 		Core_UnregisterModule(AGS_SCATTERED_VILLAGERS_MODULE)
 	end
 end
 
-function AGS_ScatteredVillagers_PresetSpawn()
-	AGS_ScatteredVillagers_OnSpawn()
+function AGS_ScatteredVillagers_PresetInitialize()
+	AGS_Print("AGS_ScatteredVillagers_PresetInitialize")
+	-- Tune villager spawn out from the middle of the map.
+	AGS_SCATTER_RADIUS = math.max(World_GetWidth(), World_GetLength())/AGS_SCATTER_TUNING 
 end
 
-function AGS_ScatteredVillagers_PresetPostSpawn()
-	for _, player in _pairs(PLAYERS) do	
+function AGS_ScatteredVillagers_PresetExecute()
+	AGS_Print("AGS_ScatteredVillagers_PresetExecute")
+	if AGS_GLOBAL_SETTINGS.UsingPrefabStart then
+		AGS_ScatteredVillagers_DestroySpawn()
+	end
+	AGS_ScatteredVillagers_CreateSpawn()
+end
+
+function AGS_ScatteredVillagers_OnStarting()
+	AGS_Print("AGS_ScatteredVillagers_OnStarting")
+	for _, player in pairs(PLAYERS) do	
 		-- Insist that player do not have capital.
 		Player_SetStateModelFloat(player.id, "has_capital", 0)
 		-- Player should be able to build structures.
 		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)		
-		Core_CallDelegateFunctions("AdjustAIPlayers", player.id, AGS_AI_ADJUSTREASON_NOMAD)
+		Core_CallDelegateFunctions("AdjustAIPlayers", AGS_AI_ADJUSTREASON_NOMAD, player)
+		
+		-- Increase starting resources to cover cost of building an TC
+		if player.raceName ~= AGS_CIV_MONGOL then
+			Player_GiftResource(player.id, RT_Stone, AGS_SCATTER_STONE)
+		end
+		Player_GiftResource(player.id, RT_Wood, AGS_SCATTER_WOOD)
 	end
 end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+-- Removing prefab start.
+function AGS_ScatteredVillagers_DestroySpawn()
+	for _, player in pairs(PLAYERS) do	
+		local sgroup = Player_GetSquads(player.id)
+		local AGS_ScatteredVillagers_DestroySquad = function(gid, idx, sid)
+			if sid ~= nil then
+				Squad_Destroy(sid)
+			end
+		end
+		SGroup_ForEach(sgroup, AGS_ScatteredVillagers_DestroySquad)
+		
+		local egroup = Player_GetEntities(player.id)
+		local AGS_ScatteredVillagers_DestroyEntities = function(gid, idx, eid)
+			if eid ~= nil then
+				Entity_Destroy(eid)
+			end
+		end
+		EGroup_ForEach(egroup, AGS_ScatteredVillagers_DestroyEntities)		
+	end
+end
+-- Get spawn dimensions and initial squad location.
+function AGS_ScatteredVillagers_GetScatterPosition()
+	local x = World_GetRand(0 - AGS_SCATTER_RADIUS, AGS_SCATTER_RADIUS)
+	local z = World_GetRand(0 - AGS_SCATTER_RADIUS, AGS_SCATTER_RADIUS)
+	local y = World_GetHeightAt(x, z)
+	return World_Pos(x, y, z)
+end
 -- Distributes all players all units randomly around the map.
-function AGS_ScatteredVillagers_OnSpawn()	
-	-- Tune villager spawn out from the middle of the map.
-	AGS_SCATTER_RADIUS = math.max(World_GetWidth(), World_GetLength())/AGS_SCATTER_TUNING 
-
+function AGS_ScatteredVillagers_CreateSpawn()	
 	for _, player in pairs(PLAYERS) do		
-		player_civ = Player_GetRaceName(player.id)		
-		-- Increase starting resources to cover building a TC
-		if player_civ ~= AGS_CIV_MONGOL then
-			Player_GiftResource(player.id, RT_Stone, AGS_SCATTER_STONE)
-		end
-		Player_GiftResource(player.id, RT_Wood, AGS_SCATTER_WOOD)
-		
 		-- Get Villager BP and spawn them at single location, before spreading them out to create artificial home for AI.
-		local sbp_vil = AGS_GetCivilizationUnit(player_civ, AGS_BP_VILLAGER)		
+		local sbp_vil = AGS_GetCivilizationUnit(player.raceName, AGS_BP_VILLAGER)		
 		local snameVIL = AGS_SGroupName(player.id, AGS_BP_VILLAGER)
-		
-		-- Get spawn dimensions and initial squad location.
-		local map_center = World_Pos(0, 0, 0)	
-		
-		local _f_random_position = function()
-			local x = World_GetRand(0 - AGS_SCATTER_RADIUS, AGS_SCATTER_RADIUS)
-			local z = World_GetRand(0 - AGS_SCATTER_RADIUS, AGS_SCATTER_RADIUS)
-			local y = World_GetHeightAt(x, z)
-			return World_Pos(x, y, z)
-		end
-		
-		local spawn_pos = _f_random_position()
+				
+		local spawn_pos = AGS_ScatteredVillagers_GetScatterPosition()
 		-- Finish squad spawn and assign it to AI if required.
 		local sg_vil = AGS_SpawnSquad(player.id, snameVIL, sbp_vil, spawn_pos, nil, AGS_GLOBAL_SETTINGS.StartingVillagers)	
 		LocalCommand_Squad(player.id, sg_vil, SCMD_Stop, false)			
 		
 		local _f_randomize_unit = function(gid, idx, sid)
-			Squad_WarpToPos(sid, _f_random_position())
+			Squad_WarpToPos(sid, AGS_ScatteredVillagers_GetScatterPosition())
 		end
 		
 		--Randomize all members location. 

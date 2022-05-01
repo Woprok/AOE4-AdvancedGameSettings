@@ -1,0 +1,158 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Spawns villagers with a scout on default position.
+---------------------------------------------------------------------------------------------------
+
+AGS_NOMADIC_MODULE = "AGS_Nomadic"
+AGS_NOMADIC_WOOD = 400
+AGS_NOMADIC_STONE = 300
+AGS_NOMADIC_START = 0
+AGS_NOMADIC_THRESHOLD = 0
+AGS_NOMADIC_INTERVAL = 0.150 -- Initial interval value is duration / wood
+AGS_NOMADIC_DURATION = 60 -- Accumulation time
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_NOMADIC_MODULE)	
+
+function AGS_Nomadic_UpdateModuleSettings()
+	AGS_Print("AGS_Nomadic_UpdateModuleSettings")
+	if AGS_GLOBAL_SETTINGS.Settlement ~= AGS_GS_SETTLEMENT_NOMADIC then
+		Core_UnregisterModule(AGS_NOMADIC_MODULE)
+	end
+end
+
+function AGS_Nomadic_PresetExecute()
+	AGS_Print("AGS_Nomadic_PresetExecute")
+	if AGS_GLOBAL_SETTINGS.UsingPrefabStart then
+		AGS_Nomadic_DestroySpawn()
+	end
+	AGS_Nomadic_CreateSpawn()
+end
+
+function AGS_Nomadic_OnStarting()
+	AGS_Print("AGS_Nomadic_OnStarting")
+	for _, player in pairs(PLAYERS) do	
+		-- Insist that player do not have capital.
+		Player_SetStateModelFloat(player.id, "has_capital", 0)
+		-- Player should be able to build structures
+		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)		
+		Core_CallDelegateFunctions("AdjustAIPlayers", AGS_AI_ADJUSTREASON_NOMAD, player)
+	end
+	AGS_Nomadic_StartTrickle()
+end
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Removing prefab start.
+function AGS_Nomadic_DestroySpawn()
+	for _, player in pairs(PLAYERS) do	
+		local sgroup = Player_GetSquads(player.id)
+		local AGS_Nomadic_DestroySquad = function(gid, idx, sid)
+			if sid ~= nil then
+				Squad_Destroy(sid)
+			end
+		end
+		SGroup_ForEach(sgroup, AGS_Nomadic_DestroySquad)
+		
+		local egroup = Player_GetEntities(player.id)
+		local AGS_Nomadic_DestroyEntities = function(gid, idx, eid)
+			if eid ~= nil then
+				Entity_Destroy(eid)
+			end
+		end
+		EGroup_ForEach(egroup, AGS_Nomadic_DestroyEntities)		
+	end
+end
+
+function AGS_Nomadic_CreateSpawn()
+	for _, player in pairs(PLAYERS) do	
+		local player_civ = Player_GetRaceName(player.id)
+		AGS_Nomadic_SpawnUnits(player.id, player_civ)
+	end
+end
+-- Setup timers.
+function AGS_Nomadic_StartTrickle()
+	-- Track initial start time.
+	AGS_NOMADIC_START = World_GetGameTime()	
+	AGS_Nomadic_ResetResources()
+end
+-- Clear resources and continue with slow trickle.
+function AGS_Nomadic_ResetResources()	
+	for _, player in pairs(PLAYERS) do			
+		-- Track resources remaining to provide
+		player.AGS_NOMADIC_RES = { }
+		player.AGS_NOMADIC_RES["Food"] = Player_GetResource(player.id, RT_Food)
+		player.AGS_NOMADIC_RES["Wood"] = Player_GetResource(player.id, RT_Wood)
+		player.AGS_NOMADIC_RES["Stone"] = Player_GetResource(player.id, RT_Stone)
+		player.AGS_NOMADIC_RES["Gold"] = Player_GetResource(player.id, RT_Gold)
+		
+		-- Adjust the differences needed for TC based on civilization.
+		local player_civ = Player_GetRaceName(player.id)
+		if player_civ ~= AGS_CIV_MONGOL then
+			player.AGS_NOMADIC_RES["Stone"] = player.AGS_NOMADIC_RES["Stone"] + AGS_NOMADIC_STONE
+		end
+		player.AGS_NOMADIC_RES["Wood"] = player.AGS_NOMADIC_RES["Wood"] + AGS_NOMADIC_WOOD
+		
+		-- Reset resources.
+		Player_ResetResource(player.id, RT_Food)
+		Player_ResetResource(player.id, RT_Wood)
+		Player_ResetResource(player.id, RT_Stone)
+		Player_ResetResource(player.id, RT_Gold)									
+	end	
+	Rule_Add(AGS_Nomadic_IncrementResources)
+end
+-- Rule that incrementally returns initial resources to players over time.
+function AGS_Nomadic_IncrementResources()		
+	if World_GetGameTime() - AGS_NOMADIC_START >= AGS_NOMADIC_THRESHOLD then
+		local allResourcesReceived = true		
+		for _, player in pairs(PLAYERS) do		
+			local _IncrementResource = function(resIndex, resType) 				
+				if player.AGS_NOMADIC_RES[resIndex] > 0 then
+					Player_AddResource(player.id, resType, 1)
+					player.AGS_NOMADIC_RES[resIndex] = player.AGS_NOMADIC_RES[resIndex] - 1	
+					allResourcesReceived = false
+				end
+			end		
+			_IncrementResource("Food", RT_Food)
+			_IncrementResource("Wood", RT_Wood)
+			_IncrementResource("Stone", RT_Stone)
+			_IncrementResource("Gold", RT_Gold)				
+		end	
+		-- Stop when player has received enough resources, give him rest		
+		if World_GetGameTime() - AGS_NOMADIC_START >= AGS_NOMADIC_DURATION then		
+			AGS_Nomadic_ResourcesFinished()
+		else
+			AGS_NOMADIC_THRESHOLD = AGS_NOMADIC_THRESHOLD + AGS_NOMADIC_INTERVAL
+		end		
+	end	
+end
+-- Ends nomad start's incremental resource accumulation. Gives players remaining resources, if any.
+function AGS_Nomadic_ResourcesFinished()
+	if Rule_Exists(AGS_Nomadic_IncrementResources) then		
+		Rule_Remove(AGS_Nomadic_IncrementResources)
+		for _, player in pairs(PLAYERS) do		
+			Player_AddResource(player.id, RT_Food, player.AGS_NOMADIC_RES["Food"])
+			Player_AddResource(player.id, RT_Wood, player.AGS_NOMADIC_RES["Wood"])
+			Player_AddResource(player.id, RT_Stone, player.AGS_NOMADIC_RES["Stone"])
+			Player_AddResource(player.id, RT_Gold, player.AGS_NOMADIC_RES["Gold"])
+			player.AGS_NOMADIC_RES = { }	
+		end					
+	end
+end
+
+function AGS_Nomadic_SpawnUnits(player_id, player_civ)		
+	local sbp_vil = AGS_GetCivilizationUnit(player_civ, AGS_BP_VILLAGER)
+	local snameVIL = AGS_SGroupName(player_id, AGS_BP_VILLAGER)
+	local sg_vil = AGS_SpawnSquad(player_id, snameVIL, sbp_vil, nil, World_Pos(-10, 0, -10), AGS_GLOBAL_SETTINGS.StartingVillagers)
+	
+	local sbp_sco = AGS_GetCivilizationUnit(player_civ, AGS_BP_SCOUT)
+	local snameSCO = AGS_SGroupName(player_id, AGS_BP_SCOUT)
+	local sg_sco = AGS_SpawnSquad(player_id, snameSCO, sbp_sco, nil, World_Pos(-12, 0, -12), AGS_GLOBAL_SETTINGS.StartingScouts)
+end

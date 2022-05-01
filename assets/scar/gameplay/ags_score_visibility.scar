@@ -15,23 +15,23 @@ AGS_SCORE_VISIBILITY_MODULE = "AGS_ScoreVisibility"
 
 Core_RegisterModule(AGS_SCORE_VISIBILITY_MODULE)	
 
-function AGS_ScoreVisibilityUpdateModuleSettings()
-	AGS_Print("AGS_ScoreVisibilityUpdateModuleSettings")
+function AGS_ScoreVisibility_UpdateModuleSettings()
+	AGS_Print("AGS_ScoreVisibility_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.ScoreVisibility then
 		Core_UnregisterModule(AGS_SCORE_VISIBILITY_MODULE)
 	end
 end
 
-function AGS_ScoreVisibilityPresetPostSpawn()
-	AGS_Print("AGS_ScoreVisibilityPresetPostSpawn")
-	AGS_ScoreVisibilityVisible()
+function AGS_ScoreVisibility_PresetFinalize()
+	AGS_Print("AGS_ScoreVisibility_PresetFinalize")
+	AGS_ScoreVisibility_Show()
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 	
-function AGS_ScoreVisibilityVisible()
+function AGS_ScoreVisibility_Show()
 	for _, player in pairs(PLAYERS) do
 		player.scarModel.show_actual_score = true
 		UI_SetPlayerDataContext(player.id, player.scarModel)

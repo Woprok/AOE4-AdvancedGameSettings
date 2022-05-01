@@ -43,9 +43,10 @@ AGS_GS_AGE_LATE_IMPERIAL = 5
 -- Resources
 AGS_GS_RESOURCES_NONE = 0
 AGS_GS_RESOURCES_NORMAL = 1
-AGS_GS_RESOURCES_HIGH = 2
-AGS_GS_RESOURCES_VERY_HIGH = 3
-AGS_GS_RESOURCES_MAXIMUM = 4
+AGS_GS_RESOURCES_MEDIUM = 2
+AGS_GS_RESOURCES_HIGH = 3
+AGS_GS_RESOURCES_VERY_HIGH = 4
+AGS_GS_RESOURCES_MAXIMUM = 5
 -- Town Centers
 AGS_GS_TC_RESTRICTIONS_NONE = 0
 AGS_GS_TC_RESTRICTIONS_NORMAL = 1
@@ -199,7 +200,7 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
-
+-- Requires corresponding module to be present.
 function AGS_GlobalSettings_GetStartPosition(player_id)
 	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_SETTLED and AGS_GLOBAL_SETTINGS.UsingPrefabStart then
 		local group = Player_GetEntitiesFromType(player_id, AGS_BP_TC_CAPITAL)
@@ -220,7 +221,7 @@ function AGS_GlobalSettings_GetStartPosition(player_id)
 		return Player_GetStartingPosition(player_id) 			
 	end
 	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_SCATTERED then
-		return Player_GetStartingPosition(player_id) 	
+		return AGS_ScatteredVillagers_GetScatterPosition() 	
 	end
 	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_FORTIFIED then
 		return Player_GetStartingPosition(player_id) 	
@@ -677,6 +678,8 @@ function AGS_GlobalSettings_SetStartingResources(starting_resources)
 		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_NONE	
 	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_normal then
 		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_NORMAL
+	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_medium then
+		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_MEDIUM
 	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_high then
 		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_HIGH
 	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_very_high then
