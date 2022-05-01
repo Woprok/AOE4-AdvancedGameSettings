@@ -129,7 +129,7 @@ AGS_GLOBAL_SETTINGS = {
 		Radius = 70, -- undefined
 		Duration = 0.25, -- undefined
 	},
-	IsTestMode = false, -- undefined
+	IsTestMode = true, -- undefined
 	IsAdjustingAI = true, -- undefined
 	EnableUtilities = true, -- undefined
 	AllowLoserSpectation = true, -- undefined
@@ -193,40 +193,8 @@ function AGS_GlobalSettings_OnLocalPlayerChanged(context)
 	-- Game almost always sends only ID, we will convert it to player from global table.
 	if context ~= nil and context.player ~= nil then
 		AGS_GS_LOCAL_PLAYER = Core_GetPlayersTableEntry(context.player)
-		AGS_Print("Local Player:", AGS_GS_LOCAL_PLAYER)
+		AGS_Print("Local Player:", AGS_GS_LOCAL_PLAYER, 2)
 	end
-end
-
----------------------------------------------------------------------------------------------------
--- Functions:
----------------------------------------------------------------------------------------------------
--- Requires corresponding module to be present.
-function AGS_GlobalSettings_GetStartPosition(player_id)
-	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_SETTLED and AGS_GLOBAL_SETTINGS.UsingPrefabStart then
-		local group = Player_GetEntitiesFromType(player_id, AGS_BP_TC_CAPITAL)
-		if group ~= nil and EGroup_CountSpawned(group) > 0 then
-			return EGroup_GetPosition(group)	
-		end
-	end
-	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_FORTIFIED and AGS_GLOBAL_SETTINGS.UsingPrefabStart then
-		local group = Player_GetEntitiesFromType(player_id, AGS_BP_TC_CAPITAL)
-		if group ~= nil and EGroup_CountSpawned(group) > 0 then
-			return EGroup_GetPosition(group)	
-		end
-	end
-	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_SETTLED then
-		return Player_GetStartingPosition(player_id) 			
-	end
-	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_NOMADIC then
-		return Player_GetStartingPosition(player_id) 			
-	end
-	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_SCATTERED then
-		return AGS_ScatteredVillagers_GetScatterPosition() 	
-	end
-	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_FORTIFIED then
-		return Player_GetStartingPosition(player_id) 	
-	end
-	return Player_GetStartingPosition(player_id) 
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -268,7 +236,7 @@ function AGS_GlobalSettings_DefineGameConditions(category)
 		AGS_GlobalSettings_SetTreaty(category.option_game_condition_treaty)
 	end
 	if category.option_game_condition_team_victory then
-		AGS_GlobalSettings_SetTreaty(category.option_game_condition_team_victory)
+		AGS_GlobalSettings_SetTeamVictory(category.option_game_condition_team_victory)
 	end
 	if category.option_game_condition_team_solidarity ~= nil then
 		AGS_GLOBAL_SETTINGS.TeamSolidarity = category.option_game_condition_team_solidarity

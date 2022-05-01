@@ -1,0 +1,46 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Contains helpers for conditions.
+---------------------------------------------------------------------------------------------------
+
+import("coreconditions/ags_conditions_match.scar")
+import("coreconditions/ags_conditions_presentations.scar")
+import("coreconditions/ags_conditions_notifications.scar")
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+-- Returns true if victory was achieved otherwise false. (Victory await is pointless...)
+-- If victory was achieved it will set presentation for all winners.
+function AGS_Conditions_CheckVictory(is_allowed_to_check, presentation_function, reason)
+	if not is_allowed_to_check then
+		return false
+	end
+	-- Try to get winning team.
+	local winners = AGS_Teams_DoesWinnerGroupExists()
+	if winners == nil then
+		return false
+	end
+	-- Resolve all winners.
+	for _, winner in pairs(winners) do 
+		AGS_SetPlayerVictorious(winner.id, AGS_Conditions_VictoryPresentation, AGS_WR_SURRENDER)
+	end
+	-- Quit the match.
+	AGS_EndGame()
+	-- Return just in case someone still awaits this.
+	return true	
+end
+-- Count humans that are still in the game.
+function AGS_Conditions_IsAnyHumanAlive()
+	for _, player in pairs(PLAYERS) do
+		if not player.isEliminated and Player_IsHuman(player.id) then
+			return true
+		end
+	end	
+	return false
+end

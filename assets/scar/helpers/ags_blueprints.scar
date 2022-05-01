@@ -712,10 +712,13 @@ function AGS_SpawnSquad(player_id, sgroup_name, bp_squad, position, position_off
 	
 	return squad_group	
 end
-function AGS_Print(text, opt_data)
-	Util_PrintObject(text, 10)
+function AGS_Print(text, opt_data, opt_level)
+	if opt_level == nil then
+		opt_level = 10
+	end
+	Util_PrintObject(text, opt_level)
 	if opt_data ~= nil then
-		Util_PrintObject(opt_data, 10)	
+		Util_PrintObject(opt_data, opt_level)	
 	end
 end
 -- relation can be R_ALLY, R_ENEMY, R_NEUTRAL

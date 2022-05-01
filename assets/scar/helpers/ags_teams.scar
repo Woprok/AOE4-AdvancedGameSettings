@@ -1,0 +1,235 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Keeps track of all teams and provides api for anyone to access.
+---------------------------------------------------------------------------------------------------
+
+AGS_TEAMS_MODULE = "AGS_Teams"
+AGS_TEAMS_TABLE = {
+	
+}
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+Core_RegisterModule(AGS_TEAMS_MODULE)	
+
+function AGS_Teams_EarlyInitializations()
+	AGS_Print("AGS_Teams_EarlyInitializations")
+	
+	AGS_Teams_CreateInitialTeams()
+end
+
+function AGS_Teams_OnPlayerDefeated(player, reason)
+	-- Assign to default team field once player is eliminated. Hopefully nothing will overwrite it after we do it.
+	if player ~= nil then
+		player.team = {
+			index = player.AGS_Team.index,
+			players = player.AGS_Team.allies,
+		}
+	end
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Teams_CreateInitialTeams()	
+	-- Create Static Teams for either static or dynamic teams. (Does not matter for now.)
+	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_STANDARD 
+		or AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_DYNAMIC then
+		AGS_Teams_CreateStaticTeams()
+	-- Create FFA for all other options.
+	else
+		AGS_Teams_CreateFFA()
+	end
+	-- Print initial teams.
+	for i, team in pairs(AGS_TEAMS_TABLE) do
+		AGS_Print("Team", i)
+		local x = "TEAM: " .. tostring(i) .. " MEMBERS: "
+		for _, member in pairs(team) do
+			AGS_Print(x, member.id)
+		end
+		AGS_Print("Team", i)
+	end
+end
+
+function AGS_Teams_CreateFFA()
+	for _, player in pairs(PLAYERS) do 
+		-- FFA forces all teams to be just slotIndex
+		player.AGS_Team = {
+			index = player.slotIndex,
+			allies = { },
+		}
+		table.insert(AGS_TEAMS_TABLE, { player })
+		AGS_Print(player.AGS_Team)
+	end	
+end
+
+function AGS_Teams_CreateStaticTeams()
+	for _, player in pairs(PLAYERS) do 
+		if player.AGS_Team == nil then
+			-- Team game sets team how they are defined and removes all no teamers.
+			local team_id = Player_GetTeam(player.id)
+			if team_id >= 10000 then
+				team_id = 10000 + player.slotIndex
+			end
+			player.AGS_Team = {
+				index = team_id,
+				allies = { player },
+			}
+			for _, ally in pairs(PLAYERS) do
+				if player ~= ally and team_id == Player_GetTeam(ally.id) then
+					table.insert(player.AGS_Team.allies, ally)
+				end
+			end
+			for _, ally in pairs(player.AGS_Team.allies) do
+				ally.AGS_Team = {
+					index = team_id,
+					allies = player.AGS_Team.allies,
+				}
+			end
+			table.insert(AGS_TEAMS_TABLE, player.AGS_Team.allies)			
+		end
+	end	
+end
+-- Returns nil or winner player list.
+function AGS_Teams_DoesWinnerGroupExists()
+	local winner_group = nil
+	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_FFA then
+		winner_group = AGS_Teams_GetSoloTeamWinner()
+	end
+	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_STANDARD then
+		winner_group = AGS_Teams_GetStaticTeamWinnders()
+	end
+	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_DYNAMIC then
+		winner_group = AGS_Teams_GetDynamicTeamWinners()
+	end	
+	return winner_group
+end
+-- Returns true if player static team is still alive or false if his team was defeated.
+function AGS_Teams_IsTeamAlive(player_id)
+	local player = Core_GetPlayersTableEntry(player_id)
+	if AGS_GLOBAL_SETTINGS.AGS_GS_TEAM_VICTORY_STANDARD and AGS_Teams_CountAliveInGroup(player.AGS_Team.allies) > 0 then
+		return true
+	end	
+	return false
+end
+
+---------------------------------------------------------------------------------------------------
+-- Internal Functions:
+---------------------------------------------------------------------------------------------------
+-- Returns nil or winner list that contains solo player.
+function AGS_Teams_GetSoloTeamWinner()
+	local total_alive = AGS_Teams_CountAlivePlayers()
+	-- Return single living player
+	if total_alive == 1 then
+		for _, player in pairs(PLAYERS) do
+			if not player.isEliminated then
+				return { player }
+			end
+		end		
+	end
+	-- Quit if there is not a single player count
+	return nil	
+end
+-- Returns nil or winner list from statics.
+function AGS_Teams_GetStaticTeamWinnders()
+	local winner_group = { }
+	local total_alive = AGS_Teams_CountAlivePlayers()
+	for _, team in pairs(AGS_TEAMS_TABLE) do
+		-- This is equal only if single team is alive
+		if total_alive == AGS_Teams_CountAliveInGroup(team) then
+			return team
+		end
+	end
+	return nil
+end
+-- Returns nil or winner list.
+function AGS_Teams_GetDynamicTeamWinners()
+	local potential_winner_group = { }
+	-- Get count of living players.
+	local total_alive = AGS_Teams_CountAlivePlayers()
+	-- Now we count all living players...
+	for _, player in pairs(PLAYERS) do	
+		if not player.isEliminated then
+			local allies_count = AGS_Teams_CountAliveAllies(player)	
+			-- Ally count is without this player, so we add +1 and compare it to total.
+			-- Equals means that this player is allied to all other surviving players.
+			if total_alive == allies_count + 1 then
+				-- We will remember him as potential winner.
+				table.insert(potential_winner_group, player)				
+			end				
+		end		
+	end
+	-- if total alive is equal to total players that were allied to all others we can declare it as winner_group.
+	if total_alive == #potential_winner_group then
+		return potential_winner_group
+	end
+	return nil
+end
+
+
+
+-- TODO FINAL UPDATE: Returns all alive teammates for that player
+function AGS_GetAllAliveTeammates(player_id)
+	-- TODO return list of static allies ids
+end
+-- TODO FINAL UPDATE: Friendly players are all that share mutual alliance with source player.
+-- This will return list without the source player.
+function AGS_GetFriendlyAlivePlayers(source_player_id)
+	local allies = { }
+	for _, player in pairs(PLAYERS) do
+		if source_player_id ~= player.id and not player.isEliminated then
+			if AGS_IsMutualRelation(source_player_id, player.id, R_ALLY) then
+				table.insert(enemies, player)				
+			end
+		end
+	end
+	return allies
+end
+-- TODO FINAL UPDATE: Hostile and Neutral players are generally considered enemies.
+-- So this will return list of all players that are not mutual allies of source player.
+function AGS_GetHostileOrNeutralAlivePlayers(source_player_id)
+	local enemies = { }
+	for _, player in pairs(PLAYERS) do
+		if source_player_id ~= player.id and not player.isEliminated then
+			if not AGS_IsMutualRelation(source_player_id, player.id, R_ALLY) then
+				table.insert(enemies, player)				
+			end
+		end
+	end
+	return enemies
+end
+
+
+
+---------------------------------------------------------------------------------------------------
+-- Internal Helper Functions:
+---------------------------------------------------------------------------------------------------
+-- Takes table of Players and returns amount of players that are not yet tagged eliminated.
+function AGS_Teams_CountAliveInGroup(group_table)
+	local total_alive = 0
+	for _, player in pairs(group_table) do	
+		if not player.isEliminated then
+			total_alive = total_alive + 1
+		end
+	end
+	return total_alive
+end
+-- Returns amount of players that are not yet tagged eliminated.
+function AGS_Teams_CountAlivePlayers()
+	return AGS_Teams_CountAliveInGroup(PLAYERS)
+end
+-- Returns number of mutual allies that are alive.
+function AGS_Teams_CountAliveAllies(player)
+	local allies_count = 0
+	for _, ally in pairs(PLAYERS) do
+		if player ~= ally and not ally.isEliminated and AGS_IsMutualRelation(player.id, ally.id, R_ALLY) then
+			allies_count = allies_count + 1
+		end
+	end		
+	return allies_count
+end

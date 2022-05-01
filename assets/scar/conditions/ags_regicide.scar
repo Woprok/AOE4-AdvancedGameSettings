@@ -18,26 +18,30 @@ AGS_REGICIDE_ACTIVE_CHECKS = true
 ---------------------------------------------------------------------------------------------------
 
 Core_RegisterModule(AGS_REGICIDE_MODULE)	
-
 -- If Regicide is enabled in settings, force king option to be true.
 function AGS_Regicide_AdjustSettings()
+	AGS_Print("AGS_Regicide_AdjustSettings")
 	if AGS_GLOBAL_SETTINGS.Regicide then
 		AGS_GLOBAL_SETTINGS.StartingKings = 1
 	end
 end
 -- Unregister Regicide and prevent it from being initialized.
 function AGS_Regicide_UpdateModuleSettings()
+	AGS_Print("AGS_Regicide_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.Regicide then
 		Core_UnregisterModule(AGS_REGICIDE_MODULE)
 	end
 end
 
-function AGS_Regicide_Start()
-	AGS_Regicide_StartProgressTracking()
-	AGS_Regicide_CreateObjective()
+function AGS_Regicide_OnPlay()
+	AGS_Print("AGS_Regicide_OnPlay")
+	Rule_AddGlobalEvent(AGS_Regicide_OnEntityKilled, GE_EntityKilled)
+	Rule_AddGlobalEvent(AGS_Regicide_OnDamageReceived, GE_DamageReceived)
+	AGS_Regicide_CreateObjectives()
 end
 
 function AGS_Regicide_OnPlayerDefeated(player, reason)
+	AGS_Print("AGS_Regicide_OnPlayerDefeated")
 	if reason == AGS_WR_REGICIDE then 
 		AGS_Regicide_Notification(player)
 		AGS_Regicide_CheckVictory()
@@ -45,16 +49,20 @@ function AGS_Regicide_OnPlayerDefeated(player, reason)
 end
 
 function AGS_Regicide_TreatyStarted()
+	AGS_Print("AGS_Regicide_TreatyStarted")
 	AGS_REGICIDE_ACTIVE_CHECKS = false
 end
 
 function AGS_Regicide_TreatyEnded()
+	AGS_Print("AGS_Regicide_TreatyEnded")
 	AGS_REGICIDE_ACTIVE_CHECKS = true
 end
 
 function AGS_Regicide_OnGameOver()
-	AGS_Regicide_RemoveObjective()
-	AGS_Regicide_StopProgressTracking()
+	AGS_Print("AGS_Regicide_OnGameOver")
+	Rule_RemoveGlobalEvent(AGS_Regicide_OnEntityKilled)
+	Rule_RemoveGlobalEvent(AGS_Regicide_OnDamageReceived)
+	AGS_Regicide_RemoveObjectives()
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -69,14 +77,6 @@ function AGS_Regicide_Notification(player)
 	if player ~= nil and not player_local.isEliminated then 
 		AGS_CreateCue(AGS_CUE_CORE, AGS_FormatText(AGS_CUE_TITLE_REGICIDED_ID, player.playerName))
 	end
-end
-
-function AGS_Regicide_StartProgressTracking()
-	Rule_AddGlobalEvent(AGS_Regicide_OnEntityKilled, GE_EntityKilled)
-end
-
-function AGS_Regicide_StopProgressTracking()
-	Rule_RemoveGlobalEvent(AGS_Regicide_OnEntityKilled)
 end
 
 function AGS_Regicide_CreateObjective()

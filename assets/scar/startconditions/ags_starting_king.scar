@@ -35,7 +35,7 @@ function AGS_StartingKing_Create()
 	for _, player in pairs(PLAYERS) do		
 		local sbp_king = AGS_GetCivilizationUnit(player.raceName, AGS_BP_KING)				
 		local sname = AGS_SGroupName(player.id, AGS_BP_KING)	
-		local start_adjusted_pos = AGS_GlobalSettings_GetStartPosition(player.id)			
+		local start_adjusted_pos = AGS_Starts_GetStartPosition(player.id)			
 		local sg_king = AGS_SpawnSquad(player.id, sname, sbp_king, start_adjusted_pos, World_Pos(0, 0, -10), AGS_GLOBAL_SETTINGS.StartingKings)
 			
 		if AGS_GLOBAL_SETTINGS.EmpoweredKings then	

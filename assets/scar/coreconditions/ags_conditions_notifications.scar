@@ -1,0 +1,125 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Contains condition helpers for notifications.
+-- Notification is showed at any time.
+-- Elimination notification is showed immediately on player defeat being processed.
+---------------------------------------------------------------------------------------------------
+AGS_NOTIFICATIONS_SOUND_ELIMINATED = {
+	self = "Conquest_friendly_eliminated",
+	ally = "Conquest_friendly_eliminated",
+	enemy = "Conquest_enemy_eliminated",	
+}
+-- Priority of the notification.
+AGS_NP_LOW = 0
+AGS_NP_HIGH = 1
+AGS_NP_MAX = 2
+AGS_NOTIFICATIONS_CORE = {
+	eventType = -1,	
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	lifetime = 10.0,
+	repeatCount = 0,
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	repeatTime = 30.0,		
+	title = Loc_Empty(),
+	desc = Loc_Empty(),
+	sfx = "sfx_ui_event_queue_high_priority_play",
+	icon = "icons\\event_queue_high_priority",
+	icon_high = "icons\\event_queue_high_priority_large",
+	color = {r = 255, g = 255, b = 255, a = 255},
+	template = "high_priority", 
+	template_color = "event_with_player_color",
+	style_queue = ECV_Queue,
+	style_center = ECV_Title,
+	-- This one should be completely pointless as we can do it separately for greater effect.
+	style_combined = ECV_Queue | ECV_Title,
+}
+AGS_NOTIFICATIONS_SURRENDER = {
+	-- "%1PLAYER_NAME% surrendered"
+	title = 11161289,
+	sfx = "sfx_ui_surrendered_notification_play",	
+}
+AGS_NOTIFICATIONS_SURRENDER = {
+	-- "%1PLAYER_NAME% surrendered in solidarity with his teammate"
+	title = "$64c5019a145c4e4da448dbd3adeea61e:231",
+	sfx = nil,	
+}
+---------------------------------------------------------------------------------------------------
+-- Pre-Filled Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Notifications_Eliminated(player, cue_opt_fielded)
+	-- Do nothing if player is eliminated.
+	if player == nil then
+		return
+	end
+	-- Should this be played for eliminated player ?
+	--if AGS_GS_LOCAL_PLAYER.isEliminated then
+	--	return
+	--end
+	-- Notify via sound.
+	AGS_Notifications_SoundCue(player)
+	-- Notify via message in right bottom corner.	
+	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, AGS_NP_HIGH, Loc_FormatText(cue_opt_fielded.title, player.playerName), cue_opt_fielded.sfx)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- This will resolve almost every single case we might need for very long time.
+-- Why would someone not create something glorious like this Relic and isntead copy paste this hundreds times ?
+function AGS_Notifications_CreateTextCue(cue, priority, title, sfx, color)
+	local template = cue.template
+	if color == nil then
+		color = cue.color
+		template = cue.template_color
+	end
+	if sfx == nil then
+		sfx = cue.sfx
+	end
+	if priority == AGS_NP_MAX then
+		AGS_Notifications_TextCue(cue, title, color, template, sfx, cue.icon, cue.style_queue)
+		AGS_Notifications_TextCue(cue, title, color, template, sfx, cue.icon_high, cue.style_center)
+	elseif priority == AGS_NP_HIGH then
+		AGS_Notifications_TextCue(cue, title, color, template, sfx, cue.icon_high, cue.style_combined)		
+	else 
+		AGS_Notifications_TextCue(cue, title, color, template, sfx, cue.icon, cue.style_queue)
+	end
+end
+
+---------------------------------------------------------------------------------------------------
+-- Internal Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Notifications_TextCue(cue, title, color, template, sfx, icon, style)
+	UI_CreateEventCueClickable(
+		cue.eventType, 
+		cue.lifetime, 
+		cue.repeatCount, 
+		cue.repeatTime, 
+		title, 
+		cue.desc, 
+		template, 
+		icon, 
+		sfx, 
+		color.r, 
+		color.g, 
+		color.b, 
+		color.a, 
+		style, 
+		nothing
+	)	
+end
+
+function AGS_Notifications_SoundCue(player)
+	if AGS_GS_LOCAL_PLAYER == player then
+		Sound_Play2D(AGS_NOTIFICATIONS_SOUND_ELIMINATED.self)		
+	elseif AGS_IsMutualRelation(AGS_GS_LOCAL_PLAYER.id, player.id, R_ALLY) then
+		Sound_Play2D(AGS_NOTIFICATIONS_SOUND_ELIMINATED.ally)
+	else
+		Sound_Play2D(AGS_NOTIFICATIONS_SOUND_ELIMINATED.enemy)	
+	end
+end

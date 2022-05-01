@@ -91,18 +91,18 @@ end
 function AGS_Nomadic_ResetResources()	
 	for _, player in pairs(PLAYERS) do			
 		-- Track resources remaining to provide
-		player.AGS_NOMADIC_RES = { }
-		player.AGS_NOMADIC_RES["Food"] = Player_GetResource(player.id, RT_Food)
-		player.AGS_NOMADIC_RES["Wood"] = Player_GetResource(player.id, RT_Wood)
-		player.AGS_NOMADIC_RES["Stone"] = Player_GetResource(player.id, RT_Stone)
-		player.AGS_NOMADIC_RES["Gold"] = Player_GetResource(player.id, RT_Gold)
+		player.AGS_NomadicResources = { }
+		player.AGS_NomadicResources["Food"] = Player_GetResource(player.id, RT_Food)
+		player.AGS_NomadicResources["Wood"] = Player_GetResource(player.id, RT_Wood)
+		player.AGS_NomadicResources["Stone"] = Player_GetResource(player.id, RT_Stone)
+		player.AGS_NomadicResources["Gold"] = Player_GetResource(player.id, RT_Gold)
 		
 		-- Adjust the differences needed for TC based on civilization.
 		local player_civ = Player_GetRaceName(player.id)
 		if player_civ ~= AGS_CIV_MONGOL then
-			player.AGS_NOMADIC_RES["Stone"] = player.AGS_NOMADIC_RES["Stone"] + AGS_NOMADIC_STONE
+			player.AGS_NomadicResources["Stone"] = player.AGS_NomadicResources["Stone"] + AGS_NOMADIC_STONE
 		end
-		player.AGS_NOMADIC_RES["Wood"] = player.AGS_NOMADIC_RES["Wood"] + AGS_NOMADIC_WOOD
+		player.AGS_NomadicResources["Wood"] = player.AGS_NomadicResources["Wood"] + AGS_NOMADIC_WOOD
 		
 		-- Reset resources.
 		Player_ResetResource(player.id, RT_Food)
@@ -118,9 +118,9 @@ function AGS_Nomadic_IncrementResources()
 		local allResourcesReceived = true		
 		for _, player in pairs(PLAYERS) do		
 			local _IncrementResource = function(resIndex, resType) 				
-				if player.AGS_NOMADIC_RES[resIndex] > 0 then
+				if player.AGS_NomadicResources[resIndex] > 0 then
 					Player_AddResource(player.id, resType, 1)
-					player.AGS_NOMADIC_RES[resIndex] = player.AGS_NOMADIC_RES[resIndex] - 1	
+					player.AGS_NomadicResources[resIndex] = player.AGS_NomadicResources[resIndex] - 1	
 					allResourcesReceived = false
 				end
 			end		
@@ -142,11 +142,11 @@ function AGS_Nomadic_ResourcesFinished()
 	if Rule_Exists(AGS_Nomadic_IncrementResources) then		
 		Rule_Remove(AGS_Nomadic_IncrementResources)
 		for _, player in pairs(PLAYERS) do		
-			Player_AddResource(player.id, RT_Food, player.AGS_NOMADIC_RES["Food"])
-			Player_AddResource(player.id, RT_Wood, player.AGS_NOMADIC_RES["Wood"])
-			Player_AddResource(player.id, RT_Stone, player.AGS_NOMADIC_RES["Stone"])
-			Player_AddResource(player.id, RT_Gold, player.AGS_NOMADIC_RES["Gold"])
-			player.AGS_NOMADIC_RES = { }	
+			Player_AddResource(player.id, RT_Food, player.AGS_NomadicResources["Food"])
+			Player_AddResource(player.id, RT_Wood, player.AGS_NomadicResources["Wood"])
+			Player_AddResource(player.id, RT_Stone, player.AGS_NomadicResources["Stone"])
+			Player_AddResource(player.id, RT_Gold, player.AGS_NomadicResources["Gold"])
+			player.AGS_NomadicResources = { }	
 		end					
 	end
 end

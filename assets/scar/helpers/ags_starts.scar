@@ -1,0 +1,41 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Helpers for getting specific starting position or other info. 
+-- Needs to be updated manually, whenever new starts are added.
+---------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Requires corresponding module to be present.
+function AGS_Starts_GetStartPosition(player_id)
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_SETTLED and AGS_GLOBAL_SETTINGS.UsingPrefabStart then
+		local group = Player_GetEntitiesFromType(player_id, AGS_BP_TC_CAPITAL)
+		if group ~= nil and EGroup_CountSpawned(group) > 0 then
+			return EGroup_GetPosition(group)	
+		end
+	end
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_FORTIFIED and AGS_GLOBAL_SETTINGS.UsingPrefabStart then
+		local group = Player_GetEntitiesFromType(player_id, AGS_BP_TC_CAPITAL)
+		if group ~= nil and EGroup_CountSpawned(group) > 0 then
+			return EGroup_GetPosition(group)	
+		end
+	end
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_SETTLED then
+		return Player_GetStartingPosition(player_id) 			
+	end
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_NOMADIC then
+		return Player_GetStartingPosition(player_id) 			
+	end
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_SCATTERED then
+		return AGS_ScatteredVillagers_GetScatterPosition() 	
+	end
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_FORTIFIED then
+		return Player_GetStartingPosition(player_id) 	
+	end
+	return Player_GetStartingPosition(player_id) 
+end

@@ -7,66 +7,8 @@
 -- Contains visuals and helpers for conditions such as treaty and conquest.
 ---------------------------------------------------------------------------------------------------
 AGS_EVENT_CUE_DELAY = 2.0
-AGS_PRESENTATION_DELAY = 2.0
 
-AGS_PRESENTATION_DEFEAT = {
-	icon_defeat = nil,
-	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
-	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
-	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
-	-- DEFEAT
-	title = Loc_GetString(11165094),
-	message = Loc_Empty(),
-	sound_defeat = "mus_stinger_landmark_objective_complete_fail",
-	sound_conquest = "ConquestDefeatEvent",
-	sound_wonder = "DefendWonderDefeatEvent",
-	sound_religious = "ReligiousDefeatEvent",
-	video = "stinger_defeat",	
-	callback = AGS_RevealUI,
-	
-}
-AGS_PRESENTATION_ELIMINATION = {
-	icon_defeat = nil,
-	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
-	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
-	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
-	-- ELIMINATED
-	title = Loc_GetString(11165821),
-	message = Loc_Empty(),
-	sound_defeat = "mus_stinger_landmark_objective_complete_fail",
-	sound_conquest = "ConquestDefeatEvent",
-	sound_wonder = "DefendWonderDefeatEvent",
-	sound_religious = "ReligiousDefeatEvent",
-	video = "stinger_eliminated",	
-	callback = AGS_RevealUI,
-	
-}
-AGS_PRESENTATION_VICTORY = {
-	icon_victory = nil,
-	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
-	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
-	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
-	-- VICTORY
-	title = Loc_GetString(11161277),
-	message = Loc_Empty(),
-	sound_victory = "mus_stinger_landmark_objective_complete_success",
-	sound_conquest = "ConquestVictoryEvent",
-	sound_wonder = "DefendWonderVictoryEvent",
-	sound_religious = "ReligiousVictoryEvent",
-	video = "stinger_victory",	
-	callback = AGS_RevealUI,	
-}
 
--- Reasons: 
-AGS_WR_NONE = WR_NONE 
-AGS_WR_ANNIHILATION = WR_ANNIHILATION
-AGS_WR_ELIMINATION = WR_ELIMINATION
-AGS_WR_SURRENDER = WR_SURRENDER
-AGS_WR_CONQUEST = WR_CONQUEST
-AGS_WR_WONDER = WR_WONDER
-AGS_WR_RELIGIOUS = WR_RELIGIOUS
-AGS_WR_REGICIDE = 107
-AGS_WR_TEAM_SOLIDARITY = 108
 
 AGS_OBJECTIVE_CONQUEST = {
 	reason = WR_CONQUEST,
@@ -192,8 +134,7 @@ AGS_OBJECTIVE_TEAMSOLIDARITY = {
 AGS_CUE_TITLE_ANNIHILATED_ID = 11159062
 AGS_CUE_TITLE_ELIMINATED_ID = 11165820
 AGS_CUE_TITLE_REGICIDED_ID = 11165820
--- "%1PLAYER_NAME% surrendered"
-AGS_CUE_TITLE_SURRENDERED_ID = 11161289
+
 -- "%1PLAYER_NAME% surrendered in solidarity with his teammate"
 AGS_CUE_TITLE_TEAM_SOLIDARITY_ID = "$64c5019a145c4e4da448dbd3adeea61e:231"
 
@@ -230,42 +171,6 @@ AGS_CUE_TITLE_WONDER_TEAM_ID = 11159070
 -- "Destroy %1PLAYER_NAME%'s Wonder"
 AGS_CUE_TITLE_WONDER_ENEMY_ID = 11159069
 
-AGS_CUE_CORE = {
-	eventType = -1,	
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	lifetime = 10.0,
-	repeatCount = 0,
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	repeatTime = 30.0,		
-	title = Loc_Empty(),
-	desc = Loc_Empty(),
-	sfx = "sfx_ui_event_queue_high_priority_play",
-	icon = "icons\\event_queue_high_priority_large",
-	color = {r = 255, g = 255, b = 255, a = 255},
-	template = "high_priority", 
-	style = ECV_Queue | ECV_Title,
-}
-AGS_CUE_SURRENDER = {	
-	eventType = -1,	
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	lifetime = 10.0,	
-	repeatCount = 0,	
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	repeatTime = 30.0,		
-	title = Loc_Empty(),
-	desc = Loc_Empty(),
-	sfx = "sfx_ui_surrendered_notification_play",
-	icon = "icons\\event_queue_high_priority_large",
-	color = {r = 255, g = 255, b = 255, a = 255},
-	template = "high_priority", 
-	style = ECV_Queue | ECV_Title,
-}
-
-AGS_SFX = {
-	eliminated_self = "Conquest_friendly_eliminated",
-	eliminated_ally = "Conquest_friendly_eliminated",
-	eliminated_enemy = "Conquest_enemy_eliminated",	
-}
 ---------------------------------------------------------------------------------------------------
 -- Helpers:
 ---------------------------------------------------------------------------------------------------
@@ -285,24 +190,7 @@ function AGS_IsPrimaryObjective(reason)
 	return false
 end
 
--- Sets a player as defeated, invoking presentation and calling OnPlayerDefeated. 
-function AGS_SetPlayerDefeated(player_id, presentation_function, defeat_reason)
-	-- Invokes OnPlayerDefeated, only owner of the reason should use it for win/lose checks.
-	Core_SetPlayerDefeated(player_id, presentation_function, defeat_reason)
-	-- Basically this is called by default and its dumb...
-	if Player_IsAlive(player_id) then
-		AGS_Print("Killed player even through he was defeated ?", 5)
-		World_KillPlayer(player_id, KPR_Lost)
-	end
-end
--- Sets a player as victorious, invoking presentation and calling PreGameOver. 
-function AGS_SetPlayerVictorious(player_id, presentation_function, victory_reason)
-	Core_SetPlayerVictorious(player_id, presentation_function, victory_reason)
-end
--- Ends the game by doing last delegate call OnGameOver executed via core method.
-function AGS_EndGame()	
-	Core_OnGameOver()
-end
+
 -- COUNTER_TimerDecreasing or COUNTER_CountUpTo
 function AGS_SetObjective(objective, state, visibility, progress, counter, title)
 	if objective == nil then
@@ -356,105 +244,12 @@ function AGS_SetObjectiveProgress(objective, current_count, max_count, progress_
 	end
 end
 
--- Returns nil or winner id list
-function AGS_DoesWinnerGroupExists()
-	local winner_group = nil
-	-- TODO for case single and static teams
-	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_DYNAMIC then
-		winner_group = AGS_GetDynamicTeamWinners()
-	end	
-	return winner_group
-end
 
--- Returns nil or winner id list
-function AGS_GetDynamicTeamWinners()
-	local winner_group = { }
-	-- Get count of living players.
-	local total_alive = AGS_CountAlivePlayers()
-	local total_winners = 0
-	for _, player in pairs(PLAYERS) do	
-		if Player_IsAlive(player.id) then
-			local allies_count = AGS_CountAllies(player.id)	
-			-- +1 is for this player
-			if allies_count + 1 == total_alive then
-				total_winners = total_winners + 1
-				table.insert(winner_group, player.id)				
-			end				
-		end		
-	end
-	
-	if total_alive == total_winners then
-		return winner_group
-	end
-	return nil
-end
-
-function AGS_CountAlivePlayers()
-	local total_alive = 0
-	for _, player in pairs(PLAYERS) do	
-		if Player_IsAlive(player.id) then
-			total_alive = total_alive + 1
-		end
-	end
-	return total_alive
-end
-
-function AGS_CountAliveAllies(player_id)
-	-- Obtain allies count.
-	local allies_count = 0
-	for _, ally in pairs(PLAYERS) do
-		if player_id ~= ally.id and Player_IsAlive(ally.id) and 
-			AGS_IsMutualRelation(player_id, ally.id, R_ALLY) then
-			allies_count = allies_count + 1
-		end
-	end		
-	return allies_count
-end
--- Returns all alive teammates for that player
-function AGS_GetAllAliveTeammates(player_id)
-	-- TODO return list of static allies ids
-end
-
--- Friendly players are all that share mutual alliance with source player.
--- This will return list without the source player.
-function AGS_GetFriendlyAlivePlayers(source_player_id)
-	local allies = { }
-	for _, player in pairs(PLAYERS) do
-		if source_player_id ~= player.id and not player.isEliminated then
-			if AGS_IsMutualRelation(source_player_id, player.id, R_ALLY) then
-				table.insert(enemies, player)				
-			end
-		end
-	end
-	return allies
-end
--- Hostile and Neutral players are generally considered enemies.
--- So this will return list of all players that are not mutual allies of source player.
-function AGS_GetHostileOrNeutralAlivePlayers(source_player_id)
-	local enemies = { }
-	for _, player in pairs(PLAYERS) do
-		if source_player_id ~= player.id and not player.isEliminated then
-			if not AGS_IsMutualRelation(source_player_id, player.id, R_ALLY) then
-				table.insert(enemies, player)				
-			end
-		end
-	end
-	return enemies
-end
 
 ---------------------------------------------------------------------------------------------------
 -- Visuals:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_PlaySFX(source_player_id)
-	if source_player_id == Game_GetLocalPlayer() then
-		Sound_Play2D(AGS_SFX.eliminated_self)
-	elseif AGS_IsMutualRelation(source_player_id, Game_GetLocalPlayer(), R_ALLY) then
-		Sound_Play2D(AGS_SFX.eliminated_ally)
-	else
-		Sound_Play2D(AGS_SFX.eliminated_enemy)
-	end
-end
 
 function AGS_FormatText(title_id, player_name)
 	return Loc_FormatText(title_id, player_name)
@@ -472,46 +267,6 @@ function AGS_CreateCueComplex(cue_template, high_priority, title, color, sfx)
 	end
 end
 
-function AGS_CreateCueCustomized(cue_template, title, color, icon, style, sfx)
-	UI_CreateEventCueClickable(
-		cue_template.eventType, 
-		cue_template.lifetime, 
-		cue_template.repeatCount, 
-		cue_template.repeatTime, 
-		title, 
-		cue_template.desc, 
-		cue_template.template, 
-		icon, 
-		sfx, 
-		color.r, 
-		color.g, 
-		color.b, 
-		color.a, 
-		style, 
-		nothing
-	)	
-end
-
--- Show event queue notification.
-function AGS_CreateCue(cue_template, title)
-	UI_CreateEventCueClickable(
-		cue_template.eventType, 
-		cue_template.lifetime, 
-		cue_template.repeatCount, 
-		cue_template.repeatTime, 
-		title, 
-		cue_template.desc, 
-		cue_template.template, 
-		cue_template.icon, 
-		cue_template.sfx, 
-		cue_template.color.r, 
-		cue_template.color.g, 
-		cue_template.color.b, 
-		cue_template.color.a, 
-		cue_template.style, 
-		nothing
-	)	
-end
 
 function AGS_CreateObjective(objective, player_id, player_civ, title_param, parent)
 	local template = objective.data_template
@@ -542,48 +297,6 @@ end
 
 -- os_state is OS_Complete/Incomplete/Failed
 function AGS_SetEndGameState(objective, show_taskbar, os_state, music_sfx)
-	Misc_ClearSelection()
-	Taskbar_SetVisibility(show_taskbar)
 	Obj_SetState(objective, os_state)
 	Obj_CreatePopup(objective, objective.title)	
-	Music_PlayStinger(music_sfx)
-end
-
--- Returns true if player is considered eliminated instead of defeat. False for defeat.
-function AGS_LoserPresenation(player_id, defeat_presentation, elimnation_presentation)
-	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_FFA then
-		AGS_Presenation(player_id, defeat_presentation)
-	elseif AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_STANDARD and AGS_CountAliveAllies(player_id) > 0 then 
-		AGS_Presenation(player_id, elimnation_presentation)
-		return true		
-	elseif AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_DYNAMIC then
-		AGS_Presenation(player_id, defeat_presentation)
-	else
-		AGS_Presenation(player_id, defeat_presentation)		
-	end	
-	-- default is false
-	return false
-end
-
--- TODO delay this by AGS_PRESENTATION_DELAY at some point somewhere.
-function AGS_Presenation(player_id, presentation)
-	if player_id == Game_GetLocalPlayer() then
-		Rule_AddOneShot(
-			_gameOver_message, 
-			GAMEOVER_OBJECTIVE_TIME, 
-			{
-				_playerID = player_id,
-				_icon = presentation.icon,
-				_endType = presentation.title,
-				_message = presentation.message,
-				_sound = presentation.sound,
-				_videoURI = presentation.video,
-				_callback = presentation.callback,
-			}
-		)
-	end
-end
-
-function AGS_RevealUI()
-	Taskbar_SetVisibility(true)
 end

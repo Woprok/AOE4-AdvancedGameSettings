@@ -6,117 +6,84 @@
 -- Description:
 -- Surrender win condition.
 -- A player is eliminated when they concede (through the Surrender button in the Pause menu). 
--- The last remaining player/team wins. 
+-- The last remaining player/team wins if last opponent surrendered. 
 ---------------------------------------------------------------------------------------------------
 
 AGS_SURRENDER_MODULE = "AGS_Surrender"
-AGS_SURRENDER_OBJECTIVE = nil
-AGS_SURRENDER_ACTIVE_CHECKS = true
+AGS_SURRENDER_ACTIVE = true
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
 
 Core_RegisterModule(AGS_SURRENDER_MODULE)	
-
--- Unregister Surrender and prevent it from being initialized.
+-- Surrender is always present, deactivated will only stop wincondition checks.
 function AGS_Surrender_UpdateModuleSettings()
+	AGS_Print("AGS_Surrender_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.Surrender then
-		Core_UnregisterModule(AGS_SURRENDER_MODULE)
+		AGS_SURRENDER_ACTIVE = false
 	end
 end
 
-function AGS_Surrender_OnPlayerDefeated(player, reason)
-	if reason == AGS_WR_SURRENDER then 
-		AGS_Surrender_Notification(player)
-		AGS_Surrender_CheckVictory()
-	end
-	AGS_Surrender_CheckAI()
-end
-
-function AGS_Surrender_Start()	
-	-- Broadcast event registration for all players.
-	Network_RegisterEvent("AGS_Surrender_Notify")					
+function AGS_Surrender_OnPlay()	
+	AGS_Print("AGS_Surrender_OnPlay")
+	-- Registers surrender event.
+	Network_RegisterEvent("AGS_Surrender_Notify")	
 end
 
 function AGS_Surrender_TreatyStarted()
-	AGS_SURRENDER_ACTIVE_CHECKS = false
+	AGS_Print("AGS_Surrender_TreatyStarted")
+	AGS_SURRENDER_ACTIVE = false
 end
 
 function AGS_Surrender_TreatyEnded()
-	AGS_SURRENDER_ACTIVE_CHECKS = true
+	AGS_Print("AGS_Surrender_TreatyEnded")
+	AGS_SURRENDER_ACTIVE = true and AGS_GLOBAL_SETTINGS.Surrender
 end
 -- Response to local player's surrender request (via Surrender button in Pause menu).
 function AGS_Surrender_OnSurrenderMatchRequested()	
-	-- Broadcast surrender request to all players.
+	AGS_Print("AGS_Surrender_OnSurrenderMatchRequested")
+	-- Broadcast surrender request to all players over the network.
 	Network_CallEvent("AGS_Surrender_Notify")			
 end
 
+function AGS_Surrender_OnPlayerDefeated(player, reason)
+	AGS_Print("AGS_Surrender_OnPlayerDefeated")
+	if reason == AGS_WR_SURRENDER then 
+		AGS_Notifications_Eliminated(player, AGS_NOTIFICATIONS_SURRENDER)
+		-- We require special check for cases when surrender is valid resolver for situation for AI.
+		if AGS_Conditions_CheckVictory(AGS_SURRENDER_ACTIVE, AGS_Presentations_Victory, AGS_WR_SURRENDER) then
+			return
+		end
+	end
+	-- If this was not ended yet, we will attempt to do it.
+	AGS_Surrender_CheckAI()
+end
+
 function AGS_Surrender_OnGameOver()
-	--Network_UnRegisterEvent("AGS_Surrender_Notify")	
+	AGS_Print("AGS_Surrender_OnGameOver")
+	-- Network event does not need to be removed ?
+	-- Network_UnRegisterEvent("AGS_Surrender_Notify")	
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Network Functions:
 ---------------------------------------------------------------------------------------------------
--- Kill player that was passed through network unless he was somehow eliminated before this could execute.
-function AGS_Surrender_Notify(playerID)		
-	local player = Core_GetPlayersTableEntry(playerID)			
-	if not player.isEliminated then
-		Core_SetPlayerDefeated(player.id, AGS_Surrender_LoserPresenation, AGS_WR_SURRENDER)
-	end
+-- Kill player that was passed through network.
+function AGS_Surrender_Notify(player_id)	
+	AGS_Print("AGS_Surrender_Notify", player_id)	
+	local player = Core_GetPlayersTableEntry(player_id)	
+	AGS_SetPlayerDefeated(player.id, AGS_Presentations_Loss, AGS_WR_SURRENDER)
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
-
-function AGS_Surrender_Notification(player)
-	local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
-	-- Play always for now.
-	AGS_PlaySFX(player.id)
-	-- If local is still in the game show message in right corner.
-	if player ~= nil and not player_local.isEliminated then 
-		AGS_CreateCue(AGS_CUE_SURRENDER, AGS_FormatText(AGS_CUE_TITLE_SURRENDERED_ID, player.playerName))
-	end
-end
--- Check if there is single remaining allied group.
-function AGS_Surrender_CheckVictory()
-	if not AGS_SURRENDER_ACTIVE_CHECKS then
-		return
-	end
-	
-	local winners = AGS_DoesWinnerGroupExists()
-	if winners == nil then
-		return
-	end
-	
-	for _, winner_id in pairs(winners) do 
-		AGS_SetPlayerVictorious(winner_id, AGS_Surrender_WinnerPresentation, AGS_WR_SURRENDER)
-	end
-	
-	AGS_EndGame()
-end
 -- Gracefull resolution for matches where the last human player surrenders in an AI game with RelicLink.
 function AGS_Surrender_CheckAI()
-	-- Count living humans.
-	local living_humans = {}
-	for i, player in pairs(PLAYERS) do
-		if not player.isEliminated and Player_IsHuman(player.id) then
-			table.insert(living_humans, player)
-		end
-	end	
 	-- Resolves match as winnerless if no human remains. 
-	if #living_humans == 0 then
+	if not AGS_Conditions_IsAnyHumanAlive() then
 		AGS_EndGame()
-		Core_WinnerlessGameOver(AGS_Surrender_LoserPresenation, AGS_WR_SURRENDER)
+		Core_WinnerlessGameOver(AGS_Presentations_Loss, AGS_WR_SURRENDER)
 	end
-end
-
-function AGS_Surrender_WinnerPresentation(player_id)
-	AGS_Presenation(player_id, AGS_WINNER_VICTORY_CONQUEST)
-end
-
-function AGS_Surrender_LoserPresenation(player_id)
-	AGS_LoserPresenation(player_id, AGS_LOOSER_DEFEAT_CONQUEST, AGS_LOOSER_ELIMINATED_CONQUEST)
-end
+end	

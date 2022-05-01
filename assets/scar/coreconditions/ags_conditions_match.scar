@@ -1,0 +1,45 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Contains condition helpers for match handling.
+-- These functions are only wrappers so they should not use any prefix.
+---------------------------------------------------------------------------------------------------
+-- WR Reasons: 
+AGS_WR_NONE = WR_NONE 
+AGS_WR_ANNIHILATION = WR_ANNIHILATION
+AGS_WR_ELIMINATION = WR_ELIMINATION
+AGS_WR_SURRENDER = WR_SURRENDER
+AGS_WR_CONQUEST = WR_CONQUEST
+AGS_WR_WONDER = WR_WONDER
+AGS_WR_RELIGIOUS = WR_RELIGIOUS
+AGS_WR_REGICIDE = 107
+AGS_WR_TEAM_SOLIDARITY = 108
+---------------------------------------------------------------------------------------------------
+-- Player Win and Lose
+---------------------------------------------------------------------------------------------------
+-- Sets a player as defeated, invoking presentation and calling OnPlayerDefeated. 
+function AGS_SetPlayerDefeated(player_id, presentation_function, defeat_reason)
+	-- Invokes OnPlayerDefeated, only owner of the reason should use it for win/lose checks.
+	Core_SetPlayerDefeated(player_id, presentation_function, defeat_reason)
+	-- Basically this is called by default and its dumb...
+	if Player_IsAlive(player_id) then
+		AGS_Print("Killed player even through he was already supposed to be defeated ?")
+		World_KillPlayer(player_id, KPR_Lost)
+	end
+end
+
+-- Sets a player as victorious, invoking presentation and calling PreGameOver. 
+function AGS_SetPlayerVictorious(player_id, presentation_function, victory_reason)
+	Core_SetPlayerVictorious(player_id, presentation_function, victory_reason)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Game Win and Lose
+---------------------------------------------------------------------------------------------------
+-- Ends the game by doing last delegate call OnGameOver executed via core method.
+function AGS_EndGame()	
+	Core_OnGameOver()
+end

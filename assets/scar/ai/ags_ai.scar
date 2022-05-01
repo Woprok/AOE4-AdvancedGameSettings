@@ -77,7 +77,7 @@ end
 -- with prefab starting buildings.
 function AGS_AI_AssignSpawnedUnits(player_id, home_position, units)
 	if home_position == nil then 
-		home_position = AGS_GlobalSettings_GetStartPosition(player_id)
+		home_position = AGS_Starts_GetStartPosition(player_id)
 	end
 	local player_ai = AIPlayer_GetLocalFromPlayer(player_id)	
 	local home_base_id = AIPlayer_GetOrCreateHomebase(player_ai, home_position)

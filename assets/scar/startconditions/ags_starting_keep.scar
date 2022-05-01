@@ -45,7 +45,7 @@ function AGS_StartingKeep_Create()
 		local ebp_building = AGS_GetCivilizationEntity(player.raceName, AGS_BP_KEEP)		
 		local ename = AGS_EGroupName(player.id, AGS_BP_KEEP)		
 		
-		local start_adjusted_pos = AGS_GlobalSettings_GetStartPosition(player.id)		
+		local start_adjusted_pos = AGS_Starts_GetStartPosition(player.id)		
 		center_pos = AGS_CalculateCenterOffset(start_adjusted_pos, 25, 25)	
 		
 		AGS_SpawnEntity(player.id, ename, ebp_building, center_pos, nil, false)

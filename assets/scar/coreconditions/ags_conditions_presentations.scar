@@ -1,0 +1,147 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Contains condition helpers for win and lose presentations.
+-- Presentation is showed after a few seconds delay.
+---------------------------------------------------------------------------------------------------
+--AGS_PRESENTATIONS_WAIT = 2.0
+-- Presentations are delayd by GAMEOVER_OBJECTIVE_TIME = 6.5, this will extend the delay.
+AGS_PRESENTATIONS_DELAY = 0.0
+AGS_PRESENTATIONS_ENDGAME_SUCCESS = {
+	show_taskbar = false,
+	music = MUS_STING_PRIMARY_OBJ_COMPLETE_ENDGAME,
+}
+AGS_PRESENTATIONS_ENDGAME_FAILURE = {
+	show_taskbar = false,
+	music = MUS_STING_PRIMARY_OBJ_FAIL,
+}
+AGS_PRESENTATIONS_ICON = "icon"
+AGS_PRESENTATIONS_SOUND = "sound"
+AGS_PRESENTATIONS_DEFAULT_SUFFIX = "default"
+AGS_PRESENTATIONS_CONQUEST_SUFFIX = "conquest"
+AGS_PRESENTATIONS_RELIGIOUS_SUFFIX = "religious"
+AGS_PRESENTATIONS_WONDER_SUFFIX = "wonder"
+AGS_PRESENTATIONS_DEFEAT = {
+	-- DEFEAT
+	title = Loc_GetString(11165094),
+	message = Loc_Empty(),
+	video = "stinger_defeat",	
+	callback = AGS_Presentations_RevealUI,
+	-- Configurable
+	icon_default = nil,
+	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
+	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
+	sound_default = "mus_stinger_landmark_objective_complete_fail",
+	sound_conquest = "ConquestDefeatEvent",
+	sound_wonder = "DefendWonderDefeatEvent",
+	sound_religious = "ReligiousDefeatEvent",
+}
+AGS_PRESENTATIONS_ELIMINATION = {
+	-- ELIMINATED
+	title = Loc_GetString(11165821),
+	message = Loc_Empty(),
+	video = "stinger_eliminated",	
+	callback = AGS_Presentations_RevealUI,
+	-- Configurable
+	icon_default = nil,
+	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
+	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
+	sound_default = "mus_stinger_landmark_objective_complete_fail",
+	sound_conquest = "ConquestDefeatEvent",
+	sound_wonder = "DefendWonderDefeatEvent",
+	sound_religious = "ReligiousDefeatEvent",	
+}
+AGS_PRESENTATIONS_VICTORY = {
+	-- VICTORY
+	title = Loc_GetString(11161277),
+	message = Loc_Empty(),
+	video = "stinger_victory",	
+	callback = AGS_Presentations_RevealUI,
+	-- Configurable
+	icon_default = nil,
+	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
+	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
+	sound_default = "mus_stinger_landmark_objective_complete_success",
+	sound_conquest = "ConquestVictoryEvent",
+	sound_wonder = "DefendWonderVictoryEvent",
+	sound_religious = "ReligiousVictoryEvent",	
+}
+---------------------------------------------------------------------------------------------------
+-- Pre-Filled Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Presentations_Victory(player_id)
+	AGS_Presentations_SetEndGameState(AGS_PRESENTATIONS_ENDGAME_SUCCESS)
+	AGS_Presentations_Victorious(player_id)
+end
+
+function AGS_Presentations_Loss(player_id)
+	AGS_Presentations_SetEndGameState(AGS_PRESENTATIONS_ENDGAME_FAILURE)
+	if AGS_Teams_IsTeamAlive(player_id) then
+		AGS_Presentations_Elimination(player_id)
+	else
+		AGS_Presentations_Defeat(player_id)
+	end
+end
+
+function AGS_Presentations_Victorious(player_id)
+	AGS_Presentations_Create(player_id, AGS_PRESENTATIONS_VICTORY, AGS_PRESENTATIONS_DEFAULT_SUFFIX)
+end
+
+function AGS_Presentations_Elimination(player_id)
+	AGS_Presentations_Create(player_id, AGS_PRESENTATIONS_DEFEAT, AGS_PRESENTATIONS_DEFAULT_SUFFIX)
+end
+
+function AGS_Presentations_Defeat(player_id)
+	AGS_Presentations_Create(player_id, AGS_PRESENTATIONS_ELIMINATION, AGS_PRESENTATIONS_DEFAULT_SUFFIX)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Presentations can and will be created only for local player. (We dont want to show wrong one to a player.)
+function AGS_Presentations_Create(player_id, presentation, suffix)
+	if AGS_GS_LOCAL_PLAYER.id ~= player_id then
+		return	
+	end
+	
+	icon = AGS_PRESENTATIONS_ICON .. "_" .. suffix
+	sound = AGS_PRESENTATIONS_SOUND .. "_" .. suffix
+	AGS_Presenations_CreateDelayed(player_id, presentation, icon, sound)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Internal Functions:
+---------------------------------------------------------------------------------------------------
+-- Final operation before presentation.
+function AGS_Presentations_SetEndGameState(endgame)
+	Misc_ClearSelection()
+	Taskbar_SetVisibility(endgame.show_taskbar)
+	Music_PlayStinger(endgame.music)
+end
+-- Shows UI after presentation is over.
+function AGS_Presentations_RevealUI()
+	Taskbar_SetVisibility(true)
+end
+-- Creates presentation after short delay.
+function AGS_Presenations_CreateDelayed(player_id, presentation, icon, sound)
+	Rule_AddOneShot(
+		_gameOver_message, 
+		GAMEOVER_OBJECTIVE_TIME + AGS_PRESENTATIONS_DELAY, 
+		{
+			_playerID = player_id,
+			_icon = presentation[icon],
+			_endType = presentation.title,
+			_message = presentation.message,
+			_sound = presentation[sound],
+			_videoURI = presentation.video,
+			_callback = presentation.callback,
+		}
+	)
+end
