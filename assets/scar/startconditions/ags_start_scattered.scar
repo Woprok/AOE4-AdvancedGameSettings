@@ -28,17 +28,22 @@ function AGS_ScatteredVillagers_UpdateModuleSettings()
 	end
 end
 
+function AGS_ScatteredVillagers_EarlyInitializations()
+	AGS_Print("AGS_ScatteredVillagers_EarlyInitializations")
+	if AGS_GLOBAL_SETTINGS.UsingPrefabStart then
+		AGS_ScatteredVillagers_DestroySpawn()
+	end
+end
+
 function AGS_ScatteredVillagers_PresetInitialize()
 	AGS_Print("AGS_ScatteredVillagers_PresetInitialize")
 	-- Tune villager spawn out from the middle of the map.
 	AGS_SCATTER_RADIUS = math.max(World_GetWidth(), World_GetLength())/AGS_SCATTER_TUNING 
+	FOW_UnExploreAll()
 end
 
 function AGS_ScatteredVillagers_PresetExecute()
 	AGS_Print("AGS_ScatteredVillagers_PresetExecute")
-	if AGS_GLOBAL_SETTINGS.UsingPrefabStart then
-		AGS_ScatteredVillagers_DestroySpawn()
-	end
 	AGS_ScatteredVillagers_CreateSpawn()
 end
 
@@ -67,6 +72,7 @@ function AGS_ScatteredVillagers_DestroySpawn()
 		local sgroup = Player_GetSquads(player.id)
 		local AGS_ScatteredVillagers_DestroySquad = function(gid, idx, sid)
 			if sid ~= nil then
+				Squad_WarpToPos(sid, World_Pos(5000,5000,5000))
 				Squad_Destroy(sid)
 			end
 		end
@@ -75,6 +81,7 @@ function AGS_ScatteredVillagers_DestroySpawn()
 		local egroup = Player_GetEntities(player.id)
 		local AGS_ScatteredVillagers_DestroyEntities = function(gid, idx, eid)
 			if eid ~= nil then
+				Entity_WarpToPos(eid, World_Pos(5000,5000,5000))
 				Entity_Destroy(eid)
 			end
 		end

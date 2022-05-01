@@ -28,11 +28,15 @@ function AGS_Nomadic_UpdateModuleSettings()
 	end
 end
 
-function AGS_Nomadic_PresetExecute()
-	AGS_Print("AGS_Nomadic_PresetExecute")
+function AGS_Nomadic_EarlyInitializations()
+	AGS_Print("AGS_ScatteredVillagers_EarlyInitializations")
 	if AGS_GLOBAL_SETTINGS.UsingPrefabStart then
 		AGS_Nomadic_DestroySpawn()
 	end
+end
+
+function AGS_Nomadic_PresetExecute()
+	AGS_Print("AGS_Nomadic_PresetExecute")
 	AGS_Nomadic_CreateSpawn()
 end
 
