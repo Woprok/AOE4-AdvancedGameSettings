@@ -95,7 +95,7 @@ function AGS_Teams_CreateStaticTeams()
 		end
 	end	
 end
--- Returns nil or winner player list.
+-- Returns nil or winner player list, e.g. all non eliminated players.
 function AGS_Teams_DoesWinnerGroupExists()
 	local winner_group = nil
 	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_FFA then
@@ -142,7 +142,7 @@ function AGS_Teams_GetStaticTeamWinnders()
 	for _, team in pairs(AGS_TEAMS_TABLE) do
 		-- This is equal only if single team is alive
 		if total_alive == AGS_Teams_CountAliveInGroup(team) then
-			return team
+			return AGS_Teams_GetStaticTeamAliveMembers(team)
 		end
 	end
 	return nil
@@ -170,26 +170,33 @@ function AGS_Teams_GetDynamicTeamWinners()
 	end
 	return nil
 end
-
-
-
--- TODO FINAL UPDATE: Returns all alive teammates for that player
-function AGS_GetAllAliveTeammates(player_id)
-	-- TODO return list of static allies ids
+-- Returns all alive members (player table) of static team. Each player can be only one static team so he always has reference for this.
+function AGS_Teams_GetStaticTeamAliveMembers(team_mates)
+	local alive_team = { } 
+	for _, member in pairs(team_mates) do
+		if not member.isEliminated then
+			table.insert(alive_team, member)
+		end
+	end
+	return alive_team
 end
--- TODO FINAL UPDATE: Friendly players are all that share mutual alliance with source player.
+-- Friendly players are all that share mutual alliance with source player.
 -- This will return list without the source player.
-function AGS_GetFriendlyAlivePlayers(source_player_id)
+function AGS_Teams_GetAllMutualFriendshipPlayers(player)
 	local allies = { }
-	for _, player in pairs(PLAYERS) do
-		if source_player_id ~= player.id and not player.isEliminated then
-			if AGS_IsMutualRelation(source_player_id, player.id, R_ALLY) then
-				table.insert(enemies, player)				
+	for _, ally in pairs(PLAYERS) do
+		if player ~= ally and not ally.isEliminated then
+			if AGS_IsMutualRelation(player.id, ally.id, R_ALLY) then
+				table.insert(allies, ally)				
 			end
 		end
 	end
 	return allies
 end
+
+
+
+
 -- TODO FINAL UPDATE: Hostile and Neutral players are generally considered enemies.
 -- So this will return list of all players that are not mutual allies of source player.
 function AGS_GetHostileOrNeutralAlivePlayers(source_player_id)

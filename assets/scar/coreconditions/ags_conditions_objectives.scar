@@ -1,0 +1,160 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Contains condition helpers for objective handling.
+---------------------------------------------------------------------------------------------------
+
+AGS_OBJECTIVES_TEAMSOLIDARITY = {
+	reason = AGS_WR_TEAM_SOLIDARITY,
+	-- Protect your teammates.
+	title = "$64c5019a145c4e4da448dbd3adeea61e:230", 
+	description = Loc_Empty(),
+	icon = "icons\\objectives\\objectives_generic",
+	data_template = DT_PRIMARY_DEFAULT,
+	data_template_or = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "teamsolidarityObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+-- "Failed to protect %1PLAYER_NAME%."
+AGS_TITLES_TEAMSOLIDARITY_LOST = "$64c5019a145c4e4da448dbd3adeea61e:257"
+-- "All other teams crumbled."
+AGS_TITLES_TEAMSOLIDARITY_VICTORY = "$64c5019a145c4e4da448dbd3adeea61e:258"
+
+AGS_OBJECTIVES_SURRENDER = {
+	reason = AGS_WR_SURRENDER,
+	-- "Fight until the bitter end."
+	title = "$64c5019a145c4e4da448dbd3adeea61e:252", 
+	description = Loc_Empty(),
+	icon = "icons\\objectives\\objectives_generic",
+	data_template = DT_PRIMARY_DEFAULT,
+	data_template_or = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "surrenderObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+AGS_OBJECTIVES_ELIMINATION = {
+	reason = AGS_WR_ELIMINATION,
+	-- "Prevail until the end."
+	title = "$64c5019a145c4e4da448dbd3adeea61e:253", 
+	description = Loc_Empty(),
+	icon = "icons\\objectives\\objectives_generic",
+	data_template = DT_PRIMARY_DEFAULT,
+	data_template_or = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "eliminationObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+AGS_OBJECTIVES_ANNIHILATION = {
+	reason = AGS_WR_ANNIHILATION,
+	-- "Annihilate everything."
+	title = "$64c5019a145c4e4da448dbd3adeea61e:259", 
+	description = Loc_Empty(),
+	icon = "icons\\objectives\\objectives_generic",
+	data_template = DT_PRIMARY_DEFAULT,
+	data_template_or = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "annihilationObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+---------------------------------------------------------------------------------------------------
+-- Pre-Filled Functions:
+---------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Objectives_PresentWrap(obj_id, obj_state, obj_title, obj_title_param)
+	return {
+		id = obj_id,
+		state = obj_state,
+		title = obj_title,
+		title_param = obj_title_param,
+	}
+end
+function AGS_Objectives_Present(objective_id, state, title, title_param)
+	local formatted_title = nil
+	if title_param ~= nil then
+		formatted_title = Loc_FormatText(title, title_param)		
+	else
+		formatted_title = Loc_FormatText(title)
+	end
+	Obj_SetState(objective_id, state)
+	Obj_CreatePopup(objective_id, formatted_title)	
+end
+-- State is either OS_Complete, OS_Incomplete or OS_Failed
+-- Counter is either COUNTER_TimerDecreasing or COUNTER_CountUpTo
+function AGS_Objectives_Set(objective, state, visibility, progress, counter, title)
+	if objective == nil then
+		AGS_Print("AGS: OBJECTIVE WAS NOT DEFINED!")
+	end
+	-- Current state of an objective.
+	if state ~= nil then
+		Obj_SetState(objective, state)
+	end
+	-- Is objective visible ?
+	if visibility ~= nil then
+		Obj_SetVisible(objective, visibility)
+	end
+	-- Is objective progress visible ?
+	if progress ~= nil then
+		Obj_SetProgressVisible(objective, progress)
+	end
+	-- How is progress displayed ?
+	if counter ~= nil then
+		Obj_SetCounterType(objective, counter)
+	end
+	-- Dynamic change of displayed title ?
+	if title ~= nil then
+		Obj_SetTitle(objective, title)
+	end
+end
+
+function AGS_Objectives_Create(objective_data, player, title_param, parent)
+	-- Select proper template to display objective.
+	local template = objective_data.data_template
+	if AGS_Conditions_IsPrimary(objective_data.reason) then
+		template = objective_data.data_template_or
+	end
+	-- Format title with a paramter.
+	local title = objective_data.title
+	if title_param ~= nil then
+		title = Loc_FormatText(title, title_param)
+	end
+	-- Create as child or independent.
+	if parent == nil then
+		parent = objective_data.parent
+	end
+	
+	return AGS_Objectives_CreateNew(objective_data, player, title, template, parent)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Internal Functions:
+---------------------------------------------------------------------------------------------------
+-- Returns new objective from supplied parameters.
+function AGS_Objectives_CreateNew(objective, player, title, template, parent)
+	return Obj_Create(
+		player.id, -- Most likely always local player ?
+		title,
+		objective.description, 	
+		objective.icon, 
+		template, 
+		player.raceName, 
+		objective.priority, -- objective type e.g. primary or secondary
+		parent, -- parent objective
+		objective.telemetry
+	)	
+end

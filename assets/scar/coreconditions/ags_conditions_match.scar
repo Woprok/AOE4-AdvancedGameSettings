@@ -17,11 +17,18 @@ AGS_WR_WONDER = WR_WONDER
 AGS_WR_RELIGIOUS = WR_RELIGIOUS
 AGS_WR_REGICIDE = 107
 AGS_WR_TEAM_SOLIDARITY = 108
+AGS_WR_TREATY = 109
+AGS_WR_SCORE = 110
 ---------------------------------------------------------------------------------------------------
 -- Player Win and Lose
 ---------------------------------------------------------------------------------------------------
 -- Sets a player as defeated, invoking presentation and calling OnPlayerDefeated. 
-function AGS_SetPlayerDefeated(player_id, presentation_function, defeat_reason)
+function AGS_SetPlayerDefeated(player_id, presentation_function, defeat_reason, opt_objective_pop)
+	-- Local player will get objective popup
+	if player_id == AGS_GS_LOCAL_PLAYER.id and opt_objective_pop ~= nil then
+		AGS_Objectives_Present(opt_objective_pop.id, opt_objective_pop.state, opt_objective_pop.title, opt_objective_pop.title_param)
+	end
+	
 	-- Invokes OnPlayerDefeated, only owner of the reason should use it for win/lose checks.
 	Core_SetPlayerDefeated(player_id, presentation_function, defeat_reason)
 	-- Basically this is called by default and its dumb...
@@ -32,7 +39,12 @@ function AGS_SetPlayerDefeated(player_id, presentation_function, defeat_reason)
 end
 
 -- Sets a player as victorious, invoking presentation and calling PreGameOver. 
-function AGS_SetPlayerVictorious(player_id, presentation_function, victory_reason)
+function AGS_SetPlayerVictorious(player_id, presentation_function, victory_reason, opt_objective_pop)
+	-- Local player will get objective popup
+	if player_id == AGS_GS_LOCAL_PLAYER.id and opt_objective_pop ~= nil then
+		AGS_Objectives_Present(opt_objective_pop.id, opt_objective_pop.state, opt_objective_pop.title, opt_objective_pop.title_param)
+	end
+		
 	Core_SetPlayerVictorious(player_id, presentation_function, victory_reason)
 end
 

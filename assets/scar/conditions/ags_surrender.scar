@@ -10,6 +10,7 @@
 ---------------------------------------------------------------------------------------------------
 
 AGS_SURRENDER_MODULE = "AGS_Surrender"
+AGS_SURRENDER_OBJECTIVE = nil
 AGS_SURRENDER_ACTIVE = true
 
 ---------------------------------------------------------------------------------------------------
@@ -28,7 +29,8 @@ end
 function AGS_Surrender_OnPlay()	
 	AGS_Print("AGS_Surrender_OnPlay")
 	-- Registers surrender event.
-	Network_RegisterEvent("AGS_Surrender_Notify")	
+	Network_RegisterEvent("AGS_Surrender_Notify")
+	AGS_Surrender_CreateObjective()	
 end
 
 function AGS_Surrender_TreatyStarted()
@@ -52,7 +54,11 @@ function AGS_Surrender_OnPlayerDefeated(player, reason)
 	if reason == AGS_WR_SURRENDER then 
 		AGS_Notifications_Eliminated(player, AGS_NOTIFICATIONS_SURRENDER)
 		-- We require special check for cases when surrender is valid resolver for situation for AI.
-		if AGS_Conditions_CheckVictory(AGS_SURRENDER_ACTIVE, AGS_Presentations_Victory, AGS_WR_SURRENDER) then
+		if AGS_Conditions_CheckVictory(AGS_SURRENDER_ACTIVE, AGS_Presentations_Victory, AGS_WR_SURRENDER,
+				AGS_Objectives_PresentWrap(
+					AGS_OBJECTIVES_SURRENDER, 
+					OS_Complete, 
+					AGS_OBJECTIVES_SURRENDER.title)) then
 			return
 		end
 	end
@@ -64,6 +70,7 @@ function AGS_Surrender_OnGameOver()
 	AGS_Print("AGS_Surrender_OnGameOver")
 	-- Network event does not need to be removed ?
 	-- Network_UnRegisterEvent("AGS_Surrender_Notify")	
+	AGS_Surrender_RemoveObjective()
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -73,7 +80,11 @@ end
 function AGS_Surrender_Notify(player_id)	
 	AGS_Print("AGS_Surrender_Notify", player_id)	
 	local player = Core_GetPlayersTableEntry(player_id)	
-	AGS_SetPlayerDefeated(player.id, AGS_Presentations_Loss, AGS_WR_SURRENDER)
+	AGS_SetPlayerDefeated(player.id, AGS_Presentations_Loss, AGS_WR_SURRENDER, 
+		AGS_Objectives_PresentWrap(
+			AGS_SURRENDER_OBJECTIVE, 
+			OS_Failed, 
+			AGS_OBJECTIVES_SURRENDER.title))
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -87,3 +98,12 @@ function AGS_Surrender_CheckAI()
 		Core_WinnerlessGameOver(AGS_Presentations_Loss, AGS_WR_SURRENDER)
 	end
 end	
+
+function AGS_Surrender_CreateObjective()
+	AGS_SURRENDER_OBJECTIVE = AGS_Objectives_Create(AGS_OBJECTIVES_SURRENDER, AGS_GS_LOCAL_PLAYER)
+	AGS_Objectives_Set(AGS_SURRENDER_OBJECTIVE, OS_Incomplete, true)
+end
+
+function AGS_Surrender_RemoveObjective()
+	AGS_Objectives_Set(AGS_SURRENDER_OBJECTIVE, nil, false)
+end

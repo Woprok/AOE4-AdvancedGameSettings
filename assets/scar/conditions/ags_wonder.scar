@@ -148,11 +148,11 @@ function AGS_Wonder_CreateObjectiveBuilt(wonder_owner, entity_id)
 	elseif AGS_IsMutualRelation(player_id, wonder_owner.id, R_ALLY) then
 		newWonderObj = AGS_CreateObjective(AGS_OBJECTIVE_WONDER_TEAM, player_id, player_civ, player_local.playerName)
 		Sound_Play2D("mus_stinger_wonder_win_countdown_ally")
-		AGS_SetObjectivePopUp(newWonderObj, AGS_FormatText(11159070, player_local.playerName))
+		AGS_SetObjectivePopUp(newWonderObj, AGS_FormatText(11159070, wonder_owner.playerName))
 	else
 		newWonderObj = AGS_CreateObjective(AGS_OBJECTIVE_WONDER_ENEMY, player_id, player_civ, player_local.playerName)
 		Sound_Play2D("mus_stinger_wonder_win_countdown_enemy")
-		AGS_SetObjectivePopUp(newWonderObj, AGS_FormatText(11159069, player_local.playerName))
+		AGS_SetObjectivePopUp(newWonderObj, AGS_FormatText(11159069, wonder_owner.playerName))
 	end
 	wonder_owner._wonder.objective_id = newWonderObj
 	wonder_owner._wonder.objective_active = true

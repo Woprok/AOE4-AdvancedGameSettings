@@ -117,26 +117,10 @@ AGS_OBJECTIVE_REGICIDE = {
 	telemetry = "regicideObj",
 	alert = "icons\\event_queue_high_priority_large",
 }
-AGS_OBJECTIVE_TEAMSOLIDARITY = {
-	reason = AGS_WR_TEAM_SOLIDARITY,
-	-- Protect your teammates.
-	title = "$64c5019a145c4e4da448dbd3adeea61e:230", 
-	description = Loc_Empty,
-	icon = "icons\\objectives\\objectives_leader",
-	data_template = DT_PRIMARY_DEFAULT,
-	priority = OT_Primary,
-	parent = 0,
-	telemetry = "teamsolidarityObj",
-	alert = "icons\\event_queue_high_priority_large",
-}
+
 
 -- "%1PLAYER_NAME% eliminated"
-AGS_CUE_TITLE_ANNIHILATED_ID = 11159062
-AGS_CUE_TITLE_ELIMINATED_ID = 11165820
 AGS_CUE_TITLE_REGICIDED_ID = 11165820
-
--- "%1PLAYER_NAME% surrendered in solidarity with his teammate"
-AGS_CUE_TITLE_TEAM_SOLIDARITY_ID = "$64c5019a145c4e4da448dbd3adeea61e:231"
 
 -- "Enemy attacking Landmark"
 AGS_CUE_TITLE_LANDMARK_A_SELF_ID = 11198265
@@ -175,48 +159,10 @@ AGS_CUE_TITLE_WONDER_ENEMY_ID = 11159069
 -- Helpers:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_IsPrimaryObjective(reason)
-	-- Conquest is always primary objective.
-	if reason == AGS_WR_CONQUEST then
-		return true
-	end
-	if reason == AGS_WR_RELIGIOUS then
-		return not AGS_GLOBAL_SETTINGS.Conquest
-	end
-	if reason == AGS_WR_WONDER then
-		return not AGS_GLOBAL_SETTINGS.Conquest and not AGS_GLOBAL_SETTINGS.Religious
-	end
-	
-	return false
-end
 
 
--- COUNTER_TimerDecreasing or COUNTER_CountUpTo
-function AGS_SetObjective(objective, state, visibility, progress, counter, title)
-	if objective == nil then
-		AGS_Print("AGS: OBJECTIVE WAS NOT DEFINED!")
-	end
-	-- Current state of an objective.
-	if state ~= nil then
-		Obj_SetState(objective, state)
-	end
-	-- Is objective visible ?
-	if visibility ~= nil then
-		Obj_SetVisible(objective, visibility)
-	end
-	-- Is objective progress visible ?
-	if progress ~= nil then
-		Obj_SetProgressVisible(objective, progress)
-	end
-	-- How is progress displayed ?
-	if counter ~= nil then
-		Obj_SetCounterType(objective, counter)
-	end
-	-- Dynamic change of displayed title ?
-	if title ~= nil then
-		Obj_SetTitle(objective, title)
-	end
-end
+
+
 
 function AGS_SetObjectivePopUp(objective_id, objective_data)
 	-- Show big popup about this objective.
@@ -255,48 +201,4 @@ function AGS_FormatText(title_id, player_name)
 	return Loc_FormatText(title_id, player_name)
 end
 
-function AGS_CreateCueComplex(cue_template, high_priority, title, color, sfx)
-	if sfx == nil then
-		sfx = cue_template.sfx
-	end
-	if high_priority then
-		AGS_CreateCueCustomized(cue_template, title, color, cue_template.icon, ECV_Queue, sfx)
-		AGS_CreateCueCustomized(cue_template, title, color, cue_template.icon_high_priority, ECV_Title, sfx)
-	else
-		AGS_CreateCueCustomized(cue_template, title, color, cue_template.icon, ECV_Queue, sfx)
-	end
-end
 
-
-function AGS_CreateObjective(objective, player_id, player_civ, title_param, parent)
-	local template = objective.data_template
-	if AGS_IsPrimaryObjective(objective.reason) then
-		template = objective.data_template_secondary
-	end
-	local title = objective.title
-		if title_param ~= nil then
-		title = AGS_FormatText(title, title_param)
-	end
-	
-	if parent == nil then
-		parent = objective.parent
-	end
-	
-	return Obj_Create(
-		player_id, -- Most likely always local player ?
-		title,
-		objective.description(), 	
-		objective.icon, 
-		template, 
-		player_civ, 
-		objective.priority, -- objective type e.g. primary or secondary
-		parent, -- parent objective
-		objective.telemetry
-	)
-end
-
--- os_state is OS_Complete/Incomplete/Failed
-function AGS_SetEndGameState(objective, show_taskbar, os_state, music_sfx)
-	Obj_SetState(objective, os_state)
-	Obj_CreatePopup(objective, objective.title)	
-end

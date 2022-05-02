@@ -250,8 +250,11 @@
 249,,,,,,No Dock
 250,,,,,,"Disables construction of docks in any age, not advised to be used on maps that separate players only by water."
 251,,,extra_text,,,Medium
-252,,,help_text,,,
-253,,,extra_text,,,
+252,,,help_text,,,Fight until the bitter end.
+253,,,extra_text,,,Prevail until the end.
 254,,,help_text,,,"Monarch is subject to no earthly authority, deriving his right to rule directly from the will of God. Just don't question him!"
 255,,,screen_name,,,King
 256,,,,,,Fortified
+257,,,ags_conditions_objectives,,,Failed to protect %1PLAYER_NAME%.
+258,,,ags_conditions_objectives,,,All other teams crumbled.
+259,,,ags_conditions_objectives,,,Annihilate everything.

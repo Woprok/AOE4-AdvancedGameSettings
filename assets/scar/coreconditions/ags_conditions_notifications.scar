@@ -17,6 +17,7 @@ AGS_NOTIFICATIONS_SOUND_ELIMINATED = {
 AGS_NP_LOW = 0
 AGS_NP_HIGH = 1
 AGS_NP_MAX = 2
+-- Standardized notification for all objectives to make them similiar and recognizeable.
 AGS_NOTIFICATIONS_CORE = {
 	eventType = -1,	
 	-- should match the defaults set in AE under tuning.ui.event_cues
@@ -42,9 +43,19 @@ AGS_NOTIFICATIONS_SURRENDER = {
 	title = 11161289,
 	sfx = "sfx_ui_surrendered_notification_play",	
 }
-AGS_NOTIFICATIONS_SURRENDER = {
+AGS_NOTIFICATIONS_TEAM_SOLIDARITY = {
 	-- "%1PLAYER_NAME% surrendered in solidarity with his teammate"
 	title = "$64c5019a145c4e4da448dbd3adeea61e:231",
+	sfx = nil,	
+}
+AGS_NOTIFICATIONS_ELIMINATION = {
+	-- "%1PLAYER_NAME% eliminated"
+	title = 11165820,
+	sfx = nil,	
+}
+AGS_NOTIFICATIONS_ANNIHILATION = {
+	-- "%1PLAYER_NAME% eliminated"
+	title = 11159062,
 	sfx = nil,	
 }
 ---------------------------------------------------------------------------------------------------

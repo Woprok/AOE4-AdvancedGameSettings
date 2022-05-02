@@ -10,14 +10,6 @@
 --AGS_PRESENTATIONS_WAIT = 2.0
 -- Presentations are delayd by GAMEOVER_OBJECTIVE_TIME = 6.5, this will extend the delay.
 AGS_PRESENTATIONS_DELAY = 0.0
-AGS_PRESENTATIONS_ENDGAME_SUCCESS = {
-	show_taskbar = false,
-	music = MUS_STING_PRIMARY_OBJ_COMPLETE_ENDGAME,
-}
-AGS_PRESENTATIONS_ENDGAME_FAILURE = {
-	show_taskbar = false,
-	music = MUS_STING_PRIMARY_OBJ_FAIL,
-}
 AGS_PRESENTATIONS_ICON = "icon"
 AGS_PRESENTATIONS_SOUND = "sound"
 AGS_PRESENTATIONS_DEFAULT_SUFFIX = "default"
@@ -25,6 +17,8 @@ AGS_PRESENTATIONS_CONQUEST_SUFFIX = "conquest"
 AGS_PRESENTATIONS_RELIGIOUS_SUFFIX = "religious"
 AGS_PRESENTATIONS_WONDER_SUFFIX = "wonder"
 AGS_PRESENTATIONS_DEFEAT = {
+	-- Endgame
+	endgame_music = MUS_STING_PRIMARY_OBJ_FAIL,
 	-- DEFEAT
 	title = Loc_GetString(11165094),
 	message = Loc_Empty(),
@@ -35,12 +29,14 @@ AGS_PRESENTATIONS_DEFEAT = {
 	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
 	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
 	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
-	sound_default = "mus_stinger_landmark_objective_complete_fail",
+	sound_default = "mus_stinger_landmark_objective_complete_fail", -- should be same as conquest
 	sound_conquest = "ConquestDefeatEvent",
 	sound_wonder = "DefendWonderDefeatEvent",
 	sound_religious = "ReligiousDefeatEvent",
 }
 AGS_PRESENTATIONS_ELIMINATION = {
+	-- Endgame
+	endgame_music = MUS_STING_PRIMARY_OBJ_FAIL,
 	-- ELIMINATED
 	title = Loc_GetString(11165821),
 	message = Loc_Empty(),
@@ -51,12 +47,14 @@ AGS_PRESENTATIONS_ELIMINATION = {
 	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
 	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
 	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
-	sound_default = "mus_stinger_landmark_objective_complete_fail",
+	sound_default = "mus_stinger_landmark_objective_complete_fail", -- should be same as conquest
 	sound_conquest = "ConquestDefeatEvent",
 	sound_wonder = "DefendWonderDefeatEvent",
 	sound_religious = "ReligiousDefeatEvent",	
 }
 AGS_PRESENTATIONS_VICTORY = {
+	-- Endgame
+	endgame_music = MUS_STING_PRIMARY_OBJ_COMPLETE_ENDGAME,
 	-- VICTORY
 	title = Loc_GetString(11161277),
 	message = Loc_Empty(),
@@ -67,7 +65,7 @@ AGS_PRESENTATIONS_VICTORY = {
 	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
 	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
 	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
-	sound_default = "mus_stinger_landmark_objective_complete_success",
+	sound_default = "mus_stinger_landmark_objective_complete_success", -- should be same as conquest
 	sound_conquest = "ConquestVictoryEvent",
 	sound_wonder = "DefendWonderVictoryEvent",
 	sound_religious = "ReligiousVictoryEvent",	
@@ -76,13 +74,11 @@ AGS_PRESENTATIONS_VICTORY = {
 -- Pre-Filled Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_Presentations_Victory(player_id)
-	AGS_Presentations_SetEndGameState(AGS_PRESENTATIONS_ENDGAME_SUCCESS)
+function AGS_Presentations_Victory(player_id)	
 	AGS_Presentations_Victorious(player_id)
 end
 
 function AGS_Presentations_Loss(player_id)
-	AGS_Presentations_SetEndGameState(AGS_PRESENTATIONS_ENDGAME_FAILURE)
 	if AGS_Teams_IsTeamAlive(player_id) then
 		AGS_Presentations_Elimination(player_id)
 	else
@@ -110,7 +106,9 @@ function AGS_Presentations_Create(player_id, presentation, suffix)
 	if AGS_GS_LOCAL_PLAYER.id ~= player_id then
 		return	
 	end
-	
+	-- Endgame State.
+	AGS_Presentations_SetEndGameState(presentation.endgame_music)
+	-- Presentation.
 	icon = AGS_PRESENTATIONS_ICON .. "_" .. suffix
 	sound = AGS_PRESENTATIONS_SOUND .. "_" .. suffix
 	AGS_Presenations_CreateDelayed(player_id, presentation, icon, sound)
@@ -120,10 +118,10 @@ end
 -- Internal Functions:
 ---------------------------------------------------------------------------------------------------
 -- Final operation before presentation.
-function AGS_Presentations_SetEndGameState(endgame)
+function AGS_Presentations_SetEndGameState(endgame_music)
 	Misc_ClearSelection()
-	Taskbar_SetVisibility(endgame.show_taskbar)
-	Music_PlayStinger(endgame.music)
+	Taskbar_SetVisibility(false)
+	Music_PlayStinger(endgame_music)
 end
 -- Shows UI after presentation is over.
 function AGS_Presentations_RevealUI()

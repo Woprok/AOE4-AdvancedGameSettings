@@ -8,8 +8,9 @@
 ---------------------------------------------------------------------------------------------------
 
 import("coreconditions/ags_conditions_match.scar")
-import("coreconditions/ags_conditions_presentations.scar")
 import("coreconditions/ags_conditions_notifications.scar")
+import("coreconditions/ags_conditions_objectives.scar")
+import("coreconditions/ags_conditions_presentations.scar")
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
@@ -17,7 +18,7 @@ import("coreconditions/ags_conditions_notifications.scar")
 
 -- Returns true if victory was achieved otherwise false. (Victory await is pointless...)
 -- If victory was achieved it will set presentation for all winners.
-function AGS_Conditions_CheckVictory(is_allowed_to_check, presentation_function, reason)
+function AGS_Conditions_CheckVictory(is_allowed_to_check, presentation_function, reason, opt_objective)
 	if not is_allowed_to_check then
 		return false
 	end
@@ -28,7 +29,7 @@ function AGS_Conditions_CheckVictory(is_allowed_to_check, presentation_function,
 	end
 	-- Resolve all winners.
 	for _, winner in pairs(winners) do 
-		AGS_SetPlayerVictorious(winner.id, AGS_Conditions_VictoryPresentation, AGS_WR_SURRENDER)
+		AGS_SetPlayerVictorious(winner.id, presentation_function, reason, opt_objective)
 	end
 	-- Quit the match.
 	AGS_EndGame()
@@ -42,5 +43,30 @@ function AGS_Conditions_IsAnyHumanAlive()
 			return true
 		end
 	end	
+	return false
+end
+-- Only one condition can be primary, all others should use or objective templates etc...
+function AGS_Conditions_IsPrimary(reason)
+	-- Conquest is always primary objective.
+	if reason == AGS_WR_CONQUEST then
+		return true
+	elseif reason == AGS_WR_RELIGIOUS and not AGS_GLOBAL_SETTINGS.Conquest then
+		return true
+	elseif reason == AGS_WR_WONDER and not AGS_GLOBAL_SETTINGS.Conquest and not AGS_GLOBAL_SETTINGS.Religious then
+		return true
+	end
+	-- All other winconditions dont have custom template so we will skip this and return false even for them.
+	-- AGS_WR_REGICIDE  
+	-- AGS_WR_TEAM_SOLIDARITY  
+	-- AGS_WR_TREATY  
+	-- AGS_WR_SCORE  
+	-- AGS_WR_NONE or undefined here.
+	return false
+end
+-- Gameending are conditions that always end the match when they are fired as an reason.
+function AGS_Conditions_IsGameEnding(reason)
+	if reason == AGS_WR_SCORE or reason == AGS_WR_RELIGIOUS or reason == AGS_WR_WONDER then
+		return true
+	end
 	return false
 end

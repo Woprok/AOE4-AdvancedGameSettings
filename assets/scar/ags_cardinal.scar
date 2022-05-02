@@ -86,16 +86,18 @@ import("startconditions/ags_start_scattered.scar")
 import("startconditions/ags_starting_keep.scar")
 import("startconditions/ags_starting_king.scar")
 
--- Conditions are loaded after starting conditions.
---import("conditions/ags_treaty.scar") -- peace phase
---import("conditions/ags_annihilation.scar") -- player needs stuff to play
+-- Conditions based on expected priority.
+--import("conditions/ags_treaty.scar") 
+-- Conditions that are necessary for a game to run.
 import("conditions/ags_surrender.scar")
---import("conditions/ags_elimination.scar") -- player can rage quit
---import("conditions/ags_conquest.scar") -- conquest objectives
---import("conditions/ags_religious.scar") -- sacred site objectives
---import("conditions/ags_wonder.scar") -- wonder building objectives
---import("conditions/ags_regicide.scar") -- stab king objectives
---import("conditions/ags_teamsolidarity.scar") -- team needs everyone
+import("conditions/ags_elimination.scar") 
+-- Conditions that only decide the match outcome.
+import("conditions/ags_annihilation.scar") 
+--import("conditions/ags_conquest.scar") 
+--import("conditions/ags_religious.scar") 
+--import("conditions/ags_wonder.scar") 
+--import("conditions/ags_regicide.scar") 
+import("conditions/ags_teamsolidarity.scar") 
 
 
 -- AGS supports AI with few adjustments.

@@ -73,6 +73,10 @@ AGS_GLOBAL_SETTINGS = {
 	TeamSolidarity = false, -- Team is eliminated together.
 	MaintainTeamBalance = AGS_GS_TEAM_BALANCE_NONE,
 	
+	EliminationSettings = {
+		EnableAITakeover = false, -- This will prevent disconnected player to be eliminated. Results not tested.
+	},
+	
 	ConquestSettings = {
 		Capital = true,
 		Landmarks = true,
