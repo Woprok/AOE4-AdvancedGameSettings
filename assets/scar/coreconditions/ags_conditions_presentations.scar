@@ -91,11 +91,11 @@ function AGS_Presentations_Victorious(player_id)
 end
 
 function AGS_Presentations_Elimination(player_id)
-	AGS_Presentations_Create(player_id, AGS_PRESENTATIONS_DEFEAT, AGS_PRESENTATIONS_DEFAULT_SUFFIX)
-end
-
-function AGS_Presentations_Defeat(player_id)
 	AGS_Presentations_Create(player_id, AGS_PRESENTATIONS_ELIMINATION, AGS_PRESENTATIONS_DEFAULT_SUFFIX)
+end
+-- This is also used for WinnerlessGameOver
+function AGS_Presentations_Defeat(player_id)
+	AGS_Presentations_Create(player_id, AGS_PRESENTATIONS_DEFEAT, AGS_PRESENTATIONS_DEFAULT_SUFFIX)
 end
 
 ---------------------------------------------------------------------------------------------------

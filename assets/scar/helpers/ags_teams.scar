@@ -112,7 +112,7 @@ end
 -- Returns true if player static team is still alive or false if his team was defeated.
 function AGS_Teams_IsTeamAlive(player_id)
 	local player = Core_GetPlayersTableEntry(player_id)
-	if AGS_GLOBAL_SETTINGS.AGS_GS_TEAM_VICTORY_STANDARD and AGS_Teams_CountAliveInGroup(player.AGS_Team.allies) > 0 then
+	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_STANDARD and AGS_Teams_CountAliveInGroup(player.AGS_Team.allies) > 0 then
 		return true
 	end	
 	return false
@@ -193,25 +193,34 @@ function AGS_Teams_GetAllMutualFriendshipPlayers(player)
 	end
 	return allies
 end
-
-
-
-
--- TODO FINAL UPDATE: Hostile and Neutral players are generally considered enemies.
--- So this will return list of all players that are not mutual allies of source player.
-function AGS_GetHostileOrNeutralAlivePlayers(source_player_id)
-	local enemies = { }
-	for _, player in pairs(PLAYERS) do
-		if source_player_id ~= player.id and not player.isEliminated then
-			if not AGS_IsMutualRelation(source_player_id, player.id, R_ALLY) then
-				table.insert(enemies, player)				
-			end
+-- Returns all players that are not considered allies for current TeamVictory.
+-- Can choose to get also eliminated via opt_all.
+function AGS_Teams_GetAllCurrentOpponents(player, opt_all)
+	if opt_all == nil then 
+		opt_all = false 
+	end	
+	enemy_group = {}
+	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_FFA then
+		for _, enemy in pairs(PLAYERS) do
+			if enemy ~= player and (not enemy.isEliminated or opt_all) then
+				table.insert(enemy_group, enemy)
+			end			
 		end
-	end
-	return enemies
+	elseif AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_STANDARD then
+		for _, enemy in pairs(PLAYERS) do
+			if enemy ~= player and (not enemy.isEliminated or opt_all) and player.AGS_Team.index ~= enemy.AGS_Team.index then
+				table.insert(enemy_group, enemy)
+			end			
+		end
+	elseif AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_DYNAMIC then
+		for _, enemy in pairs(PLAYERS) do
+			if enemy ~= player and (not enemy.isEliminated or opt_all) and not AGS_IsMutualRelation(player.id, enemy.id, R_ALLY) then
+				table.insert(enemy_group, enemy)
+			end			
+		end
+	end	
+	return enemy_group
 end
-
-
 
 ---------------------------------------------------------------------------------------------------
 -- Internal Helper Functions:

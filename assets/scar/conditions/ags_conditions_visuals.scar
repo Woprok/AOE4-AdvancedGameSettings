@@ -14,7 +14,7 @@ AGS_OBJECTIVE_CONQUEST = {
 	reason = WR_CONQUEST,
 	-- "Destroy all enemy landmarks"
 	title = "$11159056", 
-	description = Loc_Empty,
+	description = Loc_Empty(),
 	icon = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
 	data_template = "ConquestObjectiveTemplate",
 	priority = OT_Primary,
@@ -31,7 +31,7 @@ AGS_OBJECTIVE_RELIGIOUS = {
 	title_neutralize = 11183992,
 	-- "Defend all Holy Sites"
 	title_defend = 11190384,
-	description = Loc_Empty,
+	description = Loc_Empty(),
 	icon = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
 	data_template = "HolySiteObjectiveDataTemplate",
 	data_template_secondary = "HolySiteOrObjectiveDataTemplate",
@@ -44,7 +44,7 @@ AGS_OBJECTIVE_RELIGIOUS_SITES = {
 	reason = AGS_WR_RELIGIOUS,
 	-- "Site %1NUMBER%"
 	title = 11184017, 
-	description = Loc_Empty,
+	description = Loc_Empty(),
 	icon = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
 	data_template = "HolySiteSecondaryObjectiveDataTemplate",
 	data_template_secondary = "HolySiteSecondaryObjectiveDataTemplate",
@@ -57,7 +57,7 @@ AGS_OBJECTIVE_WONDER_BUILD = {
 	reason = WR_WONDER,
 	-- "Build a Wonder"
 	title = "$11159068", 
-	description = Loc_Empty,
+	description = Loc_Empty(),
 	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
 	data_template = "WonderObjectiveTemplate",
 	data_template_secondary = "WonderOrObjectiveTemplate",
@@ -70,7 +70,7 @@ AGS_OBJECTIVE_WONDER_SELF = {
 	reason = WR_WONDER,
 	-- "Defend your Wonder"
 	title = "$11159071", 
-	description = Loc_Empty,
+	description = Loc_Empty(),
 	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
 	data_template = "WonderObjectiveTemplate",
 	data_template_secondary = "WonderObjectiveTemplate",
@@ -83,7 +83,7 @@ AGS_OBJECTIVE_WONDER_TEAM = {
 	reason = WR_WONDER,
 	-- "Defend %1PLAYER_NAME%'s Wonder"	
 	title = 11159070, 
-	description = Loc_Empty,
+	description = Loc_Empty(),
 	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
 	data_template = "WonderObjectiveTemplate",
 	data_template_secondary = "WonderObjectiveTemplate",
@@ -96,7 +96,7 @@ AGS_OBJECTIVE_WONDER_ENEMY = {
 	reason = WR_WONDER,
 	-- "Destroy %1PLAYER_NAME%'s Wonder"
 	title = 11159069, 
-	description = Loc_Empty,
+	description = Loc_Empty(),
 	icon = "icons/objectives/objectives_warning_small",
 	data_template = "WonderObjectiveTemplate",
 	data_template_secondary = "WonderObjectiveTemplate",
@@ -105,22 +105,6 @@ AGS_OBJECTIVE_WONDER_ENEMY = {
 	telemetry = "destroyWonderObj",
 	alert = "icons\\event_queue_high_priority_large",
 }
-AGS_OBJECTIVE_REGICIDE = {
-	reason = AGS_WR_REGICIDE,
-	-- Your King must survive.
-	title = "$11218487", 
-	description = Loc_Empty,
-	icon = "icons\\objectives\\objectives_leader",
-	data_template = DT_PRIMARY_DEFAULT,
-	priority = OT_Primary,
-	parent = 0,
-	telemetry = "regicideObj",
-	alert = "icons\\event_queue_high_priority_large",
-}
-
-
--- "%1PLAYER_NAME% eliminated"
-AGS_CUE_TITLE_REGICIDED_ID = 11165820
 
 -- "Enemy attacking Landmark"
 AGS_CUE_TITLE_LANDMARK_A_SELF_ID = 11198265
@@ -171,24 +155,7 @@ function AGS_SetObjectivePopUp(objective_id, objective_data)
 	end
 end
 
-function AGS_SetObjectiveProgress(objective, current_count, max_count, progress_percentage, timer)
-	-- Current progress done.
-	if current_count ~= nil then
-		Obj_SetCounterCount(objective, current_count)
-	end
-	-- Maximum progress that can be done.
-	if max_count ~= nil then
-		Obj_SetCounterMax(objective, max_count)
-	end
-	-- Percentage completed.
-	if progress_percentage ~= nil then
-		Obj_SetProgress(objective, progress_percentage)
-	end
-	
-	if timer ~= nil then
-		Obj_SetCounterTimerSeconds(objective, timer)
-	end
-end
+
 
 
 

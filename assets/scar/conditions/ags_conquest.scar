@@ -30,8 +30,8 @@ function AGS_Conquest_UpdateModuleSettings()
 end
 
 function AGS_Conquest_Start()
-	AGS_Conquest_StartProgressTracking()
 	AGS_Conquest_InitializeTargetCollection()
+	AGS_Conquest_StartProgressTracking()
 	AGS_Conquest_CreateObjective()
 	AGS_Conquest_UpdateObjective()
 end
@@ -193,7 +193,6 @@ function AGS_Conquest_InitializeTargetCollection()
 			if AGS_IsObjectiveTarget(eid) and player.landmarks[entity_uwid] == nil then				
 				player.landmarks[entity_uwid] = {
 					entity = eid,
-					last_health = Entity_GetHealth(eid),
 					damage_timer = string.format("conquest.landmark_damage_timer_%d", entity_uwid),
 					landmark_active = Entity_IsValid(entity_uwid) and Entity_GetStateModelBool(eid, "landmark_active"),
 					-- is_a_capital = AGS_IsACapital(eid), -- irrelevant on 99%
@@ -215,7 +214,6 @@ function AGS_Conquest_OnPostConstructionComplete(context, data)
 	-- Save structure in tracker list for a player.
 	data.player.landmarks[entity_uwid] = {
 		entity = data.entity_id,
-	 	last_health = Entity_GetHealth(data.entity_id),
 		damage_timer = string.format("conquest.landmark_damage_timer_%d", data.entity_uwid),
 		landmark_active = Entity_IsValid(data.entity_uwid) and Entity_GetStateModelBool(data.entity_id, "landmark_active"),
 		-- is_a_capital = AGS_IsACapital(data.entity_id), -- irrelevant on 99%

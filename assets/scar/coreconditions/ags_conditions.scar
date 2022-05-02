@@ -9,6 +9,7 @@
 
 import("coreconditions/ags_conditions_match.scar")
 import("coreconditions/ags_conditions_notifications.scar")
+import("coreconditions/ags_conditions_notifications_damaged.scar")
 import("coreconditions/ags_conditions_objectives.scar")
 import("coreconditions/ags_conditions_presentations.scar")
 

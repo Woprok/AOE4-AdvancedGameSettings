@@ -41,6 +41,8 @@ AGS_BP_PALISADE = "palisade_wall"
 AGS_BP_PALISADE_GATE = "palisade_gate"
 AGS_BP_ANY_WALL = "wall"
 AGS_BP_ANY_GATE = "gate"
+AGS_BP_MOBILE = "mobile_building"
+AGS_BP_SIEGE = "siege"
 
 AGS_ENTITY_TABLE = {
 	neutral = {
@@ -745,6 +747,12 @@ function AGS_IsAWonder(entity_id)
 	return Entity_IsOfType(entity_id, AGS_BP_LANDMARK) and Entity_IsOfType(entity_id, AGS_BP_WONDER)	
 end
 
+function AGS_IsThisSpecialMobileBuildingDead(entity_id)
+	return Entity_IsOfType(entity_id, AGS_BP_MOBILE) 
+		and (Entity_IsOfType(entity_id, AGS_BP_LANDMARK) or Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL))
+		and not Entity_GetStateModelBool(entity_id, "landmark_active")	
+end
+
 function AGS_IsLocalGame()
 	if World_IsMultiplayerGame() then
 		return false
@@ -762,7 +770,7 @@ end
 function AGS_RemoveUpgrade(player_id, upgrade)
 	local bp_upgrade = BP_GetUpgradeBlueprint(upgrade)
 	if not Player_HasUpgrade(player_id, bp_upgrade) then
-		Player_CompleteUpgrade(player_id, bp_upgrade)				
+		Player_RemoveUpgrade(player_id, bp_upgrade)				
 	end
 end
 
@@ -782,4 +790,19 @@ function AGS_CalculateCenterOffset(start, x_offset, z_offset)
 	end
 	
 	return World_Pos(x_val, World_GetHeightAt(x_val, z_val), z_val)
+end
+AGS_SAE_SELF = 0
+AGS_SAE_ALLY = 1
+AGS_SAE_ENEMY = 2
+function AGS_GetRelation(player_id)
+	-- Self.
+	if AGS_GS_LOCAL_PLAYER.id == player_id then
+		return AGS_SAE_SELF
+	end
+	-- Ally.
+	if AGS_IsMutualRelation(AGS_GS_LOCAL_PLAYER.id, player_id, R_ALLY) then
+		return AGS_SAE_ALLY
+	end	
+	-- Most likely enemy or neutral.
+	return AGS_SAE_ENEMY
 end

@@ -11,7 +11,7 @@
 
 AGS_REGICIDE_MODULE = "AGS_Regicide"
 AGS_REGICIDE_OBJECTIVE = nil
-AGS_REGICIDE_ACTIVE_CHECKS = true
+AGS_REGICIDE_ACTIVE = true
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -35,88 +35,190 @@ end
 
 function AGS_Regicide_OnPlay()
 	AGS_Print("AGS_Regicide_OnPlay")
+	AGS_Regicide_Initialize()
 	Rule_AddGlobalEvent(AGS_Regicide_OnEntityKilled, GE_EntityKilled)
 	Rule_AddGlobalEvent(AGS_Regicide_OnDamageReceived, GE_DamageReceived)
-	AGS_Regicide_CreateObjectives()
+	AGS_Regicide_CreateObjective()
+	AGS_Regicide_UpdateObjective()
 end
 
 function AGS_Regicide_OnPlayerDefeated(player, reason)
 	AGS_Print("AGS_Regicide_OnPlayerDefeated")
 	if reason == AGS_WR_REGICIDE then 
-		AGS_Regicide_Notification(player)
-		AGS_Regicide_CheckVictory()
-	end
+		AGS_Notifications_Eliminated(player, AGS_NOTIFICATIONS_REGICIDE)
+		AGS_Conditions_CheckVictory(AGS_REGICIDE_ACTIVE, AGS_Presentations_Victory, AGS_WR_REGICIDE,
+			AGS_Objectives_PresentWrap(
+				AGS_REGICIDE_OBJECTIVE, 
+				OS_Complete, 
+				AGS_OBJECTIVES_REGICIDE.title_victory))
+	else
+		AGS_Regicide_KillAllKings(player)
+	end	
+	AGS_Regicide_UpdateObjective()
 end
 
 function AGS_Regicide_TreatyStarted()
 	AGS_Print("AGS_Regicide_TreatyStarted")
-	AGS_REGICIDE_ACTIVE_CHECKS = false
+	AGS_REGICIDE_ACTIVE = false
 end
 
 function AGS_Regicide_TreatyEnded()
 	AGS_Print("AGS_Regicide_TreatyEnded")
-	AGS_REGICIDE_ACTIVE_CHECKS = true
+	AGS_REGICIDE_ACTIVE = true
 end
 
 function AGS_Regicide_OnGameOver()
 	AGS_Print("AGS_Regicide_OnGameOver")
 	Rule_RemoveGlobalEvent(AGS_Regicide_OnEntityKilled)
 	Rule_RemoveGlobalEvent(AGS_Regicide_OnDamageReceived)
-	AGS_Regicide_RemoveObjectives()
+	AGS_Regicide_RemoveObjective()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Callbacks:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Regicide_OnEntityKilled(context)
+	if context == nil or context.victimSquad == nil or context.victimOwner == nil or World_OwnsSquad(context.victimSquad) then
+		return
+	end
+	if not Squad_IsOfType(context.victimSquad, AGS_BP_KING) then
+		return
+	end
+	local squad_uwid = Squad_GetID(context.victimSquad)
+	local owner = Core_GetPlayersTableEntry(context.victimOwner)
+	-- Only tracked kings.
+	if owner.AGS_Kings[squad_uwid] == nil then
+		return
+	end
+	-- King is dead
+	owner.AGS_Kings[squad_uwid].is_alive = false
+	AGS_Regicide_UpdateObjective()
+	-- Try to eliminate player.
+	local king_count = AGS_Regicide_GetPlayerKingCount(owner)
+	if king_count.remaining <= 0 then 
+		AGS_Regicide_Eliminate(owner.id)		
+	end
+end
+
+function AGS_Regicide_OnDamageReceived(context)
+	-- Ignore invalid and world entities.
+	if context == nil or context.victimSquad == nil or context.victimOwner == nil or World_OwnsSquad(context.victimSquad)
+		or context.attackerOwner == nil then
+		return
+	end
+	if not Squad_IsOfType(context.victimSquad, AGS_BP_KING) then
+		return
+	end
+	local squad_uwid = Squad_GetID(context.victimSquad)
+	local owner = Core_GetPlayersTableEntry(context.victimOwner)
+	-- Ignore repairing/healing entities.
+	if context.isRepairing then
+		return
+	end
+	-- Only alive entities are interesting here.
+	if context.currentHealth == nil or context.currentHealth == 0.0 then
+		return
+	end
+	-- Only tracked kings.
+	if owner.AGS_Kings[squad_uwid] == nil then
+		return
+	end	
+	local attacker = Core_GetPlayersTableEntry(context.attackerOwner)
+	AGS_Notifications_Damaged(squad_uwid, attacker, owner, AGS_NOTIFICATIONS_REGICIDE)
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
-
-function AGS_Regicide_Notification(player)
-	local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
-	-- Play always for now.
-	AGS_PlaySFX(player.id)
-	-- If local is still in the game show message in right corner.
-	if player ~= nil and not player_local.isEliminated then 
-		AGS_CreateCue(AGS_CUE_CORE, AGS_FormatText(AGS_CUE_TITLE_REGICIDED_ID, player.playerName))
+-- Marks all kings as dead and kills them in the world.
+function AGS_Regicide_KillAllKings(player)
+	for _, king in pairs(player.AGS_Kings) do
+		if king.is_alive then
+			king.is_alive = false
+			Squad_Kill(king.entity)
+		end		
 	end
+end
+
+function AGS_Regicide_Initialize()
+	for _, player in pairs(PLAYERS) do
+		player.AGS_Kings = {}
+		local eg_player_kings = Player_GetSquadsFromType(player.id, AGS_BP_KING)
+		
+		local AGS_TrackKing = function(gid, idx, sid)
+			local squad_uwid = Squad_GetID(sid)
+			-- Track entity UWIDs.
+			if player.AGS_Kings[squad_uwid] == nil then				
+				player.AGS_Kings[squad_uwid] = {
+					entity = sid,
+					is_alive = true,
+				}
+			end
+		end	
+		SGroup_ForEach(eg_player_kings, AGS_TrackKing)	
+	end	
 end
 
 function AGS_Regicide_CreateObjective()
-	local player_id = Game_GetLocalPlayer()
-	local player_civ = Player_GetRaceName(player_id)
-	AGS_REGICIDE_OBJECTIVE = AGS_CreateObjective(AGS_OBJECTIVE_REGICIDE, player_id, player_civ)
-	AGS_SetObjective(AGS_REGICIDE_OBJECTIVE, OS_Incomplete, true)
+	AGS_REGICIDE_OBJECTIVE = AGS_Objectives_Create(AGS_OBJECTIVES_REGICIDE, AGS_GS_LOCAL_PLAYER)
+	AGS_Objectives_Set(AGS_REGICIDE_OBJECTIVE, OS_Incomplete, true, true, COUNTER_CountUpTo)
+end
+
+function AGS_Regicide_UpdateObjective()
+	local enemies_kings_statistics = AGS_Regicide_CountEnemyKings(AGS_GS_LOCAL_PLAYER)
+	-- Update the progress bar of the objective.
+	AGS_Objectives_Progress(
+		AGS_REGICIDE_OBJECTIVE, 
+		enemies_kings_statistics.destroyed, 
+		enemies_kings_statistics.recruited, 
+		enemies_kings_statistics.destroyed / enemies_kings_statistics.recruited
+	)
 end
 
 function AGS_Regicide_RemoveObjective()
-	AGS_SetObjective(AGS_REGICIDE_OBJECTIVE, nil, false)	
+	AGS_Objectives_Set(AGS_REGICIDE_OBJECTIVE, nil, false)
 end
 
-function AGS_Regicide_OnEntityKilled(context)
-	if context ~= nil and context.victim ~= nil and Entity_IsOfType(context.victim, AGS_BP_KING) then
-		AGS_SetPlayerDefeated(context.victimOwner, AGS_Regicide_LoserPresenation, AGS_WR_REGICIDE)
-	end
-end
--- Check if there is single remaining allied group.
-function AGS_Regicide_CheckVictory()
-	if not AGS_REGICIDE_ACTIVE_CHECKS then
-		return
-	end
-	
-	local winners = AGS_DoesWinnerGroupExists()
-	if winners == nil then
-		return
-	end
-	
-	for _, winner_id in pairs(winners) do 
-		AGS_SetPlayerVictorious(winner_id, AGS_Regicide_WinnerPresentation, AGS_WR_REGICIDE)
-	end
-	
-	AGS_EndGame()
+function AGS_Regicide_Eliminate(player_id)
+	AGS_SetPlayerDefeated(
+		player_id, 
+		AGS_Presentations_Loss, 
+		AGS_WR_REGICIDE,
+		AGS_Objectives_PresentWrap(
+			AGS_REGICIDE_OBJECTIVE, 
+			OS_Failed, 
+			AGS_OBJECTIVES_REGICIDE.title_lost))
 end
 
-function AGS_Regicide_WinnerPresentation(player_id)
-	AGS_Presenation(player_id, AGS_WINNER_VICTORY)
+---------------------------------------------------------------------------------------------------
+-- Helpers:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Regicide_GetPlayerKingCount(player, player_kings)
+	if player_kings == nil then
+		player_kings = {
+			recruited = 0,
+			remaining = 0,
+			destroyed = 0,
+		}	
+	end
+	-- For every player count active and recruited kings.
+	for id, king in pairs(player.AGS_Kings) do
+		player_kings.recruited = player_kings.recruited + 1
+		if king.is_alive then 
+			player_kings.remaining = player_kings.remaining + 1
+		else 
+			player_kings.destroyed = player_kings.destroyed + 1
+		end
+	end	
+	return player_kings	
 end
 
-function AGS_Regicide_LoserPresenation(player_id)
-	AGS_LoserPresenation(player_id, AGS_LOOSER_DEFEAT, AGS_LOOSER_ELIMINATED)
+function AGS_Regicide_CountEnemyKings(player)	
+	local king_counter = nil
+	for _, enemy in pairs(AGS_Teams_GetAllCurrentOpponents(player, true)) do 
+		king_counter = AGS_Regicide_GetPlayerKingCount(enemy, king_counter)
+	end
+	return king_counter	
 end

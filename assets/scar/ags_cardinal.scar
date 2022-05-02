@@ -96,7 +96,8 @@ import("conditions/ags_annihilation.scar")
 --import("conditions/ags_conquest.scar") 
 --import("conditions/ags_religious.scar") 
 --import("conditions/ags_wonder.scar") 
---import("conditions/ags_regicide.scar") 
+import("conditions/ags_regicide.scar") 
+import("conditions/ags_score.scar") 
 import("conditions/ags_teamsolidarity.scar") 
 
 
@@ -254,3 +255,4 @@ import("specials/ags_testing.scar")
 -- Modifier_ApplyToPlayer, Modifier_Create
 -- Game_GetSimRate, Game_SetSimRate
 -- Player_SetResource
+-- Player_GetUIColour

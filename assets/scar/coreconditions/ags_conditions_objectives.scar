@@ -7,10 +7,32 @@
 -- Contains condition helpers for objective handling.
 ---------------------------------------------------------------------------------------------------
 
+AGS_OBJECTIVES_REGICIDE = {
+	reason = AGS_WR_REGICIDE,
+	-- Your King must survive. 
+	title = "$11218487", 
+	-- "Failed to protect the king."
+	title_lost = "$64c5019a145c4e4da448dbd3adeea61e:263",
+	-- "Truly a king of everyone you are."
+	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:262",
+	description = Loc_Empty(),
+	icon = "icons\\objectives\\objectives_leader",
+	data_template = DT_PRIMARY_DEFAULT,
+	data_template_or = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "regicideObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
 AGS_OBJECTIVES_TEAMSOLIDARITY = {
 	reason = AGS_WR_TEAM_SOLIDARITY,
 	-- Protect your teammates.
 	title = "$64c5019a145c4e4da448dbd3adeea61e:230", 
+	-- "Failed to protect %1PLAYER_NAME%."
+	title_lost = "$64c5019a145c4e4da448dbd3adeea61e:257",
+	-- "All other teams crumbled."
+	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:258",
 	description = Loc_Empty(),
 	icon = "icons\\objectives\\objectives_generic",
 	data_template = DT_PRIMARY_DEFAULT,
@@ -20,10 +42,6 @@ AGS_OBJECTIVES_TEAMSOLIDARITY = {
 	telemetry = "teamsolidarityObj",
 	alert = "icons\\event_queue_high_priority_large",
 }
--- "Failed to protect %1PLAYER_NAME%."
-AGS_TITLES_TEAMSOLIDARITY_LOST = "$64c5019a145c4e4da448dbd3adeea61e:257"
--- "All other teams crumbled."
-AGS_TITLES_TEAMSOLIDARITY_VICTORY = "$64c5019a145c4e4da448dbd3adeea61e:258"
 
 AGS_OBJECTIVES_SURRENDER = {
 	reason = AGS_WR_SURRENDER,
@@ -93,6 +111,25 @@ function AGS_Objectives_Present(objective_id, state, title, title_param)
 	end
 	Obj_SetState(objective_id, state)
 	Obj_CreatePopup(objective_id, formatted_title)	
+end
+
+function AGS_Objectives_Progress(objective, current_count, max_count, progress_percentage, timer)
+	-- Current progress done.
+	if current_count ~= nil then
+		Obj_SetCounterCount(objective, current_count)
+	end
+	-- Maximum progress that can be done.
+	if max_count ~= nil then
+		Obj_SetCounterMax(objective, max_count)
+	end
+	-- Percentage completed.
+	if progress_percentage ~= nil then
+		Obj_SetProgress(objective, progress_percentage)
+	end
+	
+	if timer ~= nil then
+		Obj_SetCounterTimerSeconds(objective, timer)
+	end
 end
 -- State is either OS_Complete, OS_Incomplete or OS_Failed
 -- Counter is either COUNTER_TimerDecreasing or COUNTER_CountUpTo

@@ -258,3 +258,10 @@
 257,,,ags_conditions_objectives,,,Failed to protect %1PLAYER_NAME%.
 258,,,ags_conditions_objectives,,,All other teams crumbled.
 259,,,ags_conditions_objectives,,,Annihilate everything.
+260,,,,,,Enable AI Takeovers
+261,,,,,,"Players that quit will be replaced by AI, instead of being eliminated."
+262,,,ags_conditions_objectives,,,Truly a king of everyone you are.
+263,,,ags_conditions_objectives,,,Failed to protect the king.
+264,,,ags_conditions_notifications,,,%1PLAYER_NAME% assassinated
+265,,,ags_conditions_objectives,,,Enemy attacking %1PLAYER_NAME%'s king
+266,,,ags_conditions_notifications,,,King under attack

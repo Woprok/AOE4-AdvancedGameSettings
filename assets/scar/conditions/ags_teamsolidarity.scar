@@ -53,7 +53,7 @@ function AGS_TeamSolidarity_OnPlayerDefeated(player, reason)
 			AGS_Objectives_PresentWrap(
 				AGS_TEAM_SOLIDARITY_OBJECTIVE, 
 				OS_Complete, 
-				AGS_TITLES_TEAMSOLIDARITY_VICTORY))
+				AGS_OBJECTIVES_TEAMSOLIDARITY.title_victory))
 	end
 end
 
@@ -99,6 +99,6 @@ function AGS_TeamSolidarity_Eliminate(ally, defeated_teammate)
 		AGS_Objectives_PresentWrap(
 			AGS_TEAM_SOLIDARITY_OBJECTIVE, 
 			OS_Failed, 
-			AGS_TITLES_TEAMSOLIDARITY_LOST, 
+			AGS_OBJECTIVES_TEAMSOLIDARITY.title_lost, 
 			defeated_teammate.playerName))
 end

@@ -56,7 +56,7 @@ function AGS_Surrender_OnPlayerDefeated(player, reason)
 		-- We require special check for cases when surrender is valid resolver for situation for AI.
 		if AGS_Conditions_CheckVictory(AGS_SURRENDER_ACTIVE, AGS_Presentations_Victory, AGS_WR_SURRENDER,
 				AGS_Objectives_PresentWrap(
-					AGS_OBJECTIVES_SURRENDER, 
+					AGS_SURRENDER_OBJECTIVE, 
 					OS_Complete, 
 					AGS_OBJECTIVES_SURRENDER.title)) then
 			return
@@ -95,7 +95,7 @@ function AGS_Surrender_CheckAI()
 	-- Resolves match as winnerless if no human remains. 
 	if not AGS_Conditions_IsAnyHumanAlive() then
 		AGS_EndGame()
-		Core_WinnerlessGameOver(AGS_Presentations_Loss, AGS_WR_SURRENDER)
+		Core_WinnerlessGameOver(AGS_Presentations_Defeat, AGS_WR_SURRENDER)
 	end
 end	
 

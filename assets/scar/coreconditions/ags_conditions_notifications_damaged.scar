@@ -1,0 +1,76 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Contains condition helpers for notifications.
+-- Notification is showed at any time.
+-- Damage notification is available only after certain time.
+---------------------------------------------------------------------------------------------------
+AGS_NOTIFICATIONS_DAMAGED_INTERVAL = 30.0
+-- Standardized notification for all damaged to make them similiar and recognizeable.
+AGS_NOTIFICATIONS_DAMAGED = {
+	eventType = -1,	
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	lifetime = 10.0,		
+	repeatCount = 0,
+	-- should match the defaults set in AE under tuning.ui.event_cues
+	repeatTime = 20.0,		
+	title = Loc_Empty(),
+	desc = Loc_Empty(),
+	sfx = "mus_stinger_landmark_building_damaged",
+	icon = "icons\\event_queue_high_priority",
+	icon_high = "icons\\event_queue_high_priority_large",
+	color = {r = 255, g = 255, b = 255, a = 255},
+	template = "high_priority", 
+	template_color = "event_with_player_color",
+	style_queue = ECV_Queue,
+	style_center = ECV_Title,
+	-- This one should be completely pointless as we can do it separately for greater effect.
+	style_combined = ECV_Queue | ECV_Title,
+}
+-- Runtime list of all notifications timers.
+AGS_NOTIFICATIONS_DAMAGED_TIMERS = { }
+
+---------------------------------------------------------------------------------------------------
+-- Pre-Filled Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Notifications_Damaged(entity_uwid, attacker, owner, notification)
+	-- Create entry if this is first time.
+	if AGS_NOTIFICATIONS_DAMAGED_TIMERS[entity_uwid] == nil then 
+		AGS_NOTIFICATIONS_DAMAGED_TIMERS[entity_uwid] = {
+			damage_timer = string.format("ags_notifications.damage_timer_%d", entity_uwid),
+			last_attacker = nil,			
+		}
+	end
+	-- Update Attacker
+	AGS_NOTIFICATIONS_DAMAGED_TIMERS[entity_uwid].last_attacker = attacker.id
+	-- Check if timer is in progress.
+	if Timer_Exists(AGS_NOTIFICATIONS_DAMAGED_TIMERS[entity_uwid].damage_timer) and 
+		Timer_GetRemaining(AGS_NOTIFICATIONS_DAMAGED_TIMERS[entity_uwid].damage_timer) > 0.0 then
+		return
+	end
+	-- Start new timer.
+	Timer_Start(AGS_NOTIFICATIONS_DAMAGED_TIMERS[entity_uwid].damage_timer, AGS_NOTIFICATIONS_DAMAGED_INTERVAL)	
+	-- If local is eliminated or attacker is ally/self or owner is enemy this does not create notification.
+	local attacker_relation = AGS_GetRelation(attacker.id)
+	local owner_relation = AGS_GetRelation(owner.id)
+	if AGS_GS_LOCAL_PLAYER.isEliminated or attacker_relation ~= AGS_SAE_ENEMY or owner_relation == AGS_SAE_ENEMY then
+		return
+	end	
+	-- Create cue.
+	local color = Player_GetUIColour(attacker.id)
+	local title = nil
+	local priority = AGS_NP_MAX
+	if owner_relation == AGS_SAE_SELF then
+		title = Loc_FormatText(notification.self_attacked)
+	end
+	if owner_relation == AGS_SAE_ALLY then
+		title = Loc_FormatText(notification.ally_attacked, owner.playerName)
+		priority = AGS_NP_LOW
+	end
+	
+	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_DAMAGED, priority, title, nil, color)
+end

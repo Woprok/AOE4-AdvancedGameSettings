@@ -58,6 +58,16 @@ AGS_NOTIFICATIONS_ANNIHILATION = {
 	title = 11159062,
 	sfx = nil,	
 }
+AGS_NOTIFICATIONS_REGICIDE = {
+	-- "%1PLAYER_NAME% assassinated"
+	title = "$64c5019a145c4e4da448dbd3adeea61e:264",
+	sfx = nil,	
+	-- "King under attack"
+	self_attacked = "$64c5019a145c4e4da448dbd3adeea61e:266",
+	-- "Enemy attacking %1PLAYER_NAME%'s king"
+	ally_attacked = "$64c5019a145c4e4da448dbd3adeea61e:265",
+}
+
 ---------------------------------------------------------------------------------------------------
 -- Pre-Filled Functions:
 ---------------------------------------------------------------------------------------------------
