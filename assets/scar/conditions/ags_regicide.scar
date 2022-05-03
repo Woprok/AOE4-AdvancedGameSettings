@@ -35,7 +35,7 @@ end
 
 function AGS_Regicide_OnPlay()
 	AGS_Print("AGS_Regicide_OnPlay")
-	AGS_Regicide_Initialize()
+	AGS_Regicide_InitializeKings()
 	Rule_AddGlobalEvent(AGS_Regicide_OnEntityKilled, GE_EntityKilled)
 	Rule_AddGlobalEvent(AGS_Regicide_OnDamageReceived, GE_DamageReceived)
 	AGS_Regicide_CreateObjective()
@@ -136,22 +136,24 @@ function AGS_Regicide_KillAllKings(player)
 	for _, king in pairs(player.AGS_Kings) do
 		if king.is_alive then
 			king.is_alive = false
-			Squad_Kill(king.entity)
+			if king.squad ~= nil and Squad_IsAlive(king.squad) then
+				Squad_Kill(king.squad)
+			end
 		end		
 	end
 end
 
-function AGS_Regicide_Initialize()
+function AGS_Regicide_InitializeKings()
 	for _, player in pairs(PLAYERS) do
 		player.AGS_Kings = {}
 		local eg_player_kings = Player_GetSquadsFromType(player.id, AGS_BP_KING)
 		
 		local AGS_TrackKing = function(gid, idx, sid)
 			local squad_uwid = Squad_GetID(sid)
-			-- Track entity UWIDs.
+			-- Track squad UWIDs.
 			if player.AGS_Kings[squad_uwid] == nil then				
 				player.AGS_Kings[squad_uwid] = {
-					entity = sid,
+					squad = sid,
 					is_alive = true,
 				}
 			end
@@ -194,7 +196,8 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Helpers:
 ---------------------------------------------------------------------------------------------------
-
+-- Returns number of Kings a player has recruited/remaining.
+-- player_kings is used to add count to already existing structure. Can be nil if you want new count.
 function AGS_Regicide_GetPlayerKingCount(player, player_kings)
 	if player_kings == nil then
 		player_kings = {
@@ -214,7 +217,7 @@ function AGS_Regicide_GetPlayerKingCount(player, player_kings)
 	end	
 	return player_kings	
 end
-
+-- Returns number of Enemy Kings standing for a given player.
 function AGS_Regicide_CountEnemyKings(player)	
 	local king_counter = nil
 	for _, enemy in pairs(AGS_Teams_GetAllCurrentOpponents(player, true)) do 

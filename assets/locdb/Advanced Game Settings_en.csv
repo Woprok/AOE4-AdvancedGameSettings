@@ -265,3 +265,6 @@
 264,,,ags_conditions_notifications,,,%1PLAYER_NAME% assassinated
 265,,,ags_conditions_objectives,,,Enemy attacking %1PLAYER_NAME%'s king
 266,,,ags_conditions_notifications,,,King under attack
+267,,,ags_conditions_notifications,,,"""%1PLAYER_NAME% conquered"""
+268,,,ags_conditions_objectives,,,Your empire has been conquered.
+269,,,ags_conditions_objectives,,,Conquered all enemies.

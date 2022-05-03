@@ -10,18 +10,7 @@ AGS_EVENT_CUE_DELAY = 2.0
 
 
 
-AGS_OBJECTIVE_CONQUEST = {
-	reason = WR_CONQUEST,
-	-- "Destroy all enemy landmarks"
-	title = "$11159056", 
-	description = Loc_Empty(),
-	icon = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
-	data_template = "ConquestObjectiveTemplate",
-	priority = OT_Primary,
-	parent = 0,
-	telemetry = "conquestObj",
-	alert = "icons\\event_queue_high_priority_large",
-}
+
 AGS_OBJECTIVE_RELIGIOUS = {
 	reason = AGS_WR_RELIGIOUS,
 	-- "Control all Holy Sites"
@@ -106,10 +95,6 @@ AGS_OBJECTIVE_WONDER_ENEMY = {
 	alert = "icons\\event_queue_high_priority_large",
 }
 
--- "Enemy attacking Landmark"
-AGS_CUE_TITLE_LANDMARK_A_SELF_ID = 11198265
--- "Enemy attacking %1PLAYER_NAME%'s Landmark"
-AGS_CUE_TITLE_LANDMARK_A_TEAM_ID = 11198266
 -- "Enemy destroyed Landmark"
 AGS_CUE_TITLE_LANDMARK_K_SELF_ID = 11198267
 -- "Enemy destroyed %1PLAYER_NAME%'s Landmark"

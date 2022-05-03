@@ -7,6 +7,24 @@
 -- Contains condition helpers for objective handling.
 ---------------------------------------------------------------------------------------------------
 
+AGS_OBJECTIVES_CONQUEST = {
+	reason = WR_CONQUEST,
+	-- "Destroy all enemy landmarks"
+	title = "$11159056", 
+	-- "Your empire has been conquered."
+	title_lost = "$64c5019a145c4e4da448dbd3adeea61e:268",
+	-- "Conquered all enemies."
+	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:269",
+	description = Loc_Empty(),
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
+	data_template = "ConquestObjectiveTemplate",
+	data_template_or = "ConquestObjectiveTemplate",
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "conquestObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
 AGS_OBJECTIVES_REGICIDE = {
 	reason = AGS_WR_REGICIDE,
 	-- Your King must survive. 

@@ -74,28 +74,44 @@ AGS_PRESENTATIONS_VICTORY = {
 -- Pre-Filled Functions:
 ---------------------------------------------------------------------------------------------------
 
+function AGS_Presentations_VictoryConquest(player_id)	
+	AGS_Presentations_Victorious(player_id, AGS_PRESENTATIONS_CONQUEST_SUFFIX)
+end
+
+function AGS_Presentations_LossConquest(player_id)
+	AGS_Presentations_Losing(player_id, AGS_PRESENTATIONS_CONQUEST_SUFFIX)
+end
+
 function AGS_Presentations_Victory(player_id)	
-	AGS_Presentations_Victorious(player_id)
+	AGS_Presentations_Victorious(player_id, AGS_PRESENTATIONS_DEFAULT_SUFFIX)
 end
 
 function AGS_Presentations_Loss(player_id)
+	AGS_Presentations_Losing(player_id, AGS_PRESENTATIONS_DEFAULT_SUFFIX)
+end
+
+function AGS_Presentations_Losing(player_id, suffix)
 	if AGS_Teams_IsTeamAlive(player_id) then
-		AGS_Presentations_Elimination(player_id)
+		AGS_Presentations_Elimination(player_id, suffix)
 	else
-		AGS_Presentations_Defeat(player_id)
+		AGS_Presentations_Defeat(player_id, suffix)
 	end
 end
 
-function AGS_Presentations_Victorious(player_id)
-	AGS_Presentations_Create(player_id, AGS_PRESENTATIONS_VICTORY, AGS_PRESENTATIONS_DEFAULT_SUFFIX)
+function AGS_Presentations_Victorious(player_id, suffix)
+	AGS_Presentations_Create(player_id, AGS_PRESENTATIONS_VICTORY, suffix)
 end
 
-function AGS_Presentations_Elimination(player_id)
-	AGS_Presentations_Create(player_id, AGS_PRESENTATIONS_ELIMINATION, AGS_PRESENTATIONS_DEFAULT_SUFFIX)
+function AGS_Presentations_Elimination(player_id, suffix)
+	AGS_Presentations_Create(player_id, AGS_PRESENTATIONS_ELIMINATION, suffix)
 end
 -- This is also used for WinnerlessGameOver
-function AGS_Presentations_Defeat(player_id)
-	AGS_Presentations_Create(player_id, AGS_PRESENTATIONS_DEFEAT, AGS_PRESENTATIONS_DEFAULT_SUFFIX)
+function AGS_Presentations_DefeatDefault(player_id)
+	AGS_Presentations_Defeat(player_id, AGS_PRESENTATIONS_DEFAULT_SUFFIX)
+end
+
+function AGS_Presentations_Defeat(player_id, suffix)
+	AGS_Presentations_Create(player_id, AGS_PRESENTATIONS_DEFEAT, suffix)
 end
 
 ---------------------------------------------------------------------------------------------------

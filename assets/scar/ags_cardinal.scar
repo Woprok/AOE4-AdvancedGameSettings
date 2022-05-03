@@ -256,3 +256,8 @@ import("specials/ags_testing.scar")
 -- Game_GetSimRate, Game_SetSimRate
 -- Player_SetResource
 -- Player_GetUIColour
+---------------------------------------------------------------------------------------------------
+-- Additional Player Data can be found as:
+-- AGS_Team by team module
+-- AGS_Kings by regicide module
+-- AGS_NomadicResources by nomadic module

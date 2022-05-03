@@ -95,7 +95,7 @@ function AGS_Surrender_CheckAI()
 	-- Resolves match as winnerless if no human remains. 
 	if not AGS_Conditions_IsAnyHumanAlive() then
 		AGS_EndGame()
-		Core_WinnerlessGameOver(AGS_Presentations_Defeat, AGS_WR_SURRENDER)
+		Core_WinnerlessGameOver(AGS_Presentations_DefeatDefault, AGS_WR_SURRENDER)
 	end
 end	
 

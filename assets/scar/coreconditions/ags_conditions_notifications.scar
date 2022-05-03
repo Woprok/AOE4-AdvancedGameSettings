@@ -67,6 +67,15 @@ AGS_NOTIFICATIONS_REGICIDE = {
 	-- "Enemy attacking %1PLAYER_NAME%'s king"
 	ally_attacked = "$64c5019a145c4e4da448dbd3adeea61e:265",
 }
+AGS_NOTIFICATIONS_CONQUEST = {
+	-- "%1PLAYER_NAME% conquered"
+	title = "$64c5019a145c4e4da448dbd3adeea61e:267",
+	sfx = nil,	
+	-- "Enemy attacking Landmark"
+	self_attacked = 11198265,
+	-- "Enemy attacking %1PLAYER_NAME%'s Landmark"
+	ally_attacked = 11198266,
+}
 
 ---------------------------------------------------------------------------------------------------
 -- Pre-Filled Functions:

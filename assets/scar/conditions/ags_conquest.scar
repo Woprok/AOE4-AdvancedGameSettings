@@ -11,7 +11,7 @@
 
 AGS_CONQUEST_MODULE = "AGS_Conquest"
 AGS_CONQUEST_OBJECTIVE = nil
-AGS_CONQUEST_ACTIVE_CHECKS = true
+AGS_CONQUEST_ACTIVE = true
 AGS_CONQUEST_PLAYERS_MIN_REQUIRED = 2
 AGS_CONQUEST_TICK_WAIT = 0.25 -- 0.125 is a single tick
 -- player.landmarks
@@ -24,31 +24,50 @@ AGS_CONQUEST_DAMAGE_INTERVAL = 30.0
 Core_RegisterModule(AGS_CONQUEST_MODULE)	
 
 function AGS_Conquest_UpdateModuleSettings()
-	if not AGS_GLOBAL_SETTINGS.Conquest or #PLAYERS <= AGS_CONQUEST_PLAYERS_MIN_REQUIRED then
+	AGS_Print("AGS_Conquest_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.Conquest then
+		Core_UnregisterModule(AGS_CONQUEST_MODULE)
+	end
+end
+-- Disable this if there is noone else.
+function AGS_Conquest_EarlyInitializations()
+	AGS_Print("AGS_Conquest_EarlyInitializations")
+	if #PLAYERS <= AGS_CONQUEST_PLAYERS_MIN_REQUIRED then
 		Core_UnregisterModule(AGS_CONQUEST_MODULE)
 	end
 end
 
-function AGS_Conquest_Start()
-	AGS_Conquest_InitializeTargetCollection()
-	AGS_Conquest_StartProgressTracking()
+function AGS_Conquest_OnPlay()
+	AGS_Print("AGS_Conquest_OnPlay")
+	AGS_Conquest_InitializeConquerables()
+	Rule_AddGlobalEvent(AGS_Conquest_OnConstructionComplete, GE_ConstructionComplete)
+	Rule_AddGlobalEvent(AGS_Conquest_OnDamageReceived, GE_DamageReceived)
+	Rule_AddGlobalEvent(AGS_Conquest_OnEntityKilled, GE_EntityKilled)
+	Rule_AddGlobalEvent(AGS_Conquest_OnEntityLandmarkDestroyed, GE_EntityLandmarkDestroyed)
 	AGS_Conquest_CreateObjective()
 	AGS_Conquest_UpdateObjective()
 end
 
 function AGS_Conquest_OnPlayerDefeated(player, reason)
+	AGS_Print("AGS_Conquest_OnPlayerDefeated")
 	if reason == AGS_WR_CONQUEST then 
-		AGS_Conquest_Notification(player)
-		AGS_Conquest_CheckVictory()
+		AGS_Notifications_Eliminated(player, AGS_NOTIFICATIONS_CONQUEST)
+		AGS_Conditions_CheckVictory(AGS_CONQUEST_ACTIVE, AGS_Presentations_VictoryConquest, AGS_WR_CONQUEST,
+			AGS_Objectives_PresentWrap(
+				AGS_CONQUEST_OBJECTIVE, 
+				OS_Complete, 
+				AGS_OBJECTIVES_CONQUEST.title_victory))
 	end
 end
 
 function AGS_Conquest_TreatyStarted()
-	AGS_CONQUEST_ACTIVE_CHECKS = false
+	AGS_Print("AGS_Conquest_TreatyStarted")
+	AGS_CONQUEST_ACTIVE = false
 end
 
 function AGS_Conquest_TreatyEnded()
-	AGS_CONQUEST_ACTIVE_CHECKS = true
+	AGS_Print("AGS_Conquest_TreatyEnded")
+	AGS_CONQUEST_ACTIVE = true
 end
 
 -- Update objectives when player added to team or relationship changed. Might be enough for RC.
@@ -60,83 +79,58 @@ function AGS_Conquest_OnRelationshipChanged(observer_id, target_id)
 end
 
 function AGS_Conquest_OnGameOver()
+	AGS_Print("AGS_Conquest_OnGameOver")
+	Rule_RemoveGlobalEvent(AGS_Conquest_OnConstructionComplete)
+	Rule_RemoveGlobalEvent(AGS_Conquest_OnDamageReceived)
+	Rule_RemoveGlobalEvent(AGS_Conquest_OnEntityKilled)
+	Rule_RemoveGlobalEvent(AGS_Conquest_OnEntityLandmarkDestroyed)
 	AGS_Conquest_RemoveObjective()
-	AGS_Conquest_StopProgressTracking()
 end
+
+---------------------------------------------------------------------------------------------------
+-- Callbacks:
+---------------------------------------------------------------------------------------------------
+
+
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_Conquest_StartProgressTracking()
-	Rule_AddGlobalEvent(AGS_Conquest_OnConstructionComplete, GE_ConstructionComplete)
-	Rule_AddGlobalEvent(AGS_Conquest_OnDamageReceived, GE_DamageReceived)
-	Rule_AddGlobalEvent(AGS_Conquest_OnEntityKilled, GE_EntityKilled)
-	Rule_AddGlobalEvent(AGS_Conquest_OnEntityLandmarkDestroyed, GE_EntityLandmarkDestroyed)
-end
-
-function AGS_Conquest_StopProgressTracking()
-	Rule_RemoveGlobalEvent(AGS_Conquest_OnConstructionComplete)
-	Rule_RemoveGlobalEvent(AGS_Conquest_OnDamageReceived)
-	Rule_RemoveGlobalEvent(AGS_Conquest_OnEntityKilled)
-	Rule_RemoveGlobalEvent(AGS_Conquest_OnEntityLandmarkDestroyed)
-end
-
 function AGS_Conquest_CreateObjective()
-	local player_id = Game_GetLocalPlayer()
-	local player_civ = Player_GetRaceName(player_id)
-	AGS_CONQUEST_OBJECTIVE = AGS_CreateObjective(AGS_OBJECTIVE_CONQUEST, player_id, player_civ)
-	AGS_SetObjective(AGS_CONQUEST_OBJECTIVE, OS_Incomplete, true, true, COUNTER_CountUpTo)
+	AGS_CONQUEST_OBJECTIVE = AGS_CreateObjective(AGS_OBJECTIVE_CONQUEST, AGS_GS_LOCAL_PLAYER)
+	AGS_Objectives_Set(AGS_CONQUEST_OBJECTIVE, OS_Incomplete, true, true, COUNTER_CountUpTo)
 end
--- Updates objective.
+
 function AGS_Conquest_UpdateObjective()
-	local localPlayer = Core_GetPlayersTableEntry(Game_GetLocalPlayer())	
-	local enemies_landmarks = AGS_Conquest_GetEnemyLandmarkCount(localPlayer)
+	local enemies_conquerables_statistics = AGS_Conquest_CountEnemyConquerables(AGS_GS_LOCAL_PLAYER)
 	-- Update the progress bar of the objective.
-	AGS_SetObjectiveProgress(
+	AGS_Objectives_Progress(
 		AGS_CONQUEST_OBJECTIVE, 
-		enemies_landmarks.destroyed, 
-		enemies_landmarks.built, 
-		enemies_landmarks.destroyed / enemies_landmarks.built
+		enemies_conquerables_statistics.destroyed, 
+		enemies_conquerables_statistics.built, 
+		enemies_conquerables_statistics.destroyed / enemies_conquerables_statistics.built
 	)
 end
--- Remove will just hide it, this should be enough.
+
 function AGS_Conquest_RemoveObjective()
-	AGS_SetObjective(AGS_CONQUEST_OBJECTIVE, nil, false, nil, nil)	
+	AGS_Objectives_Set(AGS_CONQUEST_OBJECTIVE, nil, false)
 end
--- Check if there is single remaining allied group.
-function AGS_Conquest_CheckVictory()
-	if not AGS_CONQUEST_ACTIVE_CHECKS then
-		return
-	end
-	
-	local winners = AGS_DoesWinnerGroupExists()
-	if winners == nil then
-		return
-	end
-	
-	for _, winner_id in pairs(winners) do 
-		AGS_SetPlayerVictorious(winner_id, AGS_Conquest_WinnerPresentation, AGS_WR_CONQUEST)
-	end
-	
-	AGS_EndGame()
+
+function AGS_Conquest_Eliminate(player_id)
+	AGS_SetPlayerDefeated(
+		player_id, 
+		AGS_Presentations_LossConquest, 
+		AGS_WR_CONQUEST,
+		AGS_Objectives_PresentWrap(
+			AGS_CONQUEST_OBJECTIVE, 
+			OS_Failed, 
+			AGS_OBJECTIVES_CONQUEST.title_lost))
 end
 
 
-function AGS_Conquest_WinnerPresentation(player_id)
-	AGS_Presenation(player_id, AGS_WINNER_VICTORY)
-	AGS_SetEndGameState(AGS_CONQUEST_OBJECTIVE, false, OS_Complete, MUS_STING_PRIMARY_OBJ_COMPLETE_ENDGAME)
-	AGS_Conquest_RemoveObjective()
-end
 
-function AGS_Conquest_LoserPresenation(player_id)
-	if AGS_LoserPresenation(player_id, AGS_LOOSER_DEFEAT, AGS_LOOSER_ELIMINATED) then
-		AGS_SetEndGameState(AGS_CONQUEST_OBJECTIVE, false, OS_Failed, MUS_STING_PRIMARY_OBJ_FAIL)
-	else
-		AGS_SetEndGameState(AGS_CONQUEST_OBJECTIVE, false, OS_Failed, MUS_STING_PRIMARY_OBJ_FAIL)
-		AGS_Conquest_RemoveObjective()
-	end	
-end
+
 
 function AGS_Conquest_OnEntityKilled(context)
 	if context.victimOwner == nil or context.victim == nil then
@@ -180,7 +174,7 @@ function AGS_Conquest_OnConstructionComplete(context)
 	end
 end
 
-function AGS_Conquest_InitializeTargetCollection()
+function AGS_Conquest_InitializeConquerables()
 	for _, player in pairs(PLAYERS) do
 		player.landmarks = {}
 		local eg_player_landmarks = Player_GetAllEntities(player.id)
@@ -259,95 +253,17 @@ function AGS_Conquest_OnDamageReceived(context)
 	--if context.attacker == context.victim then
 	--	return						
 	--end
-	-- No notifications for eliminated player.
-	if Core_IsPlayerEliminated(Game_GetLocalPlayer()) then
-		return
-	end
+
 	-- Notifications are done only about alive players and standing landmarks.
-	if not Core_IsPlayerEliminated(owner.id) and Entity_GetStateModelBool(Entity_FromID(entity_uwid), "landmark_active") then
-		AGS_Conquest_DamageNotification(context, owner, entity_uwid)	
+	if Entity_GetStateModelBool(Entity_FromID(entity_uwid), "landmark_active") then	
 	end
-end
-
-AGS_CUE_LANDMARK_DAMAGE = {	
-	eventType = -1,	
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	lifetime = 10.0,		
-	repeatCount = 0,
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	repeatTime = 20.0,		
-	title = Loc_Empty(),
-	desc = Loc_Empty(),
-	sfx = "mus_stinger_landmark_building_damaged",
-	icon = "icons\\event_queue_high_priority",
-	icon_high_priority = "icons\\event_queue_high_priority_large",
-	color = {r = 255, g = 255, b = 255, a = 255},
-	--template = "high_priority", 
-	template = "event_with_player_color",
-	style = ECV_Queue | ECV_Title,
-}
-
-function AGS_Conquest_DamageNotification(context, owner, entity_uwid)
-	-- Store last attacker in landmark data.
-	owner.landmarks[entity_uwid].last_attacker = Entity_GetPlayerOwner(context.attacker)
-	-- If attacking player is local player or his ally do nothing.
-	if owner.landmarks[entity_uwid].last_attacker.isLocal or AGS_IsMutualRelation(Game_GetLocalPlayer(), owner.landmarks[entity_uwid].last_attacker, R_ALLY) then
-		return
-	end
-	
-	-- Timer is in progress.
-	if Timer_Exists(owner.landmarks[entity_uwid].damage_timer) and Timer_GetRemaining(owner.landmarks[entity_uwid].damage_timer) > 0.0 then
-		return
-	end
-	-- If timer does not exists this will create it for selected entity and start next countdown.
-	Timer_Start(owner.landmarks[entity_uwid].damage_timer, AGS_CONQUEST_DAMAGE_INTERVAL)	
-	
-	-- Create cue.
-	local uiColour = Player_GetUIColour(owner.landmarks[entity_uwid].last_attacker)
-	local title = nil
-	local high_priority = true
-	-- Notify owner.
-	if owner.isLocal then
-		title = AGS_FormatText(AGS_CUE_TITLE_LANDMARK_A_SELF_ID)
-	-- Notify his ally.
-	elseif AGS_IsMutualRelation(Game_GetLocalPlayer(), owner.id, R_ALLY) then
-		title = AGS_FormatText(AGS_CUE_TITLE_LANDMARK_A_TEAM_ID, owner.playerName)	
-		high_priority = false
-	end	
-	if title ~= nil then
-		-- TODO DELAY IF AND BODY ? BY AGS_EVENT_CUE_DELAY see Conquest_CreateEventCue
-		if not Core_IsPlayerEliminated(Game_GetLocalPlayer()) then
-			AGS_CreateCueComplex(AGS_CUE_LANDMARK_DAMAGE, high_priority, title, uiColour)
-		end
-	end
+	local attacker = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(context.attacker))
+	AGS_Notifications_Damaged(entity_uwid, attacker, owner, AGS_NOTIFICATIONS_CONQUEST)
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Conquest Checks:
 ---------------------------------------------------------------------------------------------------
--- Returns number of Landmarks a player has built/remaining.
--- player_landmarks is used to add count to already existing structure. Can be nil if you want new count.
-function AGS_Conquest_GetPlayerLandmarkCount(player, player_landmarks)
-	if player_landmarks == nil then
-		player_landmarks = {
-			built = 0,
-			remaining = 0,
-			destroyed = 0,
-		}	
-	end
-	-- For every player count active and built Landmark.
-	for id, landmark in pairs(player.landmarks) do
-		player_landmarks.built = player_landmarks.built + 1
-		if Entity_IsValid(id) then
-			if Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then 
-				player_landmarks.remaining = player_landmarks.remaining + 1
-			else 
-				player_landmarks.destroyed = player_landmarks.destroyed + 1
-			end
-		end
-	end	
-	return player_landmarks	
-end
 
 -- Returns number of Allied Landmarks standing for a given player (including given player).
 function AGS_Conquest_GetAllyLandmarkCount(player)
@@ -358,14 +274,6 @@ function AGS_Conquest_GetAllyLandmarkCount(player)
 	return landmark_counter
 end
 
--- Returns number of Enemy Landmarks standing for a given player.
-function AGS_Conquest_GetEnemyLandmarkCount(player)
-	local landmark_counter = nil
-	for _, enemies in pairs(AGS_GetHostileOrNeutralAlivePlayers(player.id)) do 
-		landmark_counter = AGS_Conquest_GetPlayerLandmarkCount(enemies, landmark_counter)
-	end
-	return landmark_counter
-end
 
 -- Returns number of enemies remaining for a given player
 function AGS_Conquest_GetActiveEnemyCount(player)
@@ -471,12 +379,37 @@ function AGS_Conquest_DestructionNotification(player, landmark)
 	end
 end
 
-function AGS_Conquest_Notification(player)
-	local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
-	-- Play always for now.
-	AGS_PlaySFX(player.id)
-	-- If local is still in the game show message in right corner.
-	if player ~= nil and not player_local.isEliminated then 
-		AGS_CreateCue(AGS_CUE_CORE, AGS_FormatText(AGS_CUE_TITLE_CONQUEST_ID, player.playerName))
+---------------------------------------------------------------------------------------------------
+-- Helpers:
+---------------------------------------------------------------------------------------------------
+-- Returns number of Landmarks a player has built/remaining.
+-- player_conquerables is used to add count to already existing structure. Can be nil if you want new count.
+function AGS_Conquest_GetPlayerConquerableCount(player, player_conquerables)
+	if player_conquerables == nil then
+		player_conquerables = {
+			built = 0,
+			remaining = 0,
+			destroyed = 0,
+		}	
 	end
+	-- For every player count active and built conquerables.
+	for id, landmark in pairs(player.landmarks) do
+		player_conquerables.built = player_conquerables.built + 1
+		if Entity_IsValid(id) then
+			if Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then 
+				player_conquerables.remaining = player_conquerables.remaining + 1
+			else 
+				player_conquerables.destroyed = player_conquerables.destroyed + 1
+			end
+		end
+	end	
+	return player_conquerables	
+end
+-- Returns number of Enemy Conquerables standing for a given player.
+function AGS_Conquest_CountEnemyConquerables(player)
+	local conquerable_counter = nil
+	for _, enemy in pairs(AGS_Teams_GetAllCurrentOpponents(player, true)) do 
+		conquerable_counter = AGS_Conquest_GetPlayerConquerableCount(enemy, conquerable_counter)
+	end
+	return conquerable_counter
 end
