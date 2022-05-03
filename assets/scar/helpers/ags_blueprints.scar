@@ -743,6 +743,14 @@ function AGS_IsALandmark(entity_id)
 	return Entity_IsOfType(entity_id, AGS_BP_LANDMARK) and not Entity_IsOfType(entity_id, AGS_BP_WONDER)	
 end
 
+function AGS_IsATownCenter(entity_id)		
+	return Entity_IsOfType(entity_id, AGS_BP_TC) and not Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL) and not Entity_IsOfType(entity_id, AGS_BP_LANDMARK)		
+end
+
+function AGS_IsAKeep(entity_id)		
+	return Entity_IsOfType(entity_id, AGS_BP_KEEP) and not Entity_IsOfType(entity_id, AGS_BP_LANDMARK)	
+end
+
 function AGS_IsAWonder(entity_id)		
 	return Entity_IsOfType(entity_id, AGS_BP_LANDMARK) and Entity_IsOfType(entity_id, AGS_BP_WONDER)	
 end

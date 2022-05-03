@@ -93,7 +93,7 @@ import("conditions/ags_surrender.scar")
 import("conditions/ags_elimination.scar") 
 -- Conditions that only decide the match outcome.
 import("conditions/ags_annihilation.scar") 
---import("conditions/ags_conquest.scar") 
+import("conditions/ags_conquest.scar") 
 --import("conditions/ags_religious.scar") 
 --import("conditions/ags_wonder.scar") 
 import("conditions/ags_regicide.scar") 
@@ -261,3 +261,4 @@ import("specials/ags_testing.scar")
 -- AGS_Team by team module
 -- AGS_Kings by regicide module
 -- AGS_NomadicResources by nomadic module
+-- AGS_Conquerables by conquest module

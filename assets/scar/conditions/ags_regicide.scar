@@ -96,8 +96,9 @@ function AGS_Regicide_OnEntityKilled(context)
 	AGS_Regicide_UpdateObjective()
 	-- Try to eliminate player.
 	local king_count = AGS_Regicide_GetPlayerKingCount(owner)
-	if king_count.remaining <= 0 then 
-		AGS_Regicide_Eliminate(owner.id)		
+	-- Check if player still has reason to be in kill game.
+	if king_count.recruited > 0 and king_count.remaining <= 0 then 
+		AGS_Regicide_Eliminate(owner)		
 	end
 end
 
@@ -154,7 +155,7 @@ function AGS_Regicide_InitializeKings()
 			if player.AGS_Kings[squad_uwid] == nil then				
 				player.AGS_Kings[squad_uwid] = {
 					squad = sid,
-					is_alive = true,
+					is_alive = Squad_IsAlive(sid),
 				}
 			end
 		end	
@@ -182,9 +183,10 @@ function AGS_Regicide_RemoveObjective()
 	AGS_Objectives_Set(AGS_REGICIDE_OBJECTIVE, nil, false)
 end
 
-function AGS_Regicide_Eliminate(player_id)
+function AGS_Regicide_Eliminate(player)
+	AGS_Regicide_KillAllKings(player)
 	AGS_SetPlayerDefeated(
-		player_id, 
+		player.id, 
 		AGS_Presentations_Loss, 
 		AGS_WR_REGICIDE,
 		AGS_Objectives_PresentWrap(
@@ -207,7 +209,7 @@ function AGS_Regicide_GetPlayerKingCount(player, player_kings)
 		}	
 	end
 	-- For every player count active and recruited kings.
-	for id, king in pairs(player.AGS_Kings) do
+	for _, king in pairs(player.AGS_Kings) do
 		player_kings.recruited = player_kings.recruited + 1
 		if king.is_alive then 
 			player_kings.remaining = player_kings.remaining + 1

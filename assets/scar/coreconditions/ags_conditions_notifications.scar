@@ -75,6 +75,19 @@ AGS_NOTIFICATIONS_CONQUEST = {
 	self_attacked = 11198265,
 	-- "Enemy attacking %1PLAYER_NAME%'s Landmark"
 	ally_attacked = 11198266,
+	-- "Enemy destroyed Landmark"
+	self_destroyed = 11198267,
+	-- "Enemy destroyed %1PLAYER_NAME%'s Landmark"
+	ally_destroyed = 11198268,
+	-- "Destroyed %1PLAYER_NAME%'s landmark"
+	self_killed = 11198590,
+	-- "Ally destroyed %1PLAYER_NAME%'s landmark"
+	ally_killed = 11198591,
+	-- "Enemy destroyed %1PLAYER_NAME%'s landmark"
+	enemy_killed = 11201826,
+	self_destroyed_sfx = "mus_stinger_players_landmark_destroyed",
+	ally_destroyed_sfx = "mus_stinger_ally_landmark_destroyed",
+	enemy_destroyed_sfx = "mus_stinger_enemy_landmark_destroyed",
 }
 
 ---------------------------------------------------------------------------------------------------

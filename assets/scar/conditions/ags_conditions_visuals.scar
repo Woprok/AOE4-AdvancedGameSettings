@@ -95,16 +95,6 @@ AGS_OBJECTIVE_WONDER_ENEMY = {
 	alert = "icons\\event_queue_high_priority_large",
 }
 
--- "Enemy destroyed Landmark"
-AGS_CUE_TITLE_LANDMARK_K_SELF_ID = 11198267
--- "Enemy destroyed %1PLAYER_NAME%'s Landmark"
-AGS_CUE_TITLE_LANDMARK_K_TEAM_ID = 11198268
--- "Destroyed %1PLAYER_NAME%'s landmark"
-AGS_CUE_TITLE_LANDMARK_K_ENEMY_SELF_ID = 11198590
--- "Ally destroyed %1PLAYER_NAME%'s landmark"
-AGS_CUE_TITLE_LANDMARK_K_ENEMY_TEAM_ID = 11198591
--- "Enemy destroyed %1PLAYER_NAME%'s landmark"
-AGS_CUE_TITLE_LANDMARK_K_ENEMY_OTHER_ID = 11201826
 
 
 -- "Enemy attacking Wonder"

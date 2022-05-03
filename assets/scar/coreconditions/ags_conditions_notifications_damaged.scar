@@ -37,23 +37,23 @@ AGS_NOTIFICATIONS_DAMAGED_TIMERS = { }
 -- Pre-Filled Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_Notifications_Damaged(entity_uwid, attacker, owner, notification)
+function AGS_Notifications_Damaged(uwid, attacker, owner, notification)
 	-- Create entry if this is first time.
-	if AGS_NOTIFICATIONS_DAMAGED_TIMERS[entity_uwid] == nil then 
-		AGS_NOTIFICATIONS_DAMAGED_TIMERS[entity_uwid] = {
-			damage_timer = string.format("ags_notifications.damage_timer_%d", entity_uwid),
+	if AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid] == nil then 
+		AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid] = {
+			damage_timer = string.format("ags_notifications.damage_timer_%d", uwid),
 			last_attacker = nil,			
 		}
 	end
 	-- Update Attacker
-	AGS_NOTIFICATIONS_DAMAGED_TIMERS[entity_uwid].last_attacker = attacker.id
+	AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid].last_attacker = attacker.id
 	-- Check if timer is in progress.
-	if Timer_Exists(AGS_NOTIFICATIONS_DAMAGED_TIMERS[entity_uwid].damage_timer) and 
-		Timer_GetRemaining(AGS_NOTIFICATIONS_DAMAGED_TIMERS[entity_uwid].damage_timer) > 0.0 then
+	if Timer_Exists(AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid].damage_timer) and 
+		Timer_GetRemaining(AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid].damage_timer) > 0.0 then
 		return
 	end
 	-- Start new timer.
-	Timer_Start(AGS_NOTIFICATIONS_DAMAGED_TIMERS[entity_uwid].damage_timer, AGS_NOTIFICATIONS_DAMAGED_INTERVAL)	
+	Timer_Start(AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid].damage_timer, AGS_NOTIFICATIONS_DAMAGED_INTERVAL)	
 	-- If local is eliminated or attacker is ally/self or owner is enemy this does not create notification.
 	local attacker_relation = AGS_GetRelation(attacker.id)
 	local owner_relation = AGS_GetRelation(owner.id)
@@ -62,15 +62,49 @@ function AGS_Notifications_Damaged(entity_uwid, attacker, owner, notification)
 	end	
 	-- Create cue.
 	local color = Player_GetUIColour(attacker.id)
+	local priority = AGS_NP_LOW
 	local title = nil
-	local priority = AGS_NP_MAX
+	-- Fill based on context.
 	if owner_relation == AGS_SAE_SELF then
 		title = Loc_FormatText(notification.self_attacked)
-	end
-	if owner_relation == AGS_SAE_ALLY then
+		priority = AGS_NP_MAX
+	elseif owner_relation == AGS_SAE_ALLY then
 		title = Loc_FormatText(notification.ally_attacked, owner.playerName)
-		priority = AGS_NP_LOW
 	end
 	
 	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_DAMAGED, priority, title, nil, color)
+end
+
+function AGS_Notifications_Destroyed(uwid, owner, notification)
+	-- If local is eliminated or we have no entry for this structure
+	if AGS_GS_LOCAL_PLAYER.isEliminated or AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid] == nil then
+		return
+	end	
+	local attacker_relation = AGS_GetRelation(AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid].last_attacker)
+	local owner_relation = AGS_GetRelation(owner.id)
+	-- Create cue.
+	local color = Player_GetUIColour(AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid].last_attacker)
+	local priority = AGS_NP_LOW
+	local title = nil
+	local sfx = nil
+	-- Fill based on context.
+	if owner_relation == AGS_SAE_SELF then
+		title = Loc_FormatText(notification.self_destroyed)
+		sfx = notification.self_destroyed_sfx
+		priority = AGS_NP_MAX
+	elseif owner_relation == AGS_SAE_ALLY then
+		title = Loc_FormatText(notification.ally_destroyed, owner.playerName)
+		sfx = notification.ally_destroyed_sfx
+	else
+		sfx = notification.enemy_destroyed_sfx
+		if attacker_relation == AGS_SAE_SELF then
+			title = Loc_FormatText(notification.self_killed, owner.playerName)
+		elseif attacker_relation == AGS_SAE_ALLY then
+			title = Loc_FormatText(notification.ally_killed, owner.playerName)
+		else
+			title = Loc_FormatText(notification.enemy_killed, owner.playerName)		
+		end
+	end	
+	
+	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_DAMAGED, priority, title, sfx, color)
 end
