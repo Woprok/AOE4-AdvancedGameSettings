@@ -14,8 +14,6 @@ AGS_CONQUEST_OBJECTIVE = nil
 AGS_CONQUEST_ACTIVE = true
 AGS_CONQUEST_PLAYERS_MIN_REQUIRED = 2
 AGS_CONQUEST_TICK_WAIT = 0.25 -- 0.125 is a single tick
--- player.landmarks
-AGS_CONQUEST_DAMAGE_INTERVAL = 30.0
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:

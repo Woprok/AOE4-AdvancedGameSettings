@@ -91,18 +91,10 @@ function Religious_UpdatePlayerStats(player, scarModel)
 end
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Conquest_UpdatePlayerStats(player, scarModel)
-	local landmarks_built = 0
-	local landmarks_remaining = 0
-	
-	for id, landmark in pairs(player.landmarks) do
-		landmarks_built = landmarks_built + 1
-		if Entity_IsValid(id) and Entity_GetStateModelBool(Entity_FromID(id), "landmark_active") then 
-			landmarks_remaining = landmarks_remaining + 1
-		end
-	end
+	local conquerables = AGS_Conquest_CountEnemyConquerables(player)
 		
-	scarModel.Conquest_Target = landmarks_built
-	scarModel.Conquest_Current = landmarks_remaining
+	scarModel.Conquest_Target = conquerables.built
+	scarModel.Conquest_Current = conquerables.remaining
 end
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Wonder_UpdatePlayerStats(player, scarModel)	
