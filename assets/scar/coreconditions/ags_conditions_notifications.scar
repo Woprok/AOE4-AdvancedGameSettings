@@ -18,13 +18,13 @@ AGS_NP_LOW = 0
 AGS_NP_HIGH = 1
 AGS_NP_MAX = 2
 -- Standardized notification for all objectives to make them similiar and recognizeable.
+-- Default is filled with most common cases. Automatically supplied to every method that uses notification.
 AGS_NOTIFICATIONS_CORE = {
-	eventType = -1,	
-	-- should match the defaults set in AE under tuning.ui.event_cues
+	event_type = -1,	
+	-- lifetime, repeat_count and repeat_time should match the defaults set in AE under tuning_simulation\ui\event_cues
 	lifetime = 10.0,
-	repeatCount = 0,
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	repeatTime = 30.0,		
+	repeat_count = 0,
+	repeat_time = 20.0,		
 	title = Loc_Empty(),
 	desc = Loc_Empty(),
 	sfx = "sfx_ui_event_queue_high_priority_play",
@@ -58,41 +58,218 @@ AGS_NOTIFICATIONS_ANNIHILATION = {
 	title = 11159062,
 	sfx = nil,	
 }
+AGS_NOTIFICATIONS_SCORE = {
+	-- "Still waits %1PLAYER_NAME% for Godot."
+	title = "$64c5019a145c4e4da448dbd3adeea61e:273",
+	sfx = nil,	
+}
 AGS_NOTIFICATIONS_REGICIDE = {
 	-- "%1PLAYER_NAME% assassinated"
 	title = "$64c5019a145c4e4da448dbd3adeea61e:264",
 	sfx = nil,	
+
+}
+AGS_NOTIFICATIONS_REGICIDE_ATTACKED = {
 	-- "King under attack"
 	self_attacked = "$64c5019a145c4e4da448dbd3adeea61e:266",
 	-- "Enemy attacking %1PLAYER_NAME%'s king"
 	ally_attacked = "$64c5019a145c4e4da448dbd3adeea61e:265",
+	attacked_sfx = "mus_stinger_landmark_building_damaged",
 }
 AGS_NOTIFICATIONS_CONQUEST = {
 	-- "%1PLAYER_NAME% conquered"
 	title = "$64c5019a145c4e4da448dbd3adeea61e:267",
 	sfx = nil,	
+}
+AGS_NOTIFICATIONS_CONQUEST_ATTACKED = {
 	-- "Enemy attacking Landmark"
 	self_attacked = 11198265,
 	-- "Enemy attacking %1PLAYER_NAME%'s Landmark"
 	ally_attacked = 11198266,
-	-- "Enemy destroyed Landmark"
-	self_destroyed = 11198267,
+	attacked_sfx = "mus_stinger_landmark_building_damaged",
+}
+AGS_NOTIFICATIONS_CONQUEST_DESTROYED = {
+	-- "Destroyed Landmark"
+	self_destroyed = "$64c5019a145c4e4da448dbd3adeea61e:276",
 	-- "Enemy destroyed %1PLAYER_NAME%'s Landmark"
 	ally_destroyed = 11198268,
+	-- "Enemy destroyed %1PLAYER_NAME%'s Landmark"
+	enemy_destroyed = 11198268,
+	
+	-- "Enemy destroyed Landmark"
+	self_crushed = 11198267,
+	-- "Enemy destroyed %1PLAYER_NAME%'s Landmark"
+	ally_crushed = 11198268,
+	
 	-- "Destroyed %1PLAYER_NAME%'s landmark"
 	self_killed = 11198590,
 	-- "Ally destroyed %1PLAYER_NAME%'s landmark"
 	ally_killed = 11198591,
 	-- "Enemy destroyed %1PLAYER_NAME%'s landmark"
 	enemy_killed = 11201826,
+	
 	self_destroyed_sfx = "mus_stinger_players_landmark_destroyed",
 	ally_destroyed_sfx = "mus_stinger_ally_landmark_destroyed",
 	enemy_destroyed_sfx = "mus_stinger_enemy_landmark_destroyed",
+}
+AGS_NOTIFICATIONS_WONDER = {
+	-- "%1PLAYER_NAME% couldn't withstand the glory of the wonder"
+	title = "$64c5019a145c4e4da448dbd3adeea61e:274",
+	sfx = nil,	
+}
+AGS_NOTIFICATIONS_WONDER_ATTACKED = {
+	-- "Enemy attacking Wonder"
+	self_attacked = 11198265,
+	-- "Enemy attacking %1PLAYER_NAME%'s Wonder"
+	ally_attacked = 11198637,	
+	attacked_sfx = "mus_stinger_wonder_building_damaged",
+}
+AGS_NOTIFICATIONS_WONDER_CONSTRUCTION = {
+	-- "Building a Wonder"
+	self_action = "$64c5019a145c4e4da448dbd3adeea61e:275",
+	-- "%1PLAYER_NAME% is building a Wonder"
+	ally_action = 11159074,
+	-- "%1PLAYER_NAME% is building a Wonder"
+	enemy_action = 11159074,
+	self_action_sfx = "mus_stinger_wonder_win_build_start_ally",
+	ally_action_sfx = "mus_stinger_wonder_win_build_start_ally",
+	enemy_action_sfx = "mus_stinger_wonder_win_build_start_enemy",
+	-- Not used as its always overwritten.
+	action_sfx = "mus_stinger_wonder_win_build_start_ally",
+}
+AGS_NOTIFICATIONS_WONDER_DESTROYED = {
+	-- "Wonder destroyed"
+	self_destroyed = 11159075,
+	-- "%1PLAYER_NAME%'s Wonder destroyed"
+	ally_destroyed = 11159076,
+	-- "%1PLAYER_NAME%'s Wonder destroyed"
+	enemy_destroyed = 11159076,
+	
+	-- "Enemy destroyed Wonder"
+	self_crushed = 11198645,
+	-- "Enemy destroyed %1PLAYER_NAME%'s Wonder"
+	ally_crushed = 11198646,
+	
+	-- "Destroyed %1PLAYER_NAME%'s Wonder"
+	self_killed = 11198647,
+	-- "Ally destroyed %1PLAYER_NAME%'s Wonder"
+	ally_killed = 11198648,
+	-- "Enemy destroyed %1PLAYER_NAME%'s Wonder"
+	enemy_killed = 11198649,
+	
+	self_destroyed_sfx = "mus_stinger_wonder_win_interrupted_player",
+	ally_destroyed_sfx = "mus_stinger_wonder_win_interrupted_ally",
+	enemy_destroyed_sfx = "mus_stinger_wonder_win_interrupted_enemy",
+	-- Not used as its always overwritten.
+	destroyed_sfx = "mus_stinger_wonder_build_destroy_player_neg",
+}
+AGS_NOTIFICATIONS_WONDER_COUNTDOWN = {
+	-- "%1MINUTES_REMAINING% minutes until Wonder Victory"
+	title_victory = 11197864,
+	-- "%1MINUTES_REMAINING% minutes until Wonder Defeat"
+	title_defeat = 11197865,
+	-- "1 minute until Wonder Victory"
+	title_final_victory = 11197866,
+	-- "1 minute until Wonder Defeat"
+	title_final_defeat = 11197867,	
+}
+
+-- Points during countdown at which to display loss warning.
+-- Arrange in decreasing order since music intensity increases when the last one triggers.
+AGS_NOTIFICATIONS_COUNTDOWN = {
+	-- generic first
+	{
+		time = 3 * 60, 
+		sfx = "sfx_ui_victory_countdown_update_first",
+		music_intensity = MUSIC_TENSE,
+		music_intesity_param = -1,
+		music_special = nil,
+		text_param = 3,		
+	},
+	-- generic second
+	{
+		time = 2 * 60, 
+		sfx = "sfx_ui_victory_countdown_update_second",
+		music_intensity = MUSIC_TENSE_COMBAT_RARE,	
+		music_intesity_param = -1,	
+		music_special = nil,
+		text_param = 2,		
+	},
+	-- generic third
+	{
+		time = 1 * 60,
+		sfx = "sfx_ui_victory_countdown_update_final",	
+		music_intensity = MUSIC_RARE,		
+		music_intesity_param = 1 * 60,
+		music_special = "mus_shared_victory_countdown_mix_event",	
+		text_param = nil,					
+	},
 }
 
 ---------------------------------------------------------------------------------------------------
 -- Pre-Filled Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_Notification_CountdownNotification(player, order_id, notification, is_outcome_positive)
+	if AGS_GS_LOCAL_PLAYER.isEliminated then
+		return
+	end	
+	local core_countdown = AGS_NOTIFICATIONS_COUNTDOWN[order_id]
+	-- Create cue.
+	local color = Player_GetUIColour(player.id)
+	local priority = AGS_NP_LOW
+	local title = nil
+	local sfx = core_countdown.sfx
+	
+	-- Increase music tempo.
+	Music_LockIntensity(core_countdown.music_intensity, core_countdown.music_intensity_param)
+	if is_outcome_positive then
+		if core_countdown.text_param ~= nil then
+			title = Loc_FormatText(notification.title_victory, core_countdown.text_param)
+		else
+			title = Loc_FormatText(notification.title_final_victory)
+		end				
+	else
+		if core_countdown.text_param ~= nil then
+			title = Loc_FormatText(notification.title_defeat, core_countdown.text_param)
+		else
+			title = Loc_FormatText(notification.title_final_defeat)
+		end		
+		if core_countdown.music_special ~= nil then
+			-- Trigger Mix Event.
+			Sound_Play2D(core_countdown.music_special)	
+		end
+	end
+	
+	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, AGS_NP_MAX, title, sfx, color)
+end
+
+
+function AGS_Notifications_ObjectiveAction(player, notification)
+	local owner_relation = AGS_GetRelation(player.id)
+	if AGS_GS_LOCAL_PLAYER.isEliminated then
+		return
+	end	
+	-- Create cue.
+	local color = Player_GetUIColour(player.id)
+	local priority = AGS_NP_LOW
+	local title = nil
+	local sfx = notification.self_action_sfx
+	-- Fill based on context.
+	if owner_relation == AGS_SAE_SELF then
+		title = Loc_FormatText(notification.self_action)
+	elseif owner_relation == AGS_SAE_ALLY then
+		title = Loc_FormatText(notification.ally_action, owner.playerName)
+		sfx = notification.ally_action_sfx
+		priority = AGS_NP_HIGH
+	else
+		title = Loc_FormatText(notification.enemy_action, owner.playerName)	
+		sfx = notification.enemy_action_sfx
+		priority = AGS_NP_MAX	
+	end
+	
+	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, priority, title, sfx, color)
+end
 
 function AGS_Notifications_Eliminated(player, cue_opt_fielded)
 	-- Do nothing if player is eliminated.
@@ -139,10 +316,10 @@ end
 
 function AGS_Notifications_TextCue(cue, title, color, template, sfx, icon, style)
 	UI_CreateEventCueClickable(
-		cue.eventType, 
+		cue.event_type, 
 		cue.lifetime, 
-		cue.repeatCount, 
-		cue.repeatTime, 
+		cue.repeat_count, 
+		cue.repeat_time, 
 		title, 
 		cue.desc, 
 		template, 

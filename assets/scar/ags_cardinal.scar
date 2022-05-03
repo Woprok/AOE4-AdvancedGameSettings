@@ -71,10 +71,6 @@ import("coreconditions/ags_conditions.scar")
 -- AGS Scripts read settings from single configuration.
 import("ags_global_settings.scar")
 
-
---import("conditions/ags_conditions_visuals.scar") -- TODO split helpers and visuals
-
-
 -- Partially reworked Diplomacy & Tributes. -- TODO team system rework
 --import("gameplay/diplomacy_reworked.scar")
 
@@ -95,9 +91,9 @@ import("conditions/ags_elimination.scar")
 import("conditions/ags_annihilation.scar") 
 import("conditions/ags_conquest.scar") 
 --import("conditions/ags_religious.scar") 
---import("conditions/ags_wonder.scar") 
+import("conditions/ags_wonder.scar") 
 import("conditions/ags_regicide.scar") 
-import("conditions/ags_score.scar") 
+--import("conditions/ags_score.scar") 
 import("conditions/ags_teamsolidarity.scar") 
 
 
@@ -262,3 +258,4 @@ import("specials/ags_testing.scar")
 -- AGS_Kings by regicide module
 -- AGS_NomadicResources by nomadic module
 -- AGS_Conquerables by conquest module
+-- AGS_Wonder by wonder module

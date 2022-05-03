@@ -268,3 +268,11 @@
 267,,,ags_conditions_notifications,,,"""%1PLAYER_NAME% conquered"""
 268,,,ags_conditions_objectives,,,Your empire has been conquered.
 269,,,ags_conditions_objectives,,,Conquered all enemies.
+270,,,ags_conditions_objectives,,,Survive and outshine everyone.
+271,,,ags_conditions_objectives,,,Your empire was forgotten by the history.
+272,,,ags_conditions_objectives,,,Your Empire shines brightest.
+273,,,ags_conditions_notifications,,,Still waits %1PLAYER_NAME% for Godot.
+274,,,ags_conditions_notifications,,,%1PLAYER_NAME% couldn't withstand the glory of the wonder
+275,,,ags_conditions_notifications,,,Building a wonder
+276,,,ags_conditions_notifications,,,Destroyed Landmark
+277,,,ags_conditions_objectives,,,Failed to hold the wonder.

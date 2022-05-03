@@ -28,17 +28,6 @@ function AGS_Testing_UpdateModuleSettings()
 	end
 end
 
-function AGS_Testing_OnPlay()
-	--Rule_AddOneShot(AGS_TEST_SURREND, 15)
-end
-function AGS_TEST_SURREND()
-	for _, player in pairs(PLAYERS) do
-		if not player.isHuman then
-			AGS_Surrender_Notify(player.id)
-		end
-	end
-end
-
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------

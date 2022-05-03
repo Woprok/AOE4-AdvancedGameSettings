@@ -9,27 +9,6 @@
 -- Damage notification is available only after certain time.
 ---------------------------------------------------------------------------------------------------
 AGS_NOTIFICATIONS_DAMAGED_INTERVAL = 30.0
--- Standardized notification for all damaged to make them similiar and recognizeable.
-AGS_NOTIFICATIONS_DAMAGED = {
-	eventType = -1,	
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	lifetime = 10.0,		
-	repeatCount = 0,
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	repeatTime = 20.0,		
-	title = Loc_Empty(),
-	desc = Loc_Empty(),
-	sfx = "mus_stinger_landmark_building_damaged",
-	icon = "icons\\event_queue_high_priority",
-	icon_high = "icons\\event_queue_high_priority_large",
-	color = {r = 255, g = 255, b = 255, a = 255},
-	template = "high_priority", 
-	template_color = "event_with_player_color",
-	style_queue = ECV_Queue,
-	style_center = ECV_Title,
-	-- This one should be completely pointless as we can do it separately for greater effect.
-	style_combined = ECV_Queue | ECV_Title,
-}
 -- Runtime list of all notifications timers.
 AGS_NOTIFICATIONS_DAMAGED_TIMERS = { }
 
@@ -63,41 +42,67 @@ function AGS_Notifications_Damaged(uwid, attacker, owner, notification)
 	-- Create cue.
 	local color = Player_GetUIColour(attacker.id)
 	local priority = AGS_NP_LOW
-	local title = nil
+	local title = Loc_FormatText(notification.self_attacked)
+	local sfx = notification.attacked_sfx
 	-- Fill based on context.
 	if owner_relation == AGS_SAE_SELF then
-		title = Loc_FormatText(notification.self_attacked)
 		priority = AGS_NP_MAX
 	elseif owner_relation == AGS_SAE_ALLY then
 		title = Loc_FormatText(notification.ally_attacked, owner.playerName)
 	end
 	
-	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_DAMAGED, priority, title, nil, color)
+	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, priority, title, sfx, color)
 end
 
-function AGS_Notifications_Destroyed(uwid, owner, notification)
+function AGS_Notifications_Destroyed(uwid, owner, killer, notification)
 	-- If local is eliminated or we have no entry for this structure
-	if AGS_GS_LOCAL_PLAYER.isEliminated or AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid] == nil then
+	if AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid] == nil then
+		if killer == nil then
+			return
+		else
+			AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid] = {
+			damage_timer = string.format("ags_notifications.damage_timer_%d", uwid),
+			last_attacker = killer.id,			
+		}
+		end
+	end
+	if AGS_GS_LOCAL_PLAYER.isEliminated then
 		return
 	end	
 	local attacker_relation = AGS_GetRelation(AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid].last_attacker)
 	local owner_relation = AGS_GetRelation(owner.id)
 	-- Create cue.
 	local color = Player_GetUIColour(AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid].last_attacker)
+	-- Special case when player destroyed own structure.
+	if attacker_relation == AGS_SAE_SELF and owner_relation == AGS_SAE_SELF then
+		color = Player_GetUIColour(owner.id)
+	end
 	local priority = AGS_NP_LOW
 	local title = nil
 	local sfx = nil
 	-- Fill based on context.
 	if owner_relation == AGS_SAE_SELF then
-		title = Loc_FormatText(notification.self_destroyed)
 		sfx = notification.self_destroyed_sfx
-		priority = AGS_NP_MAX
+		if owner_relation == attacker_relation then
+			title = Loc_FormatText(notification.self_destroyed)
+		else
+			title = Loc_FormatText(notification.self_crushed)
+			priority = AGS_NP_MAX
+		end
 	elseif owner_relation == AGS_SAE_ALLY then
-		title = Loc_FormatText(notification.ally_destroyed, owner.playerName)
 		sfx = notification.ally_destroyed_sfx
+		if owner_relation == attacker_relation then
+			title = Loc_FormatText(notification.ally_destroyed)
+		else
+			title = Loc_FormatText(notification.ally_crushed, owner.playerName)
+			priority = AGS_NP_MAX
+		end
 	else
 		sfx = notification.enemy_destroyed_sfx
-		if attacker_relation == AGS_SAE_SELF then
+		
+		if owner_relation == attacker_relation then
+			title = Loc_FormatText(notification.enemy_destroyed, owner.playerName)			
+		elseif attacker_relation == AGS_SAE_SELF then
 			title = Loc_FormatText(notification.self_killed, owner.playerName)
 		elseif attacker_relation == AGS_SAE_ALLY then
 			title = Loc_FormatText(notification.ally_killed, owner.playerName)
@@ -106,5 +111,5 @@ function AGS_Notifications_Destroyed(uwid, owner, notification)
 		end
 	end	
 	
-	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_DAMAGED, priority, title, sfx, color)
+	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, priority, title, sfx, color)
 end

@@ -30,7 +30,7 @@ end
 -- Disable this if there is noone else or nothing to conquer.
 function AGS_Conquest_EarlyInitializations()
 	AGS_Print("AGS_Conquest_EarlyInitializations")
-	if #PLAYERS <= AGS_CONQUEST_PLAYERS_MIN_REQUIRED then
+	if #PLAYERS < AGS_CONQUEST_PLAYERS_MIN_REQUIRED then
 		Core_UnregisterModule(AGS_CONQUEST_MODULE)
 	end
 	if not AGS_GLOBAL_SETTINGS.ConquestSettings.Capital and 
@@ -101,12 +101,17 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Entity destroyed for all non-landmarks, but maybe one day this might fire for landmarks.
 function AGS_Conquest_OnEntityKilled(context)
+	AGS_Print(context)
 	if context.victimOwner == nil or context.victim == nil then
 		return
 	end
 	local player = Core_GetPlayersTableEntry(context.victimOwner)
 	local entity_id = context.victim
-	AGS_Conquest_ConquerableDestroyed(player, entity_id)
+	local killer = nil
+	if context.killer ~= nil and not World_OwnsEntity(entity_id) then
+		killer = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(entity_id))
+	end
+	AGS_Conquest_ConquerableDestroyed(player, entity_id, killer)
 end
 -- Entity landmark destroyed
 function AGS_Conquest_OnEntityLandmarkDestroyed(context)
@@ -129,6 +134,10 @@ function AGS_Conquest_OnConstructionComplete(context)
 		entity_id = context.entity,
 		entity_uwid = Entity_GetID(context.entity),
 	}	
+	-- Eliminated players are not interesting for victory conditions.
+	if new_context.player.isEliminated then
+		return
+	end
 	if AGS_Conquest_IsConquerable(new_context.entity_id) then
 		-- Delay processing this event by two frames so deferred data model updates can complete. 
 		Rule_AddOneShot(AGS_Conquest_OnPostConstructionComplete, AGS_CONQUEST_TICK_WAIT, new_context)	
@@ -161,7 +170,6 @@ function AGS_Conquest_OnPostConstructionComplete(context, data)
 end
 -- Deal with rebuilding of landmarks and notification about objective under attack.
 function AGS_Conquest_OnDamageReceived(context)
-	AGS_Print(context)
 	-- Excludes razing buildings as they do not have an attacker ?
 	if context == nil or context.attacker == nil or context.victim == nil then 
 		return 
@@ -205,7 +213,7 @@ function AGS_Conquest_OnDamageReceived(context)
 		return
 	end
 	local attacker = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(context.attacker))
-	AGS_Notifications_Damaged(entity_uwid, attacker, owner, AGS_NOTIFICATIONS_CONQUEST)
+	AGS_Notifications_Damaged(entity_uwid, attacker, owner, AGS_NOTIFICATIONS_CONQUEST_ATTACKED)
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -289,7 +297,7 @@ end
 -- Conquest Checks:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_Conquest_ConquerableDestroyed(player, entity_id)
+function AGS_Conquest_ConquerableDestroyed(player, entity_id, killer)
 	-- Check if the player is alive and building also exists. Eliminated players are dealt with separately.
 	if player == nil or player.isEliminated or entity_id == nil then
 		return
@@ -308,7 +316,7 @@ function AGS_Conquest_ConquerableDestroyed(player, entity_id)
 	player.AGS_Conquerables[entity_uwid].is_landmark_alive = false
 		
 	-- Notify players about conquerable being destroyed.
-	AGS_Notifications_Destroyed(entity_uwid, player, AGS_NOTIFICATIONS_CONQUEST)
+	AGS_Notifications_Destroyed(entity_uwid, player, killer, AGS_NOTIFICATIONS_CONQUEST_DESTROYED)
 	-- Update objective as we changed at least one condition target.
 	AGS_Conquest_UpdateObjective()	
 		

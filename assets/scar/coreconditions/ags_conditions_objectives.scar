@@ -7,6 +7,62 @@
 -- Contains condition helpers for objective handling.
 ---------------------------------------------------------------------------------------------------
 
+AGS_OBJECTIVES_WONDER_SELF = {	
+	-- "Defend your Wonder"
+	title = "$11159071",
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	telemetry = "defendWonderObj",
+	music = "mus_stinger_wonder_win_countdown_player",
+}
+AGS_OBJECTIVES_WONDER_ALLY = {	
+	-- "Defend %1PLAYER_NAME%'s Wonder"	
+	title = "$11159070",
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	telemetry = "defendWonderObj",
+	music = "mus_stinger_wonder_win_countdown_ally",
+}
+AGS_OBJECTIVES_WONDER_ENEMY = {	
+	-- "Destroy %1PLAYER_NAME%'s Wonder"
+	title = "$11159069",
+	icon = "icons/objectives/objectives_warning_small",
+	telemetry = "destroyWonderObj",
+	music = "mus_stinger_wonder_win_countdown_enemy",
+}
+
+AGS_OBJECTIVES_WONDER = {
+	reason = WR_WONDER,
+	-- "Build a Wonder"
+	title = "$11159068", 
+	-- "Failed to hold the wonder."
+	title_lost = "$64c5019a145c4e4da448dbd3adeea61e:277",
+	description = Loc_Empty(),
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	data_template = "WonderObjectiveTemplate",
+	data_template_or = "WonderOrObjectiveTemplate",
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "wonderObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+AGS_OBJECTIVES_SCORE = {
+	reason = AGS_WR_SCORE,
+	-- "Survive and outshine everyone."
+	title = "$64c5019a145c4e4da448dbd3adeea61e:270", 
+	-- "Your empire was forgotten by the history."
+	title_lost = "$64c5019a145c4e4da448dbd3adeea61e:271",
+	-- "Your Empire shines brightest."
+	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:272",
+	description = Loc_Empty(),
+	icon = "icons\\objectives\\objectives_generic",
+	data_template = DT_PRIMARY_DEFAULT,
+	data_template_or = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "scoreObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
 AGS_OBJECTIVES_CONQUEST = {
 	reason = WR_CONQUEST,
 	-- "Destroy all enemy landmarks"
@@ -104,13 +160,34 @@ AGS_OBJECTIVES_ANNIHILATION = {
 }
 
 ---------------------------------------------------------------------------------------------------
--- Pre-Filled Functions:
----------------------------------------------------------------------------------------------------
-
-
----------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+-- Creates objective by combining core and template.
+-- Currently only for title, icon, telemetry.
+function AGS_Objectives_CreateFromCore(core, template)
+	local new_objective = {
+		reason = core.reason,
+		title = core.title, 
+		description = core.description,
+		icon = core.icon,
+		data_template = core.data_template,
+		data_template_or = core.data_template_or,
+		priority = core.priority,
+		parent = core.parent,
+		telemetry = core.telemetry,
+		alert = core.alert,	
+	}
+	if template.title ~= nil then
+		new_objective.title = template.title
+	end
+	if template.icon ~= nil then
+		new_objective.icon = template.icon
+	end
+	if template.telemetry ~= nil then
+		new_objective.telemetry = template.telemetry
+	end	
+	return new_objective
+end
 
 function AGS_Objectives_PresentWrap(obj_id, obj_state, obj_title, obj_title_param)
 	return {
@@ -120,6 +197,7 @@ function AGS_Objectives_PresentWrap(obj_id, obj_state, obj_title, obj_title_para
 		title_param = obj_title_param,
 	}
 end
+
 function AGS_Objectives_Present(objective_id, state, title, title_param)
 	local formatted_title = nil
 	if title_param ~= nil then
@@ -127,7 +205,9 @@ function AGS_Objectives_Present(objective_id, state, title, title_param)
 	else
 		formatted_title = Loc_FormatText(title)
 	end
-	Obj_SetState(objective_id, state)
+	if state ~= nil then
+		Obj_SetState(objective_id, state)
+	end
 	Obj_CreatePopup(objective_id, formatted_title)	
 end
 

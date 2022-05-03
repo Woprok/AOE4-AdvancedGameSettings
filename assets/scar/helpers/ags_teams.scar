@@ -222,6 +222,22 @@ function AGS_Teams_GetAllCurrentOpponents(player, opt_all)
 	return enemy_group
 end
 
+-- Returns if local player is sharing victory with other player.
+function AGS_Teams_IsTeamVictoryEligible(player)
+	-- Self or dynamic is true
+	if AGS_GS_LOCAL_PLAYER == player or AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_DYNAMIC then
+		return true
+	end
+	-- Team is true only if they are in same
+	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_STANDARD then
+		if AGS_GS_LOCAL_PLAYER ~= player and player.AGS_Team.index == AGS_GS_LOCAL_PLAYER.AGS_Team.index then
+			return true
+		end		
+	end
+	-- Otherwise its always false
+	return false
+end
+
 ---------------------------------------------------------------------------------------------------
 -- Internal Helper Functions:
 ---------------------------------------------------------------------------------------------------

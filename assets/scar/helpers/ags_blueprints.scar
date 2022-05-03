@@ -802,6 +802,7 @@ end
 AGS_SAE_SELF = 0
 AGS_SAE_ALLY = 1
 AGS_SAE_ENEMY = 2
+-- Returns relation with local player, very useful for anything that can decide best on relation
 function AGS_GetRelation(player_id)
 	-- Self.
 	if AGS_GS_LOCAL_PLAYER.id == player_id then

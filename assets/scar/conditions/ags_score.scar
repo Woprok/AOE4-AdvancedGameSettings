@@ -1,0 +1,109 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Score win condition.
+-- All players are eliminated after certain amount of time.
+-- Highest score player/team wins. 
+---------------------------------------------------------------------------------------------------
+
+AGS_SCORE_MODULE = "AGS_Score"
+AGS_SCORE_OBJECTIVE = nil
+AGS_SCORE_ACTIVE = true
+AGS_SCORE_TIMER = "AGS_ScoreTimer"
+AGS_SCORE_VICTORY_TIME = 60 * 60
+AGS_SCORE_TIMER_TICK = 1.0
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_SCORE_MODULE)	
+
+-- Unregister Regicide and prevent it from being initialized.
+function AGS_Score_UpdateModuleSettings()
+	AGS_Print("AGS_Score_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.Score then
+		Core_UnregisterModule(AGS_SCORE_MODULE)
+	end
+	AGS_SCORE_VICTORY_TIME = AGS_GLOBAL_SETTINGS.ScoreSettings.Timer * 60
+end
+
+function AGS_Score_OnPlay()
+	AGS_Print("AGS_Score_OnPlay")
+	AGS_Score_InitializePlacements()
+	Rule_AddGlobalEvent(AGS_Score_OnEntityKilled, GE_EntityKilled)
+	Rule_AddInterval(AGS_Score_OnTimerTick, AGS_SCORE_TIMER_TICK)
+	AGS_Score_CreateObjective()
+	AGS_Score_UpdateObjective()
+end
+
+function AGS_Score_OnPlayerDefeated(player, reason)
+	AGS_Print("AGS_Score_OnPlayerDefeated")
+	if reason == AGS_WR_SCORE then 
+		AGS_Notifications_Eliminated(player, AGS_NOTIFICATIONS_SCORE)
+		AGS_Conditions_CheckVictory(AGS_SCORE_ACTIVE, AGS_Presentations_Victory, AGS_WR_SCORE,
+			AGS_Objectives_PresentWrap(
+				AGS_SCORE_OBJECTIVE, 
+				OS_Complete, 
+				AGS_OBJECTIVES_SCORE.title_victory))
+	end	
+	AGS_Score_UpdateObjective()
+end
+
+function AGS_Score_TreatyStarted()
+	AGS_Print("AGS_Score_TreatyStarted")
+	AGS_SCORE_ACTIVE = false
+end
+
+function AGS_Score_TreatyEnded()
+	AGS_Print("AGS_Score_TreatyEnded")
+	AGS_SCORE_ACTIVE = true
+end
+
+function AGS_Score_OnGameOver()
+	AGS_Print("AGS_Score_OnGameOver")
+	Rule_RemoveGlobalEvent(AGS_Score_OnEntityKilled)
+	Rule_Remove(AGS_Score_OnTimerTick, AGS_SCORE_TIMER_TICK)
+	AGS_Score_RemoveObjective()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Callbacks:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Score_OnEntityKilled(context)
+end
+
+function AGS_Score_OnTimerTick()
+	
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Score_InitializePlacements()
+
+end
+
+function AGS_Score_CreateObjective()
+	AGS_SCORE_OBJECTIVE = AGS_Objectives_Create(AGS_OBJECTIVES_SCORE, AGS_GS_LOCAL_PLAYER)
+	AGS_Objectives_Set(AGS_SCORE_OBJECTIVE, OS_Incomplete, true, true, COUNTER_TimerDecreasing)
+end
+
+function AGS_Score_UpdateObjective()
+	AGS_Objectives_Progress(
+		AGS_SCORE_OBJECTIVE, 
+		nil,
+		nil,
+		nil,
+		Timer_GetRemaining(AGS_SCORE_TIMER)
+	)
+end
+
+function AGS_Score_RemoveObjective()
+	AGS_Objectives_Set(AGS_SCORE_OBJECTIVE, nil, false)
+end

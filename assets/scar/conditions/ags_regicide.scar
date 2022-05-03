@@ -126,7 +126,7 @@ function AGS_Regicide_OnDamageReceived(context)
 		return
 	end	
 	local attacker = Core_GetPlayersTableEntry(context.attackerOwner)
-	AGS_Notifications_Damaged(squad_uwid, attacker, owner, AGS_NOTIFICATIONS_REGICIDE)
+	AGS_Notifications_Damaged(squad_uwid, attacker, owner, AGS_NOTIFICATIONS_REGICIDE_ATTACKED)
 end
 
 ---------------------------------------------------------------------------------------------------

@@ -11,6 +11,11 @@
 ---------------------------------------------------------------------------------------------------
 
 AGS_TREATY_MODULE = "AGS_Treaty"
+AGS_TREATY_OBJECTIVE = nil
+AGS_TREATY_TIMER = "AGS_TreatyTimer"
+AGS_TREATY_PEACE_TIME = 0 * 60
+AGS_TREATY_TIMER_TICK = 1.0
+
 AGS_TREATY_START = 0
 AGS_TREATY_THRESHOLD = 60.0
 AGS_TREATY_INTERVAL = 60.0
@@ -19,14 +24,6 @@ AGS_TREATY_DURATION = 0
 AGS_TREATY_EVENTCUE = {
 	sfx_treaty_timer_first = "sfx_ui_victory_countdown_update_first",
 	sfx_treaty_timer_final = "sfx_ui_victory_countdown_update_final",
-	cueCountdown = {			-- event cue shown at countdown intervals 
-		title = Loc_Empty(),
-		desc = Loc_Empty(),
-		sfx = "sfx_ui_victory_countdown_update_first",
-		icon = "icons\\event_queue_high_priority_large",
-		template = "high_priority", 
-		style = ECV_Queue | ECV_Title,
-	},	
 }
 
 function AGS_Treaty_ShowTimer(minutes_remaining)
@@ -34,7 +31,8 @@ function AGS_Treaty_ShowTimer(minutes_remaining)
 	local uiColour = Player_GetUIColour(Game_GetLocalPlayer())
 	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:232", minutes_remaining)			
 	cue.sfx = AGS_TREATY_EVENTCUE.sfx_treaty_timer_first
-	Rule_AddOneShot(AGS_Treaty_CreateEventCue, 0, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})	
+	Rule_AddOneShot(AGS_Treaty_CreateEventCue, 0, 
+		{ title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})	
 end
 
 function AGS_Treaty_EndTimer()
@@ -42,23 +40,8 @@ function AGS_Treaty_EndTimer()
 	local uiColour = Player_GetUIColour(Game_GetLocalPlayer())
 	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:233")			
 	cue.sfx = AGS_TREATY_EVENTCUE.sfx_treaty_timer_final
-	Rule_AddOneShot(AGS_Treaty_CreateEventCue, 0, { title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})	
-end
--- Event cue function to support delayed events
-function AGS_Treaty_CreateEventCue(context, data)
-	
-	-- If event should play in event queue and center screen notification (note: uses high priority icons by default)
-	if data.highPriority then
-		
-		UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", "icons\\event_queue_high_priority", data.sfx, data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Queue, nothing)
-		UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", "icons\\event_queue_high_priority_large", "", data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Title, nothing)
-	
-	-- If event should only play in event queue (note: uses either high priority icon or if not path is specified, the objective arrow icon)
-	else
-		
-		UI_CreateEventCueClickable(-1, 10.0, 0, 20.0, data.title, Loc_Empty(), "event_with_player_color", data.queue_icon, data.sfx, data.uiColour.r, data.uiColour.g, data.uiColour.b, data.uiColour.a, ECV_Queue, nothing)
-		
-	end	
+	Rule_AddOneShot(AGS_Treaty_CreateEventCue, 0, 
+		{ title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})	
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -68,18 +51,58 @@ end
 Core_RegisterModule(AGS_TREATY_MODULE)	
 
 function AGS_Treaty_UpdateModuleSettings()
+	AGS_Print("AGS_Treaty_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.Treaty == 0 then
 		Core_UnregisterModule(AGS_TREATY_MODULE)
 	end
+	AGS_TREATY_TIMER = AGS_GLOBAL_SETTINGS.Treaty * 60
 end
 
-function AGS_Treaty_Start()
-	AGS_Treaty_Create(AGS_GLOBAL_SETTINGS.Treaty)
+function AGS_Treaty_OnPlay()
+	AGS_Print("AGS_Treaty_OnPlay")
+	AGS_Treaty_InitializePeacetime()
+	Rule_AddInterval(AGS_Treaty_OnTimerTick, AGS_TREATY_TIMER_TICK)
+	AGS_Score_CreateObjective()
+	AGS_Score_UpdateObjective()
+end
+
+function AGS_Treaty_OnGameOver()
+	AGS_Print("AGS_Treaty_OnGameOver")
+	AGS_Treaty_InitializePeacetime()
+	Rule_AddInterval(AGS_Treaty_OnTimerTick, AGS_TREATY_TIMER_TICK)
+	AGS_Score_CreateObjective()
+	AGS_Score_UpdateObjective()
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_Treaty_InitializePeacetime()
+	
+end
+
+function AGS_Score_CreateObjective()
+	AGS_TREATY_OBJECTIVE = AGS_Objectives_Create(AGS_OBJECTIVES_TREATY, AGS_GS_LOCAL_PLAYER)
+	AGS_Objectives_Set(AGS_TREATY_OBJECTIVE, OS_Incomplete, true, true, COUNTER_TimerDecreasing)
+end
+
+function AGS_Treaty_UpdateObjective()
+	AGS_Objectives_Progress(
+		AGS_TREATY_OBJECTIVE, 
+		nil,
+		nil,
+		nil,
+		Timer_GetRemaining(AGS_TREATY_TIMER)
+	)
+end
+
+function AGS_Score_RemoveObjective()
+	AGS_Objectives_Set(AGS_TREATY_OBJECTIVE, nil, false)
+end
+
+
+
 
 function AGS_Treaty_Create(treaty_duration)
 	-- Start tracking time.

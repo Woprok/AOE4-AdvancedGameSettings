@@ -8,10 +8,7 @@
 ---------------------------------------------------------------------------------------------------
 AGS_EVENT_CUE_DELAY = 2.0
 
-
-
-
-AGS_OBJECTIVE_RELIGIOUS = {
+AGS_OBJECTIVES_RELIGIOUS = {
 	reason = AGS_WR_RELIGIOUS,
 	-- "Control all Holy Sites"
 	title = 11169980, 
@@ -29,7 +26,7 @@ AGS_OBJECTIVE_RELIGIOUS = {
 	telemetry = "religiousObj",
 	alert = "icons\\event_queue_high_priority_large",
 }
-AGS_OBJECTIVE_RELIGIOUS_SITES = {
+AGS_OBJECTIVES_RELIGIOUS_SITES = {
 	reason = AGS_WR_RELIGIOUS,
 	-- "Site %1NUMBER%"
 	title = 11184017, 
@@ -42,77 +39,6 @@ AGS_OBJECTIVE_RELIGIOUS_SITES = {
 	telemetry = "holySiteObj",
 	alert = "icons\\event_queue_high_priority_large",
 }
-AGS_OBJECTIVE_WONDER_BUILD = {
-	reason = WR_WONDER,
-	-- "Build a Wonder"
-	title = "$11159068", 
-	description = Loc_Empty(),
-	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
-	data_template = "WonderObjectiveTemplate",
-	data_template_secondary = "WonderOrObjectiveTemplate",
-	priority = OT_Primary,
-	parent = 0,
-	telemetry = "wonderObj",
-	alert = "icons\\event_queue_high_priority_large",
-}
-AGS_OBJECTIVE_WONDER_SELF = {
-	reason = WR_WONDER,
-	-- "Defend your Wonder"
-	title = "$11159071", 
-	description = Loc_Empty(),
-	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
-	data_template = "WonderObjectiveTemplate",
-	data_template_secondary = "WonderObjectiveTemplate",
-	priority = OT_Primary,
-	parent = 0,
-	telemetry = "defendWonderObj",
-	alert = "icons\\event_queue_high_priority_large",
-}
-AGS_OBJECTIVE_WONDER_TEAM = {
-	reason = WR_WONDER,
-	-- "Defend %1PLAYER_NAME%'s Wonder"	
-	title = 11159070, 
-	description = Loc_Empty(),
-	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
-	data_template = "WonderObjectiveTemplate",
-	data_template_secondary = "WonderObjectiveTemplate",
-	priority = OT_Primary,
-	parent = 0,
-	telemetry = "defendWonderObj",
-	alert = "icons\\event_queue_high_priority_large",
-}
-AGS_OBJECTIVE_WONDER_ENEMY = {
-	reason = WR_WONDER,
-	-- "Destroy %1PLAYER_NAME%'s Wonder"
-	title = 11159069, 
-	description = Loc_Empty(),
-	icon = "icons/objectives/objectives_warning_small",
-	data_template = "WonderObjectiveTemplate",
-	data_template_secondary = "WonderObjectiveTemplate",
-	priority = OT_Primary,
-	parent = 0,
-	telemetry = "destroyWonderObj",
-	alert = "icons\\event_queue_high_priority_large",
-}
-
-
-
--- "Enemy attacking Wonder"
-AGS_CUE_TITLE_WONDER_A_SELF_ID = 11198265
--- "Enemy attacking %1PLAYER_NAME%'s Wonder"
-AGS_CUE_TITLE_WONDER_A_TEAM_ID = 11198637
-
--- "%1PLAYER_NAME% is building a Wonder"
-AGS_CUE_TITLE_WONDER_BUILD_ALLY_ID = 11159074
--- "%1PLAYER_NAME% is building a Wonder"
-AGS_CUE_TITLE_WONDER_BUILD_ENEMY_ID = 11159074
-
--- "Defend your Wonder"
-AGS_CUE_TITLE_WONDER_SELF_ID = 11159071
--- "Defend %1PLAYER_NAME%'s Wonder"
-AGS_CUE_TITLE_WONDER_TEAM_ID = 11159070
--- "Destroy %1PLAYER_NAME%'s Wonder"
-AGS_CUE_TITLE_WONDER_ENEMY_ID = 11159069
 
 ---------------------------------------------------------------------------------------------------
 -- Helpers:
@@ -120,27 +46,9 @@ AGS_CUE_TITLE_WONDER_ENEMY_ID = 11159069
 
 
 
-
-
-
-function AGS_SetObjectivePopUp(objective_id, objective_data)
-	-- Show big popup about this objective.
-	if objective_data ~= nil then
-		Obj_CreatePopup(objective_id, objective_data.title)
-	end
-end
-
-
-
-
-
 ---------------------------------------------------------------------------------------------------
 -- Visuals:
 ---------------------------------------------------------------------------------------------------
-
-
 function AGS_FormatText(title_id, player_name)
 	return Loc_FormatText(title_id, player_name)
 end
-
-
