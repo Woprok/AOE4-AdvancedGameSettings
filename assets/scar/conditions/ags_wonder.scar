@@ -339,8 +339,11 @@ function AGS_Wonder_WarnEveryone(owner, objective, relation, objective_template)
 end
 
 function AGS_Wonder_StartCountdown(owner)	
-	AGS_Objectives_Present(AGS_WONDER_OBJECTIVE, OS_Complete, AGS_OBJECTIVES_WONDER.title)
-	AGS_Wonder_RemoveBuildObjective()
+	-- Owner will have popup for completing objective.
+	if AGS_GS_LOCAL_PLAYER == owner then
+		AGS_Objectives_Present(AGS_WONDER_OBJECTIVE, OS_Complete, AGS_OBJECTIVES_WONDER.title)
+		AGS_Wonder_RemoveBuildObjective()
+	end
 	AGS_Wonder_CreateTimerObjective(owner)			
 	AGS_Wonder_CreateTimerNotifications(owner)
 	-- Start timer for everyone
@@ -365,7 +368,7 @@ function AGS_Wonder_ResetTimerObjective(player)
 	end
 	-- Finish objective for everyone.
 	AGS_Wonder_InformNegativeProgressChange(player)
-	-- Local player show build again without popup.
+	-- Local player show build again with automatic popup for objective.
 	if AGS_GS_LOCAL_PLAYER == player and not AGS_GLOBAL_SETTINGS.WonderSettings.LastStand then
 		AGS_Wonder_CreateBuildObjective()
 	end

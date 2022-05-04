@@ -521,24 +521,24 @@ function AGS_GlobalSettings_SetWonderTimer(wonder_timer)
 end
 
 function AGS_GlobalSettings_SetWonderScaleCost(scale_cost)
-	if scale_cost.enum_value == scale_cost.enum_items.scale_cost_disabled then
-		AGS_GLOBAL_SETTINGS.ScaleCost = AGS_GS_WONDER_SCALE_COST_DISABLED
-	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_0 then
-		AGS_GLOBAL_SETTINGS.ScaleCost = 0
-	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_250 then
-		AGS_GLOBAL_SETTINGS.ScaleCost = 250
-	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_375 then
-		AGS_GLOBAL_SETTINGS.ScaleCost = 375
-	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_500 then
-		AGS_GLOBAL_SETTINGS.ScaleCost = 500
-	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_750 then
-		AGS_GLOBAL_SETTINGS.ScaleCost = 750
-	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_1000 then
-		AGS_GLOBAL_SETTINGS.ScaleCost = 1000
-	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_1500 then
-		AGS_GLOBAL_SETTINGS.ScaleCost = 1500
-	elseif scale_cost.enum_value == scale_cost.enum_items.scale_cost_2000 then
-		AGS_GLOBAL_SETTINGS.ScaleCost = 2000
+	if scale_cost.enum_value == scale_cost.enum_items.wonder_scale_cost_disabled then
+		AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost = AGS_GS_WONDER_SCALE_COST_DISABLED
+	elseif scale_cost.enum_value == scale_cost.enum_items.wonder_scale_cost_0 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost = 0
+	elseif scale_cost.enum_value == scale_cost.enum_items.wonder_scale_cost_250 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost = 250
+	elseif scale_cost.enum_value == scale_cost.enum_items.wonder_scale_cost_375 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost = 375
+	elseif scale_cost.enum_value == scale_cost.enum_items.wonder_scale_cost_500 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost = 500
+	elseif scale_cost.enum_value == scale_cost.enum_items.wonder_scale_cost_750 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost = 750
+	elseif scale_cost.enum_value == scale_cost.enum_items.wonder_scale_cost_1000 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost = 1000
+	elseif scale_cost.enum_value == scale_cost.enum_items.wonder_scale_cost_1500 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost = 1500
+	elseif scale_cost.enum_value == scale_cost.enum_items.wonder_scale_cost_2000 then
+		AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost = 2000
 	end
 end
 

@@ -1,0 +1,82 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Wonder win condition.
+-- The classic 'wonder' win condition in which the player wins by building a wonder and defending it for some time.
+---------------------------------------------------------------------------------------------------
+
+AGS_WONDER_SCALE_COST_MODULE = "AGS_WonderScaleCost"
+AGS_WONDER_SCALE_COST_MODIFIERS = { }
+-- Base value that is used for math. It has to substract current value from desired value.
+AGS_WONDER_SCALE_COST_RESOURCES_TOTAL = 12000 - 24000 
+AGS_WONDER_SCALE_COST_RESOURCES_COUNT = 4
+AGS_WONDER_SCALE_COST_RESOURCE_COUNT = {
+	english = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
+	chinese = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
+	french = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
+	hre = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
+	rus = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
+	mongol = { total = 3, food = 1, wood = 1, gold = 1, stone = 0},
+	abbasid = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
+	sultanate = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
+}
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+Core_RegisterModule(AGS_WONDER_SCALE_COST_MODULE)	
+
+function AGS_WonderScaleCost_UpdateModuleSettings()
+	AGS_Print("AGS_WonderScaleCost_UpdateModuleSettings")
+	if AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost == AGS_GS_WONDER_SCALE_COST_DISABLED then
+		Core_UnregisterModule(AGS_WONDER_SCALE_COST_MODULE)
+	end
+end
+
+function AGS_WonderScaleCost_PresetFinalize()	
+	AGS_Print("AGS_WonderScaleCost_PresetFinalize")
+	AGS_WonderScaleCost_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_WONDER))	
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_WonderScaleCost_CalculateCost(player, player_count)
+	local civ_wonder_type = AGS_WONDER_SCALE_COST_RESOURCE_COUNT[player.raceName]
+	-- This will calculate inflation value for single player.
+	local one_player_inflation = AGS_WONDER_SCALE_COST_RESOURCES_COUNT * AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost
+	-- Each player adds this inflation value
+	local total_cost = AGS_WONDER_SCALE_COST_RESOURCES_TOTAL + one_player_inflation * player_count
+	-- This will split the cost to resources.
+	local per_resource = total_cost / civ_wonder_type.total
+	return {
+		per_resource * civ_wonder_type.food,
+		per_resource * civ_wonder_type.wood,
+		per_resource * civ_wonder_type.gold,
+		per_resource * civ_wonder_type.stone,
+	}
+end
+
+function AGS_WonderScaleCost_ApplyGameRates(bps)
+	for _, ebp in pairs(bps) do 
+		if AGS_WONDER_SCALE_COST_MODIFIERS[ebp.PropertyBagGroupID] == nil then
+			AGS_WONDER_SCALE_COST_MODIFIERS[ebp.PropertyBagGroupID] = true
+			for _, player in pairs(PLAYERS) do	
+				local cost_change = AGS_WonderScaleCost_CalculateCost(player, #PLAYERS)
+				AGS_WonderScaleCost_ApplyModifier(player.id, ebp, "resource_entity_cost_food", cost_change[1])
+				AGS_WonderScaleCost_ApplyModifier(player.id, ebp, "resource_entity_cost_wood", cost_change[2])
+				AGS_WonderScaleCost_ApplyModifier(player.id, ebp, "resource_entity_cost_gold", cost_change[3])
+				AGS_WonderScaleCost_ApplyModifier(player.id, ebp, "resource_entity_cost_stone", cost_change[4])
+			end
+		end
+	end
+end
+
+-- Apply function.
+function AGS_WonderScaleCost_ApplyModifier(player_id, modifier_ebp, modifier_type, modifier_value)
+	Modifier_ApplyToPlayer(Modifier_Create(MAT_EntityType, modifier_type, MUT_Addition, false, modifier_value, modifier_ebp), player_id, 0.0)
+end	
