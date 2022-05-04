@@ -15,7 +15,15 @@ AGS_WONDER_FOW_REVEAL_RADIUS = 12
 AGS_WONDER_VICTORY_TIMER = 15 * 60
 AGS_WONDER_CHECK_FREQUENCY = 1.0
 AGS_WONDER_RUSH = false
-AGS_WONDER_WINNER = nil
+-- This is kinda hack that enables to properly show winner objective based on local context.
+AGS_WONDER_WINNER = {
+	AGS_Wonder ={	
+		-- It has to contain default in case last stand wonder eliminates last opponent.
+		-- "Wonderstruck"
+		objective_success_title = "$11197536",
+		objective_success_param = nil,
+	},
+}
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -184,7 +192,7 @@ function AGS_Wonder_OnEntityKilled(context)
 	local player = Core_GetPlayersTableEntry(context.victimOwner)	
 	local entity_uwid = Entity_GetID(context.victim)	
 	-- Owner must always have this wonder registered as main for us to do anything with it ?
-	if owner.AGS_Wonder.entity_uwid ~= entity_uwid then
+	if player.AGS_Wonder.entity_uwid ~= entity_uwid then
 		return
 	end
 	
@@ -276,12 +284,12 @@ function AGS_Wonder_CreateTimerObjective(owner)
 		owner.AGS_Wonder.objective_success_title = objective_template.title
 		owner.AGS_Wonder.objective_success_param = owner.playerName		
 	end
-	AGS_Wonder_WarnEveryone(owner.AGS_Wonder.objective, relation, objective_template)
+	AGS_Wonder_WarnEveryone(owner, owner.AGS_Wonder.objective, relation, objective_template)
 	AGS_Objectives_Set(owner.AGS_Wonder.objective, OS_Incomplete, true, nil, COUNTER_TimerDecreasing)
 end
 function AGS_Wonder_UpdateTimerObjectives()
 	for _, player in pairs(PLAYERS) do
-		if not player.isEliminated and player.AGS_Wonder.is_alive and Timer_Exists(owner.AGS_Wonder.objective_timer) then
+		if not player.isEliminated and player.AGS_Wonder.is_alive and Timer_Exists(player.AGS_Wonder.objective_timer) then
 			AGS_Wonder_UpdateWonderTimer(player)
 			AGS_Wonder_TimerProgressNotification(player)
 		end
@@ -290,8 +298,8 @@ end
 
 function AGS_Wonder_UpdateWonderTimer(player)
 	-- "wonder_timer" is set across all peers, including those already defeated.
-	local remaining = Timer_GetRemaining(owner.AGS_Wonder.objective_timer)
-	AGS_Objectives_Progress(owner.AGS_Wonder.objective, nil, nil, nil, remaining)
+	local remaining = Timer_GetRemaining(player.AGS_Wonder.objective_timer)
+	AGS_Objectives_Progress(player.AGS_Wonder.objective, nil, nil, nil, remaining)
 	Player_SetStateModelFloat(player.id, "wonder_timer", remaining)	
 end
 
@@ -321,7 +329,7 @@ function AGS_Wonder_FailTimerObjective(owner)
 	AGS_Wonder_ResetTimerObjective(owner)
 end
 
-function AGS_Wonder_WarnEveryone(objective, relation, objective_template)
+function AGS_Wonder_WarnEveryone(owner, objective, relation, objective_template)
 	local title_param = nil
 	if relation ~= AGS_SAE_SELF then
 		title_param =  owner.playerName		
@@ -330,7 +338,9 @@ function AGS_Wonder_WarnEveryone(objective, relation, objective_template)
 	Sound_Play2D(objective_template.music)
 end
 
-function AGS_Wonder_StartCountdown(owner)
+function AGS_Wonder_StartCountdown(owner)	
+	AGS_Objectives_Present(AGS_WONDER_OBJECTIVE, OS_Complete, AGS_OBJECTIVES_WONDER.title)
+	AGS_Wonder_RemoveBuildObjective()
 	AGS_Wonder_CreateTimerObjective(owner)			
 	AGS_Wonder_CreateTimerNotifications(owner)
 	-- Start timer for everyone
@@ -356,7 +366,7 @@ function AGS_Wonder_ResetTimerObjective(player)
 	-- Finish objective for everyone.
 	AGS_Wonder_InformNegativeProgressChange(player)
 	-- Local player show build again without popup.
-	if AGS_GS_LOCAL_PLAYER == player then
+	if AGS_GS_LOCAL_PLAYER == player and not AGS_GLOBAL_SETTINGS.WonderSettings.LastStand then
 		AGS_Wonder_CreateBuildObjective()
 	end
 end
@@ -387,11 +397,11 @@ function AGS_Wonder_VictoryTriggered(winner)
 	AGS_WONDER_WINNER = winner
 	
 	-- Eliminate all players that are not in his valid team.
-	for _, enemies in pairs(AGS_Teams_GetAllCurrentOpponents(winner.id)) do
+	for _, enemies in pairs(AGS_Teams_GetAllCurrentOpponents(winner)) do
 		AGS_SetPlayerDefeated(
 			enemies.id, 
 			AGS_Presentations_LossWonder, 
-			AGS_WR_Wonder,
+			AGS_WR_WONDER,
 			AGS_Objectives_PresentWrap(
 				winner.AGS_Wonder.objective, 
 				OS_Failed, 
@@ -407,9 +417,9 @@ function AGS_Wonder_InformNegativeProgressChange(owner)
 	local title = nil
 	local title_param = nil
 	
-	if AGS_GS_LOCAL_PLAYER == AGS_SAE_SELF then
+	if relation == AGS_SAE_SELF then
 		title = AGS_OBJECTIVES_WONDER_SELF.title
-	elseif AGS_GS_LOCAL_PLAYER == AGS_SAE_ALLY then	
+	elseif relation == AGS_SAE_ALLY then	
 		title = AGS_OBJECTIVES_WONDER_ALLY.title
 		title_param = owner.playerName
 	else
@@ -427,7 +437,7 @@ function AGS_Wonder_Destroyed(owner)
 		AGS_SetPlayerDefeated(
 			owner.id, 
 			AGS_Presentations_LossWonder, 
-			AGS_WR_Wonder,
+			AGS_WR_WONDER,
 			AGS_Objectives_PresentWrap(
 				owner.AGS_Wonder.objective, 
 				OS_Failed, 
@@ -448,49 +458,16 @@ function AGS_Wonder_TimerUpdate()
 	end
 	AGS_Wonder_UpdateTimerObjectives()
 end
-
-
-
-function AGS_Wonder_WinnerPresentation(player_id)
-	-- TODO SET ENDGAME STATE SHOULD USE SAME OBJECTIVE AS THE ONE IN THE OBJECTIVE BUILT WAS USED
-end
-
-function AGS_Wonder_LoserPresenation(player_id)
-	-- TODO SET ENDGAME STATE SHOULD USE SAME OBJECTIVE AS THE ONE IN THE OBJECTIVE BUILT WAS USED
-end
-
--- Check if there is single remaining allied group.
--- Finished Wonder will eliminate each player, this will fire multiple times.
--- Last time it fires should mean that all players who are not allied with owner are eliminated.
--- In case of wonder rush this is fired also for player allies being eliminated.
--- TODO
-function AGS_Wonder_CheckVictory()
-	if not AGS_WONDER_ACTIVE_CHECKS then
-		return
-	end
-	
-	local winners = AGS_DoesWinnerGroupExists()
-	if winners == nil then
-		return
-	end
-	
-	for _, winner_id in pairs(winners) do 
-		AGS_SetPlayerVictorious(winner_id, AGS_Wonder_WinnerPresentation, AGS_WR_WONDER)
-	end
-	
-	AGS_EndGame()
-end
-
 	
 function AGS_Wonder_TimerProgressNotification(player)
 	local is_outcome_positive = AGS_Teams_IsTeamVictoryEligible(player)
 	
-	for i = 1, #wonder.notifications do
+	for i = 1, #player.AGS_Wonder.notifications do
 		-- If threshold notification has not been triggered AND timer is in threshold window
-		if not wonder.countdown_notifications[i].triggered and 
-			wonder.countdown_notifications[i].time >= Timer_GetRemaining(player.AGS_Wonder.objective_timer) then 
+		if not player.AGS_Wonder.notifications[i].triggered and 
+			AGS_NOTIFICATIONS_COUNTDOWN[i].time >= Timer_GetRemaining(player.AGS_Wonder.objective_timer) then 
 			-- Mark as triggered.
-			wonder.countdown_notifications[i].triggered = true
+			player.AGS_Wonder.notifications[i].triggered = true
 			
 			AGS_Notification_CountdownNotification(player, i, AGS_NOTIFICATIONS_WONDER_COUNTDOWN, is_outcome_positive)
 		end

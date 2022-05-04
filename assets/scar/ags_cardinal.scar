@@ -94,7 +94,7 @@ import("conditions/ags_conquest.scar")
 import("conditions/ags_wonder.scar") 
 import("conditions/ags_regicide.scar") 
 --import("conditions/ags_score.scar") 
-import("conditions/ags_teamsolidarity.scar") 
+import("conditions/ags_team_solidarity.scar") 
 
 
 -- AGS supports AI with few adjustments.

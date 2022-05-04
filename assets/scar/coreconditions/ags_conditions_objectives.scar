@@ -186,6 +186,9 @@ function AGS_Objectives_CreateFromCore(core, template)
 	if template.telemetry ~= nil then
 		new_objective.telemetry = template.telemetry
 	end	
+	if template.music ~= nil then
+		new_objective.music = template.music
+	end	
 	return new_objective
 end
 

@@ -259,11 +259,11 @@ function AGS_Notifications_ObjectiveAction(player, notification)
 	if owner_relation == AGS_SAE_SELF then
 		title = Loc_FormatText(notification.self_action)
 	elseif owner_relation == AGS_SAE_ALLY then
-		title = Loc_FormatText(notification.ally_action, owner.playerName)
+		title = Loc_FormatText(notification.ally_action, player.playerName)
 		sfx = notification.ally_action_sfx
 		priority = AGS_NP_HIGH
 	else
-		title = Loc_FormatText(notification.enemy_action, owner.playerName)	
+		title = Loc_FormatText(notification.enemy_action, player.playerName)	
 		sfx = notification.enemy_action_sfx
 		priority = AGS_NP_MAX	
 	end
