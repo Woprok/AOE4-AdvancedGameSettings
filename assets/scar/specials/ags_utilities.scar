@@ -98,14 +98,15 @@ function Conquest_UpdatePlayerStats(player, scarModel)
 end
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Wonder_UpdatePlayerStats(player, scarModel)	
-	if not player.isEliminated and player._wonder.entity_id ~= nil and Entity_IsValid(player._wonder.entity_id) then 
-		if Timer_Exists(player._wonder.timer_victory_deterministic) then 
-			scarModel.Wonder_Target = _wonder.time_victory 								-- in sec
-			scarModel.Wonder_Current = Timer_GetRemaining(player._wonder.timer_victory_deterministic) -- in sec	
+	if not player.isEliminated and player.AGS_Wonder.entity_uwid ~= nil then 
+		if player.AGS_Wonder.is_alive and Timer_Exists(player.AGS_Wonder.objective_timer) then 
+			scarModel.Wonder_Target = AGS_WONDER_VICTORY_TIMER 								
+			scarModel.Wonder_Current = Timer_GetRemaining(player.AGS_Wonder.objective_timer) 	
 			return
-		elseif Entity_GetBuildingProgress(Entity_FromID(player._wonder.entity_id)) < 1.0 then
-			scarModel.Wonder_Target = _wonder.time_victory 	-- in sec
-			scarModel.Wonder_Current = 0 					-- in sec	0 : under construction
+		elseif Entity_GetBuildingProgress(player.AGS_Wonder.entity_uwid) < 1.0 then
+			scarModel.Wonder_Target = AGS_WONDER_VICTORY_TIMER 	
+			-- 0 : under construction
+			scarModel.Wonder_Current = 0 					
 			return
 		end
 	end
