@@ -101,7 +101,6 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Entity destroyed for all non-landmarks, but maybe one day this might fire for landmarks.
 function AGS_Conquest_OnEntityKilled(context)
-	AGS_Print(context)
 	if context.victimOwner == nil or context.victim == nil then
 		return
 	end

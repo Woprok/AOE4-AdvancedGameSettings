@@ -146,52 +146,52 @@
 145,,,,,,Changes initial population capacity without houses. Will not exceed maximum population capacity.
 146,,,,,,Max Population Capacity
 147,,,,,,Changes maximum population capacity. Requires houses to reach it.
-148,,,,,,0
-149,,,,,,25
-150,,,,,,50
-151,,,,,,75
-152,,,,,,100
-153,,,,,,125
-154,,,,,,150
-155,,,,,,175
-156,,,,,,200
-157,,,,,,225
-158,,,,,,250
-159,,,,,,275
-160,,,,,,300
-161,,,,,,350
-162,,,,,,400
-163,,,,,,450
-164,,,,,,500
-165,,,,,,550
-166,,,,,,600
-167,,,,,,650
-168,,,,,,700
-169,,,,,,750
-170,,,,,,800
-171,,,,,,850
-172,,,,,,900
-173,,,,,,950
-174,,,,,,1000
-175,,,,,,10000
+148,,,,Number,,0
+149,,,,Number,,25
+150,,,,Number,,50
+151,,,,Number,,75
+152,,,,Number,,100
+153,,,,Number,,125
+154,,,,Number,,150
+155,,,,Number,,175
+156,,,,Number,,200
+157,,,,Number,,225
+158,,,,Number,,250
+159,,,,Number,,275
+160,,,,Number,,300
+161,,,,Number,,350
+162,,,,Number,,400
+163,,,,Number,,450
+164,,,,Number,,500
+165,,,,Number,,550
+166,,,,Number,,600
+167,,,,Number,,650
+168,,,,Number,,700
+169,,,,Number,,750
+170,,,,Number,,800
+171,,,,Number,,850
+172,,,,Number,,900
+173,,,,Number,,950
+174,,,,Number,,1000
+175,,,,Number,,10000
 176,,,,,,Starting Villagers
 177,,,,,,Changes initial villager count for each player
-178,,,,,,1
-179,,,,,,2
-180,,,,,,3
-181,,,,,,4
-182,,,,,,5
-183,,,,,,6
-184,,,,,,7
-185,,,,,,8
-186,,,,,,9
-187,,,,,,10
-188,,,,,,15
-189,,,,,,20
-190,,,,,,30
-191,,,,,,35
-192,,,,,,40
-193,,,,,,45
+178,,,,Number,,1
+179,,,,Number,,2
+180,,,,Number,,3
+181,,,,Number,,4
+182,,,,Number,,5
+183,,,,Number,,6
+184,,,,Number,,7
+185,,,,Number,,8
+186,,,,Number,,9
+187,,,,Number,,10
+188,,,,Number,,15
+189,,,,Number,,20
+190,,,,Number,,30
+191,,,,Number,,35
+192,,,,Number,,40
+193,,,,Number,,45
 194,,,,,,Starting Keep
 195,,,,,,Every players starts with a Keep near start
 196,,,,,,Legacy Settings
@@ -207,22 +207,22 @@
 206,,,,,,Changes game simulation ticks. This option can not be used in multiplayer and will be disabled.
 207,,,,,,Game Rates
 208,,,,,,"Multiplies all of the following gathering rates, construction speed, repair rate and production speed by selected value."
-209,,,,,,1x
-210,,,,,,2x
-211,,,,,,3x
-212,,,,,,4x
-213,,,,,,5x
-214,,,,,,6x
-215,,,,,,7x
-216,,,,,,8x
-217,,,,,,9x
-218,,,,,,10x
-219,,,,,,0.95x
-220,,,,,,0.90x
-221,,,,,,0.85x
-222,,,,,,0.80x
-223,,,,,,0.75x
-224,,,,,,20x
+209,,,,Number,,1x
+210,,,,Number,,2x
+211,,,,Number,,3x
+212,,,,Number,,4x
+213,,,,Number,,5x
+214,,,,Number,,6x
+215,,,,Number,,7x
+216,,,,Number,,8x
+217,,,,Number,,9x
+218,,,,Number,,10x
+219,,,,Number,,0.95x
+220,,,,Number,,0.90x
+221,,,,Number,,0.85x
+222,,,,Number,,0.80x
+223,,,,Number,,0.75x
+224,,,,Number,,20x
 225,,,,,,Town Center Restrictions
 226,,,,,,Disables construction of additional Town Centers
 227,,,,,,None
@@ -252,55 +252,59 @@
 251,,,extra_text,,,Medium
 252,,,help_text,,,Fight until the bitter end.
 253,,,extra_text,,,Prevail until the end.
-254,,,help_text,,,"Monarch is subject to no earthly authority, deriving his right to rule directly from the will of God. Just don't question him!"
-255,,,screen_name,,,King
+254,,,help_text,"Regicide King Unit, Requires Attributes",,"Monarch is subject to no earthly authority, deriving his right to rule directly from the will of God. Just don't question him!"
+255,,,screen_name,"Regicide King Unit, Requires Attributes",,King
 256,,,,,,Fortified
-257,,,ags_conditions_objectives,,,Failed to protect %1PLAYER_NAME%.
-258,,,ags_conditions_objectives,,,All other teams crumbled.
-259,,,ags_conditions_objectives,,,Annihilate everything.
-260,,,,,,Enable AI Takeovers
-261,,,,,,"Players that quit will be replaced by AI, instead of being eliminated."
-262,,,ags_conditions_objectives,,,Truly a king of everyone you are.
-263,,,ags_conditions_objectives,,,Failed to protect the king.
-264,,,ags_conditions_notifications,,,%1PLAYER_NAME% assassinated
-265,,,ags_conditions_objectives,,,Enemy attacking %1PLAYER_NAME%'s king
-266,,,ags_conditions_notifications,,,King under attack
+257,,,ags_conditions_objectives,Team Solidarity,,Failed to protect %1PLAYER_NAME%.
+258,,,ags_conditions_objectives,Team Solidarity,,All other teams crumbled.
+259,,,ags_conditions_objectives,Annihilation,,Annihilate everything.
+260,,,,AI Takeover,,Enable AI Takeovers
+261,,,,AI Takeover,,"Players that quit will be replaced by AI, instead of being eliminated."
+262,,,ags_conditions_objectives,Regicide,,Truly a king of everyone you are.
+263,,,ags_conditions_objectives,Regicide,,Failed to protect the king.
+264,,,ags_conditions_notifications,Regicide,,%1PLAYER_NAME% assassinated
+265,,,ags_conditions_objectives,Regicide,,Enemy attacking %1PLAYER_NAME%'s king
+266,,,ags_conditions_notifications,Regicide,,King under attack
 267,,,ags_conditions_notifications,,,"""%1PLAYER_NAME% conquered"""
 268,,,ags_conditions_objectives,,,Your empire has been conquered.
 269,,,ags_conditions_objectives,,,Conquered all enemies.
-270,,,ags_conditions_objectives,,,Survive and outshine everyone.
-271,,,ags_conditions_objectives,,,Your empire was forgotten by the history.
-272,,,ags_conditions_objectives,,,Your Empire shines brightest.
+270,,,ags_conditions_objectives,Score,,Survive and outshine everyone.
+271,,,ags_conditions_objectives,Score,,Your empire was forgotten by the history.
+272,,,ags_conditions_objectives,Score,,Your Empire shines brightest.
 273,,,ags_conditions_notifications,,,Still waits %1PLAYER_NAME% for Godot.
-274,,,ags_conditions_notifications,,,%1PLAYER_NAME% couldn't withstand the glory of the wonder
-275,,,ags_conditions_notifications,,,Building a wonder
-276,,,ags_conditions_notifications,,,Destroyed Landmark
-277,,,ags_conditions_objectives,,,Failed to hold the wonder.
+274,,,ags_conditions_notifications,Wonder,,%1PLAYER_NAME% couldn't withstand the glory of the wonder
+275,,,ags_conditions_notifications,Wonder,,Building a wonder
+276,,,ags_conditions_notifications,Conquest,,Destroyed Landmark
+277,,,ags_conditions_objectives,Wonder,,Failed to hold the wonder.
 278,,,,,,Player Settings
-279,,,,,,Enforce Colors
-280,,,,,,"Fixes colors for diplomacy. This is not intended to serve as color picker. Causes automatic update of colors for each slot, whenever game causes conflicting change. Conflicting settings are automatically resolved."
-281,,,,,,Used by Enforce Colors to determine which color is used by this slot. Requires Enforce Colors to be allowed.
-282,,,,,,Blue
-283,,,,,,Red
-284,,,,,,Yellow
-285,,,,,,Green
-286,,,,,,Turquoise
-287,,,,,,Purple
-288,,,,,,Orange
-289,,,,,,Pink
-290,,,,,,Grey
-291,,,,,,Enforced Slot 1 Color
-292,,,,,,Enforced Slot 2 Color
-293,,,,,,Enforced Slot 3 Color
-294,,,,,,Enforced Slot 4 Color
-295,,,,,,Enforced Slot 5 Color
-296,,,,,,Enforced Slot 6 Color
-297,,,,,,Enforced Slot 7 Color
-298,,,,,,Enforced Slot 8 Color
+279,,,,Colors,,Enforce Colors
+280,,,,Colors,,"Fixes colors for diplomacy. This is not intended to serve as color picker. Causes automatic update of colors for each slot, whenever game causes conflicting change. Conflicting settings are automatically resolved."
+281,,,,Colors,,Used by Enforce Colors to determine which color is used by this slot. Requires Enforce Colors to be allowed.
+282,,,,Colors,,Blue
+283,,,,Colors,,Red
+284,,,,Colors,,Yellow
+285,,,,Colors,,Green
+286,,,,Colors,,Turquoise
+287,,,,Colors,,Purple
+288,,,,Colors,,Orange
+289,,,,Colors,,Pink
+290,,,,Colors,,Grey
+291,,,,Colors,,Enforced Slot 1 Color
+292,,,,Colors,,Enforced Slot 2 Color
+293,,,,Colors,,Enforced Slot 3 Color
+294,,,,Colors,,Enforced Slot 4 Color
+295,,,,Colors,,Enforced Slot 5 Color
+296,,,,Colors,,Enforced Slot 6 Color
+297,,,,Colors,,Enforced Slot 7 Color
+298,,,,Colors,,Enforced Slot 8 Color
 299,,,,,,Unit Rates
 300,,,,,,Multiplies unit movement maximum speed by selected value.
-301,,,,,,1.05x
-302,,,,,,1.10x
-303,,,,,,1.15x
-304,,,,,,1.20x
-305,,,,,,1.25x
+301,,,,Number,,1.05x
+302,,,,Number,,1.10x
+303,,,,Number,,1.15x
+304,,,,Number,,1.20x
+305,,,,Number,,1.25x
+306,,,,Treaty,,1 minute until Treaty Ends
+307,,,ags_conditions_objectives,Treaty,,Prepare for the war.
+308,,,ags_conditions_objectives,Treaty,,This was not supposed to happen.
+309,,,ags_conditions_objectives,Treaty,,Pen is truly strongest weapon in history.

@@ -50,18 +50,19 @@ function AGS_Wonder_OnPlay()
 	AGS_Wonder_EnableConstruction(AGS_WONDER_ACTIVE)
 	AGS_Wonder_CreateBuildObjective()
 	-- Timers and time checks are initialized last.
-	Rule_AddInterval(AGS_Wonder_TimerCheck, AGS_WONDER_CHECK_FREQUENCY)
+	Rule_AddInterval(AGS_Wonder_OnTimerTick, AGS_WONDER_CHECK_FREQUENCY)
 end
 
 function AGS_Wonder_TreatyStarted()
 	AGS_Print("AGS_Wonder_TreatyStarted")
-	AGS_WONDER_ACTIVE_CHECKS = false
+	-- Wonder rush is only time 
+	AGS_WONDER_ACTIVE = false or AGS_WONDER_RUSH
 	AGS_Wonder_EnableConstruction(AGS_WONDER_ACTIVE)
 end
 
 function AGS_Wonder_TreatyEnded()
 	AGS_Print("AGS_Wonder_TreatyEnded")
-	AGS_WONDER_ACTIVE_CHECKS = true
+	AGS_WONDER_ACTIVE = true or AGS_WONDER_RUSH
 	AGS_Wonder_EnableConstruction(AGS_WONDER_ACTIVE)
 end
 
@@ -83,7 +84,7 @@ function AGS_Wonder_OnGameOver()
 	AGS_Print("AGS_Wonder_OnGameOver")
 	-- Kill timers and time checks before everything else.
 	AGS_Wonder_DeactivateTimers()
-	Rule_Remove(AGS_Wonder_TimerCheck)
+	Rule_Remove(AGS_Wonder_OnTimerTick)
 	Rule_RemoveGlobalEvent(AGS_Wonder_OnConstructionStart)
 	Rule_RemoveGlobalEvent(AGS_Wonder_OnConstructionComplete)
 	Rule_RemoveGlobalEvent(AGS_Wonder_OnDamageReceived)
@@ -212,7 +213,7 @@ function AGS_Wonder_OnEntityKilled(context)
 end
 
 -- Determine if anything reached the end or call update.
-function AGS_Wonder_TimerCheck()
+function AGS_Wonder_OnTimerTick()
 	for _, player in pairs(PLAYERS) do
 		if player.AGS_Wonder.objective ~= nil and player.AGS_Wonder.is_alive 
 			and Timer_Exists(player.AGS_Wonder.objective_timer) and Timer_GetRemaining(player.AGS_Wonder.objective_timer) == 0 then
@@ -245,10 +246,10 @@ function AGS_Wonder_InitializeWonders()
 		}
 	end	
 end
--- Switches wonder for treaty and ensures its enabled if mode is wonder rush .
+-- Switches wonder for treaty on or off.
 function AGS_Wonder_EnableConstruction(is_enabled)
 	for _, player in pairs(PLAYERS) do
-		Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", is_enabled or AGS_WONDER_RUSH)	
+		Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", is_enabled)	
 	end
 end
 -- Stops all active timers.

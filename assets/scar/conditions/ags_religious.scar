@@ -24,46 +24,14 @@ AGS_RELIGIOUS_PROGRESS_MAX = 1.00
 AGS_RELIGIOUS_UPDATE_INTERVAL = 0.125 -- once per tick
 AGS_RELIGIOUS_VICTORY_TIMER = "capture_victory_timer"
 AGS_RELIGIOUS_NOTIFICATIONS = {
-	-- Points during countdown at which to display loss warning.
-	-- Arrange in decreasing order since music intensity increases when the last one triggers.
 		{ 
-			time = 3 * 60,
 			triggered = false,
-			sfx = "sfx_ui_victory_countdown_update_first",
-			music_intensity = MUSIC_TENSE,
-			music_intesity_param = -1,
-			music_special = nil,
-			-- "%1MINUTES_REMAINING% minutes until Religious Victory"
-			text_victory = 11195756,
-			-- "%1MINUTES_REMAINING% minutes until Religious Defeat"
-			text_defeat = 11195757,
-			text_param = 3,
 		},		
 		{ 
-			time = 2 * 60, 
 			triggered = false,
-			sfx = "sfx_ui_victory_countdown_update_second",
-			music_intensity = MUSIC_TENSE_COMBAT_RARE,	
-			music_intesity_param = -1,	
-			music_special = nil,
-			-- "%1MINUTES_REMAINING% minutes until Religious Victory"
-			text_victory = 11195756,
-			-- "%1MINUTES_REMAINING% minutes until Religious Defeat"
-			text_defeat = 11195757,
-			text_param = 2,
 		},
 		{ 
-			time = 1 * 60,
-			triggered = false,
-			sfx = "sfx_ui_victory_countdown_update_final",	
-			music_intensity = MUSIC_RARE,		
-			music_intesity_param = 1 * 60,
-			music_special = "mus_shared_victory_countdown_mix_event",				
-			-- "1 minute until Religious Victory"
-			text_victory = 11195758,
-			-- "1 minute until Religious Defeat"
-			text_defeat = 11195759,
-			text_param = 1,			
+			triggered = false,				
 		},
 }
 ---------------------------------------------------------------------------------------------------
@@ -350,22 +318,6 @@ AGS_SFX_RELIGIOUS_BEGIN_NEUTRALIZED_SELF = "sfx_ui_holy_site_neutralized_player_
 AGS_SFX_RELIGIOUS_BEGIN_NEUTRALIZED_ALLY = "sfx_ui_holy_site_neutralized_player_play"
 AGS_SFX_RELIGIOUS_BEGIN_NEUTRALIZED_ENEMY = "sfx_ui_holy_site_neutralized_enemy_play"
 
-AGS_CUE_RELIGIOUS_SITE_NOTIFICATIONS = {
-	eventType = -1,	
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	lifetime = 10.0,		
-	repeatCount = 0,
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	repeatTime = 20.0,		
-	title = Loc_Empty(),
-	desc = Loc_Empty(),
-	sfx = "sfx_ui_victory_countdown_update_first",
-	icon = "icons\\event_queue_high_priority",
-	icon_high_priority = "icons\\event_queue_high_priority_large",
-	template = "event_with_player_color", 
-	style = ECV_Queue | ECV_Title,
-}	
-
 function AGS_Religious_OnHolySiteChangeTypeContinue(instigating_player, site_entity_id, holy_site_progress, holy_site_pos)
 	for _, site in pairs(AGS_RELIGIOUS_SACRED_SITE_OBJECTIVES) do
 		if site.entity == site_entity_id then
@@ -650,22 +602,6 @@ function AGS_Religious_ProgressTimer()
 	AGS_Religious_UpdateObjective()
 end
 	
-AGS_CUE_RELIGIOUS_NOTIFICATIONS = {
-	eventType = -1,	
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	lifetime = 10.0,		
-	repeatCount = 0,
-	-- should match the defaults set in AE under tuning.ui.event_cues
-	repeatTime = 20.0,		
-	title = Loc_Empty(),
-	desc = Loc_Empty(),
-	sfx = "sfx_ui_victory_countdown_update_first",
-	icon = "icons\\event_queue_high_priority",
-	icon_high_priority = "icons\\event_queue_high_priority_large",
-	template = "event_with_player_color", 
-	style = ECV_Queue | ECV_Title,
-}	
-
 function AGS_Religious_TimerNotifications()
 	for _, notification in pairs(AGS_RELIGIOUS_NOTIFICATIONS) do
 		if not notification.triggered and 
@@ -695,7 +631,7 @@ function AGS_Religious_CreateNotification(notification)
 		end
 	end
 	
-	AGS_CreateCueComplex(AGS_CUE_RELIGIOUS_NOTIFICATIONS, high_priority, title, uiColour, sfx)
+	AGS_CreateCueComplex(COUNTDOWN_NOTIFICATION, high_priority, title, uiColour, sfx)
 end
 
 function AGS_Religious_TerminateTimer()

@@ -7,9 +7,8 @@
 -- Contains condition helpers for win and lose presentations.
 -- Presentation is showed after a few seconds delay.
 ---------------------------------------------------------------------------------------------------
---AGS_PRESENTATIONS_WAIT = 2.0
 -- Presentations are delayd by GAMEOVER_OBJECTIVE_TIME = 6.5, this will extend the delay.
-AGS_PRESENTATIONS_DELAY = 0.0
+AGS_PRESENTATIONS_DELAY = 0.5
 AGS_PRESENTATIONS_ICON = "icon"
 AGS_PRESENTATIONS_SOUND = "sound"
 AGS_PRESENTATIONS_DEFAULT_SUFFIX = "default"

@@ -78,7 +78,7 @@ AGS_GLOBAL_SETTINGS = {
 	Score = false, -- Player achieve highest score.
 	
 	Settlement = AGS_GS_SETTLEMENT_SETTLED, -- Initial start of each player.
-	Treaty = 0, -- Duration of treaty period.
+	Treaty = false, -- Initial peace time disabled.
 	TeamVictory = AGS_GS_TEAM_VICTORY_STANDARD, -- Who is considered potential winner.
 	TeamSolidarity = false, -- Team is eliminated together.
 	MaintainTeamBalance = AGS_GS_TEAM_BALANCE_NONE,
@@ -106,6 +106,10 @@ AGS_GLOBAL_SETTINGS = {
 	ScoreSettings = {
 		Timer = 60,
 		ShowPlacement = false,
+	},
+	TreatySettings = {
+		Timer = 0, -- Duration of treaty period.
+		ChangeRelations = true, -- undefined, used for testing treaty without diplomacy module.
 	},
 	
 	Tributes = true,
@@ -266,7 +270,9 @@ function AGS_GlobalSettings_DefineGameConditions(category)
 		AGS_GlobalSettings_SetSettlement(category.option_game_condition_settlement)
 	end
 	if category.option_game_condition_treaty then
+		-- This shares same category as we are considering 0 minutes as treaty disabled instead of separate checkbox.
 		AGS_GlobalSettings_SetTreaty(category.option_game_condition_treaty)
+		AGS_GlobalSettings_SetTreatyTimer(category.option_game_condition_treaty)
 	end
 	if category.option_game_condition_team_victory then
 		AGS_GlobalSettings_SetTeamVictory(category.option_game_condition_team_victory)
@@ -489,31 +495,39 @@ end
 
 function AGS_GlobalSettings_SetTreaty(treaty)
 	if treaty.enum_value == treaty.enum_items.treaty_0 then
-		AGS_GLOBAL_SETTINGS.Treaty = 0
+		AGS_GLOBAL_SETTINGS.Treaty = false
+	else
+		AGS_GLOBAL_SETTINGS.Treaty = true
+	end	
+end
+
+function AGS_GlobalSettings_SetTreatyTimer(treaty)
+	if treaty.enum_value == treaty.enum_items.treaty_0 then
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 0
 	elseif treaty.enum_value == treaty.enum_items.treaty_5 then
-		AGS_GLOBAL_SETTINGS.Treaty = 5
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 5
 	elseif treaty.enum_value == treaty.enum_items.treaty_10 then
-		AGS_GLOBAL_SETTINGS.Treaty = 10
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 10
 	elseif treaty.enum_value == treaty.enum_items.treaty_15 then
-		AGS_GLOBAL_SETTINGS.Treaty = 15
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 15
 	elseif treaty.enum_value == treaty.enum_items.treaty_20 then
-		AGS_GLOBAL_SETTINGS.Treaty = 20
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 20
 	elseif treaty.enum_value == treaty.enum_items.treaty_25 then
-		AGS_GLOBAL_SETTINGS.Treaty = 25
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 25
 	elseif treaty.enum_value == treaty.enum_items.treaty_30 then
-		AGS_GLOBAL_SETTINGS.Treaty = 30
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 30
 	elseif treaty.enum_value == treaty.enum_items.treaty_35 then
-		AGS_GLOBAL_SETTINGS.Treaty = 35
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 35
 	elseif treaty.enum_value == treaty.enum_items.treaty_40 then
-		AGS_GLOBAL_SETTINGS.Treaty = 40
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 40
 	elseif treaty.enum_value == treaty.enum_items.treaty_45 then
-		AGS_GLOBAL_SETTINGS.Treaty = 45
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 45
 	elseif treaty.enum_value == treaty.enum_items.treaty_50 then
-		AGS_GLOBAL_SETTINGS.Treaty = 50
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 50
 	elseif treaty.enum_value == treaty.enum_items.treaty_55 then
-		AGS_GLOBAL_SETTINGS.Treaty = 55
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 55
 	elseif treaty.enum_value == treaty.enum_items.treaty_60 then
-		AGS_GLOBAL_SETTINGS.Treaty = 60
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 60
 	end
 end
 

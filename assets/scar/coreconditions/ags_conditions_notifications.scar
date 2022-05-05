@@ -173,7 +173,24 @@ AGS_NOTIFICATIONS_WONDER_COUNTDOWN = {
 	-- "1 minute until Wonder Defeat"
 	title_final_defeat = 11197867,	
 }
-
+AGS_NOTIFICATIONS_RELIGIOUS_COUNTDOWN = {
+	-- "%1MINUTES_REMAINING% minutes until Religious Victory"
+	title_victory = 11195756,
+	-- "%1MINUTES_REMAINING% minutes until Religious Defeat"
+	title_defeat = 11195757,
+	-- "1 minute until Religious Victory"
+	title_final_victory = 11195758,
+	-- "1 minute until Religious Defeat"
+	title_final_defeat = 11195759,	
+}
+AGS_NOTIFICATIONS_TREATY_COUNTDOWN = {
+	-- "%1MINUTES_REMAINING% minutes until Treaty Ends"
+	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:232",
+	title_defeat = "$64c5019a145c4e4da448dbd3adeea61e:232",
+	-- "1 minute until Treaty Ends"
+	title_final_victory = "$64c5019a145c4e4da448dbd3adeea61e:306",
+	title_final_defeat = "$64c5019a145c4e4da448dbd3adeea61e:306",	
+}
 -- Points during countdown at which to display loss warning.
 -- Arrange in decreasing order since music intensity increases when the last one triggers.
 AGS_NOTIFICATIONS_COUNTDOWN = {

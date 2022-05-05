@@ -7,42 +7,15 @@
 -- Treaty subcondition.
 -- Handles treaty functionality and all asociated events invokes.
 -- Creates cease fire at the start of the game.
--- TODO PRETREATY OVER ENDGAME CHECKS
+-- TODO TREATY ENDGAME IF EVERY VALID OPPONENT LEFT
 ---------------------------------------------------------------------------------------------------
 
 AGS_TREATY_MODULE = "AGS_Treaty"
 AGS_TREATY_OBJECTIVE = nil
 AGS_TREATY_TIMER = "AGS_TreatyTimer"
-AGS_TREATY_PEACE_TIME = 0 * 60
-AGS_TREATY_TIMER_TICK = 1.0
-
-AGS_TREATY_START = 0
-AGS_TREATY_THRESHOLD = 60.0
-AGS_TREATY_INTERVAL = 60.0
-AGS_TREATY_DURATION = 0
-
-AGS_TREATY_EVENTCUE = {
-	sfx_treaty_timer_first = "sfx_ui_victory_countdown_update_first",
-	sfx_treaty_timer_final = "sfx_ui_victory_countdown_update_final",
-}
-
-function AGS_Treaty_ShowTimer(minutes_remaining)
-	local cue = AGS_TREATY_EVENTCUE.cueCountdown
-	local uiColour = Player_GetUIColour(Game_GetLocalPlayer())
-	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:232", minutes_remaining)			
-	cue.sfx = AGS_TREATY_EVENTCUE.sfx_treaty_timer_first
-	Rule_AddOneShot(AGS_Treaty_CreateEventCue, 0, 
-		{ title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  false})	
-end
-
-function AGS_Treaty_EndTimer()
-	local cue = AGS_TREATY_EVENTCUE.cueCountdown
-	local uiColour = Player_GetUIColour(Game_GetLocalPlayer())
-	cue.title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:233")			
-	cue.sfx = AGS_TREATY_EVENTCUE.sfx_treaty_timer_final
-	Rule_AddOneShot(AGS_Treaty_CreateEventCue, 0, 
-		{ title = cue.title, queue_icon = "", sfx = cue.sfx, uiColour = uiColour, highPriority =  true})	
-end
+AGS_TREATY_PEACE_TIMER = 0 * 60
+AGS_TREATY_CHECK_FREQUENCY = 1.0
+AGS_TREATY_COUNTDOWN_NOTIFICATIONS = { }
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -52,39 +25,86 @@ Core_RegisterModule(AGS_TREATY_MODULE)
 
 function AGS_Treaty_UpdateModuleSettings()
 	AGS_Print("AGS_Treaty_UpdateModuleSettings")
-	if AGS_GLOBAL_SETTINGS.Treaty == 0 then
+	if not AGS_GLOBAL_SETTINGS.Treaty then
 		Core_UnregisterModule(AGS_TREATY_MODULE)
 	end
-	AGS_TREATY_TIMER = AGS_GLOBAL_SETTINGS.Treaty * 60
+	AGS_TREATY_PEACE_TIMER = AGS_GLOBAL_SETTINGS.TreatySettings.Timer * 60
 end
 
 function AGS_Treaty_OnPlay()
 	AGS_Print("AGS_Treaty_OnPlay")
-	AGS_Treaty_InitializePeacetime()
-	Rule_AddInterval(AGS_Treaty_OnTimerTick, AGS_TREATY_TIMER_TICK)
-	AGS_Score_CreateObjective()
-	AGS_Score_UpdateObjective()
+	AGS_Treaty_StartPeace()
+	Rule_AddInterval(AGS_Treaty_OnTimerTick, AGS_TREATY_CHECK_FREQUENCY)
+	AGS_Treaty_CreateObjective()
+	AGS_Treaty_UpdateObjective()
 end
-
+-- This is not expected to be required at all.
 function AGS_Treaty_OnGameOver()
 	AGS_Print("AGS_Treaty_OnGameOver")
-	AGS_Treaty_InitializePeacetime()
-	Rule_AddInterval(AGS_Treaty_OnTimerTick, AGS_TREATY_TIMER_TICK)
-	AGS_Score_CreateObjective()
-	AGS_Score_UpdateObjective()
+	Rule_Remove(AGS_Treaty_OnTimerTick)
+	AGS_Treaty_RemoveObjective()
 end
 
+---------------------------------------------------------------------------------------------------
+-- Callbacks:
+---------------------------------------------------------------------------------------------------
+-- Periodic update to show current status to everyone.
+function AGS_Treaty_OnTimerTick()
+	-- Check if its over.
+	if Timer_Exists(AGS_TREATY_TIMER) and Timer_GetRemaining(AGS_TREATY_TIMER) == 0.0 then	
+		AGS_Print("AGS_Treaty_StartWar")
+		Rule_RemoveMe()
+		Timer_End(AGS_TREATY_TIMER)
+		AGS_Treaty_StartWar()
+	end	
+	-- Anyway update objective and countdown notifications.
+	AGS_Treaty_UpdateObjective()
+	AGS_Treaty_Countdown()
+end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_Treaty_InitializePeacetime()
-	
+function AGS_Treaty_StartPeace()
+	AGS_Print("AGS_Treaty_StartPeace")
+	-- Notify everyone of treaty rules are in place.	
+	Core_CallDelegateFunctions("TreatyStarted")
+	-- Disables fighting between players via diplomacy.	
+	if AGS_GLOBAL_SETTINGS.TreatySettings.ChangeRelations then
+		AGS_Treaty_DisableFighting()
+	end
+	-- Finally prepare notifications and start countdown.
+	if not Timer_Exists(AGS_TREATY_TIMER) then	
+		AGS_Treaty_CreateTimerNotifications()	
+		Timer_Start(AGS_TREATY_TIMER, AGS_TREATY_PEACE_TIMER)
+	end
+	AGS_Print("AGS_Treaty_StartPeace-Over")
 end
 
-function AGS_Score_CreateObjective()
+function AGS_Treaty_StartWar()
+	AGS_Treaty_CompleteObjective()
+	AGS_Treaty_RemoveObjective()
+	-- Notify everyone of treaty rules ended.	
+	Core_CallDelegateFunctions("TreatyEnded")	
+	if AGS_GLOBAL_SETTINGS.TreatySettings.ChangeRelations then
+		AGS_Treaty_EnableFighting()
+	end
+	AGS_Print("AGS_Treaty_StartWar-Over")
+end
+
+function AGS_Treaty_EnableFighting()
+	Diplomacy_AllPlayer_SaveAndChangeToFriends()
+	Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.Tributes, false)
+end
+
+function AGS_Treaty_DisableFighting()
+	Diplomacy_AllPlayer_LoadFromSave()
+	Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.Tributes, AGS_GLOBAL_SETTINGS.Diplomacy)	
+end
+
+function AGS_Treaty_CreateObjective()
 	AGS_TREATY_OBJECTIVE = AGS_Objectives_Create(AGS_OBJECTIVES_TREATY, AGS_GS_LOCAL_PLAYER)
-	AGS_Objectives_Set(AGS_TREATY_OBJECTIVE, OS_Incomplete, true, true, COUNTER_TimerDecreasing)
+	AGS_Objectives_Set(AGS_TREATY_OBJECTIVE, OS_Incomplete, true, nil, COUNTER_TimerDecreasing)
 end
 
 function AGS_Treaty_UpdateObjective()
@@ -96,56 +116,33 @@ function AGS_Treaty_UpdateObjective()
 		Timer_GetRemaining(AGS_TREATY_TIMER)
 	)
 end
+-- Shows final message as the battle starts.
+function AGS_Treaty_CompleteObjective()
+	Music_UnlockIntensity()
+	ResetMinimumIntensityMusicUnforced()
+	Sound_Play2D("mus_shared_victory_countdown_mix_event_reset")
+	AGS_Objectives_Present(AGS_TREATY_OBJECTIVE, OS_Complete, AGS_OBJECTIVES_TREATY.title_over)
+end
 
-function AGS_Score_RemoveObjective()
+function AGS_Treaty_RemoveObjective()
 	AGS_Objectives_Set(AGS_TREATY_OBJECTIVE, nil, false)
 end
-
-
-
-
-function AGS_Treaty_Create(treaty_duration)
-	-- Start tracking time.
-	AGS_TREATY_START = World_GetGameTime()
-	AGS_TREATY_DURATION = treaty_duration * 60.0 --minutes to seconds
-	
-	-- Disables fighting between players via diplomacy.	
-	Diplomacy_AllPlayer_SaveAndChangeToFriends()
-	Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.Tributes, false)
-	
-	-- Notify everyone of treaty rules are in place.	
-	Core_CallDelegateFunctions("TreatyStarted")
-	
-	-- Start countdown.
-	Rule_Add(AGS_Treaty_Countdown)
-	-- Show timer cue.
-	AGS_Treaty_ShowTimer(treaty_duration)
-end
-
-function AGS_Treaty_Countdown()	
-	local world_time = World_GetGameTime()
-	-- if enough time passed end all treaties
-	if world_time - AGS_TREATY_START >= AGS_TREATY_DURATION then
-		AGS_Treaty_End()
-	-- everytime threshold is reached we will inform players that one minute passed, in all cases other than final minute passed as that is moment of start
-	elseif world_time - AGS_TREATY_START >= AGS_TREATY_THRESHOLD then 
-		local minutes_remaining = math.floor((AGS_TREATY_DURATION - (world_time - AGS_TREATY_START)) / 60)
-		AGS_Treaty_ShowTimer(minutes_remaining)
-		-- define next threshold
-		AGS_TREATY_THRESHOLD = AGS_TREATY_THRESHOLD + AGS_TREATY_INTERVAL		
-	end	
-end
-
-function AGS_Treaty_End()
-	if Rule_Exists(AGS_Treaty_Countdown) then	
-		-- End countdown.
-		Rule_Remove(AGS_Treaty_Countdown)
-		-- Show timer ended cue.
-		AGS_Treaty_EndTimer()	
-		
-		Diplomacy_AllPlayer_LoadFromSave()
-		Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.Tributes, AGS_GLOBAL_SETTINGS.Diplomacy)
-		-- Notify everyone of treaty rules ended.	
-		Core_CallDelegateFunctions("TreatyEnded")		
+-- Creates list of untriggered notifications.
+function AGS_Treaty_CreateTimerNotifications()
+	AGS_TREATY_COUNTDOWN_NOTIFICATIONS = { }
+	for i = 1, #AGS_NOTIFICATIONS_COUNTDOWN do
+		table.insert(AGS_TREATY_COUNTDOWN_NOTIFICATIONS, { triggered = false, }) 
 	end
+end
+-- Trigger all required notifications before timer runs out.
+function AGS_Treaty_Countdown()	
+	for i = 1, #AGS_TREATY_COUNTDOWN_NOTIFICATIONS do
+		-- If threshold notification has not been triggered AND timer is in threshold window
+		if not AGS_TREATY_COUNTDOWN_NOTIFICATIONS[i].triggered and 
+			AGS_NOTIFICATIONS_COUNTDOWN[i].time >= Timer_GetRemaining(AGS_TREATY_TIMER) then 
+			-- Mark as triggered.
+			AGS_TREATY_COUNTDOWN_NOTIFICATIONS[i].triggered = true			
+			AGS_Notification_CountdownNotification(AGS_GS_LOCAL_PLAYER, i, AGS_NOTIFICATIONS_TREATY_COUNTDOWN, true)
+		end
+	end	
 end

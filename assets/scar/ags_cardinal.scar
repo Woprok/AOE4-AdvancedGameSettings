@@ -83,7 +83,7 @@ import("startconditions/ags_starting_keep.scar")
 import("startconditions/ags_starting_king.scar")
 
 -- Conditions based on expected priority.
---import("conditions/ags_treaty.scar") 
+import("conditions/ags_treaty.scar") 
 -- Conditions that are necessary for a game to run.
 import("conditions/ags_surrender.scar")
 import("conditions/ags_elimination.scar") 
@@ -93,7 +93,7 @@ import("conditions/ags_conquest.scar")
 --import("conditions/ags_religious.scar") 
 import("conditions/ags_wonder.scar") 
 import("conditions/ags_regicide.scar") 
---import("conditions/ags_score.scar") 
+import("conditions/ags_score.scar") 
 import("conditions/ags_team_solidarity.scar") 
 
 

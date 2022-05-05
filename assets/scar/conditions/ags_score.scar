@@ -13,8 +13,9 @@ AGS_SCORE_MODULE = "AGS_Score"
 AGS_SCORE_OBJECTIVE = nil
 AGS_SCORE_ACTIVE = true
 AGS_SCORE_TIMER = "AGS_ScoreTimer"
-AGS_SCORE_VICTORY_TIME = 60 * 60
-AGS_SCORE_TIMER_TICK = 1.0
+AGS_SCORE_VICTORY_TIMER = 60 * 60
+AGS_SCORE_CHECK_FREQUENCY = 1.0
+AGS_SCORE_COUNTDOWN_NOTIFICATIONS = { }
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -28,14 +29,14 @@ function AGS_Score_UpdateModuleSettings()
 	if not AGS_GLOBAL_SETTINGS.Score then
 		Core_UnregisterModule(AGS_SCORE_MODULE)
 	end
-	AGS_SCORE_VICTORY_TIME = AGS_GLOBAL_SETTINGS.ScoreSettings.Timer * 60
+	AGS_SCORE_VICTORY_TIMER = AGS_GLOBAL_SETTINGS.ScoreSettings.Timer * 60
 end
 
 function AGS_Score_OnPlay()
 	AGS_Print("AGS_Score_OnPlay")
 	AGS_Score_InitializePlacements()
 	Rule_AddGlobalEvent(AGS_Score_OnEntityKilled, GE_EntityKilled)
-	Rule_AddInterval(AGS_Score_OnTimerTick, AGS_SCORE_TIMER_TICK)
+	Rule_AddInterval(AGS_Score_OnTimerTick, AGS_SCORE_CHECK_FREQUENCY)
 	AGS_Score_CreateObjective()
 	AGS_Score_UpdateObjective()
 end
@@ -66,7 +67,7 @@ end
 function AGS_Score_OnGameOver()
 	AGS_Print("AGS_Score_OnGameOver")
 	Rule_RemoveGlobalEvent(AGS_Score_OnEntityKilled)
-	Rule_Remove(AGS_Score_OnTimerTick, AGS_SCORE_TIMER_TICK)
+	Rule_Remove(AGS_Score_OnTimerTick)
 	AGS_Score_RemoveObjective()
 end
 
@@ -75,10 +76,20 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_Score_OnEntityKilled(context)
+	-- TODO
 end
 
 function AGS_Score_OnTimerTick()
-	
+	-- Check if its over.
+	if Timer_Exists(AGS_SCORE_TIMER) and Timer_GetRemaining(AGS_SCORE_TIMER) == 0.0 then	
+		Rule_RemoveMe()
+		Timer_End(AGS_SCORE_TIMER)
+		AGS_Score_EndWar()
+	end	
+	-- Anyway update objective and countdown notifications.
+	AGS_Score_UpdateObjective()
+	AGS_Score_UpdatePlacements()
+	AGS_Score_Countdown()
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -86,12 +97,27 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_Score_InitializePlacements()
+	-- Prepare notifications and start countdown.
+	if not Timer_Exists(AGS_SCORE_TIMER) then	
+		AGS_Score_CreateTimerNotifications()
+		Timer_Start(AGS_SCORE_TIMER, AGS_TREATY_PEACE_TIME)
+	end
+end
+-- Final evaluation of all placements and deciding winners.
+function AGS_Score_EndWar()
+	-- TODO
+end
 
+function AGS_Score_UpdatePlacements()
+	-- TODO
+	if AGS_GLOBAL_SETTINGS.ScoreSettings.ShowPlacement then
+		
+	end
 end
 
 function AGS_Score_CreateObjective()
 	AGS_SCORE_OBJECTIVE = AGS_Objectives_Create(AGS_OBJECTIVES_SCORE, AGS_GS_LOCAL_PLAYER)
-	AGS_Objectives_Set(AGS_SCORE_OBJECTIVE, OS_Incomplete, true, true, COUNTER_TimerDecreasing)
+	AGS_Objectives_Set(AGS_SCORE_OBJECTIVE, OS_Incomplete, true, nil, COUNTER_TimerDecreasing)
 end
 
 function AGS_Score_UpdateObjective()
@@ -106,4 +132,24 @@ end
 
 function AGS_Score_RemoveObjective()
 	AGS_Objectives_Set(AGS_SCORE_OBJECTIVE, nil, false)
+end
+
+-- Creates list of untriggered notifications.
+function AGS_Score_CreateTimerNotifications()
+	AGS_SCORE_COUNTDOWN_NOTIFICATIONS = { }
+	for i = 1, #AGS_NOTIFICATIONS_COUNTDOWN do
+		table.insert(AGS_SCORE_COUNTDOWN_NOTIFICATIONS, { triggered = false, }) 
+	end
+end
+-- Trigger all required notifications before timer runs out.
+function AGS_Score_Countdown()	
+	for i = 1, #AGS_SCORE_COUNTDOWN_NOTIFICATIONS do
+		-- If threshold notification has not been triggered AND timer is in threshold window
+		if not AGS_SCORE_COUNTDOWN_NOTIFICATIONS[i].triggered and 
+			AGS_NOTIFICATIONS_COUNTDOWN[i].time >= Timer_GetRemaining(AGS_SCORE_TIMER) then 
+			-- Mark as triggered.
+			AGS_SCORE_COUNTDOWN_NOTIFICATIONS[i].triggered = true			
+			AGS_Notification_CountdownNotification(AGS_GS_LOCAL_PLAYER, i, AGS_NOTIFICATIONS_SCORE_COUNTDOWN, true)
+		end
+	end	
 end
