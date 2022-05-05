@@ -244,7 +244,7 @@
 243,,,,,,Empowered King
 244,,,,,,King will have additional bonuses and abilities
 245,,,,,,Maintain Team Balance
-246,,,,,,"Should team lose a player, remaining members will share his population capacity and resources"
+246,,,,,,"Should team lose a player, remaining members will share his population capacity and resources. Dynamic teams are not eligible for this."
 247,,,,,,Population
 248,,,,,,Population & Resources
 249,,,,,,No Dock

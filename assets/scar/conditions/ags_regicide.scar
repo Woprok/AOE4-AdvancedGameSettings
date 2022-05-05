@@ -170,6 +170,12 @@ end
 
 function AGS_Regicide_UpdateObjective()
 	local enemies_kings_statistics = AGS_Regicide_CountEnemyKings(AGS_GS_LOCAL_PLAYER)
+	if enemies_kings_statistics == nil then 
+		AGS_Objectives_Set(AGS_REGICIDE_OBJECTIVE, nil, nil, false)
+		return
+	else
+		AGS_Objectives_Set(AGS_REGICIDE_OBJECTIVE, nil, nil, true)
+	end
 	-- Update the progress bar of the objective.
 	AGS_Objectives_Progress(
 		AGS_REGICIDE_OBJECTIVE, 

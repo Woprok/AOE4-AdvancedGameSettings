@@ -92,7 +92,12 @@ end
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Conquest_UpdatePlayerStats(player, scarModel)
 	local conquerables = AGS_Conquest_CountEnemyConquerables(player)
-		
+	if conquerables == nil then
+		conquerables = {
+			built = 0,
+			remaining = 0,
+		}
+	end
 	scarModel.Conquest_Target = conquerables.built
 	scarModel.Conquest_Current = conquerables.remaining
 end

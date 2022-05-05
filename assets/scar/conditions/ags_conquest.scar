@@ -227,6 +227,12 @@ end
 
 function AGS_Conquest_UpdateObjective()
 	local enemies_conquerables_statistics = AGS_Conquest_CountEnemyConquerables(AGS_GS_LOCAL_PLAYER)
+	if enemies_conquerables_statistics == nil then 
+		AGS_Objectives_Set(AGS_CONQUEST_OBJECTIVE, nil, nil, false)
+		return
+	else
+		AGS_Objectives_Set(AGS_CONQUEST_OBJECTIVE, nil, nil, true)
+	end
 	-- Update the progress bar of the objective.
 	AGS_Objectives_Progress(
 		AGS_CONQUEST_OBJECTIVE, 

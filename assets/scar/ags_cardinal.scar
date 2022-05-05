@@ -118,6 +118,7 @@ import("gameplay/ags_technology_age.scar")
 import("gameplay/ags_town_center_restrictions.scar")
 import("gameplay/ags_tree_bombardment.scar")
 import("gameplay/ags_wonder_scale_cost.scar")
+import("gameplay/ags_team_balance.scar")
 
 -- Wrapper around all default match options, that will have minimal changes done to them.
 import("specials/ags_utilities.scar")

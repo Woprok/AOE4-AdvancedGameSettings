@@ -1,0 +1,93 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Wonder win condition.
+-- The classic 'wonder' win condition in which the player wins by building a wonder and defending it for some time.
+---------------------------------------------------------------------------------------------------
+
+AGS_TEAM_BALANCE_MODULE = "AGS_TeamBalance"
+AGS_TEAM_BALANCE_TEAM_BONUS = {
+	
+}
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+Core_RegisterModule(AGS_TEAM_BALANCE_MODULE)	
+
+function AGS_TeamBalance_UpdateModuleSettings()
+	AGS_Print("AGS_TeamBalance_UpdateModuleSettings")
+	if AGS_GLOBAL_SETTINGS.MaintainTeamBalance == AGS_GS_TEAM_BALANCE_NONE then
+		Core_UnregisterModule(AGS_TEAM_BALANCE_MODULE)
+	end
+end
+
+function AGS_TeamBalance_OnPlayerDefeated(player, reason)	
+	AGS_Print("AGS_TeamBalance_OnPlayerDefeated")
+	AGS_TeamBalance_UpdateTeam(player)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_TeamBalance_UpdateTeam(player)
+	-- Get allies and verify that we can still give someone this player pop.
+	local allies = AGS_Teams_GetStaticTeamAliveMembers(player.AGS_Team.allies)
+	local allies_count = #allies
+	if allies_count <= 0 then
+		return
+	end
+	
+	if AGS_GLOBAL_SETTINGS.MaintainTeamBalance >= AGS_GS_TEAM_BALANCE_POPULATION then
+		AGS_TeamBalance_UpdateTeamPopulation(player, allies, allies_count)	
+	end
+	
+	if AGS_GLOBAL_SETTINGS.MaintainTeamBalance >= AGS_GS_TEAM_BALANCE_RESOURCES then
+		AGS_TeamBalance_UpdateTeamResources(player, allies, allies_count)
+	end
+end
+
+function AGS_TeamBalance_UpdateTeamPopulation(player, allies, allies_count)
+	-- Get current bonus from this module for this team.
+	local current_per_player_bonus = 0
+	if AGS_TEAM_BALANCE_TEAM_BONUS[player.AGS_Team.index] ~= nil then
+		current_per_player_bonus = AGS_TEAM_BALANCE_TEAM_BONUS[player.AGS_Team.index]
+	end
+	-- Get his current pop capacity and his current bonus. Then split it between all allies.
+	local pop_value = AGS_GLOBAL_SETTINGS.MaximumPopulation + current_per_player_bonus
+	local pop_per_ally = pop_value / allies_count
+	for _, ally in pairs(allies) do
+		AGS_TeamBalance_IncreaseMaxCapPopulation(ally, pop_per_ally)
+		if ally.raceName == AGS_CIV_MONGOL then
+			AGS_TeamBalance_IncreaseCapPopulation(ally, pop_per_ally)
+		end
+	end
+	-- Update last value for this team
+	AGS_TEAM_BALANCE_TEAM_BONUS[player.AGS_Team.index] = current_per_player_bonus + pop_per_ally
+end
+
+function AGS_TeamBalance_UpdateTeamResources(player, allies, allies_count)
+	local food_per_ally = math.floor(Player_GetResource(player.id, RT_Food) / allies_count)
+	local wood_per_ally = math.floor(Player_GetResource(player.id, RT_Wood) / allies_count)
+	local gold_per_ally = math.floor(Player_GetResource(player.id, RT_Gold) / allies_count)
+	local stone_per_ally = math.floor(Player_GetResource(player.id, RT_Stone) / allies_count)
+	-- Gift resources to each player.
+	for _, ally in pairs(allies) do 
+		Player_GiftResource(ally.id, RT_Food, food_per_ally)
+		Player_GiftResource(ally.id, RT_Wood, wood_per_ally)
+		Player_GiftResource(ally.id, RT_Gold, gold_per_ally)
+		Player_GiftResource(ally.id, RT_Stone, stone_per_ally)
+	end	
+end
+
+function AGS_TeamBalance_IncreaseCapPopulation(player, pop_size)
+	Modifier_ApplyToPlayer(Modifier_Create(MAT_Player, "personnel_cap_player_modifier", MUT_Addition, false, pop_size, ""), player.id, 0)
+end
+
+function AGS_TeamBalance_IncreaseMaxCapPopulation(player, pop_size)
+	Modifier_ApplyToPlayer(Modifier_Create(MAT_Player, "max_personnel_cap_player_modifier", MUT_Addition, false, pop_size, ""), player.id, 0)
+end

@@ -4,8 +4,8 @@
 -- Woprock
 --
 -- Description:
--- Wonder win condition.
--- The classic 'wonder' win condition in which the player wins by building a wonder and defending it for some time.
+-- Scale wonder cost from initial value to new value. Initial value can be redefined.
+-- Currently uses release version of wonder cost as that was most reasonable for 1v1.
 ---------------------------------------------------------------------------------------------------
 
 AGS_WONDER_SCALE_COST_MODULE = "AGS_WonderScaleCost"
