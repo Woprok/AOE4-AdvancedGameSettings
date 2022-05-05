@@ -1,0 +1,49 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Alters all unit rates.
+---------------------------------------------------------------------------------------------------
+
+AGS_UNIT_RATES_MODULE = "AGS_UnitRates"
+AGS_UNIT_RATES_MODIFIERS = { }
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_UNIT_RATES_MODULE)	
+
+function AGS_UnitRates_UpdateModuleSettings()
+	AGS_Print("AGS_UnitRates_UpdateModuleSettings")
+	if AGS_GLOBAL_SETTINGS.UnitRates == 1.00 then
+		Core_UnregisterModule(AGS_UNIT_RATES_MODULE)
+	end
+end
+
+function AGS_UnitRates_PresetFinalize()	
+	AGS_Print("AGS_UnitRates_PresetFinalize")
+	AGS_UnitRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_BUILDING))	
+	AGS_UnitRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_UNIT_CLASS))	
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_UnitRates_ApplyGameRates(bps)
+	for _, ebp in pairs(bps) do 
+		if AGS_UNIT_RATES_MODIFIERS[ebp.PropertyBagGroupID] == nil then
+			AGS_UNIT_RATES_MODIFIERS[ebp.PropertyBagGroupID] = true
+			for _, player in pairs(PLAYERS) do	
+				AGS_UnitRates_ApplyModifier(player.id, ebp, "speed_maximum_modifier", AGS_GLOBAL_SETTINGS.UnitRates)
+			end
+		end
+	end
+end
+-- Apply function.
+function AGS_UnitRates_ApplyModifier(player_id, modifier_ebp, modifier_type, modifier_value)
+	Modifier_ApplyToPlayer(Modifier_Create(MAT_EntityType, modifier_type, MUT_Multiplication, false, modifier_value, modifier_ebp), player_id, 0.0)
+end	

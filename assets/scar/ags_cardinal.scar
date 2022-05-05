@@ -100,6 +100,7 @@ import("conditions/ags_team_solidarity.scar")
 -- AGS supports AI with few adjustments.
 import("ai/ags_ai.scar")
 -- Gameplay options are loaded as last.
+import("gameplay/ags_color_maintainer.scar")
 import("gameplay/ags_ding.scar")
 import("gameplay/ags_early_market.scar")
 import("gameplay/ags_ending_age.scar")
@@ -114,11 +115,12 @@ import("gameplay/ags_score_visibility.scar")
 import("gameplay/ags_simulation_speed.scar")
 import("gameplay/ags_starting_age.scar")
 import("gameplay/ags_starting_resources.scar")
+import("gameplay/ags_team_balance.scar")
 import("gameplay/ags_technology_age.scar")
 import("gameplay/ags_town_center_restrictions.scar")
 import("gameplay/ags_tree_bombardment.scar")
+import("gameplay/ags_unit_rates.scar")
 import("gameplay/ags_wonder_scale_cost.scar")
-import("gameplay/ags_team_balance.scar")
 
 -- Wrapper around all default match options, that will have minimal changes done to them.
 import("specials/ags_utilities.scar")

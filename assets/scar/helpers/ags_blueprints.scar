@@ -815,3 +815,22 @@ function AGS_GetRelation(player_id)
 	-- Most likely enemy or neutral.
 	return AGS_SAE_ENEMY
 end
+-- Checks if array table contains value.
+function AGS_Contains(table, value)
+	for _, item in pairs(table) do
+		if item == value then
+			return true
+		end
+	end	
+	return false
+end
+-- Returns elements that were not in used list.
+function AGS_GetFreeItems(all, used)
+	local free = { }
+	for _, item in pairs(all) do
+		if not AGS_Contains(used, item) then
+			table.insert(free, item)			
+		end
+	end	
+	return free
+end

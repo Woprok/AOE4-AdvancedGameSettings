@@ -51,6 +51,16 @@ AGS_GS_RESOURCES_MAXIMUM = 5
 AGS_GS_TC_RESTRICTIONS_NONE = 0
 AGS_GS_TC_RESTRICTIONS_NORMAL = 1
 AGS_GS_TC_RESTRICTIONS_LANDMARKS = 2
+-- Colors
+AGS_GS_COLOR_BLUE = 1 -- Azure Blue
+AGS_GS_COLOR_RED = 2 -- Red Orange
+AGS_GS_COLOR_YELLOW = 3 -- Citrine Yellow
+AGS_GS_COLOR_GREEN = 4 -- Vibrant Green
+AGS_GS_COLOR_TURQUOISE = 5 -- Bright Turquoise
+AGS_GS_COLOR_PURPLE = 6 -- Purple Mimosa
+AGS_GS_COLOR_ORANGE = 7 -- Blaze Orange
+AGS_GS_COLOR_PINK = 8 -- Hot Pink
+AGS_GS_COLOR_GREY = 9 -- Monsoon/Natural Grey
 ---------------------------------------------------------------------------------------------------
 -- Contains current local player dynamically maintaned whole game. 
 -- Local player should never change. And be ready after Initialization Phase.
@@ -118,6 +128,7 @@ AGS_GLOBAL_SETTINGS = {
 	NoDock = false,
 	TreeBombardment = false,
 	GameRates = 1.00,
+	UnitRates = 1.00,
 	TownCenterRestrictions = AGS_GS_TC_RESTRICTIONS_NONE,
 	
 	StartingKings = 0, 
@@ -138,6 +149,20 @@ AGS_GLOBAL_SETTINGS = {
 	EnableUtilities = true, -- undefined
 	AllowLoserSpectation = true, -- undefined
 	UsingPrefabStart = true, -- undefined, is related to .rdo file starting conditions
+	
+	PlayerColors = {
+		IsEnforcing = false,
+		FirstSlot = AGS_GS_COLOR_BLUE, 
+		SecondSlot = AGS_GS_COLOR_RED, 
+		ThirdSlot = AGS_GS_COLOR_YELLOW, 
+		FourthSlot = AGS_GS_COLOR_GREEN, 
+		FifthSlot = AGS_GS_COLOR_TURQUOISE, 
+		SixthSlot = AGS_GS_COLOR_PURPLE, 
+		SeventhSlot = AGS_GS_COLOR_ORANGE, 
+		EighthSlot = AGS_GS_COLOR_PINK, 
+		-- Not used, but defined by Relic. Might be useful for scenarios.
+		NinthSlot = AGS_GS_COLOR_GREY, 
+	}
 }
 
 ---------------------------------------------------------------------------------------------------
@@ -175,6 +200,10 @@ function AGS_GlobalSettings_SetupSettings(options)
 	
 	if options.section_outer_legacy_settings then
 		AGS_GlobalSettings_DefineLegacySettings(options.section_outer_legacy_settings)
+	end
+	
+	if options.section_outer_player_settings then
+		AGS_GlobalSettings_DefinePlayerSettings(options.section_outer_player_settings)
 	end
 end
 
@@ -368,11 +397,73 @@ function AGS_GlobalSettings_DefineLegacySettings(category)
 	if category.option_legacy_setting_empowered_kings ~= nil then
 		AGS_GLOBAL_SETTINGS.EmpoweredKings = category.option_legacy_setting_empowered_kings
 	end
+	if category.option_legacy_setting_unit_rates then
+		AGS_GlobalSettings_SetUnitRates(category.option_legacy_setting_unit_rates)
+	end
 end
 
+function AGS_GlobalSettings_DefinePlayerSettings(category)
+	if category.option_player_setting_color_is_enforcing ~= nil then
+		AGS_GLOBAL_SETTINGS.PlayerColors.IsEnforcing = category.option_player_setting_color_is_enforcing
+	end
+	AGS_GlobalSettings_SetSlotColor(category)
+end
+	
 ---------------------------------------------------------------------------------------------------
 -- Assignment Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_GlobalSettings_SetSlotColor(category)
+	if category.option_player_setting_slot_1 then
+		AGS_GLOBAL_SETTINGS.PlayerColors.FirstSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_1)
+	end
+	if category.option_player_setting_slot_2 then
+		AGS_GLOBAL_SETTINGS.PlayerColors.SecondSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_2)
+	end
+	if category.option_player_setting_slot_3 then
+		AGS_GLOBAL_SETTINGS.PlayerColors.ThirdSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_3)
+	end
+	if category.option_player_setting_slot_4 then
+		AGS_GLOBAL_SETTINGS.PlayerColors.FourthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_4)
+	end
+	if category.option_player_setting_slot_5 then
+		AGS_GLOBAL_SETTINGS.PlayerColors.FifthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_5)
+	end
+	if category.option_player_setting_slot_6 then
+		AGS_GLOBAL_SETTINGS.PlayerColors.SixthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_6)
+	end
+	if category.option_player_setting_slot_7 then
+		AGS_GLOBAL_SETTINGS.PlayerColors.SeventhSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_7)
+	end
+	if category.option_player_setting_slot_8 then
+		AGS_GLOBAL_SETTINGS.PlayerColors.EighthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_8)
+	end
+	if category.option_player_setting_slot_9 then
+		AGS_GLOBAL_SETTINGS.PlayerColors.NinthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_9)
+	end
+end
+
+function AGS_GlobalSettings_RetrieveSlotColor(slot_color)
+	if slot_color.enum_value == slot_color.enum_items.slot_color_1 then
+		return AGS_GS_COLOR_BLUE
+	elseif slot_color.enum_value == slot_color.enum_items.slot_color_2 then
+		return AGS_GS_COLOR_RED
+	elseif slot_color.enum_value == slot_color.enum_items.slot_color_3 then
+		return AGS_GS_COLOR_YELLOW
+	elseif slot_color.enum_value == slot_color.enum_items.slot_color_4 then
+		return AGS_GS_COLOR_GREEN
+	elseif slot_color.enum_value == slot_color.enum_items.slot_color_5 then
+		return AGS_GS_COLOR_TURQUOISE
+	elseif slot_color.enum_value == slot_color.enum_items.slot_color_6 then
+		return AGS_GS_COLOR_PURPLE
+	elseif slot_color.enum_value == slot_color.enum_items.slot_color_7 then
+		return AGS_GS_COLOR_ORANGE
+	elseif slot_color.enum_value == slot_color.enum_items.slot_color_8 then
+		return AGS_GS_COLOR_PINK
+	elseif slot_color.enum_value == slot_color.enum_items.slot_color_9 then
+		return AGS_GS_COLOR_GREY
+	end
+end
 
 function AGS_GlobalSettings_SetMaintainTeamBalance(maintain_team_balance)
 	if maintain_team_balance.enum_value == maintain_team_balance.enum_items.maintain_team_balance_none then
@@ -846,6 +937,32 @@ function AGS_GlobalSettings_SetStartingKings(starting_kings)
 	else
 		AGS_GLOBAL_SETTINGS.StartingKings = 0
 	end
+end
+
+function AGS_GlobalSettings_SetUnitRates(unit_rates)
+	if unit_rates.enum_value == unit_rates.enum_items.unit_rates_075 then
+		AGS_GLOBAL_SETTINGS.UnitRates = 0.75
+	elseif unit_rates.enum_value == unit_rates.enum_items.unit_rates_080 then
+		AGS_GLOBAL_SETTINGS.UnitRates = 0.80
+	elseif unit_rates.enum_value == unit_rates.enum_items.unit_rates_085 then
+		AGS_GLOBAL_SETTINGS.UnitRates = 0.85
+	elseif unit_rates.enum_value == unit_rates.enum_items.unit_rates_090 then
+		AGS_GLOBAL_SETTINGS.UnitRates = 0.90
+	elseif unit_rates.enum_value == unit_rates.enum_items.unit_rates_095 then
+		AGS_GLOBAL_SETTINGS.UnitRates = 0.95
+	elseif unit_rates.enum_value == unit_rates.enum_items.unit_rates_1 then
+		AGS_GLOBAL_SETTINGS.UnitRates = 1.00
+	elseif unit_rates.enum_value == unit_rates.enum_items.unit_rates_1_05 then
+		AGS_GLOBAL_SETTINGS.UnitRates = 1.05
+	elseif unit_rates.enum_value == unit_rates.enum_items.unit_rates_1_10 then
+		AGS_GLOBAL_SETTINGS.UnitRates = 1.10
+	elseif unit_rates.enum_value == unit_rates.enum_items.unit_rates_1_15 then
+		AGS_GLOBAL_SETTINGS.UnitRates = 1.15
+	elseif unit_rates.enum_value == unit_rates.enum_items.unit_rates_1_20 then
+		AGS_GLOBAL_SETTINGS.UnitRates = 1.20
+	elseif unit_rates.enum_value == unit_rates.enum_items.unit_rates_1_25 then
+		AGS_GLOBAL_SETTINGS.UnitRates = 1.25
+	end	
 end
 
 function AGS_GlobalSettings_SetGameRates(game_rates)

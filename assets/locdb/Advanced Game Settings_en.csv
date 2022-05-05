@@ -206,7 +206,7 @@
 205,,,,,,Simulation Speed
 206,,,,,,Changes game simulation ticks. This option can not be used in multiplayer and will be disabled.
 207,,,,,,Game Rates
-208,,,,,,"Multiplies all of the following gathering rates, construction speed, repair rate, production speed and movement speed by selected value."
+208,,,,,,"Multiplies all of the following gathering rates, construction speed, repair rate and production speed by selected value."
 209,,,,,,1x
 210,,,,,,2x
 211,,,,,,3x
@@ -276,3 +276,31 @@
 275,,,ags_conditions_notifications,,,Building a wonder
 276,,,ags_conditions_notifications,,,Destroyed Landmark
 277,,,ags_conditions_objectives,,,Failed to hold the wonder.
+278,,,,,,Player Settings
+279,,,,,,Enforce Colors
+280,,,,,,"Fixes colors for diplomacy. This is not intended to serve as color picker. Causes automatic update of colors for each slot, whenever game causes conflicting change. Conflicting settings are automatically resolved."
+281,,,,,,Used by Enforce Colors to determine which color is used by this slot. Requires Enforce Colors to be allowed.
+282,,,,,,Blue
+283,,,,,,Red
+284,,,,,,Yellow
+285,,,,,,Green
+286,,,,,,Turquoise
+287,,,,,,Purple
+288,,,,,,Orange
+289,,,,,,Pink
+290,,,,,,Grey
+291,,,,,,Enforced Slot 1 Color
+292,,,,,,Enforced Slot 2 Color
+293,,,,,,Enforced Slot 3 Color
+294,,,,,,Enforced Slot 4 Color
+295,,,,,,Enforced Slot 5 Color
+296,,,,,,Enforced Slot 6 Color
+297,,,,,,Enforced Slot 7 Color
+298,,,,,,Enforced Slot 8 Color
+299,,,,,,Unit Rates
+300,,,,,,Multiplies unit movement maximum speed by selected value.
+301,,,,,,1.05x
+302,,,,,,1.10x
+303,,,,,,1.15x
+304,,,,,,1.20x
+305,,,,,,1.25x

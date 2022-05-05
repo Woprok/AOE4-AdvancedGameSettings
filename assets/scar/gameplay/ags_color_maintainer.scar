@@ -1,0 +1,116 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Keeps track of all player colors and ensures that it stays during the whole game set to same value.
+---------------------------------------------------------------------------------------------------
+
+AGS_COLOR_MAINTAINER_MODULE = "AGS_ColorMaintainer"
+-- Indices are 1 - 9, so it's 1:1 to default slot mapping.
+AGS_COLOR_MAINTAINER_TABLE = {
+	{ Color = AGS_GS_COLOR_BLUE },
+	{ Color = AGS_GS_COLOR_RED },
+	{ Color = AGS_GS_COLOR_YELLOW },
+	{ Color = AGS_GS_COLOR_GREEN },
+	{ Color = AGS_GS_COLOR_TURQUOISE },
+	{ Color = AGS_GS_COLOR_PURPLE },
+	{ Color = AGS_GS_COLOR_ORANGE },
+	{ Color = AGS_GS_COLOR_PINK }, 
+	{ Color = AGS_GS_COLOR_GREY },
+}
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+Core_RegisterModule(AGS_COLOR_MAINTAINER_MODULE)	
+
+function AGS_ColorMaintainer_UpdateModuleSettings()
+	AGS_Print("AGS_ColorMaintainer_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.PlayerColors.IsEnforcing then
+		Core_UnregisterModule(AGS_COLOR_MAINTAINER_MODULE)
+	end
+end
+
+function AGS_ColorMaintainer_EarlyInitializations()
+	AGS_Print("AGS_ColorMaintainer_EarlyInitializations")
+	AGS_ColorMaintainer_CreateSlots()
+	AGS_ColorMaintainer_RefreshSlots()
+end
+
+function AGS_ColorMaintainer_OnPlayerDefeated(player, reason)
+	AGS_Print("AGS_ColorMaintainer_OnPlayerDefeated")
+	AGS_ColorMaintainer_RefreshSlots()
+end		
+
+
+function AGS_ColorMaintainer_OnRelationChanged(player, reason)
+	AGS_Print("AGS_ColorMaintainer_OnRelationChanged")
+	AGS_ColorMaintainer_RefreshSlots()
+end	
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_ColorMaintainer_CreateSlots()
+	local all_colors = AGS_ColorMaintainer_CreateColorList()
+	local new_slot_color_list = AGS_ColorMaintainer_CreateListFrom(AGS_GLOBAL_SETTINGS.PlayerColors)
+	local used_colors = { }
+	local unassigned_slots = { }
+	-- First we assign each color that is uniquely assigned.
+	for i, slot in pairs(new_slot_color_list) do
+		if AGS_Contains(used_colors, slot.Color) then
+			table.insert(unassigned_slots, i)
+		else
+			AGS_COLOR_MAINTAINER_TABLE[i].Color = slot.Color
+			table.insert(used_colors, slot.Color)
+		end		
+	end	
+	-- Now its time to give everyone remaining unique colors.
+	local free_colors = AGS_GetFreeItems(all_colors, used_colors)
+	-- This is double loop as we are at each step moving to next unused slot and color.
+	local i = 1
+	for _, slot in pairs(unassigned_slots) do 
+		AGS_COLOR_MAINTAINER_TABLE[slot].Color = free_colors[i]
+		i = i + 1
+	end
+	AGS_Print("Color table:", AGS_COLOR_MAINTAINER_TABLE)
+end
+	
+function AGS_ColorMaintainer_CreateColorList()
+	local colors = {}
+	for _, slot in pairs(AGS_COLOR_MAINTAINER_TABLE) do
+		table.insert(colors, slot.Color)
+	end
+	return colors
+end
+-- This returns list of all slots as they are defined in PlayerSettings of GlobalSettings table.
+function AGS_ColorMaintainer_CreateListFrom(slots)
+	return {
+		{ Color = slots.FirstSlot },	
+		{ Color = slots.SecondSlot },	
+		{ Color = slots.ThirdSlot },	
+		{ Color = slots.FourthSlot },	
+		{ Color = slots.FifthSlot },	
+		{ Color = slots.SixthSlot },	
+		{ Color = slots.SeventhSlot },	
+		{ Color = slots.EighthSlot },	
+		{ Color = slots.NinthSlot },	
+	}
+end
+
+function AGS_ColorMaintainer_RefreshSlots()
+	PlayerColour_Enable()	
+	for _, player in pairs(PLAYERS) do
+		if not player.isEliminated then
+			AGS_ColorMaintainer_ForceColor(player, AGS_COLOR_MAINTAINER_TABLE[player.slotIndex].Color)			
+		end
+	end	
+end
+
+function AGS_ColorMaintainer_ForceColor(player, slot)
+	Game_SetPlayerSlotColour(player.id, slot)
+	Game_SetPlayerUISlotColour(player.id, slot)
+end
