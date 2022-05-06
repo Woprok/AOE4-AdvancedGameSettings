@@ -168,30 +168,28 @@ function AGS_Conquest_OnPostConstructionComplete(context, data)
 	AGS_Conquest_UpdateObjective()
 end
 -- Deal with rebuilding of landmarks and notification about objective under attack.
-function AGS_Conquest_OnDamageReceived(context)
-	-- Excludes razing buildings as they do not have an attacker ?
-	if context == nil or context.attacker == nil or context.victim == nil then 
+function AGS_Conquest_OnDamageReceived(context)	
+	-- Ignore nils and world owned entities
+	if context == nil  or context.victim == nil or World_OwnsEntity(context.victim) then
 		return 
 	end
-	-- Builder and attacker can't be world owned.
-	if World_OwnsEntity(context.victim) or World_OwnsEntity(context.attacker) then
-		return
-	end
+	-- Get building ID and owner
+	local entity_uwid = Entity_GetID(context.victim)
+	local owner = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(context.victim))	
 	-- Excludes everythng that is not tracked by wincondition.
 	if not AGS_Conquest_IsConquerable(context.victim) then
 		return
 	end	
-	-- Exclude scuttling of incomplete buildings.
-	if Entity_IsBuilding(context.victim) and Entity_GetBuildingProgress(context.victim) < 1.0 then
-		return
-	end	
-	-- Get building ID and owner
-	local entity_uwid = Entity_GetID(context.victim)
-	local owner = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(context.victim))
 	-- Owner must always have this landmark registered for us to do anything with it ?
 	if owner.AGS_Conquerables[entity_uwid] == nil then
 		return
 	end
+	
+	-- This resolves edge case when mongol landmark unit is present
+	if context.currentHealth ~= nil and context.currentHealth <= 1.0 and AGS_IsThisSpecialMobileBuildingDead(context.victim) then
+		AGS_Conquest_ConquerableDestroyed(owner, context.victim, nil)
+	end
+	
 	-- If building is being repaired (also triggers OnDamageReceived) we will check if its landmark and return
 	if context.isRepairing then		
 		-- If building is marked as landmark (its type cant change)
@@ -206,12 +204,22 @@ function AGS_Conquest_OnDamageReceived(context)
 		end
 		return		
 	end
-
+	
+	-- Excludes razing buildings as they do not have an attacker ?
+	-- Builder and attacker can't be world owned.
+	if context.attacker == nil or World_OwnsEntity(context.attacker) then 
+		return 
+	end
+	local attacker = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(context.attacker))
+	
+	-- Exclude scuttling of incomplete buildings.
+	if Entity_IsBuilding(context.victim) and Entity_GetBuildingProgress(context.victim) < 1.0 then
+		return
+	end	
 	-- Notifications are skipped if entity is dead as we are only informing of them to take damage.
 	if not owner.AGS_Conquerables[entity_uwid].is_alive then	
 		return
 	end
-	local attacker = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(context.attacker))
 	AGS_Notifications_Damaged(entity_uwid, attacker, owner, AGS_NOTIFICATIONS_CONQUEST_ATTACKED)
 end
 

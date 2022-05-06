@@ -1,151 +1,151 @@
 ﻿ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
-1,,,,,,Advanced Game Settings
-2,,,,,,"Extends standard Age of Empires 4 game mode with more game options.\r\n\r\nAdditional features included in current version of the mod:\r\nWin Conditions\r\n- Regicide (Defeat Kings.)\r\n- Sudden Death (Destroy Landmark Town Centers. Additional non-landmark town centers are disabled.)\r\nWin Conditions Options\r\n- Sacred Timer\r\n- Wonder Timer\r\n- Team Solidarity (All teammates are eliminated if one is removed from game.)\r\nDiplomacy Options\r\n- Treaty Timer\r\n- Enable Tribute\r\n- Enable Diplomacy\r\nMatch Options\r\n- Start Type (Settled, Slow Nomad, Scattered Villagers)\r\n- Last Age\r\n- Game Rates\r\n- Technology Level\r\n- Game Simulation Speed (Only for single player)\r\n- Population Capacity\r\nUnits Options\r\n- Spawn King\r\n- Spawn Castle\r\n- Starting Villagers\r\nOther\r\n- Ding (Easter Egg)\r\n- Early Market\r\n- Destroyable Trees\r\nCurrent option also enables you to recreate game modes such as Deathmatch, Wonder Rush...\r\n\r\nSource code, feedback, bug reports or contribution to mode can be done at: https://github.com/search?q=AOE4-AdvancedGameSettings (This is link to search results, due to chat filter my git nickname is censored, It should be always first result.)\r\n"
-3,,,,,,Advanced Game Settings provides you with a variety of match options and win conditions to customize your game and play it how you want to.\r\nHELP:\r\nTo see all options you need to scroll down.\r\nOptions tagged as SP are not supported in multiplayer matches.\r\nFull description for all options can be found at https://github.com/Woprok/AOE4-AdvancedGameSettings \r\n
-4,,,,,,Win Conditions
-5,,,,,,Annihilation
-6,,,,,,Destroy all enemies
-7,,,,,,Elimination
-8,,,,,,Prevail longer then all your enemies
-9,,,,,,Surrender
-10,,,,,,Do not surrender
-11,,,,,,Conquest
-12,,,,,,Conquer all enemy objectives
-13,,,,,,Regicide
-14,,,,,,Defeat all enemy Kings
-15,,,,,,Religious
-16,,,,,,Control all the Sacred Sites
-17,,,,,,Wonder
-18,,,,,,Build and defend the Wonder
-19,,,,,,Score
-20,,,,,,Achieve highest score before timer ends
-21,,,,,,Game Conditions
-22,,,,,,Settlement
-23,,,,,,Initial settlement
-24,,,,,,Scattered
-25,,,,,,Nomadic
-26,,,,,,Settled
-27,,,,,,Treaty
-28,,,,,,Period of peace
-29,,,,,,Disabled
-30,,,,,,5 minutes
-31,,,,,,10 minutes
-32,,,,,,15 minutes
-33,,,,,,20 minutes
-34,,,,,,25 minutes
-35,,,,,,30 minutes
-36,,,,,,35 minutes
-37,,,,,,40 minutes
-38,,,,,,45 minutes
-39,,,,,,50 minutes
-40,,,,,,55 minutes
-41,,,,,,60 minutes
-42,,,,,,65 minutes
-43,,,,,,70 minutes
-44,,,,,,75 minutes
-45,,,,,,80 minutes
-46,,,,,,85 minutes
-47,,,,,,90 minutes
-48,,,,,,95 minutes
-49,,,,,,100 minutes
-50,,,,,,105 minutes
-51,,,,,,110 minutes
-52,,,,,,115 minutes
-53,,,,,,120 minutes
-54,,,,,,Team Victory
-55,,,,,,Enables for teams to win a game
-56,,,,,,Free For All
-57,,,,,,Initial Teams
-58,,,,,,Dynamic Teams
-59,,,,,,Team Solidarity
-60,,,,,,One for all. All for one.
-61,,,,,,Win Settings
-62,,,,,,Conquest Capital
-63,,,,,,Conquest requires destruction of first town center to eliminate player
-64,,,,,,Conquest Landmarks
-65,,,,,,Conquest requires destruction of all age up landmarks to eliminate player
-66,,,,,,Conquest Town Centers
-67,,,,,,Conquest requires destruction of all additional town centers to eliminate player
-68,,,,,,Conquest Keeps
-69,,,,,,Conquest requires destruction of all keeps to eliminate player
-70,,,,,,Conquest Wonder
-71,,,,,,Conquest requires destruction of the wonder to eliminate player
-72,,,,,,Religious Timer
-73,,,,,,Time required to hold all sacred sites
-74,,,,,,Instant
-75,,,,,,1 minute
-76,,,,,,2 minutes
-77,,,,,,3 minutes
-78,,,,,,4 minutes
-79,,,,,,6 minutes
-80,,,,,,7 minutes
-81,,,,,,8 minutes
-82,,,,,,9 minutes
-83,,,,,,11 minutes
-84,,,,,,12 minutes
-85,,,,,,13 minutes
-86,,,,,,14 minutes
-87,,,,,,Religious Resumable Timer
-88,,,,,,Timer continues from the moment it was interrupted on recapture
-89,,,,,,Wonder Timer
-90,,,,,,Time required to defend wonder
-91,,,,,,Wonder Last Stand
-92,,,,,,Destroying finished wonder will eliminate owner
-93,,,,,,Wonder Scale Cost
-94,,,,,,Scale cost of wonder based on amount of players. This defines additional amount of all resources per player. Price starts at 3000 of each resource.
-95,,,,,,0 per player
-96,,,,,,250 per player
-97,,,,,,375 per player
-98,,,,,,500 per player
-99,,,,,,750 per player
-100,,,,,,1000 per player
-101,,,,,,1500 per player
-102,,,,,,2000 per player
-103,,,,,,Game Settings
-104,,,,,,Tributes
-105,,,,,,Players can send resources to allies
-106,,,,,,Diplomacy
-107,,,,,,Players can set their own alliances
-108,,,,,,Team Vision
-109,,,,,,Shared vision between allies
-110,,,,,,None
-111,,,,,,Requires Market
-112,,,,,,Always
-113,,,,,,Map Vision
-114,,,,,,Starting vision over the map
-115,,,,,,Concealed
-116,,,,,,Explored
-117,,,,,,Revealed
-118,,,,,,Starting Age
-119,,,,,,Initial age for all players
-120,,,,,,Dark Age
-121,,,,,,Feudal Age
-122,,,,,,Castle Age
-123,,,,,,Imperial Age
-124,,,,,,Late-Imperial Age
-125,,,,,,Ending Age
-126,,,,,,Final age for all players
-127,,,,,,Technology Age
-128,,,,,,Initial technologies researched for all players
-129,,,,,,Starting Resources
-130,,,,,,Starting resources for all players
-131,,,,,,Normal
-132,,,,,,High
-133,,,,,,Very High
-134,,,,,,Maximum
-135,,,,,,Reveal FOW on Elimination
-136,,,,,,Removes FOW for eliminated player
-137,,,,,,Match Settings
-138,,,,,,Show Score
-139,,,,,,Player Scores are visible when Pinned Player Information is On
-140,,,,,,Score Show Placement
-141,,,,,,"Show current solo place in score mode ranking. Team score is evaluated only at the end of the game, if team victory is allowed. Score victory condition does not use same metric as default score."
-142,,,,,,Score Timer
-143,,,,,,Time after which will score decide the game
-144,,,,,,Min Population Capacity
-145,,,,,,Changes initial population capacity without houses. Will not exceed maximum population capacity.
-146,,,,,,Max Population Capacity
-147,,,,,,Changes maximum population capacity. Requires houses to reach it.
+1,,,,Mod Title,,Advanced Game Settings
+2,,,,Mod Page Description,,"Extends standard Age of Empires 4 game mode with more game options.\r\n\r\nAdditional features included in current version of the mod:\r\nWin Conditions\r\n- Regicide (Defeat Kings.)\r\n- Sudden Death (Destroy Landmark Town Centers. Additional non-landmark town centers are disabled.)\r\nWin Conditions Options\r\n- Sacred Timer\r\n- Wonder Timer\r\n- Team Solidarity (All teammates are eliminated if one is removed from game.)\r\nDiplomacy Options\r\n- Treaty Timer\r\n- Enable Tribute\r\n- Enable Diplomacy\r\nMatch Options\r\n- Start Type (Settled, Slow Nomad, Scattered Villagers)\r\n- Last Age\r\n- Game Rates\r\n- Technology Level\r\n- Game Simulation Speed (Only for single player)\r\n- Population Capacity\r\nUnits Options\r\n- Spawn King\r\n- Spawn Castle\r\n- Starting Villagers\r\nOther\r\n- Ding (Easter Egg)\r\n- Early Market\r\n- Destroyable Trees\r\nCurrent option also enables you to recreate game modes such as Deathmatch, Wonder Rush...\r\n\r\nSource code, feedback, bug reports or contribution to mode can be done at: https://github.com/search?q=AOE4-AdvancedGameSettings (This is link to search results, due to chat filter my git nickname is censored, It should be always first result.)\r\n"
+3,,,,Mod Gamemode Description,,Advanced Game Settings provides you with a variety of match options and win conditions to customize your game and play it how you want to.\r\nHELP:\r\nTo see all options you need to scroll down.\r\nOptions tagged as SP are not supported in multiplayer matches.\r\nFull description for all options can be found at https://github.com/Woprok/AOE4-AdvancedGameSettings \r\n
+4,,,,Option Header,,Win Conditions
+5,,,,Annihilation Option,,Annihilation
+6,,,,Annihilation Option,,Destroy all enemies
+7,,,,Elimination Option,,Elimination
+8,,,,Elimination Option,,Prevail longer then all your enemies
+9,,,,Surrender Option,,Surrender
+10,,,,Surrender Option,,Do not surrender
+11,,,,Conquest Option,,Conquest
+12,,,,Conquest Option,,Conquer all enemy objectives
+13,,,,Regicide Option,,Regicide
+14,,,,Regicide Option,,Defeat all enemy Kings
+15,,,,Religious Option,,Religious
+16,,,,Religious Option,,Control all the Sacred Sites
+17,,,,Wonder Option,,Wonder
+18,,,,Wonder Option,,Build and defend the Wonder
+19,,,,Score Option,,Score
+20,,,,Score Option,,Achieve highest score before timer ends
+21,,,,Option Header,,Game Conditions
+22,,,,Settlement Option,,Settlement
+23,,,,Settlement Option,,Initial settlement
+24,,,,Settlement Option,,Scattered
+25,,,,Settlement Option,,Nomadic
+26,,,,Settlement Option,,Settled
+27,,,,Treaty Option,,Treaty
+28,,,,Treaty Option,,Period of peace
+29,,,,Generic,,Disabled
+30,,,,Generic,,5 minutes
+31,,,,Generic,,10 minutes
+32,,,,Generic,,15 minutes
+33,,,,Generic,,20 minutes
+34,,,,Generic,,25 minutes
+35,,,,Generic,,30 minutes
+36,,,,Generic,,35 minutes
+37,,,,Generic,,40 minutes
+38,,,,Generic,,45 minutes
+39,,,,Generic,,50 minutes
+40,,,,Generic,,55 minutes
+41,,,,Generic,,60 minutes
+42,,,,Generic,,65 minutes
+43,,,,Generic,,70 minutes
+44,,,,Generic,,75 minutes
+45,,,,Generic,,80 minutes
+46,,,,Generic,,85 minutes
+47,,,,Generic,,90 minutes
+48,,,,Generic,,95 minutes
+49,,,,Generic,,100 minutes
+50,,,,Generic,,105 minutes
+51,,,,Generic,,110 minutes
+52,,,,Generic,,115 minutes
+53,,,,Generic,,120 minutes
+54,,,,Team Victory Option,,Team Victory
+55,,,,Team Victory Option,,Enables for teams to win a game
+56,,,,Team Victory Option,,Free For All
+57,,,,Team Victory Option,,Initial Teams
+58,,,,Team Victory Option,,Dynamic Teams
+59,,,,Team Solidarity Option,,Team Solidarity
+60,,,,Team Solidarity Option,,One for all. All for one.
+61,,,,Option Header,,Win Settings
+62,,,,Conquest Option,,Conquest Capital
+63,,,,Conquest Option,,Conquest requires destruction of first town center to eliminate player
+64,,,,Conquest Option,,Conquest Landmarks
+65,,,,Conquest Option,,Conquest requires destruction of all age up landmarks to eliminate player
+66,,,,Conquest Option,,Conquest Town Centers
+67,,,,Conquest Option,,Conquest requires destruction of all additional town centers to eliminate player
+68,,,,Conquest Option,,Conquest Keeps
+69,,,,Conquest Option,,Conquest requires destruction of all keeps to eliminate player
+70,,,,Conquest Option,,Conquest Wonder
+71,,,,Conquest Option,,Conquest requires destruction of the wonder to eliminate player
+72,,,,Religious Option,,Religious Timer
+73,,,,Religious Option,,Time required to hold all sacred sites
+74,,,,Generic,,Instant
+75,,,,Generic,,1 minute
+76,,,,Generic,,2 minutes
+77,,,,Generic,,3 minutes
+78,,,,Generic,,4 minutes
+79,,,,Generic,,6 minutes
+80,,,,Generic,,7 minutes
+81,,,,Generic,,8 minutes
+82,,,,Generic,,9 minutes
+83,,,,Generic,,11 minutes
+84,,,,Generic,,12 minutes
+85,,,,Generic,,13 minutes
+86,,,,Generic,,14 minutes
+87,,,,Religious Option,,Religious Resumable Timer
+88,,,,Religious Option,,Timer continues from the moment it was interrupted on recapture
+89,,,,Wonder Option,,Wonder Timer
+90,,,,Wonder Option,,Time required to defend wonder
+91,,,,Wonder Option,,Wonder Last Stand
+92,,,,Wonder Option,,Destroying finished wonder will eliminate owner
+93,,,,Wonder Option,,Wonder Scale Cost
+94,,,,Wonder Option,,Scale cost of wonder based on amount of players. This defines additional amount of all resources per player. Price starts at 3000 of each resource.
+95,,,,Generic,,0 per player
+96,,,,Generic,,250 per player
+97,,,,Generic,,375 per player
+98,,,,Generic,,500 per player
+99,,,,Generic,,750 per player
+100,,,,Generic,,1000 per player
+101,,,,Generic,,1500 per player
+102,,,,Generic,,2000 per player
+103,,,,Option Header,,Game Settings
+104,,,,Tribute Option,,Tributes
+105,,,,Tribute Option,,Players can send resources to allies
+106,,,,Diplomacy Option,,Diplomacy
+107,,,,Diplomacy Option,,Players can set their own alliances
+108,,,,Team Vision Option,,Team Vision
+109,,,,Team Vision Option,,Shared vision between allies
+110,,,,Generic,,None
+111,,,,Team Vision Option,,Requires Market
+112,,,,Team Vision Option,,Always
+113,,,,Map Vision Option,,Map Vision
+114,,,,Map Vision Option,,Starting vision over the map
+115,,,,Map Vision Option,,Concealed
+116,,,,Map Vision Option,,Explored
+117,,,,Map Vision Option,,Revealed
+118,,,,Age Option,,Starting Age
+119,,,,Age Option,,Initial age for all players
+120,,,,Age Option,,Dark Age
+121,,,,Age Option,,Feudal Age
+122,,,,Age Option,,Castle Age
+123,,,,Age Option,,Imperial Age
+124,,,,Age Option,,Late-Imperial Age
+125,,,,Age Option,,Ending Age
+126,,,,Age Option,,Final age for all players
+127,,,,Age Option,,Technology Age
+128,,,,Age Option,,Initial technologies researched for all players
+129,,,,Resource Option,,Starting Resources
+130,,,,Resource Option,,Starting resources for all players
+131,,,,Generic,,Normal
+132,,,,Generic,,High
+133,,,,Generic,,Very High
+134,,,,Generic,,Maximum
+135,,,,FOW Option,,Reveal FOW on Elimination
+136,,,,FOW Option,,Removes FOW for eliminated player
+137,,,,Option Header,,Match Settings
+138,,,,Score Visibility Option,,Show Score
+139,,,,Score Visibility Option,,Player Scores are visible when Pinned Player Information is On
+140,,,,Score Option,,Score Show Placement
+141,,,,Score Option,,"Show current solo place in score mode ranking. Team score is evaluated only at the end of the game, if team victory is allowed. Score victory condition does not use same metric as default score."
+142,,,,Score Option,,Score Timer
+143,,,,Score Option,,Time after which will score decide the game
+144,,,,Population Option,,Min Population Capacity
+145,,,,Population Option,,Changes initial population capacity without houses. Will not exceed maximum population capacity.
+146,,,,Population Option,,Max Population Capacity
+147,,,,Population Option,,Changes maximum population capacity. Requires houses to reach it.
 148,,,,Number,,0
 149,,,,Number,,25
 150,,,,Number,,50
@@ -174,8 +174,8 @@
 173,,,,Number,,950
 174,,,,Number,,1000
 175,,,,Number,,10000
-176,,,,,,Starting Villagers
-177,,,,,,Changes initial villager count for each player
+176,,,,Villager Option,,Starting Villagers
+177,,,,Villager Option,,Changes initial villager count for each player
 178,,,,Number,,1
 179,,,,Number,,2
 180,,,,Number,,3
@@ -192,21 +192,21 @@
 191,,,,Number,,35
 192,,,,Number,,40
 193,,,,Number,,45
-194,,,,,,Starting Keep
-195,,,,,,Every players starts with a Keep near start
-196,,,,,,Legacy Settings
-197,,,,,,Starting King
-198,,,,,,Every players starts with a King near start
-199,,,,,,Ding
-200,,,,,,Easter Egg
-201,,,,,,Early Market
-202,,,,,,Allows construction of the market in Dark Age
-203,,,,,,Tree Bombardment
-204,,,,,,Allows siege and ships with target ground to destroy trees
-205,,,,,,Simulation Speed
-206,,,,,,Changes game simulation ticks. This option can not be used in multiplayer and will be disabled.
-207,,,,,,Game Rates
-208,,,,,,"Multiplies all of the following gathering rates, construction speed, repair rate and production speed by selected value."
+194,,,,Keep Option,,Starting Keep
+195,,,,Keep Option,,Every players starts with a Keep near start
+196,,,,Option Header,,Legacy Settings
+197,,,,King Option,,Starting King
+198,,,,King Option,,Every players starts with a King near start
+199,,,,Ding Option,,Ding
+200,,,,Ding Option,,Easter Egg
+201,,,,Market Option,,Early Market
+202,,,,Market Option,,Allows construction of the market in Dark Age
+203,,,,Tree Option,,Tree Bombardment
+204,,,,Tree Option,,Allows siege and ships with target ground to destroy trees
+205,,,,Speed Option,,Simulation Speed
+206,,,,Speed Option,,Changes game simulation ticks. This option can not be used in multiplayer and will be disabled.
+207,,,,Game Rate Option,,Game Rates
+208,,,,Game Rate Option,,"Multiplies all of the following gathering rates, construction speed, repair rate and production speed by selected value."
 209,,,,Number,,1x
 210,,,,Number,,2x
 211,,,,Number,,3x
@@ -223,11 +223,11 @@
 222,,,,Number,,0.80x
 223,,,,Number,,0.75x
 224,,,,Number,,20x
-225,,,,,,Town Center Restrictions
-226,,,,,,Disables construction of additional Town Centers
-227,,,,,,None
-228,,,,,,Normal
-229,,,,,,Landmarks
+225,,,,TC Option,,Town Center Restrictions
+226,,,,TC Option,,Disables construction of additional Town Centers
+227,,,,TC Option,,None
+228,,,,TC Option,,Normal
+229,,,,TC Option,,Landmarks
 230,,,,Team Solidarity,,Protect your teammates.
 231,,,,Team Solidarity,,%1PLAYER_NAME% surrendered in solidarity with his teammate
 232,,,,Treaty,,%1MINUTES_REMAINING% minutes until Treaty Ends
@@ -240,21 +240,21 @@
 239,,,,Diplomacy,,Become friendly to %1PLAYER_NAME%
 240,,,,Diplomacy,,Become neutral to %1PLAYER_NAME%
 241,,,,Diplomacy,,Become hostile to %1PLAYER_NAME%
-242,,,,,,Scattered Summary
-243,,,,,,Empowered King
-244,,,,,,King will have additional bonuses and abilities
-245,,,,,,Maintain Team Balance
-246,,,,,,"Should team lose a player, remaining members will share his population capacity and resources. Dynamic teams are not eligible for this."
-247,,,,,,Population
-248,,,,,,Population & Resources
-249,,,,,,No Dock
-250,,,,,,"Disables construction of docks in any age, not advised to be used on maps that separate players only by water."
-251,,,extra_text,,,Medium
-252,,,help_text,,,Fight until the bitter end.
-253,,,extra_text,,,Prevail until the end.
+242,,,,Settlement Option Summary,,Scattered Start
+243,,,,King Option,,Empowered King
+244,,,,King Option,,King will have additional bonuses and abilities
+245,,,,Team Balance Option,,Maintain Team Balance
+246,,,,Team Balance Option,,"Should team lose a player, remaining members will share his population capacity and resources. Dynamic teams are not eligible for this."
+247,,,,Team Balance Option,,Population
+248,,,,Team Balance Option,,Population & Resources
+249,,,,Dock Option,,No Dock
+250,,,,Dock Option,,"Disables construction of docks in any age, not advised to be used on maps that separate players only by water."
+251,,,extra_text,Generic,,Medium
+252,,,help_text,Surrender,,Fight until the bitter end.
+253,,,extra_text,Elimination,,Prevail until the end.
 254,,,help_text,"Regicide King Unit, Requires Attributes",,"Monarch is subject to no earthly authority, deriving his right to rule directly from the will of God. Just don't question him!"
 255,,,screen_name,"Regicide King Unit, Requires Attributes",,King
-256,,,,,,Fortified
+256,,,,Settlement Option,,Fortified
 257,,,ags_conditions_objectives,Team Solidarity,,Failed to protect %1PLAYER_NAME%.
 258,,,ags_conditions_objectives,Team Solidarity,,All other teams crumbled.
 259,,,ags_conditions_objectives,Annihilation,,Annihilate everything.
@@ -265,18 +265,18 @@
 264,,,ags_conditions_notifications,Regicide,,%1PLAYER_NAME% assassinated
 265,,,ags_conditions_objectives,Regicide,,Enemy attacking %1PLAYER_NAME%'s king
 266,,,ags_conditions_notifications,Regicide,,King under attack
-267,,,ags_conditions_notifications,,,"""%1PLAYER_NAME% conquered"""
-268,,,ags_conditions_objectives,,,Your empire has been conquered.
-269,,,ags_conditions_objectives,,,Conquered all enemies.
+267,,,ags_conditions_notifications,Conquest,,"""%1PLAYER_NAME% conquered"""
+268,,,ags_conditions_objectives,Conquest,,Your empire has been conquered.
+269,,,ags_conditions_objectives,Conquest,,Conquered all enemies.
 270,,,ags_conditions_objectives,Score,,Survive and outshine everyone.
 271,,,ags_conditions_objectives,Score,,Your empire was forgotten by the history.
 272,,,ags_conditions_objectives,Score,,Your Empire shines brightest.
-273,,,ags_conditions_notifications,,,Still waits %1PLAYER_NAME% for Godot.
+273,,,ags_conditions_notifications,Score,,Still waits %1PLAYER_NAME% for Godot.
 274,,,ags_conditions_notifications,Wonder,,%1PLAYER_NAME% couldn't withstand the glory of the wonder
 275,,,ags_conditions_notifications,Wonder,,Building a wonder
 276,,,ags_conditions_notifications,Conquest,,Destroyed Landmark
 277,,,ags_conditions_objectives,Wonder,,Failed to hold the wonder.
-278,,,,,,Player Settings
+278,,,,Option Header,,Player Settings
 279,,,,Colors,,Enforce Colors
 280,,,,Colors,,"Fixes colors for diplomacy. This is not intended to serve as color picker (But it can be used as one.). Causes automatic update of colors for each slot, whenever game causes conflicting change. Conflicting settings are automatically resolved."
 281,,,,Colors,,Used by Enforce Colors to determine which color is used by this slot. Requires Enforce Colors to be allowed.
@@ -297,8 +297,8 @@
 296,,,,Colors,,Enforced Slot 6 Color
 297,,,,Colors,,Enforced Slot 7 Color
 298,,,,Colors,,Enforced Slot 8 Color
-299,,,,,,Unit Rates
-300,,,,,,Multiplies unit movement maximum speed by selected value.
+299,,,,Unit Rates Option,,Unit Rates
+300,,,,Unit Rates Option,,Multiplies unit movement maximum speed by selected value.
 301,,,,Number,,1.05x
 302,,,,Number,,1.10x
 303,,,,Number,,1.15x
@@ -308,6 +308,6 @@
 307,,,ags_conditions_objectives,Treaty,,Prepare for the war.
 308,,,ags_conditions_objectives,Treaty,,This was not supposed to happen.
 309,,,ags_conditions_objectives,Treaty,,Pen is truly strongest weapon in history.
-310,,,ags_conditions_notifications,,,%1MINUTES_REMAINING% minutes until Game Ends
-311,,,ags_conditions_notifications,,,1 minute until Game Ends
-312,,,ags_conditions_objectives,,,Survive and outshine everyone. Rank %1RANK_POSITION%.
+310,,,ags_conditions_notifications,Score,,%1MINUTES_REMAINING% minutes until Game Ends
+311,,,ags_conditions_notifications,Score,,1 minute until Game Ends
+312,,,ags_conditions_objectives,Score,,Survive and outshine everyone. Rank %1RANK_POSITION%.

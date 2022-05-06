@@ -88,7 +88,7 @@ end
 
 function AGS_Annihilation_OnDamageReceived(context)
 	if context ~= nil and context.victim ~= nil and not World_OwnsEntity(context.victim)
-		and context.currentHealth ~= nil and context.currentHealth < 10.0 then
+		and context.currentHealth ~= nil and context.currentHealth <= 1.0 then
 		AGS_Annihilation_CheckAnnihilation(Entity_GetPlayerOwner(context.victim))
 	end
 end
