@@ -16,6 +16,8 @@ AGS_SCORE_TIMER = "AGS_ScoreTimer"
 AGS_SCORE_VICTORY_TIMER = 60 * 60
 AGS_SCORE_CHECK_FREQUENCY = 1.0
 AGS_SCORE_COUNTDOWN_NOTIFICATIONS = { }
+AGS_SCORE_ENTITY_UWID_TABLE = { }
+AGS_SCORE_SQUAD_UWID_TABLE = { }
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -36,6 +38,10 @@ function AGS_Score_OnPlay()
 	AGS_Print("AGS_Score_OnPlay")
 	AGS_Score_InitializePlacements()
 	Rule_AddGlobalEvent(AGS_Score_OnEntityKilled, GE_EntityKilled)
+	Rule_AddGlobalEvent(AGS_Score_OnConstructionComplete, GE_ConstructionComplete) 
+	Rule_AddGlobalEvent(AGS_Score_OnBuildItemComplete, GE_BuildItemComplete)
+	Rule_AddGlobalEvent(AGS_Score_OnUpgradeComplete, GE_UpgradeComplete)
+	Rule_AddGlobalEvent(AGS_Score_OnDamageReceived, GE_DamageReceived)
 	Rule_AddInterval(AGS_Score_OnTimerTick, AGS_SCORE_CHECK_FREQUENCY)
 	AGS_Score_CreateObjective()
 	AGS_Score_UpdateObjective()
@@ -67,6 +73,10 @@ end
 function AGS_Score_OnGameOver()
 	AGS_Print("AGS_Score_OnGameOver")
 	Rule_RemoveGlobalEvent(AGS_Score_OnEntityKilled)
+	Rule_RemoveGlobalEvent(AGS_Score_OnConstructionComplete) 
+	Rule_RemoveGlobalEvent(AGS_Score_OnBuildItemComplete)
+	Rule_RemoveGlobalEvent(AGS_Score_OnUpgradeComplete)
+	Rule_RemoveGlobalEvent(AGS_Score_OnDamageReceived)
 	Rule_Remove(AGS_Score_OnTimerTick)
 	AGS_Score_RemoveObjective()
 end
@@ -76,7 +86,146 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_Score_OnEntityKilled(context)
-	-- TODO
+	-- Get killer so we can give him points.
+	if context == nil or context.killer == nil then
+		return
+	end
+	local killer_entity_id = context.killer
+	if World_OwnsEntity(killer_entity_id) then
+		return
+	end
+	local player = Entity_GetPlayerOwner(killer_entity_id)
+	if player == nil then 
+		return
+	end
+	local owner = Core_GetPlayersTableEntry(player)
+	if owner == nil then 
+		return
+	end
+	-- Now it can be either pure entity or squad
+	if context.victimSquad ~= nil then
+		AGS_Score_OnEntityKilled_Squad(owner, context.victimSquad)
+	elseif context.victim ~= nil then
+		AGS_Score_OnEntityKilled_Entity(owner, context.victim)		
+	end
+end
+
+function AGS_Score_OnEntityKilled_Squad(owner, squad_id)
+	local pbg = Squad_GetBlueprint(squad_id)
+	if pbg == nil then
+		return
+	end	
+	-- Modify, this is little incorrect as its not using owner of squad, but owner of killer
+	local cost = AGS_Score_TotalCost(Player_GetSquadBPCost(owner.id, pbg))
+	AGS_Score_UpdateKilled(owner, 1, cost)	
+end
+
+function AGS_Score_OnEntityKilled_Entity(owner, entity_id)
+	local pbg = Entity_GetBlueprint(entity_id)
+	if pbg == nil then
+		return
+	end	
+	-- Modify, this is little incorrect as its not using owner of entity, but owner of killer
+	local cost = AGS_Score_TotalCost(Player_GetEntityBPCost(owner.id, pbg))
+	AGS_Score_UpdateKilled(owner, 1, cost)	
+end
+
+function AGS_Score_OnConstructionComplete(context)
+	if context == nil or context.player == nil or context.entity == nil or context.pbg == nil then
+		return
+	end
+	local owner = Core_GetPlayersTableEntry(context.player)
+	if owner == nil then 
+		return
+	end
+	-- Ignore repeated construction of same building, like mongol moving structures
+	local entity_id = context.entity
+	local entity_uwid = Entity_GetID(entity_id)
+	if entity_uwid == nil or AGS_SCORE_ENTITY_UWID_TABLE[entity_uwid] then
+		return
+	end
+	AGS_SCORE_ENTITY_UWID_TABLE[entity_uwid] = true
+	-- Modify
+	local pbg = context.pbg
+	local cost = AGS_Score_TotalCost(Player_GetEntityBPCost(owner.id,pbg))
+	AGS_Score_UpdateBuilt(owner, 1, cost)
+end
+
+function AGS_Score_OnBuildItemComplete(context)
+	if context == nil or context.player == nil or context.spawnedSquad == nil or context.pbg == nil then
+		return
+	end
+	local owner = Core_GetPlayersTableEntry(context.player)
+	if owner == nil then 
+		return
+	end
+	-- Ignore repeated construction of same unit, like mongol moving structures
+	local squad_id = context.spawnedSquad
+	local squad_uwid = Squad_GetID(squad_id)
+	if squad_uwid == nil or AGS_SCORE_SQUAD_UWID_TABLE[squad_uwid] then
+		return
+	end
+	AGS_SCORE_SQUAD_UWID_TABLE[squad_uwid] = true
+	-- Modify
+	local pbg = context.pbg
+	local cost = AGS_Score_TotalCost(Player_GetSquadBPCost(owner.id, pbg))
+	AGS_Score_UpdateProduced(owner, 1, cost)	
+end
+
+function AGS_Score_OnUpgradeComplete(context)
+	if context == nil or context.executer == nil or context.upgrade == nil then
+		return
+	end
+	local entity_id = context.executer
+	if scartype(entity_id) ~= ST_ENTITY or World_OwnsEntity(entity_id) then
+		return
+	end
+	local player = Entity_GetPlayerOwner(entity_id)
+	if player == nil then 
+		return
+	end
+	local owner = Core_GetPlayersTableEntry(player)
+	if owner == nil then 
+		return
+	end
+	-- Modify
+	local pbg = context.upgrade
+	local cost = AGS_Score_TotalCost(Player_GetUpgradeBPCost(owner.id, pbg))
+	AGS_Score_UpdateUpgraded(owner, 1, cost)		
+end
+
+function AGS_Score_OnDamageReceived(context)
+	if context == nil or context.damage == nil or context.shieldDamage == nil or context.isRepairing == nil then
+		return
+	end
+    local total_health_change = context.shieldDamage + context.damage
+	if context.isRepairing then
+		AGS_Score_OnDamageReceived_Healed(context, total_health_change)
+	else
+		AGS_Score_OnDamageReceived_Damaged(context, total_health_change)		
+	end	
+end
+
+function AGS_Score_OnDamageReceived_Healed(context, total_health_change)
+	if context.victimOwner == nil then
+		return
+	end
+	local owner = Core_GetPlayersTableEntry(context.victimOwner)
+	if owner == nil then 
+		return
+	end
+	AGS_Score_UpdateDamage(owner, 0, total_health_change)
+end
+
+function AGS_Score_OnDamageReceived_Damaged(context, total_health_change)
+	if context.attackerOwner == nil then
+		return
+	end
+	local owner = Core_GetPlayersTableEntry(context.attackerOwner)
+	if owner == nil then 
+		return
+	end
+	AGS_Score_UpdateDamage(owner, total_health_change, 0)
 end
 
 function AGS_Score_OnTimerTick()
@@ -85,10 +234,11 @@ function AGS_Score_OnTimerTick()
 		Rule_RemoveMe()
 		Timer_End(AGS_SCORE_TIMER)
 		AGS_Score_EndWar()
+		return
 	end	
 	-- Anyway update objective and countdown notifications.
 	AGS_Score_UpdateObjective()
-	AGS_Score_UpdatePlacements()
+	AGS_Score_UpdatePlacements(AGS_Score_EvaluatePlayers())
 	AGS_Score_Countdown()
 end
 
@@ -97,21 +247,101 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_Score_InitializePlacements()
+	for _, player in pairs(PLAYERS) do 
+		player.AGS_Score = {
+			Total = 0,
+			TotalAlly = 0,
+			Built = 0,
+			Produced = 0,
+			Upgraded = 0,
+			Killed = 0,
+			DamageDealt = 0,
+			DamageHealed = 0,
+			ResourcesSpent = 0,
+			ResourcesTaken = 0,
+		}		
+	end
+	
 	-- Prepare notifications and start countdown.
 	if not Timer_Exists(AGS_SCORE_TIMER) then	
 		AGS_Score_CreateTimerNotifications()
-		Timer_Start(AGS_SCORE_TIMER, AGS_TREATY_PEACE_TIME)
+		Timer_Start(AGS_SCORE_TIMER, AGS_SCORE_VICTORY_TIMER)
 	end
 end
 -- Final evaluation of all placements and deciding winners.
 function AGS_Score_EndWar()
-	-- TODO
+	local final_ranking = AGS_Score_FinalizeScore()
+	AGS_Score_UpdatePlacements(final_ranking)	
+	
+	for _, player in pairs(PLAYERS) do
+		AGS_Print("Achieved score", player.AGS_Score)
+	end
+	
+	-- This always has players, so the first one is winner and thats enough for us.
+	local winner = final_ranking[1].data
+	
+	-- Eliminate all players that are not in his valid team.
+	AGS_SetPlayerGroupDefeated(
+		AGS_Teams_GetAllCurrentOpponents(winner),
+		AGS_Presentations_Loss, 
+		AGS_WR_SCORE,
+		AGS_Objectives_PresentWrap(
+			AGS_SCORE_OBJECTIVE, 
+			OS_Failed, 
+			AGS_OBJECTIVES_SCORE.title_lost))
 end
 
-function AGS_Score_UpdatePlacements()
-	-- TODO
+function AGS_Score_FinalizeScore()
+	for _, player in pairs(PLAYERS) do
+		player.AGS_Score.Total = AGS_Score_CalculateFinal(player.AGS_Score)		
+	end
+	local team_position_table = { }
+	for _, player in pairs(PLAYERS) do
+		-- Calculate team score and put it into field for final comparison.
+		for _, ally in pairs(AGS_Teams_GetAllCurrentTeammates(player, true)) do
+			player.AGS_Score.TotalAlly = player.AGS_Score.TotalAlly + ally.AGS_Score.Total
+		end
+		player.AGS_Score.TotalAlly = player.AGS_Score.TotalAlly + player.AGS_Score.Total
+		table.insert(team_position_table, { data = player })
+	end	
+	table.sort(team_position_table, AGS_Score_ComparePlayers)
+	return team_position_table 	
+end
+-- Take the score and compare two players, first by elimination status and then by score
+-- Interpret this as Is A before B ?
+function AGS_Score_ComparePlayers(scorePlayerA, scorePlayerB)
+	if not scorePlayerA.data.isEliminated and scorePlayerB.data.isEliminated then
+		return true
+	end
+	if scorePlayerA.data.isEliminated and not scorePlayerB.data.isEliminated then
+		return false
+	end
+	if scorePlayerA.data.AGS_Score.TotalAlly ~= scorePlayerB.data.AGS_Score.TotalAlly then
+		return scorePlayerA.data.AGS_Score.TotalAlly > scorePlayerB.data.AGS_Score.TotalAlly
+	end
+	if scorePlayerA.data.AGS_Score.Total ~= scorePlayerB.data.AGS_Score.Total then
+		return scorePlayerA.data.AGS_Score.Total > scorePlayerB.data.AGS_Score.Total
+	end
+	return scorePlayerA.data.slotIndex < scorePlayerB.data.slotIndex
+end
+
+function AGS_Score_EvaluatePlayers()
+	local position_table = { }
+	for _, player in pairs(PLAYERS) do
+		player.AGS_Score.Total = AGS_Score_CalculateFinal(player.AGS_Score)
+		table.insert(position_table, { data = player })
+	end	
+	table.sort(position_table, AGS_Score_ComparePlayers)
+	return position_table	
+end
+
+function AGS_Score_UpdatePlacements(evaluated)
 	if AGS_GLOBAL_SETTINGS.ScoreSettings.ShowPlacement then
-		
+		for i, scorePlayer in pairs(evaluated) do
+			if scorePlayer.data == AGS_GS_LOCAL_PLAYER then
+				AGS_Objectives_Set(AGS_SCORE_OBJECTIVE, nil, nil, nil, nil, Loc_FormatText(AGS_OBJECTIVES_SCORE.title_rank, i))
+			end		
+		end
 	end
 end
 
@@ -152,4 +382,49 @@ function AGS_Score_Countdown()
 			AGS_Notification_CountdownNotification(AGS_GS_LOCAL_PLAYER, i, AGS_NOTIFICATIONS_SCORE_COUNTDOWN, true)
 		end
 	end	
+end
+
+---------------------------------------------------------------------------------------------------
+-- Helper Functions:
+---------------------------------------------------------------------------------------------------
+
+-- Returns final score for this player.
+function AGS_Score_CalculateFinal(AGS_Score)
+	local production = (AGS_Score.Built + AGS_Score.Produced + AGS_Score.Upgraded) * 0.1
+	local production_total = (AGS_Score.ResourcesSpent) * 0.1
+	local war = (AGS_Score.Killed) * 0.1
+	local war_total = (AGS_Score.DamageDealt + AGS_Score.DamageHealed + AGS_Score.ResourcesTaken) * 0.1
+	return (production_total * production) * 0.1 + (war_total * war) * 0.25
+end
+
+function AGS_Score_UpdateBuilt(player, built, spent)
+	player.AGS_Score.Built          = player.AGS_Score.Built          + built
+	player.AGS_Score.ResourcesSpent = player.AGS_Score.ResourcesSpent + spent
+end
+
+function AGS_Score_UpdateProduced(player, produced, spent)
+	player.AGS_Score.Produced       = player.AGS_Score.Produced       + produced
+	player.AGS_Score.ResourcesSpent = player.AGS_Score.ResourcesSpent + spent
+end
+
+function AGS_Score_UpdateUpgraded(player, upgraded, spent)
+	player.AGS_Score.Upgraded       = player.AGS_Score.Upgraded       + upgraded
+	player.AGS_Score.ResourcesSpent = player.AGS_Score.ResourcesSpent + spent
+end
+
+function AGS_Score_UpdateKilled(player, killed, taken)
+	player.AGS_Score.Killed         = player.AGS_Score.Killed         + killed
+	player.AGS_Score.ResourcesTaken = player.AGS_Score.ResourcesTaken + taken
+end
+
+function AGS_Score_UpdateDamage(player, dealt, healed)
+	player.AGS_Score.DamageDealt    = player.AGS_Score.DamageDealt    + dealt
+	player.AGS_Score.DamageHealed   = player.AGS_Score.DamageHealed   + healed
+end
+
+function AGS_Score_TotalCost(cost)
+	if cost == nil then 
+		return 0
+	end
+	return cost.food + cost.gold + cost.stone + cost.wood 
 end

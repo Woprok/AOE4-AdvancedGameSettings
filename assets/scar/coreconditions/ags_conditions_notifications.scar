@@ -191,6 +191,14 @@ AGS_NOTIFICATIONS_TREATY_COUNTDOWN = {
 	title_final_victory = "$64c5019a145c4e4da448dbd3adeea61e:306",
 	title_final_defeat = "$64c5019a145c4e4da448dbd3adeea61e:306",	
 }
+AGS_NOTIFICATIONS_SCORE_COUNTDOWN = {
+	-- "%1MINUTES_REMAINING% minutes until Game Ends"
+	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:310",
+	title_defeat = "$64c5019a145c4e4da448dbd3adeea61e:310",
+	-- "1 minute until Game Ends"
+	title_final_victory = "$64c5019a145c4e4da448dbd3adeea61e:311",
+	title_final_defeat = "$64c5019a145c4e4da448dbd3adeea61e:311",	
+}
 -- Points during countdown at which to display loss warning.
 -- Arrange in decreasing order since music intensity increases when the last one triggers.
 AGS_NOTIFICATIONS_COUNTDOWN = {

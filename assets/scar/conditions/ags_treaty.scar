@@ -56,6 +56,7 @@ function AGS_Treaty_OnTimerTick()
 		Rule_RemoveMe()
 		Timer_End(AGS_TREATY_TIMER)
 		AGS_Treaty_StartWar()
+		return
 	end	
 	-- Anyway update objective and countdown notifications.
 	AGS_Treaty_UpdateObjective()

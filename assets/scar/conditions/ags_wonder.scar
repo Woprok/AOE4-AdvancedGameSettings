@@ -17,7 +17,7 @@ AGS_WONDER_CHECK_FREQUENCY = 1.0
 AGS_WONDER_RUSH = false
 -- This is kinda hack that enables to properly show winner objective based on local context.
 AGS_WONDER_WINNER = {
-	AGS_Wonder ={	
+	AGS_Wonder = {	
 		-- It has to contain default in case last stand wonder eliminates last opponent.
 		-- "Wonderstruck"
 		objective_success_title = "$11197536",
@@ -38,6 +38,7 @@ function AGS_Wonder_UpdateModuleSettings()
 	end
 	AGS_WONDER_VICTORY_TIMER = AGS_GLOBAL_SETTINGS.WonderSettings.Timer * 60
 	AGS_WONDER_RUSH = AGS_WONDER_VICTORY_TIMER == 0
+	AGS_WONDER_ACTIVE = AGS_WONDER_ACTIVE or AGS_WONDER_RUSH
 end
 
 function AGS_Wonder_OnPlay()
@@ -401,17 +402,15 @@ function AGS_Wonder_VictoryTriggered(winner)
 	AGS_WONDER_WINNER = winner
 	
 	-- Eliminate all players that are not in his valid team.
-	for _, enemies in pairs(AGS_Teams_GetAllCurrentOpponents(winner)) do
-		AGS_SetPlayerDefeated(
-			enemies.id, 
-			AGS_Presentations_LossWonder, 
-			AGS_WR_WONDER,
-			AGS_Objectives_PresentWrap(
-				winner.AGS_Wonder.objective, 
-				OS_Failed, 
-				AGS_OBJECTIVES_WONDER_ENEMY.title,
-				winner.playerName))
-	end
+	AGS_SetPlayerGroupDefeated(
+		AGS_Teams_GetAllCurrentOpponents(winner),
+		AGS_Presentations_LossWonder, 
+		AGS_WR_WONDER,
+		AGS_Objectives_PresentWrap(
+			winner.AGS_Wonder.objective, 
+			OS_Failed, 
+			AGS_OBJECTIVES_WONDER_ENEMY.title,
+			winner.playerName))
 end
 
 function AGS_Wonder_InformNegativeProgressChange(owner)

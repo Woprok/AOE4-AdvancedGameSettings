@@ -64,10 +64,3 @@ function AGS_Conditions_IsPrimary(reason)
 	-- AGS_WR_NONE or undefined here.
 	return false
 end
--- Gameending are conditions that always end the match when they are fired as an reason.
-function AGS_Conditions_IsGameEnding(reason)
-	if reason == AGS_WR_SCORE or reason == AGS_WR_RELIGIOUS or reason == AGS_WR_WONDER then
-		return true
-	end
-	return false
-end

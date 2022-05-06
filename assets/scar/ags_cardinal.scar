@@ -169,6 +169,7 @@ import("specials/ags_testing.scar")
 -------------------------------------------------
 -- TreatyStarted
 -- TreatyEnded
+-- OnPlayerEliminated preceeded by OnPlayerDefeated, used for group elimination to be not interfered by other win conditions.
 ---------------------------------------------------------------------------------------------------
 -- Relic Core_CallDelegateFunctions("<suffix>") Calls:
 ---------------------------------------------------------------------------------------------------
@@ -263,3 +264,4 @@ import("specials/ags_testing.scar")
 -- AGS_NomadicResources by nomadic module
 -- AGS_Conquerables by conquest module
 -- AGS_Wonder by wonder module
+-- AGS_Score by score module

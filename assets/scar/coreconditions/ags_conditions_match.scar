@@ -22,22 +22,22 @@ AGS_WR_SCORE = 110
 ---------------------------------------------------------------------------------------------------
 -- Player Win and Lose
 ---------------------------------------------------------------------------------------------------
--- Sets a player as defeated, invoking presentation and calling OnPlayerDefeated. 
+-- Sets a player as defeated, invoking presentation and calling OnPlayerDefeated and OnPlayerEliminated. 
 function AGS_SetPlayerDefeated(player_id, presentation_function, defeat_reason, opt_objective_pop)
-	-- Local player will get objective popup
-	if player_id == AGS_GS_LOCAL_PLAYER.id and opt_objective_pop ~= nil then
-		AGS_Objectives_Present(opt_objective_pop.id, opt_objective_pop.state, opt_objective_pop.title, opt_objective_pop.title_param)
-	end
-	
-	-- Invokes OnPlayerDefeated, only owner of the reason should use it for win/lose checks.
-	Core_SetPlayerDefeated(player_id, presentation_function, defeat_reason)
-	-- Basically this is called by default and its dumb...
-	if Player_IsAlive(player_id) then
-		AGS_Print("Killed player even through he was already supposed to be defeated ?")
-		World_KillPlayer(player_id, KPR_Lost)
-	end
+	AGS_SetOnePlayerDefeated(player_id, presentation_function, defeat_reason, opt_objective_pop)
+	Core_CallDelegateFunctions("OnPlayerEliminated", Core_GetPlayersTableEntry(player_id), defeat_reason)
 end
-
+-- Sets a group as defeated, invoking presentation and for each calling OnPlayerDefeated.
+-- After whole group is done for each calling OnPlayerEliminated. 
+function AGS_SetPlayerGroupDefeated(group, presentation_function, defeat_reason, opt_objective_pop)
+	for _, player in pairs(group) do
+		AGS_SetOnePlayerDefeated(player.id, presentation_function, defeat_reason, opt_objective_pop)
+	end
+	-- This is called after we are sure we eliminated whole group, so caller reason is resolved as first
+	for _, player in pairs(group) do
+		Core_CallDelegateFunctions("OnPlayerEliminated", player, defeat_reason)
+	end	
+end
 -- Sets a player as victorious, invoking presentation and calling PreGameOver. 
 function AGS_SetPlayerVictorious(player_id, presentation_function, victory_reason, opt_objective_pop)
 	-- Local player will get objective popup
@@ -54,4 +54,23 @@ end
 -- Ends the game by doing last delegate call OnGameOver executed via core method.
 function AGS_EndGame()	
 	Core_OnGameOver()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Internal call, that will not cause OnPlayerEliminated to be invoked.
+function AGS_SetOnePlayerDefeated(player_id, presentation_function, defeat_reason, opt_objective_pop)
+	-- Local player will get objective popup
+	if player_id == AGS_GS_LOCAL_PLAYER.id and opt_objective_pop ~= nil then
+		AGS_Objectives_Present(opt_objective_pop.id, opt_objective_pop.state, opt_objective_pop.title, opt_objective_pop.title_param)
+	end
+	
+	-- Invokes OnPlayerDefeated, only owner of the reason should use it for win/lose checks.
+	Core_SetPlayerDefeated(player_id, presentation_function, defeat_reason)
+	-- Basically this is called by default and its dumb...
+	if Player_IsAlive(player_id) then
+		AGS_Print("Killed player even through he was already supposed to be defeated ?")
+		World_KillPlayer(player_id, KPR_Lost)
+	end	
 end

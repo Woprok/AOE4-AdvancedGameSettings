@@ -41,10 +41,10 @@ function AGS_TeamSolidarity_TreatyEnded()
 	AGS_TEAM_SOLIDARITY_ACTIVE = true
 end
 
-function AGS_TeamSolidarity_OnPlayerDefeated(player, reason)
-	AGS_Print("AGS_TeamSolidarity_OnPlayerDefeated")
+function AGS_TeamSolidarity_OnPlayerEliminated(player, reason)
+	AGS_Print("AGS_TeamSolidarity_OnPlayerEliminated")
 	-- Enforces teammates solidarity on other reasons that are not expected to end the match.
-	if reason ~= AGS_WR_TEAM_SOLIDARITY and not AGS_Conditions_IsGameEnding(reason) then 
+	if reason ~= AGS_WR_TEAM_SOLIDARITY then 
 		AGS_TeamSolidarity_Enforce(player)
 	end
 	if reason == AGS_WR_TEAM_SOLIDARITY then

@@ -49,6 +49,8 @@ AGS_OBJECTIVES_SCORE = {
 	reason = AGS_WR_SCORE,
 	-- "Survive and outshine everyone."
 	title = "$64c5019a145c4e4da448dbd3adeea61e:270", 
+	-- "Survive and outshine everyone. Rank %1RANK_POSITION%."
+	title_rank = "$64c5019a145c4e4da448dbd3adeea61e:312",
 	-- "Your empire was forgotten by the history."
 	title_lost = "$64c5019a145c4e4da448dbd3adeea61e:271",
 	-- "Your Empire shines brightest."

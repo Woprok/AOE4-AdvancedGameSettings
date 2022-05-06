@@ -139,7 +139,7 @@
 138,,,,,,Show Score
 139,,,,,,Player Scores are visible when Pinned Player Information is On
 140,,,,,,Score Show Placement
-141,,,,,,Show current place in score mode ranking. Score victory condition does not use same metric as default score.
+141,,,,,,"Show current solo place in score mode ranking. Team score is evaluated only at the end of the game, if team victory is allowed. Score victory condition does not use same metric as default score."
 142,,,,,,Score Timer
 143,,,,,,Time after which will score decide the game
 144,,,,,,Min Population Capacity
@@ -278,7 +278,7 @@
 277,,,ags_conditions_objectives,Wonder,,Failed to hold the wonder.
 278,,,,,,Player Settings
 279,,,,Colors,,Enforce Colors
-280,,,,Colors,,"Fixes colors for diplomacy. This is not intended to serve as color picker. Causes automatic update of colors for each slot, whenever game causes conflicting change. Conflicting settings are automatically resolved."
+280,,,,Colors,,"Fixes colors for diplomacy. This is not intended to serve as color picker (But it can be used as one.). Causes automatic update of colors for each slot, whenever game causes conflicting change. Conflicting settings are automatically resolved."
 281,,,,Colors,,Used by Enforce Colors to determine which color is used by this slot. Requires Enforce Colors to be allowed.
 282,,,,Colors,,Blue
 283,,,,Colors,,Red
@@ -308,3 +308,6 @@
 307,,,ags_conditions_objectives,Treaty,,Prepare for the war.
 308,,,ags_conditions_objectives,Treaty,,This was not supposed to happen.
 309,,,ags_conditions_objectives,Treaty,,Pen is truly strongest weapon in history.
+310,,,ags_conditions_notifications,,,%1MINUTES_REMAINING% minutes until Game Ends
+311,,,ags_conditions_notifications,,,1 minute until Game Ends
+312,,,ags_conditions_objectives,,,Survive and outshine everyone. Rank %1RANK_POSITION%.

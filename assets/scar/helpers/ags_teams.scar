@@ -221,6 +221,30 @@ function AGS_Teams_GetAllCurrentOpponents(player, opt_all)
 	end	
 	return enemy_group
 end
+-- Returns all players that are considered allies for current TeamVictory.
+-- Can choose to get also eliminated via opt_all.
+function AGS_Teams_GetAllCurrentTeammates(player, opt_all)
+	if opt_all == nil then 
+		opt_all = false 
+	end	
+	ally_group = {}
+	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_FFA then
+		return { }
+	elseif AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_STANDARD then
+		for _, ally in pairs(PLAYERS) do
+			if ally ~= player and (not ally.isEliminated or opt_all) and player.AGS_Team.index == ally.AGS_Team.index then
+				table.insert(ally_group, ally)
+			end			
+		end
+	elseif AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_DYNAMIC then
+		for _, ally in pairs(PLAYERS) do
+			if ally ~= player and (not ally.isEliminated or opt_all) and AGS_IsMutualRelation(player.id, ally.id, R_ALLY) then
+				table.insert(ally_group, ally)
+			end			
+		end
+	end	
+	return ally_group
+end
 
 -- Returns if local player is sharing victory with other player.
 function AGS_Teams_IsTeamVictoryEligible(player)
