@@ -76,9 +76,14 @@ function AGS_Utilities_AdjustSettings()
 	_allow_spectators = AGS_GLOBAL_SETTINGS.AllowLoserSpectation
 end
 
-function AGS_Utilities_EarlyInitializations()
-	AGS_Print("AGS_Utilities_EarlyInitializations")	
+function AGS_Utilities_LateInitializations()
+	AGS_Print("AGS_Utilities_LateInitializations")	
 	AGS_Utilities_StandardReplay()	
+end
+
+function AGS_Utilities_OnPlay()
+	AGS_Print("AGS_Utilities_OnPlay")	
+	AGS_Utilities_StandardReplayCallbacks()	
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -86,12 +91,12 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Religious_UpdatePlayerStats(player, scarModel)	
-	scarModel.Relics_Target = #_religious.sites
-	scarModel.Relics_Current = Religious_SitesOwnedByPlayer(player)
+	--scarModel.Relics_Target = #_religious.sites
+	--scarModel.Relics_Current = Religious_SitesOwnedByPlayer(player)
 end
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Conquest_UpdatePlayerStats(player, scarModel)
-	local conquerables = AGS_Conquest_CountEnemyConquerables(player)
+	local conquerables = AGS_Conquest_GetPlayerConquerableCount(player)
 	if conquerables == nil then
 		conquerables = {
 			built = 0,
@@ -108,7 +113,7 @@ function Wonder_UpdatePlayerStats(player, scarModel)
 			scarModel.Wonder_Target = AGS_WONDER_VICTORY_TIMER 								
 			scarModel.Wonder_Current = Timer_GetRemaining(player.AGS_Wonder.objective_timer) 	
 			return
-		elseif Entity_GetBuildingProgress(player.AGS_Wonder.entity_uwid) < 1.0 then
+		elseif Entity_GetBuildingProgress(player.AGS_Wonder.entity) < 1.0 then
 			scarModel.Wonder_Target = AGS_WONDER_VICTORY_TIMER 	
 			-- 0 : under construction
 			scarModel.Wonder_Current = 0 					
@@ -126,15 +131,25 @@ end
 function AGS_Utilities_StandardReplay()
 	if AGS_GLOBAL_SETTINGS.Conquest then
 		ReplayStatViewer_PopulateReplayStatTabs({"ConquestTrackerTemplate"})
-		ReplayStatViewer_RegisterPlayerDataContextUpdater(Conquest_UpdatePlayerStats)
 	end
 	if AGS_GLOBAL_SETTINGS.Religious then
 		ReplayStatViewer_PopulateReplayStatTabs({"ReligiousTrackerTemplate"})
-		ReplayStatViewer_RegisterPlayerDataContextUpdater(Religious_UpdatePlayerStats)
 	end
 	if AGS_GLOBAL_SETTINGS.Wonder then
 		ReplayStatViewer_PopulateReplayStatTabs({"WonderTrackerTemplate"})
-		ReplayStatViewer_RegisterPlayerDataContextUpdater(Wonder_UpdatePlayerStats)
 	end
 	ReplayStatViewer_PopulateReplayStatTabs({"CurrentResourcesTemplate", "IncomeTemplate", "MilitaryTemplate"})	
+end
+
+-- Initialize replay stats
+function AGS_Utilities_StandardReplayCallbacks()
+	if AGS_GLOBAL_SETTINGS.Conquest then
+		ReplayStatViewer_RegisterPlayerDataContextUpdater(Conquest_UpdatePlayerStats)
+	end
+	if AGS_GLOBAL_SETTINGS.Religious then
+		ReplayStatViewer_RegisterPlayerDataContextUpdater(Religious_UpdatePlayerStats)
+	end
+	if AGS_GLOBAL_SETTINGS.Wonder then
+		ReplayStatViewer_RegisterPlayerDataContextUpdater(Wonder_UpdatePlayerStats)
+	end
 end
