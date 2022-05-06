@@ -81,6 +81,33 @@ function AGS_Wonder_OnPlayerDefeated(player, reason)
 	end
 end
 
+function AGS_Wonder_OnRelationshipChanged(observer_id, target_id)
+	AGS_Print("AGS_Wonder_OnRelationshipChanged")
+	if AGS_WONDER_OBJECTIVE == nil then
+		return
+	end
+	-- This is special case as we need to update objectives title to reflect important change.
+	for _, player in pairs(PLAYERS) do
+		if not player.isEliminated and player.AGS_Wonder.objective ~= nil then 
+			-- This player has wonder objective, maybe inactive but still able to be updated.
+			local relation = AGS_GetRelation(player)
+			if relation == AGS_SAE_SELF then
+				player.AGS_Wonder.objective_success_title = AGS_OBJECTIVES_WONDER_SELF.title
+				player.AGS_Wonder.objective_success_param = nil
+			elseif relation == AGS_SAE_ALLY then		
+				player.AGS_Wonder.objective_success_title = AGS_OBJECTIVES_WONDER_ALLY.title
+				player.AGS_Wonder.objective_success_param = player.playerName	
+			else
+				player.AGS_Wonder.objective_success_title = AGS_OBJECTIVES_WONDER_ENEMY.title
+				player.AGS_Wonder.objective_success_param = player.playerName		
+			end			
+			AGS_Objectives_SetTitle(player.AGS_Wonder.objective, 
+				player.AGS_Wonder.objective_success_title, 
+				player.AGS_Wonder.objective_success_param)
+		end		
+	end
+end
+
 function AGS_Wonder_OnGameOver()
 	AGS_Print("AGS_Wonder_OnGameOver")
 	-- Kill timers and time checks before everything else.
@@ -268,7 +295,7 @@ function AGS_Wonder_RemoveAllObjectives()
 end
 -- Create objective based on relation to owner.
 function AGS_Wonder_CreateTimerObjective(owner)
-	local relation = AGS_GetRelation(owner.id)
+	local relation = AGS_GetRelation(owner)
 	local objective_template = nil
 	if relation == AGS_SAE_SELF then
 		objective_template = AGS_Objectives_CreateFromCore(AGS_OBJECTIVES_WONDER, AGS_OBJECTIVES_WONDER_SELF)
@@ -414,7 +441,7 @@ function AGS_Wonder_VictoryTriggered(winner)
 end
 
 function AGS_Wonder_InformNegativeProgressChange(owner)
-	local relation = AGS_GetRelation(owner.id)
+	local relation = AGS_GetRelation(owner)
 	local obj = owner.AGS_Wonder.objective
 	local state = OS_Failed
 	local title = nil
@@ -431,7 +458,7 @@ function AGS_Wonder_InformNegativeProgressChange(owner)
 		title_param = owner.playerName
 	end
 	AGS_Objectives_Set(obj, state, false)
-	AGS_Objectives_Present(obj, state, title)
+	AGS_Objectives_Present(obj, state, title, title_param)
 end
 
 function AGS_Wonder_Destroyed(owner)	
@@ -462,9 +489,7 @@ function AGS_Wonder_TimerUpdate()
 	AGS_Wonder_UpdateTimerObjectives()
 end
 	
-function AGS_Wonder_TimerProgressNotification(player)
-	local is_outcome_positive = AGS_Teams_IsTeamVictoryEligible(player)
-	
+function AGS_Wonder_TimerProgressNotification(player)	
 	for i = 1, #player.AGS_Wonder.notifications do
 		-- If threshold notification has not been triggered AND timer is in threshold window
 		if not player.AGS_Wonder.notifications[i].triggered and 
@@ -472,7 +497,7 @@ function AGS_Wonder_TimerProgressNotification(player)
 			-- Mark as triggered.
 			player.AGS_Wonder.notifications[i].triggered = true
 			
-			AGS_Notification_CountdownNotification(player, i, AGS_NOTIFICATIONS_WONDER_COUNTDOWN, is_outcome_positive)
+			AGS_Notification_CountdownNotification(player, i, AGS_NOTIFICATIONS_WONDER_COUNTDOWN)
 		end
 	end	
 end

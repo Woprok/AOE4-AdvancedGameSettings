@@ -45,8 +45,8 @@ function AGS_ColorMaintainer_OnPlayerDefeated(player, reason)
 end		
 
 
-function AGS_ColorMaintainer_OnRelationChanged(player, reason)
-	AGS_Print("AGS_ColorMaintainer_OnRelationChanged")
+function AGS_ColorMaintainer_OnRelationshipChanged(observer_id, target_id)
+	AGS_Print("AGS_ColorMaintainer_OnRelationshipChanged")
 	AGS_ColorMaintainer_RefreshSlots()
 end	
 

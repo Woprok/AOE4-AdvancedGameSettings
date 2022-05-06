@@ -1,0 +1,172 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Shared vision for standard gameplay.
+-- Players start match without shared vision.
+-- Players gain shared vision with mutual allies when they both consruct a market.
+-- Players lose shared vision when they are no longer mutual allies.
+-- Players are considered mutual allies only if game has team game victory allowed.
+---------------------------------------------------------------------------------------------------
+
+AGS_TEAM_VISION_MODULE = "AGS_TeamVision"
+AGS_TEAM_VISION_ACTIVE = false
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_TEAM_VISION_MODULE)	
+
+function AGS_TeamVision_UpdateModuleSettings()
+	AGS_Print("AGS_TeamVision_UpdateModuleSettings")
+	if AGS_GLOBAL_SETTINGS.TeamVision == AGS_GS_TEAM_VISION_NONE then
+		Core_UnregisterModule(AGS_TEAM_VISION_MODULE)
+	end
+end
+
+function AGS_TeamVision_PresetFinalize()
+	AGS_Print("AGS_TeamVision_PresetFinalize")
+	AGS_TeamVision_DefineConditions()
+end
+-- Grants team vision to allies if possible.
+function AGS_TeamVision_OnPlay()	
+	AGS_Print("AGS_TeamVision_OnPlay")
+	AGS_TeamVision_UpdateAll()
+end
+
+function AGS_TeamVision_OnRelationshipChanged(observer_id, target_id)
+	if not AGS_TEAM_VISION_ACTIVE then
+		return
+	end
+	
+	AGS_Print("AGS_TeamVision_OnRelationshipChanged")
+	if observer_id == nil or target_id == nil then
+		return 
+	end
+	local playerA = Core_GetPlayersTableEntry(observer_id)
+	local playerB = Core_GetPlayersTableEntry(target_id)
+	if playerA == nil or playerB == nil then
+		return 
+	end	
+	AGS_TeamVision_UpdateVisionBetweenPlayers(playerA, playerB)
+end
+
+function AGS_TeamVision_TreatyStarted()
+	AGS_Print("AGS_TeamVision_TreatyStarted")
+	AGS_TeamVision_UpdateAll()
+end
+
+function AGS_TeamVision_TreatyEnded()
+	AGS_Print("AGS_TeamVision_TreatyEnded")
+	AGS_TeamVision_UpdateAll()
+end
+
+function AGS_TeamVision_OnGameOver()
+	AGS_Print("AGS_TeamVision_OnGameOver")
+	AGS_TeamVision_StopTrackRequirements()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Disable team vision and predefined requirements.
+function AGS_TeamVision_DefineConditions()
+	AGS_TeamVision_Disable()
+	if AGS_GLOBAL_SETTINGS.TeamVision == AGS_GS_TEAM_VISION_ALWAYS then 
+		AGS_TeamVision_NoRequirements()
+	elseif AGS_GLOBAL_SETTINGS.TeamVision == AGS_GS_TEAM_VISION_REQUIRES_MARKET then 
+		AGS_TeamVision_TrackRequirements()
+	end
+	AGS_TEAM_VISION_ACTIVE = true
+end
+-- Disables team vision.
+function AGS_TeamVision_Disable()		
+	for _, player in pairs(PLAYERS) do
+		player.AGS_TeamVisionAllowed = false
+		for _, other_player in pairs(PLAYERS) do
+			if player.id ~= other_player.id then
+				World_EnableSharedLineOfSight(player.id, other_player.id, false) 
+			end
+		end
+	end
+end
+
+function AGS_TeamVision_NoRequirements()
+	for _, player in pairs(PLAYERS) do
+		player.AGS_TeamVisionAllowed = true
+	end
+end
+
+function AGS_TeamVision_TrackRequirements()
+	Rule_AddGlobalEvent(AGS_TeamVision_OnConstructionComplete, GE_ConstructionComplete)
+	Rule_AddGlobalEvent(AGS_TeamVision_OnEntityKilled, GE_EntityKilled)
+end
+
+function AGS_TeamVision_StopTrackRequirements()
+	Rule_RemoveGlobalEvent(AGS_TeamVision_OnConstructionComplete)	
+	Rule_RemoveGlobalEvent(AGS_TeamVision_OnEntityKilled)	
+end
+
+-- Updates requirements and reflects new vision conditions.
+function AGS_TeamVision_OnConstructionComplete(context)
+	if context == nil or context.player == nil or context.entity == nil then
+		return
+	end
+	
+	local player = Core_GetPlayersTableEntry(context.player)	
+	if player ~= nil and Entity_IsOfType(context.entity, AGS_BP_MARKET) then		
+		player.AGS_TeamVisionAllowed = true		
+		AGS_TeamVision_UpdateVisionForPlayer(player)
+	end	
+end
+-- Updates requirements and reflects new vision conditions.
+function AGS_TeamVision_OnEntityKilled(context)	
+	if context == nil or context.victim == nil or context.victimOwner == nil then
+		return
+	end
+	
+	local player = Core_GetPlayersTableEntry(context.victimOwner)
+	if player ~= nil and Entity_IsOfType(context.victim, AGS_BP_MARKET) then
+		-- We will ignore edge cases with mongol landmark and landmarks in general.
+		-- Lets call it landmark bonus, you never lose this. :)
+		local egroup = Player_GetEntitiesFromType(player.id, AGS_BP_MARKET)
+		if EGroup_CountSpawned(egroup) == 0 then
+			player.AGS_TeamVisionAllowed = false	
+			AGS_TeamVision_UpdateVisionForPlayer(player)
+		end		
+	end
+end
+
+function AGS_TeamVision_UpdateAll()
+	for _, player in pairs(PLAYERS) do
+		AGS_TeamVision_UpdateVisionForPlayer(player)
+	end	
+end
+
+-- Updates shared line of sight between a player and all others in the match.
+function AGS_TeamVision_UpdateVisionForPlayer(player)		
+	if player == nil then
+		return 
+	end
+	for _, other_player in pairs(PLAYERS) do
+		AGS_TeamVision_UpdateVisionBetweenPlayers(player, other_player)
+	end	
+end
+---------------------------------------------------------------------------------------------------
+-- Vision Functions:
+---------------------------------------------------------------------------------------------------
+-- Enables/disables shared line of sight if playerA and playerB are mutual allies and both have constructed a market.
+function AGS_TeamVision_UpdateVisionBetweenPlayers(playerA, playerB)	
+	-- Check if they are not same player and they are eligible for team victory as teammates.
+	if playerA == playerB then 
+		return
+	end
+	if not AGS_Teams_AreTeamVictoryEligible(playerA, playerB) then
+		return
+	end
+	local is_fulfilling_requirements = playerA.AGS_TeamVisionAllowed and playerB.AGS_TeamVisionAllowed
+	World_EnableSharedLineOfSight(playerA.id, playerB.id, is_fulfilling_requirements)	
+end

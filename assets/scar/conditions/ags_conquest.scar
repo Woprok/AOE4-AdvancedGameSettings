@@ -79,11 +79,8 @@ function AGS_Conquest_TreatyEnded()
 	AGS_CONQUEST_ACTIVE = true
 end
 
--- Update objectives when player added to team or relationship changed. Might be enough for RC.
-function AGS_Conquest_OnPlayerJoinedTeam(playerData)
-	AGS_Conquest_UpdateObjective()
-end
 function AGS_Conquest_OnRelationshipChanged(observer_id, target_id)
+	AGS_Print("AGS_Conquest_OnRelationshipChanged")
 	AGS_Conquest_UpdateObjective()
 end
 
@@ -233,6 +230,9 @@ function AGS_Conquest_CreateObjective()
 end
 
 function AGS_Conquest_UpdateObjective()
+	if AGS_CONQUEST_OBJECTIVE == nil then 
+		return
+	end
 	local enemies_conquerables_statistics = AGS_Conquest_CountEnemyConquerables(AGS_GS_LOCAL_PLAYER)
 	if enemies_conquerables_statistics == nil then 
 		AGS_Objectives_Set(AGS_CONQUEST_OBJECTIVE, nil, nil, false)

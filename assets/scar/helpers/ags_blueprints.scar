@@ -802,14 +802,17 @@ end
 AGS_SAE_SELF = 0
 AGS_SAE_ALLY = 1
 AGS_SAE_ENEMY = 2
--- Returns relation with local player, very useful for anything that can decide best on relation
-function AGS_GetRelation(player_id)
+-- Returns relation with local player, very useful for anything that can decide best on relation.
+-- This automatically resolves also problem related to dynamic relations as it uses team method to resolve friendship.
+-- Nota that this will not return ALLY if player and local player are not able to win together due to team rules.
+function AGS_GetRelation(player)
 	-- Self.
-	if AGS_GS_LOCAL_PLAYER.id == player_id then
+	if AGS_GS_LOCAL_PLAYER.id == player.id then
 		return AGS_SAE_SELF
 	end
 	-- Ally.
-	if AGS_IsMutualRelation(AGS_GS_LOCAL_PLAYER.id, player_id, R_ALLY) then
+	-- Orifinally it would use simplified version AGS_IsMutualRelation, but that would result in bad answer.
+	if AGS_Teams_IsTeamVictoryEligible(player) then
 		return AGS_SAE_ALLY
 	end	
 	-- Most likely enemy or neutral.

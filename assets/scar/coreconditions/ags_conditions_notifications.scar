@@ -235,20 +235,21 @@ AGS_NOTIFICATIONS_COUNTDOWN = {
 -- Pre-Filled Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_Notification_CountdownNotification(player, order_id, notification, is_outcome_positive)
+function AGS_Notification_CountdownNotification(source_player, order_id, notification)
 	if AGS_GS_LOCAL_PLAYER.isEliminated then
 		return
 	end	
+	local relation = AGS_GetRelation(source_player)
 	local core_countdown = AGS_NOTIFICATIONS_COUNTDOWN[order_id]
 	-- Create cue.
-	local color = Player_GetUIColour(player.id)
+	local color = Player_GetUIColour(source_player.id)
 	local priority = AGS_NP_LOW
 	local title = nil
 	local sfx = core_countdown.sfx
 	
 	-- Increase music tempo.
 	Music_LockIntensity(core_countdown.music_intensity, core_countdown.music_intensity_param)
-	if is_outcome_positive then
+	if relation ~= AGS_SAE_ENEMY then
 		if core_countdown.text_param ~= nil then
 			title = Loc_FormatText(notification.title_victory, core_countdown.text_param)
 		else
@@ -271,7 +272,7 @@ end
 
 
 function AGS_Notifications_ObjectiveAction(player, notification)
-	local owner_relation = AGS_GetRelation(player.id)
+	local owner_relation = AGS_GetRelation(player)
 	if AGS_GS_LOCAL_PLAYER.isEliminated then
 		return
 	end	

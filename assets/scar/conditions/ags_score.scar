@@ -70,6 +70,11 @@ function AGS_Score_TreatyEnded()
 	AGS_SCORE_ACTIVE = true
 end
 
+function AGS_Score_OnRelationshipChanged(observer_id, target_id)
+	AGS_Print("AGS_Score_OnRelationshipChanged")
+	AGS_Score_UpdateObjective()
+end
+
 function AGS_Score_OnGameOver()
 	AGS_Print("AGS_Score_OnGameOver")
 	Rule_RemoveGlobalEvent(AGS_Score_OnEntityKilled)
@@ -238,7 +243,6 @@ function AGS_Score_OnTimerTick()
 	end	
 	-- Anyway update objective and countdown notifications.
 	AGS_Score_UpdateObjective()
-	AGS_Score_UpdatePlacements(AGS_Score_EvaluatePlayers())
 	AGS_Score_Countdown()
 end
 
@@ -270,12 +274,12 @@ function AGS_Score_InitializePlacements()
 end
 -- Final evaluation of all placements and deciding winners.
 function AGS_Score_EndWar()
-	local final_ranking = AGS_Score_FinalizeScore()
-	AGS_Score_UpdatePlacements(final_ranking)	
-	
+	local final_ranking = AGS_Score_FinalizeScore()	
 	for _, player in pairs(PLAYERS) do
 		AGS_Print("Achieved score", player.AGS_Score)
 	end
+	
+	AGS_Score_UpdatePlacements(final_ranking)
 	
 	-- This always has players, so the first one is winner and thats enough for us.
 	local winner = final_ranking[1].data
@@ -293,7 +297,8 @@ end
 
 function AGS_Score_FinalizeScore()
 	for _, player in pairs(PLAYERS) do
-		player.AGS_Score.Total = AGS_Score_CalculateFinal(player.AGS_Score)		
+		player.AGS_Score.Total = AGS_Score_CalculateFinal(player.AGS_Score)
+		player.AGS_Score.TotalAlly = 0
 	end
 	local team_position_table = { }
 	for _, player in pairs(PLAYERS) do
@@ -325,21 +330,11 @@ function AGS_Score_ComparePlayers(scorePlayerA, scorePlayerB)
 	return scorePlayerA.data.slotIndex < scorePlayerB.data.slotIndex
 end
 
-function AGS_Score_EvaluatePlayers()
-	local position_table = { }
-	for _, player in pairs(PLAYERS) do
-		player.AGS_Score.Total = AGS_Score_CalculateFinal(player.AGS_Score)
-		table.insert(position_table, { data = player })
-	end	
-	table.sort(position_table, AGS_Score_ComparePlayers)
-	return position_table	
-end
-
 function AGS_Score_UpdatePlacements(evaluated)
 	if AGS_GLOBAL_SETTINGS.ScoreSettings.ShowPlacement then
 		for i, scorePlayer in pairs(evaluated) do
 			if scorePlayer.data == AGS_GS_LOCAL_PLAYER then
-				AGS_Objectives_Set(AGS_SCORE_OBJECTIVE, nil, nil, nil, nil, Loc_FormatText(AGS_OBJECTIVES_SCORE.title_rank, i))
+				AGS_Objectives_SetTitle(AGS_SCORE_OBJECTIVE, AGS_OBJECTIVES_SCORE.title_rank, i)
 			end		
 		end
 	end
@@ -351,6 +346,11 @@ function AGS_Score_CreateObjective()
 end
 
 function AGS_Score_UpdateObjective()
+	if AGS_SCORE_OBJECTIVE == nil then
+		return
+	end
+	
+	AGS_Score_UpdatePlacements(AGS_Score_FinalizeScore())
 	AGS_Objectives_Progress(
 		AGS_SCORE_OBJECTIVE, 
 		nil,
@@ -379,7 +379,7 @@ function AGS_Score_Countdown()
 			AGS_NOTIFICATIONS_COUNTDOWN[i].time >= Timer_GetRemaining(AGS_SCORE_TIMER) then 
 			-- Mark as triggered.
 			AGS_SCORE_COUNTDOWN_NOTIFICATIONS[i].triggered = true			
-			AGS_Notification_CountdownNotification(AGS_GS_LOCAL_PLAYER, i, AGS_NOTIFICATIONS_SCORE_COUNTDOWN, true)
+			AGS_Notification_CountdownNotification(AGS_GS_LOCAL_PLAYER, i, AGS_NOTIFICATIONS_SCORE_COUNTDOWN)
 		end
 	end	
 end

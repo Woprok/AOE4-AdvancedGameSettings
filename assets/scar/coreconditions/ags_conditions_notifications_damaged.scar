@@ -34,8 +34,8 @@ function AGS_Notifications_Damaged(uwid, attacker, owner, notification)
 	-- Start new timer.
 	Timer_Start(AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid].damage_timer, AGS_NOTIFICATIONS_DAMAGED_INTERVAL)	
 	-- If local is eliminated or attacker is ally/self or owner is enemy this does not create notification.
-	local attacker_relation = AGS_GetRelation(attacker.id)
-	local owner_relation = AGS_GetRelation(owner.id)
+	local attacker_relation = AGS_GetRelation(attacker)
+	local owner_relation = AGS_GetRelation(owner)
 	if AGS_GS_LOCAL_PLAYER.isEliminated or attacker_relation ~= AGS_SAE_ENEMY or owner_relation == AGS_SAE_ENEMY then
 		return
 	end	
@@ -69,8 +69,8 @@ function AGS_Notifications_Destroyed(uwid, owner, killer, notification)
 	if AGS_GS_LOCAL_PLAYER.isEliminated then
 		return
 	end	
-	local attacker_relation = AGS_GetRelation(AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid].last_attacker)
-	local owner_relation = AGS_GetRelation(owner.id)
+	local attacker_relation = AGS_GetRelation(Core_GetPlayersTableEntry(AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid].last_attacker))
+	local owner_relation = AGS_GetRelation(owner)
 	-- Create cue.
 	local color = Player_GetUIColour(AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid].last_attacker)
 	-- Special case when player destroyed own structure.

@@ -276,6 +276,14 @@ function AGS_Objectives_Set(objective, state, visibility, progress, counter, tit
 	if counter ~= nil then
 		Obj_SetCounterType(objective, counter)
 	end
+end
+
+function AGS_Objectives_SetTitle(objective, obj_title, title_param)
+	-- Format title with a paramter.
+	local title = obj_title
+	if title_param ~= nil then
+		title = Loc_FormatText(title, title_param)
+	end
 	-- Dynamic change of displayed title ?
 	if title ~= nil then
 		Obj_SetTitle(objective, title)

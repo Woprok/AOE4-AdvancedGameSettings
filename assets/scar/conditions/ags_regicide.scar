@@ -57,6 +57,11 @@ function AGS_Regicide_OnPlayerDefeated(player, reason)
 	AGS_Regicide_UpdateObjective()
 end
 
+function AGS_Regicide_OnRelationshipChanged(observer_id, target_id)
+	AGS_Print("AGS_Regicide_OnRelationshipChanged")
+	AGS_Regicide_UpdateObjective()
+end
+	
 function AGS_Regicide_TreatyStarted()
 	AGS_Print("AGS_Regicide_TreatyStarted")
 	AGS_REGICIDE_ACTIVE = false
@@ -169,6 +174,9 @@ function AGS_Regicide_CreateObjective()
 end
 
 function AGS_Regicide_UpdateObjective()
+	if AGS_REGICIDE_OBJECTIVE == nil then 
+		return
+	end
 	local enemies_kings_statistics = AGS_Regicide_CountEnemyKings(AGS_GS_LOCAL_PLAYER)
 	if enemies_kings_statistics == nil then 
 		AGS_Objectives_Set(AGS_REGICIDE_OBJECTIVE, nil, nil, false)
