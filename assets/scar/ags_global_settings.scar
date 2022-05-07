@@ -992,6 +992,20 @@ function AGS_GlobalSettings_SetGameRates(game_rates)
 		AGS_GLOBAL_SETTINGS.GameRates = 0.95
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_1 then
 		AGS_GLOBAL_SETTINGS.GameRates = 1.00
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_1_05 then
+		AGS_GLOBAL_SETTINGS.GameRates = 1.05
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_1_10 then
+		AGS_GLOBAL_SETTINGS.GameRates = 1.10
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_1_15 then
+		AGS_GLOBAL_SETTINGS.GameRates = 1.15
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_1_20 then
+		AGS_GLOBAL_SETTINGS.GameRates = 1.20
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_1_25 then
+		AGS_GLOBAL_SETTINGS.GameRates = 1.25
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_1_50 then
+		AGS_GLOBAL_SETTINGS.GameRates = 1.50
+	elseif game_rates.enum_value == game_rates.enum_items.game_rates_1_75 then
+		AGS_GLOBAL_SETTINGS.GameRates = 1.75
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_2 then
 		AGS_GLOBAL_SETTINGS.GameRates = 2.00
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_3 then
@@ -1028,6 +1042,20 @@ function AGS_GlobalSettings_SetSimulationSpeed(simulation_speed)
 		AGS_GLOBAL_SETTINGS.SimulationSpeed = 0.95
 	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_1 then
 		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.00
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_1_05 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.05
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_1_10 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.10
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_1_15 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.15
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_1_20 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.20
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_1_25 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.25
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_1_50 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.50
+	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_1_75 then
+		AGS_GLOBAL_SETTINGS.SimulationSpeed = 1.75
 	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_2 then
 		AGS_GLOBAL_SETTINGS.SimulationSpeed = 2.00
 	elseif simulation_speed.enum_value == simulation_speed.enum_items.simulation_speed_3 then

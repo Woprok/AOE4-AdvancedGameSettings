@@ -40,6 +40,21 @@ function AGS_Treaty_OnPlay()
 	-- Timers and time checks are initialized last.
 	Rule_AddInterval(AGS_Treaty_OnTimerTick, AGS_TREATY_CHECK_FREQUENCY)
 end
+
+function AGS_Treaty_OnPlayerEliminated(player, reason)
+	AGS_Print("AGS_Treaty_OnPlayerEliminated")
+	-- If last opponent left, game will be decided in FFA and Static Teams, even during treaty.
+	if Timer_Exists(AGS_TREATY_TIMER) and Timer_GetRemaining(AGS_TREATY_TIMER) > 0.0 then
+		if AGS_GLOBAL_SETTINGS.TeamVictory ~= AGS_GS_TEAM_VICTORY_DYNAMIC then
+			AGS_Conditions_CheckVictory(true, AGS_Presentations_Victory, AGS_WR_TREATY,
+			AGS_Objectives_PresentWrap(
+				AGS_TREATY_OBJECTIVE, 
+				OS_Complete, 
+				AGS_OBJECTIVES_TREATY.title_victory))
+		end
+	end
+end
+
 -- This is not expected to be required at all.
 function AGS_Treaty_OnGameOver()
 	AGS_Print("AGS_Treaty_OnGameOver")
