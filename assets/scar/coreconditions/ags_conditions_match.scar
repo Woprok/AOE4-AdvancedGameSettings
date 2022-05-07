@@ -54,6 +54,8 @@ end
 -- Ends the game by doing last delegate call OnGameOver executed via core method.
 function AGS_EndGame()	
 	Core_OnGameOver()
+	-- Stop music, was delayed by 1 for correct order of operations, but what if we did it as last?
+	Music_PersistentStop() 
 end
 
 ---------------------------------------------------------------------------------------------------

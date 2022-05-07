@@ -13,7 +13,7 @@ AGS_SCORE_MODULE = "AGS_Score"
 AGS_SCORE_OBJECTIVE = nil
 AGS_SCORE_ACTIVE = true
 AGS_SCORE_TIMER = "AGS_ScoreTimer"
-AGS_SCORE_VICTORY_TIMER = 60 * 60
+AGS_SCORE_VICTORY_TIME = 60 * 60
 AGS_SCORE_CHECK_FREQUENCY = 1.0
 AGS_SCORE_COUNTDOWN_NOTIFICATIONS = { }
 AGS_SCORE_ENTITY_UWID_TABLE = { }
@@ -30,8 +30,9 @@ function AGS_Score_UpdateModuleSettings()
 	AGS_Print("AGS_Score_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.Score then
 		Core_UnregisterModule(AGS_SCORE_MODULE)
+		return
 	end
-	AGS_SCORE_VICTORY_TIMER = AGS_GLOBAL_SETTINGS.ScoreSettings.Timer * 60
+	AGS_SCORE_VICTORY_TIME = AGS_GLOBAL_SETTINGS.ScoreSettings.Timer * 60
 end
 
 function AGS_Score_OnPlay()
@@ -42,9 +43,10 @@ function AGS_Score_OnPlay()
 	Rule_AddGlobalEvent(AGS_Score_OnBuildItemComplete, GE_BuildItemComplete)
 	Rule_AddGlobalEvent(AGS_Score_OnUpgradeComplete, GE_UpgradeComplete)
 	Rule_AddGlobalEvent(AGS_Score_OnDamageReceived, GE_DamageReceived)
-	Rule_AddInterval(AGS_Score_OnTimerTick, AGS_SCORE_CHECK_FREQUENCY)
 	AGS_Score_CreateObjective()
 	AGS_Score_UpdateObjective()
+	-- Timers and time checks are initialized last.
+	Rule_AddInterval(AGS_Score_OnTimerTick, AGS_SCORE_CHECK_FREQUENCY)
 end
 
 function AGS_Score_OnPlayerDefeated(player, reason)
@@ -269,7 +271,7 @@ function AGS_Score_InitializePlacements()
 	-- Prepare notifications and start countdown.
 	if not Timer_Exists(AGS_SCORE_TIMER) then	
 		AGS_Score_CreateTimerNotifications()
-		Timer_Start(AGS_SCORE_TIMER, AGS_SCORE_VICTORY_TIMER)
+		Timer_Start(AGS_SCORE_TIMER, AGS_SCORE_VICTORY_TIME)
 	end
 end
 -- Final evaluation of all placements and deciding winners.
@@ -379,7 +381,7 @@ function AGS_Score_Countdown()
 			AGS_NOTIFICATIONS_COUNTDOWN[i].time >= Timer_GetRemaining(AGS_SCORE_TIMER) then 
 			-- Mark as triggered.
 			AGS_SCORE_COUNTDOWN_NOTIFICATIONS[i].triggered = true			
-			AGS_Notification_CountdownNotification(AGS_GS_LOCAL_PLAYER, i, AGS_NOTIFICATIONS_SCORE_COUNTDOWN)
+			AGS_Notifications_CountdownNotification(AGS_GS_LOCAL_PLAYER, i, AGS_NOTIFICATIONS_SCORE_COUNTDOWN)
 		end
 	end	
 end

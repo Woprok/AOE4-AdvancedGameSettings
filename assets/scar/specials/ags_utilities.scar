@@ -91,8 +91,12 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Religious_UpdatePlayerStats(player, scarModel)	
-	--scarModel.Relics_Target = #_religious.sites
-	--scarModel.Relics_Current = Religious_SitesOwnedByPlayer(player)
+	if AGS_RELIGIOUS_SACRED_SITE_OBJECTIVES ~= nil then
+		scarModel.Relics_Target = #AGS_RELIGIOUS_SACRED_SITE_OBJECTIVES
+	else
+		scarModel.Relics_Target = 0
+	end
+	scarModel.Relics_Current = AGS_Religious_CountSitesControlled(player)
 end
 -- Callback invoked by UpdatePlayerDataContexts() in replaystatviewer.scar to fetch player progress
 function Conquest_UpdatePlayerStats(player, scarModel)

@@ -311,3 +311,4 @@
 310,,,ags_conditions_notifications,Score,,%1MINUTES_REMAINING% minutes until Game Ends
 311,,,ags_conditions_notifications,Score,,1 minute until Game Ends
 312,,,ags_conditions_objectives,Score,,Survive and outshine everyone. Rank %1RANK_POSITION%.
+313,,,ags_conditions_notifications,,,%1PLAYER_NAME% bowed down before new god

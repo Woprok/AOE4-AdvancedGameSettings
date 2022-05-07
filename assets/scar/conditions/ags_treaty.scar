@@ -13,7 +13,7 @@
 AGS_TREATY_MODULE = "AGS_Treaty"
 AGS_TREATY_OBJECTIVE = nil
 AGS_TREATY_TIMER = "AGS_TreatyTimer"
-AGS_TREATY_PEACE_TIMER = 0 * 60
+AGS_TREATY_PEACE_TIME = 0 * 60
 AGS_TREATY_CHECK_FREQUENCY = 1.0
 AGS_TREATY_COUNTDOWN_NOTIFICATIONS = { }
 
@@ -27,16 +27,18 @@ function AGS_Treaty_UpdateModuleSettings()
 	AGS_Print("AGS_Treaty_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.Treaty then
 		Core_UnregisterModule(AGS_TREATY_MODULE)
+		return
 	end
-	AGS_TREATY_PEACE_TIMER = AGS_GLOBAL_SETTINGS.TreatySettings.Timer * 60
+	AGS_TREATY_PEACE_TIME = AGS_GLOBAL_SETTINGS.TreatySettings.Timer * 60
 end
 
 function AGS_Treaty_OnPlay()
 	AGS_Print("AGS_Treaty_OnPlay")
 	AGS_Treaty_StartPeace()
-	Rule_AddInterval(AGS_Treaty_OnTimerTick, AGS_TREATY_CHECK_FREQUENCY)
 	AGS_Treaty_CreateObjective()
 	AGS_Treaty_UpdateObjective()
+	-- Timers and time checks are initialized last.
+	Rule_AddInterval(AGS_Treaty_OnTimerTick, AGS_TREATY_CHECK_FREQUENCY)
 end
 -- This is not expected to be required at all.
 function AGS_Treaty_OnGameOver()
@@ -77,7 +79,7 @@ function AGS_Treaty_StartPeace()
 	-- Finally prepare notifications and start countdown.
 	if not Timer_Exists(AGS_TREATY_TIMER) then	
 		AGS_Treaty_CreateTimerNotifications()	
-		Timer_Start(AGS_TREATY_TIMER, AGS_TREATY_PEACE_TIMER)
+		Timer_Start(AGS_TREATY_TIMER, AGS_TREATY_PEACE_TIME)
 	end
 	AGS_Print("AGS_Treaty_StartPeace-Over")
 end
@@ -143,7 +145,7 @@ function AGS_Treaty_Countdown()
 			AGS_NOTIFICATIONS_COUNTDOWN[i].time >= Timer_GetRemaining(AGS_TREATY_TIMER) then 
 			-- Mark as triggered.
 			AGS_TREATY_COUNTDOWN_NOTIFICATIONS[i].triggered = true			
-			AGS_Notification_CountdownNotification(AGS_GS_LOCAL_PLAYER, i, AGS_NOTIFICATIONS_TREATY_COUNTDOWN)
+			AGS_Notifications_CountdownNotification(AGS_GS_LOCAL_PLAYER, i, AGS_NOTIFICATIONS_TREATY_COUNTDOWN)
 		end
 	end	
 end

@@ -73,6 +73,14 @@ AGS_PRESENTATIONS_VICTORY = {
 -- Pre-Filled Functions:
 ---------------------------------------------------------------------------------------------------
 
+function AGS_Presentations_VictoryReligious(player_id)	
+	AGS_Presentations_Victorious(player_id, AGS_PRESENTATIONS_RELIGIOUS_SUFFIX)
+end
+
+function AGS_Presentations_LossReligious(player_id)
+	AGS_Presentations_Losing(player_id, AGS_PRESENTATIONS_RELIGIOUS_SUFFIX)
+end
+
 function AGS_Presentations_VictoryWonder(player_id)	
 	AGS_Presentations_Victorious(player_id, AGS_PRESENTATIONS_WONDER_SUFFIX)
 end

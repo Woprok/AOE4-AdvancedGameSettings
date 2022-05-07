@@ -12,7 +12,7 @@ AGS_WONDER_MODULE = "AGS_Wonder"
 AGS_WONDER_OBJECTIVE = nil 
 AGS_WONDER_ACTIVE = true
 AGS_WONDER_FOW_REVEAL_RADIUS = 12
-AGS_WONDER_VICTORY_TIMER = 15 * 60
+AGS_WONDER_VICTORY_TIME = 15 * 60
 AGS_WONDER_CHECK_FREQUENCY = 1.0
 AGS_WONDER_RUSH = false
 -- This is kinda hack that enables to properly show winner objective based on local context.
@@ -35,19 +35,20 @@ function AGS_Wonder_UpdateModuleSettings()
 	AGS_Print("AGS_Wonder_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.Wonder then
 		Core_UnregisterModule(AGS_WONDER_MODULE)
+		return
 	end
-	AGS_WONDER_VICTORY_TIMER = AGS_GLOBAL_SETTINGS.WonderSettings.Timer * 60
-	AGS_WONDER_RUSH = AGS_WONDER_VICTORY_TIMER == 0
+	AGS_WONDER_VICTORY_TIME = AGS_GLOBAL_SETTINGS.WonderSettings.Timer * 60
+	AGS_WONDER_RUSH = AGS_WONDER_VICTORY_TIME == 0
 	AGS_WONDER_ACTIVE = AGS_WONDER_ACTIVE or AGS_WONDER_RUSH
 end
 
 function AGS_Wonder_OnPlay()
 	AGS_Print("AGS_Wonder_OnPlay")
+	AGS_Wonder_InitializeWonders()
 	Rule_AddGlobalEvent(AGS_Wonder_OnConstructionStart, GE_ConstructionStart)
 	Rule_AddGlobalEvent(AGS_Wonder_OnConstructionComplete, GE_ConstructionComplete)
 	Rule_AddGlobalEvent(AGS_Wonder_OnDamageReceived, GE_DamageReceived)
 	Rule_AddGlobalEvent(AGS_Wonder_OnEntityKilled, GE_EntityKilled)
-	AGS_Wonder_InitializeWonders()
 	AGS_Wonder_EnableConstruction(AGS_WONDER_ACTIVE)
 	AGS_Wonder_CreateBuildObjective()
 	-- Timers and time checks are initialized last.
@@ -377,7 +378,7 @@ function AGS_Wonder_StartCountdown(owner)
 	AGS_Wonder_CreateTimerNotifications(owner)
 	-- Start timer for everyone
 	if not Timer_Exists(owner.AGS_Wonder.objective_timer) then 
-		Timer_Start(owner.AGS_Wonder.objective_timer, AGS_WONDER_VICTORY_TIMER)
+		Timer_Start(owner.AGS_Wonder.objective_timer, AGS_WONDER_VICTORY_TIME)
 	end
 end
 -- Creates list of untriggered notifications.
@@ -497,7 +498,7 @@ function AGS_Wonder_TimerProgressNotification(player)
 			-- Mark as triggered.
 			player.AGS_Wonder.notifications[i].triggered = true
 			
-			AGS_Notification_CountdownNotification(player, i, AGS_NOTIFICATIONS_WONDER_COUNTDOWN)
+			AGS_Notifications_CountdownNotification(player, i, AGS_NOTIFICATIONS_WONDER_COUNTDOWN)
 		end
 	end	
 end

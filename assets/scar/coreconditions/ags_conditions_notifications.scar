@@ -63,6 +63,14 @@ AGS_NOTIFICATIONS_SCORE = {
 	title = "$64c5019a145c4e4da448dbd3adeea61e:273",
 	sfx = nil,	
 }
+AGS_NOTIFICATIONS_SCORE_COUNTDOWN = {
+	-- "%1MINUTES_REMAINING% minutes until Game Ends"
+	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:310",
+	title_defeat = "$64c5019a145c4e4da448dbd3adeea61e:310",
+	-- "1 minute until Game Ends"
+	title_final_victory = "$64c5019a145c4e4da448dbd3adeea61e:311",
+	title_final_defeat = "$64c5019a145c4e4da448dbd3adeea61e:311",	
+}
 AGS_NOTIFICATIONS_REGICIDE = {
 	-- "%1PLAYER_NAME% assassinated"
 	title = "$64c5019a145c4e4da448dbd3adeea61e:264",
@@ -173,6 +181,11 @@ AGS_NOTIFICATIONS_WONDER_COUNTDOWN = {
 	-- "1 minute until Wonder Defeat"
 	title_final_defeat = 11197867,	
 }
+AGS_NOTIFICATIONS_RELIGIOUS = {
+	-- "%1PLAYER_NAME% bowed down before new god"
+	title = "$64c5019a145c4e4da448dbd3adeea61e:313",
+	sfx = nil,	
+}
 AGS_NOTIFICATIONS_RELIGIOUS_COUNTDOWN = {
 	-- "%1MINUTES_REMAINING% minutes until Religious Victory"
 	title_victory = 11195756,
@@ -183,6 +196,102 @@ AGS_NOTIFICATIONS_RELIGIOUS_COUNTDOWN = {
 	-- "1 minute until Religious Defeat"
 	title_final_defeat = 11195759,	
 }
+AGS_NOTIFICATIONS_RELIGIOUS_STARTED = {	
+	self = "mus_stinger_wonder_win_countdown_player",
+	ally = "mus_stinger_wonder_win_countdown_player",
+	enemy = "mus_stinger_wonder_win_countdown_enemy",
+}
+AGS_NOTIFICATIONS_RELIGIOUS_INTERRUPTED = {
+	self = "mus_stinger_religious_countdown_interrupted_player",
+	ally = "mus_stinger_religious_countdown_interrupted_player",
+	enemy = "mus_stinger_religious_countdown_interrupted_enemy",
+}
+
+AGS_NOTIFICATIONS_RELIGIOUS_APPROACH = {
+	-- You are approaching Religious Victory
+	self_action = 11191453,
+	-- You are approaching Religious Victory
+	ally_action = 11191453,
+	-- Enemy is approaching Religious Victory
+	enemy_action = 11191452,
+	self_action_sfx = "sfx_ui_event_queue_religious_player_captured_play",
+	ally_action_sfx = "sfx_ui_event_queue_religious_player_captured_play",
+	enemy_action_sfx = "sfx_ui_event_queue_religious_enemy_captured_play",	
+	self_priority = AGS_NP_LOW,
+	ally_priority = AGS_NP_LOW,
+	enemy_priority = AGS_NP_MAX,	
+}
+AGS_NOTIFICATIONS_RELIGIOUS_CAPTURING = {
+	-- Capturing Holy Site
+	self_action = 11190381,
+	-- Ally capturing Holy Site
+	ally_action = 11190382,
+	-- Enemy capturing Holy Site
+	enemy_action = 11185244,	
+	self_action_sfx = "sfx_ui_event_queue_religious_player_capture_start_play",
+	ally_action_sfx = "sfx_ui_event_queue_religious_player_capture_start_play",
+	enemy_action_sfx = "sfx_ui_event_queue_religious_enemy_capture_start_play",	
+	self_priority = AGS_NP_LOW,
+	ally_priority = AGS_NP_LOW,
+	enemy_priority = AGS_NP_MAX,
+}
+AGS_NOTIFICATIONS_RELIGIOUS_CAPTURED = {
+	-- Holy Site captured
+	self_action = 11183997,
+	-- Ally captured Holy Site
+	ally_action = 11191225,
+	-- Enemy captured Holy Site
+	enemy_action = 11191226,
+	self_action_sfx = "sfx_ui_event_queue_religious_player_captured_play",
+	ally_action_sfx = "sfx_ui_event_queue_religious_player_captured_play",
+	enemy_action_sfx = "sfx_ui_event_queue_religious_enemy_captured_play",	
+	self_priority = AGS_NP_LOW,
+	ally_priority = AGS_NP_LOW,
+	enemy_priority = AGS_NP_MAX,	
+}
+AGS_NOTIFICATIONS_RELIGIOUS_CONTESTING = {
+	-- Contesting Holy Site
+	self_action = 11190419,
+	-- Ally contesting Holy Site
+	ally_action = 11191282,
+	-- Enemy contesting Holy Site
+	enemy_action = 11185245,	
+	self_action_sfx = "sfx_ui_holy_site_contesting_start_player_play",
+	ally_action_sfx = "sfx_ui_holy_site_contesting_start_player_play",
+	enemy_action_sfx = "sfx_ui_holy_site_contesting_start_enemy_play",	
+	self_priority = AGS_NP_LOW,
+	ally_priority = AGS_NP_LOW,
+	enemy_priority = AGS_NP_LOW,	
+}
+AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZING = {
+	-- Neutralizing Holy Site
+	self_action = 11197278,
+	-- Ally neutralizing Holy Site
+	ally_action = 11197279,
+	-- Enemy neutralizing Holy Site
+	enemy_action = 11197277,
+	self_action_sfx = "sfx_ui_holy_site_contesting_start_player_play",
+	ally_action_sfx = "sfx_ui_holy_site_contesting_start_player_play",
+	enemy_action_sfx = "sfx_ui_holy_site_contesting_start_enemy_play",	
+	self_priority = AGS_NP_LOW,
+	ally_priority = AGS_NP_LOW,
+	enemy_priority = AGS_NP_LOW,		
+}
+AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZED = {
+	-- Neutralized Holy Site
+	self_action = 11191286,
+	-- Ally neutralized Holy Site
+	ally_action = 11191378,
+	-- Holy Site lost
+	enemy_action = 11191287,
+	self_action_sfx = "sfx_ui_holy_site_neutralized_player_play",
+	ally_action_sfx = "sfx_ui_holy_site_neutralized_player_play",
+	enemy_action_sfx = "sfx_ui_holy_site_neutralized_enemy_play",	
+	self_priority = AGS_NP_LOW,
+	ally_priority = AGS_NP_LOW,
+	enemy_priority = AGS_NP_LOW,		
+}
+
 AGS_NOTIFICATIONS_TREATY_COUNTDOWN = {
 	-- "%1MINUTES_REMAINING% minutes until Treaty Ends"
 	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:232",
@@ -190,14 +299,6 @@ AGS_NOTIFICATIONS_TREATY_COUNTDOWN = {
 	-- "1 minute until Treaty Ends"
 	title_final_victory = "$64c5019a145c4e4da448dbd3adeea61e:306",
 	title_final_defeat = "$64c5019a145c4e4da448dbd3adeea61e:306",	
-}
-AGS_NOTIFICATIONS_SCORE_COUNTDOWN = {
-	-- "%1MINUTES_REMAINING% minutes until Game Ends"
-	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:310",
-	title_defeat = "$64c5019a145c4e4da448dbd3adeea61e:310",
-	-- "1 minute until Game Ends"
-	title_final_victory = "$64c5019a145c4e4da448dbd3adeea61e:311",
-	title_final_defeat = "$64c5019a145c4e4da448dbd3adeea61e:311",	
 }
 -- Points during countdown at which to display loss warning.
 -- Arrange in decreasing order since music intensity increases when the last one triggers.
@@ -235,7 +336,7 @@ AGS_NOTIFICATIONS_COUNTDOWN = {
 -- Pre-Filled Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_Notification_CountdownNotification(source_player, order_id, notification)
+function AGS_Notifications_CountdownNotification(source_player, order_id, notification)
 	if AGS_GS_LOCAL_PLAYER.isEliminated then
 		return
 	end	
@@ -270,6 +371,35 @@ function AGS_Notification_CountdownNotification(source_player, order_id, notific
 	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, AGS_NP_MAX, title, sfx, color)
 end
 
+-- Action variant that executes choosen variant, expects AGS_SAE_SELF, AGS_SAE_ALLY, AGS_SAE_ENEMY
+function AGS_Notifications_ObjectiveActionSelectable(player, notification, for_who)
+	if AGS_GS_LOCAL_PLAYER.isEliminated then
+		return
+	end	
+	-- Create cue.
+	local color = Player_GetUIColour(player.id)
+	local priority = nil
+	local title = nil
+	local sfx = nil
+	-- Fill based on context.
+	if for_who == AGS_SAE_SELF then
+		title = Loc_FormatText(notification.self_action)
+		sfx = notification.self_action_sfx
+		priority = notification.self_priority
+	end
+	if for_who == AGS_SAE_ALLY then
+		title = Loc_FormatText(notification.ally_action)
+		sfx = notification.ally_action_sfx
+		priority = notification.ally_priority
+	end
+	if for_who == AGS_SAE_ENEMY then
+		title = Loc_FormatText(notification.enemy_action)	
+		sfx = notification.enemy_action_sfx
+		priority = notification.enemy_priority
+	end
+	
+	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, priority, title, sfx, color)
+end
 
 function AGS_Notifications_ObjectiveAction(player, notification)
 	local owner_relation = AGS_GetRelation(player)
@@ -307,7 +437,7 @@ function AGS_Notifications_Eliminated(player, cue_opt_fielded)
 	--	return
 	--end
 	-- Notify via sound.
-	AGS_Notifications_SoundCue(player)
+	AGS_Notifications_SoundCue(player, AGS_NOTIFICATIONS_SOUND_ELIMINATED)
 	-- Notify via message in right bottom corner.	
 	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, AGS_NP_HIGH, Loc_FormatText(cue_opt_fielded.title, player.playerName), cue_opt_fielded.sfx)
 end
@@ -360,12 +490,13 @@ function AGS_Notifications_TextCue(cue, title, color, template, sfx, icon, style
 	)	
 end
 
-function AGS_Notifications_SoundCue(player)
-	if AGS_GS_LOCAL_PLAYER == player then
-		Sound_Play2D(AGS_NOTIFICATIONS_SOUND_ELIMINATED.self)		
-	elseif AGS_IsMutualRelation(AGS_GS_LOCAL_PLAYER.id, player.id, R_ALLY) then
-		Sound_Play2D(AGS_NOTIFICATIONS_SOUND_ELIMINATED.ally)
+function AGS_Notifications_SoundCue(player, sound_notification)
+	local relation = AGS_GetRelation(player)
+	if relation == AGS_SAE_SELF then
+		Sound_Play2D(sound_notification.self)		
+	elseif relation == AGS_SAE_ALLY then
+		Sound_Play2D(sound_notification.ally)
 	else
-		Sound_Play2D(AGS_NOTIFICATIONS_SOUND_ELIMINATED.enemy)	
+		Sound_Play2D(sound_notification.enemy)	
 	end
 end

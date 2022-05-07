@@ -7,6 +7,34 @@
 -- Contains condition helpers for objective handling.
 ---------------------------------------------------------------------------------------------------
 
+AGS_OBJECTIVES_RELIGIOUS_SECONDARY = {
+	-- "Site %1NUMBER%"
+	title = 11184017, 
+	data_template = "HolySiteSecondaryObjectiveDataTemplate",
+	data_template_or = "HolySiteSecondaryObjectiveDataTemplate",
+	priority = OT_Secondary,
+	telemetry = "holySiteObj",	
+}
+
+AGS_OBJECTIVES_RELIGIOUS = {
+	reason = AGS_WR_RELIGIOUS,
+	-- "Control all Sacred Sites"
+	title = 11169980, 
+	title_capture = 11169980, 
+	-- "Neutralize a Sacred Site"
+	title_neutralize = 11183992,
+	-- "Defend all Sacred Sites"
+	title_defend = 11190384,
+	description = Loc_Empty(),
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
+	data_template = "HolySiteObjectiveDataTemplate",
+	data_template_or = "HolySiteOrObjectiveDataTemplate",
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "religiousObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
 AGS_OBJECTIVES_WONDER_SELF = {	
 	-- "Defend your Wonder"
 	title = "$11159071",
@@ -185,7 +213,6 @@ AGS_OBJECTIVES_ANNIHILATION = {
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 -- Creates objective by combining core and template.
--- Currently only for title, icon, telemetry.
 function AGS_Objectives_CreateFromCore(core, template)
 	local new_objective = {
 		reason = core.reason,
@@ -199,14 +226,35 @@ function AGS_Objectives_CreateFromCore(core, template)
 		telemetry = core.telemetry,
 		alert = core.alert,	
 	}
+	if template.reason ~= nil then
+		new_objective.reason = template.reason
+	end
 	if template.title ~= nil then
 		new_objective.title = template.title
+	end
+	if template.description ~= nil then
+		new_objective.description = template.description
 	end
 	if template.icon ~= nil then
 		new_objective.icon = template.icon
 	end
+	if template.data_template ~= nil then
+		new_objective.data_template = template.data_template
+	end
+	if template.data_template_or ~= nil then
+		new_objective.data_template_or = template.data_template_or
+	end
+	if template.priority ~= nil then
+		new_objective.priority = template.priority
+	end	
+	if template.parent ~= nil then
+		new_objective.parent = template.parent
+	end	
 	if template.telemetry ~= nil then
 		new_objective.telemetry = template.telemetry
+	end	
+	if template.alert ~= nil then
+		new_objective.alert = template.alert
 	end	
 	if template.music ~= nil then
 		new_objective.music = template.music
@@ -234,6 +282,21 @@ function AGS_Objectives_Present(objective_id, state, title, title_param)
 		Obj_SetState(objective_id, state)
 	end
 	Obj_CreatePopup(objective_id, formatted_title)	
+end
+
+function AGS_Objectives_SetColorProgress(objective, state, color, progress_percentage)
+	-- Current state of an objective.
+	if state ~= nil then
+		Obj_SetState(objective, state)
+	end
+	-- Set color of progress.
+	if color ~= nil then
+		Obj_SetColour(objective, color.r, color.g, color.b, color.a)
+	end
+	-- Percentage completed.
+	if progress_percentage ~= nil then
+		Obj_SetProgress(objective, progress_percentage)
+	end
 end
 
 function AGS_Objectives_Progress(objective, current_count, max_count, progress_percentage, timer)
