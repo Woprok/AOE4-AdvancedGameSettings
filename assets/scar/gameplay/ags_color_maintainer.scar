@@ -44,6 +44,10 @@ function AGS_ColorMaintainer_OnPlayerDefeated(player, reason)
 	AGS_ColorMaintainer_RefreshSlots()
 end		
 
+function AGS_ColorMaintainer_DiplomacyForcedAction()
+	AGS_Print("AGS_ColorMaintainer_DiplomacyForcedAction")
+	AGS_ColorMaintainer_RefreshSlots()
+end
 
 function AGS_ColorMaintainer_OnRelationshipChanged(observer_id, target_id)
 	AGS_Print("AGS_ColorMaintainer_OnRelationshipChanged")
@@ -102,6 +106,7 @@ function AGS_ColorMaintainer_CreateListFrom(slots)
 end
 
 function AGS_ColorMaintainer_RefreshSlots()
+	--PlayerColour_Disable()
 	PlayerColour_Enable()	
 	for _, player in pairs(PLAYERS) do
 		if not player.isEliminated then

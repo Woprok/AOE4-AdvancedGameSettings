@@ -1,0 +1,144 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Relations part of diplomacy module.
+---------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+-- Global event callback for GE_PlayerTeamIdUpdated
+-- Enables/Disables buttons for diplomacy based on context change whenever player moves into another team.
+function Diplomacy_OnPlayerTeamChanged(player, resources)	
+	Diplomacy_UpdateDataContext()
+end
+
+-- Callback invoked when relationship changes			
+--TODO: Make this a global event (GE_RelationChanged) triggered by code.  
+function Diplomacy_OnRelationshipChanged(observerPlayerID, targetPlayerID, show_notification)
+	if _diplomacy ~= nil then 	
+		-- Show event cue
+		if show_notification ~= false then
+			local targetPlayer = Core_GetPlayersTableEntry(targetPlayerID)	
+			if targetPlayer.isLocal and not targetPlayer.isEliminated then				
+				local relation = Player_ObserveRelationship(observerPlayerID, targetPlayerID)		
+				local observerPlayer = Core_GetPlayersTableEntry(observerPlayerID)
+				local text = Loc_FormatText(11161246, Player_GetDisplayName(observerPlayer.id))	-- "%1PLAYER_NAME% is now neutral"
+				local cue = _diplomacy.cue		
+				if relation == R_ALLY then
+					text = Loc_FormatText(11161247, Player_GetDisplayName(observerPlayer.id))	-- "%1PLAYER_NAME% is now friendly"
+				elseif relation == R_ENEMY then
+					text = Loc_FormatText(11161248, Player_GetDisplayName(observerPlayer.id))	-- "%1PLAYER_NAME% is now hostile"
+				end
+				UI_CreateEventCueClickable(-1, cue.lifetime, 0, cue.repeatTime, text, cue.desc, cue.template, cue.icon, cue.sfx, cue.color.r, cue.color.g, cue.color.b, cue.color.a, cue.style, nothing)
+			end
+		end
+		
+		-- Update data context
+		local localPlayer = Core_GetPlayersTableEntry(Game_GetLocalPlayer())	
+		if localPlayer.id == observerPlayerID or localPlayer.id == targetPlayerID then 
+			for i, context_player in ipairs(_diplomacy.data_context.players) do 		
+				local player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)		
+				if not player.is_local then 		
+					context_player.name.color = UI_GetColourAsString(Player_GetUIColour(player.id))
+					context_player.name.tooltip = Diplomacy_RelationToTooltipConverter(player, localPlayer)
+					context_player.relationTooltip = Diplomacy_RelationToTooltipConverter(localPlayer, player)			
+					context_player.is_ally = Player_ObserveRelationship(player.id, localPlayer.id) == R_ALLY	
+					context_player.is_neutral = Player_ObserveRelationship(player.id, localPlayer.id) == R_NEUTRAL
+					context_player.is_enemy = Player_ObserveRelationship(player.id, localPlayer.id) == R_ENEMY
+					for j, relation in ipairs(context_player.relations) do
+						relation.isChecked = Diplomacy_RelationConverter(relation.relation) ~= Player_ObserveRelationship(localPlayer.id, player.id)
+					end
+				end
+			end
+			Diplomacy_UpdateUI()
+		end	
+	end
+end
+
+
+---------------------------------------------------------------------------------------------------
+-- Network Functions:
+---------------------------------------------------------------------------------------------------
+
+function Diplomacy_ChangeRelationNtw(playerID, data)  
+
+	-- Expected format of data parameter is: observerPlayerID,targetPlayerID,relationAsAnInt
+	local parts = string.split(data)
+	local observerPlayer = Core_GetPlayersTableEntry(playerID)
+ 	local targetPlayer = Core_GetPlayersTableEntryFromIndex(tonumber(parts[1]))
+	local relation = Diplomacy_RelationConverter(tonumber(parts[2]))
+	
+	if Player_ObserveRelationship(playerID, targetPlayer.id) ~= relation then 
+		Player_SetRelationship(playerID, targetPlayer.id, relation)
+
+		Core_CallDelegateFunctions("OnRelationshipChanged", playerID, targetPlayer.id)		-- HACK: Player_SetRelationship() needs to trigger a global event (GE_RelationChanged)
+		
+		if not Player_IsHuman(playerID) or not Player_IsHuman(targetPlayer.id) then -- HACK: Force AI to change relation (AI will still be dumb and not understand what to do)
+			Player_SetRelationship(targetPlayer.id, playerID, relation)			
+		end
+		Core_CallDelegateFunctions("OnRelationshipChanged", targetPlayer.id, playerID)		-- HACK: Player_SetRelationship() needs to trigger a global event (GE_RelationChanged)
+	end
+end
+
+---------------------------------------------------------------------------------------------------
+-- Callbacks:
+---------------------------------------------------------------------------------------------------
+
+-- Callback invoked by Relation radio buttons
+function Diplomacy_ChangeRelation(parameter)
+	Network_CallEvent("Diplomacy_ChangeRelationNtw", parameter)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+-- Converts relation to integer and integer to relation  
+function Diplomacy_RelationConverter(relation)	
+	if scartype(relation) == ST_NUMBER then
+		if relation == 1 then 
+			return R_ENEMY
+		elseif relation == 2 then 
+			return R_ALLY
+		elseif relation == 3 then 
+			return R_NEUTRAL
+		end
+	else
+		if relation == R_ENEMY then 
+			return 1
+		elseif relation == R_ALLY then 
+			return 2
+		elseif relation == R_NEUTRAL then
+			return 3
+		end
+	end
+end
+
+
+-- Returns the relation (R_ALLY, R_ENEMY, R_NEUTRAL) of observer vs target as a tooltip.	 
+function Diplomacy_RelationToTooltipConverter(observer, target)
+	local relation = Player_ObserveRelationship(observer.id, target.id)
+	if observer.isLocal then 
+		if relation ==  R_ALLY then 
+			return Loc_FormatText(11161249, Player_GetDisplayName(target.id))				-- "You are friendly to %1PLAYER_NAME%"
+		elseif relation == R_ENEMY then 
+			return Loc_FormatText(11161253, Player_GetDisplayName(target.id))				-- "You are hostile to %1PLAYER_NAME%"
+		else
+			return Loc_FormatText(11161254, Player_GetDisplayName(target.id))				-- "You are neutral to %1PLAYER_NAME%"
+		end	
+	elseif target.isLocal then 
+		if relation ==  R_ALLY then 
+			return Loc_FormatText(11161255, Player_GetDisplayName(observer.id))				-- "%1PLAYER_NAME% is friendly to you"
+		elseif relation == R_ENEMY then 
+			return Loc_FormatText(11161256, Player_GetDisplayName(observer.id))				-- "%1PLAYER_NAME% is hostile to you"
+		else
+			return Loc_FormatText(11161257, Player_GetDisplayName(observer.id))				-- "%1PLAYER_NAME% is neutral  to you"
+		end					
+	end
+	return Loc_Empty()
+end

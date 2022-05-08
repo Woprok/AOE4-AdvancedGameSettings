@@ -66,6 +66,7 @@ AGS_GS_COLOR_GREY = 9 -- Monsoon/Natural Grey
 -- Local player should never change. And be ready after Initialization Phase.
 -- Local player is used for UI & visual logic. Gameplay logic should never use it as it will cause desync.
 AGS_GS_LOCAL_PLAYER = nil
+AGS_GLOBAL_SETTINGS_BUILD = "3.0"
 AGS_GLOBAL_SETTINGS_MODULE = "AGS_GlobalSettings"
 AGS_GLOBAL_SETTINGS = {
 	Annihilation = true, -- Player loses everything.
@@ -112,8 +113,9 @@ AGS_GLOBAL_SETTINGS = {
 		ChangeRelations = true, -- undefined, used for testing treaty without diplomacy module.
 	},
 	
+	Diplomacy = true, -- undefined, disables whole diplomacy module.
 	Tributes = true,
-	Diplomacy = false,
+	Relations = false,
 	TeamVision = AGS_GS_TEAM_VISION_ALWAYS,
 	MapVision = AGS_GS_MAP_VISION_CONCEALED,
 	
@@ -333,8 +335,8 @@ function AGS_GlobalSettings_DefineGameSettings(category)
 	if category.option_game_setting_tributes ~= nil then
 		AGS_GLOBAL_SETTINGS.Tributes = category.option_game_setting_tributes
 	end
-	if category.option_game_setting_diplomacy ~= nil then
-		AGS_GLOBAL_SETTINGS.Diplomacy = category.option_game_setting_diplomacy
+	if category.option_game_setting_relations ~= nil then
+		AGS_GLOBAL_SETTINGS.Relations = category.option_game_setting_relations
 	end
 	if category.option_game_setting_team_vision then
 		AGS_GlobalSettings_SetTeamVision(category.option_game_setting_team_vision)

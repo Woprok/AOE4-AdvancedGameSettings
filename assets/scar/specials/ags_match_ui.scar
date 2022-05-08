@@ -78,7 +78,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function AGS_MatchUI_CreateDataContext()
-	local final = ""	
+	local final = "AGS VERSION: " .. AGS_GLOBAL_SETTINGS_BUILD .. "\n"
 	final = final .. "OBJECTIVES:" .. "\n"
 	if AGS_GLOBAL_SETTINGS.Annihilation then
 		final = final .. "Annihilation" .. "\n"		
@@ -142,8 +142,10 @@ function AGS_MatchUI_CreateDataContext()
 	end
 	
 	final = final .. "SETTINGS:" .. "\n"
-	final = final .. "Tributes: " .. tostring(AGS_GLOBAL_SETTINGS.Tributes) .. "\n"
-	final = final .. "Diplomacy: " .. tostring(AGS_GLOBAL_SETTINGS.Diplomacy) .. "\n"
+	if AGS_GLOBAL_SETTINGS.Diplomacy then
+		final = final .. "Send Tributes: " .. tostring(AGS_GLOBAL_SETTINGS.Tributes) .. "\n"
+		final = final .. "Change Relations: " .. tostring(AGS_GLOBAL_SETTINGS.Relations) .. "\n"
+	end
 	final = final .. "Settlement: " .. tostring(AGS_GLOBAL_SETTINGS.Settlement) .. "\n"
 	final = final .. "Team Victory: " .. tostring(AGS_GLOBAL_SETTINGS.TeamVictory) .. "\n"
 	final = final .. "Team Vision: " .. tostring(AGS_GLOBAL_SETTINGS.TeamVision) .. "\n"
@@ -234,6 +236,7 @@ function AGS_MatchUI_CreateUI()
 		HorizontalAlignment="Right" 
 		VerticalAlignment="Top" 
 		SnapsToDevicePixels="True"
+		Margin="0,13,13,0"
 		Visibility="{Binding [is_ui_visible], Converter={StaticResource BoolToVis}}">
 		<Grid.Resources>
 			<ResourceDictionary.MergedDictionaries>
@@ -322,15 +325,16 @@ function AGS_MatchUI_CreateUI()
             esControls:TagAdorner.VerticalAnchor="Top" esControls:TagAdorner.VerticalPlacement="Bottom"	
 			Style="{StaticResource DiplomacyResourceButtonStyle}"
 			Command="{Binding [command][toggle_dropdown]}"			
-            ToolTipService.InitialShowDelay="0" ToolTipService.ShowDuration="86400000"> 
+            ToolTipService.InitialShowDelay="0" ToolTipService.ShowDuration="86400000"
+			MinWidth="34" MaxWidth="34" Width="34" Height="34"> 
 		<Button.Content>
-			<Image Source="{Binding [about_image]}" Width="32">
-			<Image.Effect>
-				<DropShadowEffect BlurRadius="6" Direction="-71.5"
-                                  Opacity="0.6" ShadowDepth="3"
-                                  Color="Black" />
-			</Image.Effect>
-			</Image>
+				<Image Source="{Binding [about_image]}" Width="34">
+				<Image.Effect>
+					<DropShadowEffect BlurRadius="6" Direction="-71.5"
+		                              Opacity="0.6" ShadowDepth="3"
+		                              Color="Black" />
+				</Image.Effect>
+				</Image>
 		</Button.Content>
 	</Button>
 	<Grid Grid.Row="1"

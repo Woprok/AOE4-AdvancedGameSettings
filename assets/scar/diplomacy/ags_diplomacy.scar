@@ -1,0 +1,373 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Wrapper around relic diplomacy module.
+-- This needs to be finished. TODO !!! refactor to AGS style modules
+---------------------------------------------------------------------------------------------------
+import("diplomacy/ags_diplomacy_ui.scar")
+import("diplomacy/ags_relations.scar")
+import("diplomacy/ags_tributes.scar")
+AGS_DIPLOMACY_MODULE = "AGS_Diplomacy"
+
+AGS_DIPLOMACY_DATA = {
+	TributesEnabled = false,
+	TributesOverrideEnabled = nil,
+	RelationsEnabled = false,
+	RelationsOverrideEnabled = nil,
+}
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule("Diplomacy")
+Core_RegisterModule(AGS_DIPLOMACY_MODULE)
+
+function AGS_Diplomacy_UpdateModuleSettings()
+	AGS_Print("AGS_Diplomacy_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.Diplomacy then
+		Core_UnregisterModule(AGS_DIPLOMACY_MODULE)
+	end
+end
+-- Remnant from original version that notifies everyone about settings.
+-- This notification is ignored by AGS as any AGS module can read option directly.
+function AGS_Diplomacy_EarlyInitializations()
+	AGS_Print("AGS_Diplomacy_EarlyInitializations")
+	AGS_DIPLOMACY_DATA.TributesEnabled = AGS_GLOBAL_SETTINGS.Tributes
+	AGS_DIPLOMACY_DATA.RelationsEnabled = AGS_GLOBAL_SETTINGS.Relations
+	Core_CallDelegateFunctions("DiplomacyEnabled", AGS_GLOBAL_SETTINGS.Relations)
+	Core_CallDelegateFunctions("TributeEnabled", AGS_GLOBAL_SETTINGS.Tributes)
+end
+-- Allows any module to change tributes and relations to enabled or disabled.
+function AGS_Diplomacy_DiplomacyOverrideEnabled(tributes, relations)
+	AGS_Print("AGS_Diplomacy_DiplomacyOverrideEnabled")
+	AGS_DIPLOMACY_DATA.TributesOverrideEnabled = tributes
+	AGS_DIPLOMACY_DATA.RelationsOverrideEnabled = relations
+end
+
+function AGS_Diplomacy_LateInitializations()
+	AGS_Print("AGS_Diplomacy_LateInitializations")
+	
+	AGS_Diplomacy_Create(AGS_GLOBAL_SETTINGS.Relations)	
+	Rule_AddGlobalEvent(Diplomacy_OnUpgradeComplete, GE_UpgradeComplete)
+	Rule_AddGlobalEvent(Diplomacy_OnConstructionComplete, GE_ConstructionComplete)
+	Rule_AddGlobalEvent(Diplomacy_OnPlayerNameChanged, GE_PlayerNameChanged)
+	
+	if _diplomacy ~= nil then 
+		Network_RegisterEvent("Diplomacy_ChangeRelationNtw")
+		Network_RegisterEvent("Diplomacy_SendTributeNtw")
+		
+		-- Initial age
+		for _, context_player in pairs(_diplomacy.data_context.players) do				
+			local player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)			
+			local age = Player_GetCurrentAge(player.id)
+			context_player.age = _diplomacy.age[age]									
+			if context_player.is_local and age >= AGE_FEUDAL and not _diplomacy.tribute.is_age_2 then
+				_diplomacy.tribute.is_age_2 = true
+			end								
+		end	
+		
+		Diplomacy_UpdateDataContext()
+		Diplomacy_CreateUI()
+
+		Diplomacy_ToggleDiplomacyUI()
+		Rule_AddOneShot(Diplomacy_ToggleDiplomacyUI)
+	end
+	
+	if AGS_GLOBAL_SETTINGS.TeamVictory ~= AGS_GS_TEAM_VICTORY_STANDARD then
+		Diplomacy_AllPlayer_DestroyTeams()
+	end	
+end
+
+function AGS_Diplomacy_PresetFinalize()
+	AGS_Print("AGS_Diplomacy_PresetFinalize")
+	Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.Tributes, AGS_GLOBAL_SETTINGS.Relations)
+	if AGS_GLOBAL_SETTINGS.TeamVictory ~= AGS_GS_TEAM_VICTORY_STANDARD then
+		Diplomacy_AllPlayer_DestroyTeamsFinalize()
+	end	
+end
+
+function AGS_Diplomacy_OnGameOver()
+	AGS_Print("AGS_Diplomacy_OnGameOver")
+	
+	
+end
+
+-- Callback invoked by Core_OnGameOver()
+function Diplomacy_OnGameOver()
+	Rule_RemoveGlobalEvent(Diplomacy_OnUpgradeComplete)
+	Rule_RemoveGlobalEvent(Diplomacy_OnConstructionComplete)
+	Rule_RemoveGlobalEvent(Diplomacy_OnPlayerNameChanged)
+	if(Rule_Exists(Diplomacy_OnPlayerAddResource)) then
+		Rule_RemoveGlobalEvent(Diplomacy_OnPlayerAddResource)
+	end
+	Diplomacy_RemoveUI()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Callbacks:
+---------------------------------------------------------------------------------------------------
+
+
+--  Global event callback for GE_PlayerNameChanged
+function Diplomacy_OnPlayerNameChanged(context)
+	if _diplomacy ~= nil then 
+		for _, context_player in pairs(_diplomacy.data_context.players) do	
+			local player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)
+			context_player.name.text = Player_GetDisplayName(player.id).LocString
+		end		
+		Diplomacy_UpdateDataContext()
+	end
+end
+
+
+-- Global event callback for GE_UpgradeComplete
+function Diplomacy_OnUpgradeComplete(context)
+	if _diplomacy ~= nil and BP_IsUpgradeOfType(context.upgrade, "wonder_age_upgrade") then
+		for _, context_player in pairs(_diplomacy.data_context.players) do				
+			local player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)			
+			local age = Player_GetCurrentAge(player.id)
+			context_player.age = _diplomacy.age[age]									
+			if context_player.is_local and age >= AGE_FEUDAL and not _diplomacy.tribute.is_age_2 then
+				_diplomacy.tribute.is_age_2 = true
+				Diplomacy_UpdateDataContext()
+			end								
+		end		
+		Diplomacy_UpdateUI()
+	end
+end
+
+-- Global event callback for GE_PlayerResourcesAwarded
+-- Enables/Disables Resource icons if player can/cannot afford them
+function Diplomacy_OnPlayerAddResource(player, resources)	
+		Diplomacy_UpdateDataContext()
+end
+
+-- Global event callback for GE_ConstructionComplete
+-- Allows sending tribute only after local player builds a market
+function Diplomacy_OnConstructionComplete(context)	
+	if _diplomacy ~= nil then 
+		local player = Core_GetPlayersTableEntry(context.player)
+		if player ~= nil and player.isLocal and context.entity ~= nil and Entity_IsOfType(context.entity, _diplomacy.entity_type.market) and not _diplomacy.tribute.is_market_built then							
+			_diplomacy.tribute.is_market_built = true
+			Diplomacy_UpdateDataContext()
+		end	
+
+		if _diplomacy.tribute.is_market_built and Rule_Exists(Diplomacy_OnConstructionComplete) then 
+			Rule_RemoveGlobalEvent(Diplomacy_OnConstructionComplete)
+		end
+	end
+end
+
+
+-- Callback invoked by Core_SetPlayerDefeated() when a player is eliminated.
+function Diplomacy_OnPlayerDefeated(player, reason)
+	if _diplomacy ~= nil and player ~= nil then 
+		if player.isLocal and player.isEliminated then
+			Diplomacy_ShowUI(false)
+		else
+			for i, context_player in pairs(_diplomacy.data_context.players) do
+				if context_player.player_index == player.index then
+					context_player.is_eliminated = true
+					context_player.name.color = UI_GetColourAsString(Player_GetUIColour(player.id))
+					for j, tribute in pairs(context_player.tribute) do
+						tribute.is_enabled = false						
+						if tribute.amount > 0 then
+							Diplomacy_AddTribute(context_player.player_index, j, -tribute.amount)
+						end
+					end
+				end
+			end			
+			Diplomacy_UpdateDataContext()
+		end
+	end
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Diplomacy_Create(relations)
+	_diplomacy = {
+		is_enabled = relations,							-- true = dynamic diplomacy, false = locked teams
+		is_ui_created = false,
+		data_context = {
+			is_ui_visible = true,										
+			is_ui_expanded = false,				
+			is_subtotal_visible = false,					-- Whether to show/hide total/subtotal/tax amounts
+			is_team_visible = true,							-- Whether the team column is displayed
+			is_tribute_enabled = false,						-- Whether the local player meets the requirements to send tribute to others  
+
+			command = {
+				toggle_ui = UI_CreateCommand("Diplomacy_ToggleDiplomacyUI"),
+				send_tribute = UI_CreateCommand("Diplomacy_SendTribute"),
+				clear_tribute = UI_CreateCommand("Diplomacy_ClearTribute"),
+			},
+			subtotal = {
+				{amount = 0, opacity = 0.0},	-- food subtotal	-- opacity is a hack to get around NumberToVis converter not supporting Hidden.
+				{amount = 0, opacity = 0.0},	-- wood subtotal
+				{amount = 0, opacity = 0.0},	-- gold subtotal
+				{amount = 0, opacity = 0.0},	-- stone subtotal
+			},				
+			total_resources = {amount = 0},
+			total_taxes = {amount = 0},
+			total_cost = {amount = 0},
+			players = {},
+			headerRelations = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:234"),
+		},
+		cue = {							-- Event cue template (shown when player changes relationship or receives tribute) 
+			lifetime = 10.0,
+			repeatTime = 20.0,
+			title = Loc_Empty(),
+			desc = Loc_Empty(),
+			sfx = "sfx_ui_tribute_received_play",
+			icon = "",
+			color = {r = 255, g = 255, b = 255, a = 255},
+			template = "low_priority", 
+			style = ECV_Queue,
+		},
+		entity_type = {
+			market = "market",
+		},
+		tribute = {
+			is_age_2 = true,						--false check removed used to calculate data_context.is_tribute_enabled				
+			is_market_built = false,				-- used to calculate data_context.is_tribute_enabled
+			is_in_progress = false,					-- used to calculate data_context.is_tribute_enabled	
+			is_enabled_override = nil,				-- used to override data_context.is_tribute_enabled 
+			is_subtotal_visible_override = nil, 	-- used to override data_context.is_subtotal_visible
+			
+			is_score_visible_override = nil, 		-- used to override data_context.players.player.is_score_visible	
+			is_team_visible_override = nil,			-- used to override data_context.players.player.is_team_visible	
+			
+			increment = 100,						-- Amount by which one button click increments/decrements tribute
+			tax_rate = 0.3,							-- TODO: Move this into AE data?
+			limit = 9999,							-- Limit button text to 4 digits so it doesn't wrap
+		},		
+		resources = { 
+			{ resource_type = RT_Food, image = "pack://application:,,,/WPFGUI;component/icons/resources/resource_food_icon.png", help = 11164967 },
+			{ resource_type = RT_Wood, image = "pack://application:,,,/WPFGUI;component/icons/resources/resource_wood_icon.png", help = 11164968 },			
+			{ resource_type = RT_Gold, image = "pack://application:,,,/WPFGUI;component/icons/resources/resource_gold_icon.png", help = 11164969 },
+			{ resource_type = RT_Stone,image = "pack://application:,,,/WPFGUI;component/icons/resources/resource_stone_icon.png", help = 11164970},
+		},
+		relations = {
+			{ relation_type = R_ALLY, image = "pack://application:,,,/WPFGUI;component/icons/common/orders/rally.png", help = "$64c5019a145c4e4da448dbd3adeea61e:239", title = "$64c5019a145c4e4da448dbd3adeea61e:235" },
+			{ relation_type = R_NEUTRAL, image = "pack://application:,,,/WPFGUI;component/icons/races/common/buildings/market.png", help = "$64c5019a145c4e4da448dbd3adeea61e:240", title = "$64c5019a145c4e4da448dbd3adeea61e:236" },
+			{ relation_type = R_ENEMY, image = "pack://application:,,,/WPFGUI;component/icons/races/common/buildings/barracks.png", help = "$64c5019a145c4e4da448dbd3adeea61e:241", title = "$64c5019a145c4e4da448dbd3adeea61e:237" },
+		},
+		age = {						-- Loc_string lookup table (indexed by age)
+			Loc_GetString(11180928),					-- I
+			Loc_GetString(11180929),					-- II
+			Loc_GetString(11180930),					-- III
+			Loc_GetString(11180931),					-- IV
+		},
+	}
+	Diplomacy_CreateDataContext()
+end
+
+function Diplomacy_AllPlayer_SaveAndChangeToFriends()
+	-- Observer and then all Targets
+	for _, observer_player in pairs(PLAYERS) do				
+		-- Create default empty array for old relations
+		observer_player.saved_relations = { }
+		for _, target_player in pairs(PLAYERS) do	
+			--  Ignore self
+			if target_player.index ~= observer_player.index then 
+				-- Create backup
+				table.insert(observer_player.saved_relations, {
+					target_player_id = target_player.id,
+					old_relation = Player_ObserveRelationship(observer_player.id, target_player.id)
+				})
+				
+				-- Set new relations
+				if Player_ObserveRelationship(observer_player.id, target_player.id) ~= R_ALLY then 
+					Player_SetRelationship(observer_player.id, target_player.id, R_ALLY)
+				end
+			end
+		end		
+	end	
+	Core_CallDelegateFunctions("DiplomacyForcedAction")
+end
+
+function Diplomacy_AllPlayer_LoadFromSave()
+	-- Observer and then all Targets
+	for _, observer_player in pairs(PLAYERS) do								
+		-- We can just walkthrough saved data
+		for _, backup_relation in pairs(observer_player.saved_relations) do			
+	
+			-- Set old relations
+			if Player_ObserveRelationship(observer_player.id, backup_relation.target_player_id) ~= backup_relation.old_relation then 
+				Player_SetRelationship(observer_player.id, backup_relation.target_player_id, backup_relation.old_relation)
+			end
+		end			
+		-- finish load
+		observer_player.saved_relations = { }	
+	end	
+	Core_CallDelegateFunctions("DiplomacyForcedAction")
+end
+
+-- Update team from player (PLAYERS) to local copy of context_player
+-- should be useless as all players now have team defined in AGS_Teams and that value is correct
+function Diplomacy_UpdateTeam(context_player, tmp_i)
+	context_player.team = {
+		number = tmp_i,
+		-- everyone is always member of a team and we dont care anymore as we cant get proper team id
+		name = "-", 
+		--name = Diplomacy_FormatTeamNumber(tmp_i), 
+	}
+end
+
+-- Call before anything related to Save&Load is done
+function Diplomacy_AllPlayer_DestroyTeams()
+		-- destroy vision relations as teams no longer exists but original vision might be provided
+	for _, player in pairs(PLAYERS) do	
+		for _, other_player in pairs(PLAYERS) do
+			if player.id ~= other_player.id then
+				Player_SetRelationship(player.id, other_player.id, R_ENEMY)
+			end
+		end
+	end	
+	
+	for _, context_player in pairs(_diplomacy.data_context.players) do				
+		local player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)			
+		--Diplomacy_UpdateTeam(context_player, player.AGS_Team.index)
+	end	
+			
+	Diplomacy_UpdateRelationContext()
+	Diplomacy_UpdateDataContext()
+end
+
+
+function Diplomacy_AllPlayer_DestroyTeamsFinalize()
+	-- destroy vision relations as teams no longer exists but original vision might be provided
+	for _, player in pairs(PLAYERS) do		
+		for _, other_player in pairs(PLAYERS) do
+			if player.id ~= other_player.id then
+				Core_CallDelegateFunctions("OnRelationshipChanged", player.id, other_player.id)
+			end
+		end
+	end	
+	Core_CallDelegateFunctions("DiplomacyForcedAction")
+end
+
+function Diplomacy_UpdateRelationContext()
+	-- Update data context
+	local localPlayer = Core_GetPlayersTableEntry(Game_GetLocalPlayer())	
+	for i, context_player in ipairs(_diplomacy.data_context.players) do 		
+		local player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)		
+		if not player.is_local then 		
+			context_player.name.color = UI_GetColourAsString(Player_GetUIColour(player.id))
+			context_player.name.tooltip = Diplomacy_RelationToTooltipConverter(player, localPlayer)
+			context_player.relationTooltip = Diplomacy_RelationToTooltipConverter(localPlayer, player)			
+			context_player.is_ally = Player_ObserveRelationship(player.id, localPlayer.id) == R_ALLY	
+			context_player.is_neutral = Player_ObserveRelationship(player.id, localPlayer.id) == R_NEUTRAL
+			context_player.is_enemy = Player_ObserveRelationship(player.id, localPlayer.id) == R_ENEMY
+			for j, relation in ipairs(context_player.relations) do
+				relation.isChecked = Diplomacy_RelationConverter(relation.relation) ~= Player_ObserveRelationship(localPlayer.id, player.id)
+			end
+		end
+	end
+	Diplomacy_UpdateUI()
+end

@@ -117,14 +117,14 @@ function AGS_Treaty_StartWar()
 	AGS_Print("AGS_Treaty_StartWar-Over")
 end
 
-function AGS_Treaty_EnableFighting()
+function AGS_Treaty_DisableFighting()
 	Diplomacy_AllPlayer_SaveAndChangeToFriends()
 	Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.Tributes, false)
 end
 
-function AGS_Treaty_DisableFighting()
+function AGS_Treaty_EnableFighting()
 	Diplomacy_AllPlayer_LoadFromSave()
-	Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.Tributes, AGS_GLOBAL_SETTINGS.Diplomacy)	
+	Diplomacy_OverrideAllPlayerDiplomacySettings(AGS_GLOBAL_SETTINGS.Tributes, AGS_GLOBAL_SETTINGS.Relations)	
 end
 
 function AGS_Treaty_CreateObjective()

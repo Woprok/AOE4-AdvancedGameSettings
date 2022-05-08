@@ -9403,7 +9403,7 @@
 							<!--WinCondition/WinCondition::OptionsUIDescriptor/WinCondition::OptionSectionUIDescriptor/WinCondition::BooleanOptionUIDescriptor/-->
 							<DataObject Name="" Type="WinCondition::BooleanOptionUIDescriptor" Id="10588500970908537875" OwnerId="11793620605174209347">
 								<DataProperty Name="#BaseTypes" Type="String" Value="WinCondition::OptionUIDescriptor#0|"/>
-								<DataProperty Name="m_key" Type="String" Value="option_game_setting_diplomacy"/>
+								<DataProperty Name="m_key" Type="String" Value="option_game_setting_relations"/>
 								<DataProperty Name="m_defaultValue" Type="Bool" Value="false"/>
 								<DataProperty Name="m_feSummaryName" Type="Object">
 									<DataValue Name="util::ReflectLocString">15900134995873500168</DataValue>

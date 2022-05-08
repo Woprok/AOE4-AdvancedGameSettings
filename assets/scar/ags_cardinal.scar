@@ -71,9 +71,6 @@ import("coreconditions/ags_conditions.scar")
 -- AGS Scripts read settings from single configuration.
 import("ags_global_settings.scar")
 
--- Partially reworked Diplomacy & Tributes. -- TODO team system rework
---import("gameplay/diplomacy_reworked.scar")
-
 -- Start conditions are creating or destroying entities.
 import("startconditions/ags_start_settled.scar")
 import("startconditions/ags_start_fortified.scar")
@@ -96,6 +93,8 @@ import("conditions/ags_regicide.scar")
 import("conditions/ags_score.scar") 
 import("conditions/ags_team_solidarity.scar") 
 
+-- AGS Version of diplomacy and tributes
+import("diplomacy/ags_diplomacy.scar")
 -- AGS supports AI with few adjustments.
 import("ai/ags_ai.scar")
 -- Gameplay options are loaded as last.

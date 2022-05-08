@@ -6,7 +6,7 @@
 -- Description:
 -- Entry point for an gamemode.
 -- Contains only gamemode specific functionality and generic delegate calls.
--- Everything else is imported as part of "ags_cardinal.scar"
+-- Everything else is imported and done as part of "ags_cardinal.scar"
 ---------------------------------------------------------------------------------------------------
 
 import("ags_cardinal.scar")
@@ -14,19 +14,10 @@ import("ags_cardinal.scar")
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
--- This file is loaded fast, this means that all methods are invoked at the end of chain.
+-- This file is loaded last, this means that all methods are invoked at the end of chain.
 -- It might be possible to assume that all imported modules are finished with the stage when we are called.
 Core_RegisterModule("AGS_GameMode")	
 
 function AGS_GameMode_PrepareStart()
 	AGS_Print("AGS_GameMode_PrepareStart")
-	--Core_CallDelegateFunctions("DiplomacyEnabled", AGS_GLOBAL_SETTINGS.Diplomacy)
-	--Core_CallDelegateFunctions("TributeEnabled", AGS_GLOBAL_SETTINGS.Tributes)
-	
-	--if AGS_GLOBAL_SETTINGS.Diplomacy then
-	--	Diplomacy_AllPlayer_DestroyTeams()
-	--end	
-	--if AGS_GLOBAL_SETTINGS.Diplomacy then
-	--	Diplomacy_AllPlayer_DestroyTeamsFinalize()
-	--end	 
 end

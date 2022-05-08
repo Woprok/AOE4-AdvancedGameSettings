@@ -38,10 +38,9 @@ end
 
 function AGS_Teams_CreateInitialTeams()	
 	-- Create Static Teams for either static or dynamic teams. (Does not matter for now.)
-	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_STANDARD 
-		or AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_DYNAMIC then
+	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_STANDARD then
 		AGS_Teams_CreateStaticTeams()
-	-- Create FFA for all other options.
+	-- Create FFA for all other options as we cant track teams in dynamic.
 	else
 		AGS_Teams_CreateFFA()
 	end

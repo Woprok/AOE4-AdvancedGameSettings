@@ -1,0 +1,208 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Tributes part of diplomacy module.
+---------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+
+
+---------------------------------------------------------------------------------------------------
+-- Network Functions:
+---------------------------------------------------------------------------------------------------
+
+function Diplomacy_SendTributeNtw(playerID, data)
+	
+	local sender = Core_GetPlayersTableEntry(playerID)
+	local tax_rate = Diplomacy_GetTaxRate(playerID)	
+	local tribute_data = {}
+	local chunks = string.split(data ,"|")	
+	
+	-- Returns tribute amount after withholding tax has been applied.
+	local EffectiveTribute = function(amount)
+		return  math.floor(amount * (1.0 + tax_rate))
+	end
+	
+	for i = 1, #chunks do 
+		local parts = string.split(chunks[i])
+		if #parts == 5 then 
+			local receiver = Core_GetPlayersTableEntryFromIndex(tonumber(parts[5]))
+			local tribute = {
+				food = tonumber(parts[1]),
+				wood = tonumber(parts[2]),
+				gold = tonumber(parts[3]),
+				stone = tonumber(parts[4]),				
+				sender = sender,		
+				receiver = receiver,
+				tax_rate = tax_rate,
+			}		
+			table.insert(tribute_data, tribute)
+						
+			if tribute.food > 0 then
+				Player_GiftResource(receiver.id, RT_Food, tribute.food)
+				Player_GiftResource(sender.id, RT_Food, -EffectiveTribute(tribute.food))
+			end
+			if tribute.wood > 0 then
+				Player_GiftResource(receiver.id, RT_Wood, tribute.wood)
+				Player_GiftResource(sender.id, RT_Wood, -EffectiveTribute(tribute.wood))
+			end
+			if tribute.gold > 0 then
+				Player_GiftResource(receiver.id, RT_Gold, tribute.gold)
+				Player_GiftResource(sender.id, RT_Gold, -EffectiveTribute(tribute.gold))
+			end
+			if tribute.stone > 0 then
+				Player_GiftResource(receiver.id, RT_Stone, tribute.stone)
+				Player_GiftResource(sender.id, RT_Stone, -EffectiveTribute(tribute.stone))
+			end
+		
+			if tribute.receiver.isLocal and not tribute.receiver.isEliminated then
+				Diplomacy_ShowEventCue(tribute)
+			elseif sender.isLocal and (tribute.food > 0 or tribute.wood > 0 or tribute.gold > 0 or tribute.stone > 0) then
+				local cue = _diplomacy.cue
+				local text = Loc_FormatText(11164677, Player_GetDisplayName(tribute.receiver.id))		-- "Tribute sent to %1PLAYER_NAME%"
+				UI_CreateEventCueClickable(-1, cue.lifetime, 0, cue.repeatTime, text, cue.desc, cue.template, cue.icon, cue.sfx, cue.color.r, cue.color.g, cue.color.b, cue.color.a, cue.style, nothing)
+			end
+		end
+	end	
+	
+	_diplomacy.tribute.is_in_progress = false
+	Diplomacy_UpdateDataContext()
+	Rule_AddOneShot(Rule_Diplomacy_UpdateUI, 0)
+	
+	Core_CallDelegateFunctions("OnTributeSent", tribute_data)   
+end
+
+---------------------------------------------------------------------------------------------------
+-- Callbacks:
+---------------------------------------------------------------------------------------------------
+
+-- Callback invoked by clicking resource tribute button
+function Diplomacy_IncreaseTribute(parameter)
+	local parts = string.split(parameter)
+	local player_index = tonumber(parts[1])
+	local resource_index = tonumber(parts[2])
+	if Diplomacy_AddTribute(player_index, resource_index, _diplomacy.tribute.increment) then 
+		Diplomacy_UpdateUI()
+	end
+end
+
+-- Callback invoked by right-clicking resource tribute button
+function Diplomacy_DecreaseTribute(parameter)
+	local parts = string.split(parameter)
+	local player_index = tonumber(parts[1])
+	local resource_index = tonumber(parts[2])	
+	if Diplomacy_AddTribute(player_index, resource_index, -_diplomacy.tribute.increment) then 
+		Diplomacy_UpdateUI()
+	end
+end
+
+-- Callback invoked by Send Tribute button
+function Diplomacy_SendTribute()
+	local tribute_data = ""	
+	for i, player in pairs(_diplomacy.data_context.players) do
+		tribute_data = string.format("%s%d,%d,%d,%d,%d|", tribute_data, player.tribute[1].amount, player.tribute[2].amount, player.tribute[3].amount, player.tribute[4].amount, player.player_index)		
+	end
+	
+	-- Prevent player sending resources in excess of what they own
+	local over_capacity = false
+	for i = 1, #_diplomacy.data_context.subtotal do
+		over_capacity = over_capacity or (Player_GetResource(Game_GetLocalPlayer(), _diplomacy.resources[i].resource_type) < _diplomacy.data_context.subtotal[i].amount * (1.0 + Diplomacy_GetTaxRate(Game_GetLocalPlayer())))
+	end	
+	
+	if not over_capacity then
+		_diplomacy.tribute.is_in_progress = true
+		Diplomacy_UpdateDataContext()
+		Rule_AddOneShot(Rule_Diplomacy_UpdateUI, 0)
+
+		Diplomacy_ClearTribute()
+		Network_CallEvent("Diplomacy_SendTributeNtw", tribute_data)		
+	end
+end
+
+-- Callback invoked by Clear Tribute button
+function Diplomacy_ClearTribute()
+	for i, context_player in pairs(_diplomacy.data_context.players) do 
+		for j, tribute in pairs(context_player.tribute) do
+			if tribute.amount > 0 then 
+				Diplomacy_AddTribute(context_player.player_index, j, -tribute.amount)
+			end
+		end
+	end
+	Diplomacy_UpdateDataContext()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+-- Returns the tax rate to apply to tribute sent by a player.
+function Diplomacy_GetTaxRate(playerID)
+	return _diplomacy.tribute.tax_rate		-- For now, assume a fixed tax rate
+end
+
+
+-- Sets the tax rate to apply to tribute sent by a given player.
+function Diplomacy_SetTaxRate(playerID, tax_rate)
+	_diplomacy.tribute.tax_rate = tax_rate	-- For now, apply the same rate to all players. 
+end
+
+-- Helper function to add a given amount of a resource to the allotment queued for tribute.
+-- Returns true if the local player's tribute allotment changed.
+function Diplomacy_AddTribute(player_index, resource_index, amount)
+	
+	local Increment = function(t, n, min_opacity)
+		min_opacity = min_opacity or 0.0
+		t.amount = t.amount + math.floor(n)
+		t.opacity = math.min(1.0, t.amount + min_opacity)
+	end
+	
+	for _, context_player in pairs(_diplomacy.data_context.players) do 
+		if context_player.player_index == player_index then
+			local resource_type = _diplomacy.resources[resource_index].resource_type
+			local tribute = context_player.tribute[resource_index]
+			local tax_rate = Diplomacy_GetTaxRate(Game_GetLocalPlayer())
+			local tax = amount * tax_rate 
+			local total = amount + tax
+			if (amount < 0 and tribute.amount + amount >= 0) or 
+				(amount > 0 and tribute.amount + amount < _diplomacy.tribute.limit and
+				Player_GetResource(Game_GetLocalPlayer(), resource_type) >= (_diplomacy.data_context.subtotal[resource_index].amount + amount) * (1.0 + tax_rate)) then							
+				Increment(context_player.tribute[resource_index], amount, 1.0) 		
+				Increment(_diplomacy.data_context.subtotal[resource_index], amount)
+				Increment(_diplomacy.data_context.total_resources, amount)
+				Increment(_diplomacy.data_context.total_taxes, tax)
+				Increment(_diplomacy.data_context.total_cost, total)				
+				return true
+			else
+				return false		
+			end
+		end
+	end
+end
+
+function Diplomacy_ShowEventCue(tribute)
+	
+	local cue = _diplomacy.cue
+	
+	if tribute.food > 0 then 
+		local text = Loc_FormatText(11161258, tribute.food, Player_GetDisplayName(tribute.sender.id))		-- "%1AMOUNT% food received from %2PLAYER_NAME%"
+		UI_CreateEventCueClickable(-1, cue.lifetime, 0, cue.repeatTime, text, cue.desc, cue.template, cue.icon, cue.sfx, cue.color.r, cue.color.g, cue.color.b, cue.color.a, cue.style, nothing)
+	end
+	if tribute.wood > 0 then 
+		local text = Loc_FormatText(11161259, tribute.wood, Player_GetDisplayName(tribute.sender.id))		-- "%1AMOUNT% wood received from %2PLAYER_NAME%"
+		UI_CreateEventCueClickable(-1, cue.lifetime, 0, cue.repeatTime, text, cue.desc, cue.template, cue.icon, cue.sfx, cue.color.r, cue.color.g, cue.color.b, cue.color.a, cue.style, nothing)
+	end
+	if tribute.stone > 0 then 
+		local text = Loc_FormatText(11161260, tribute.stone, Player_GetDisplayName(tribute.sender.id))	-- "%1AMOUNT% stone received from %2PLAYER_NAME%"
+		UI_CreateEventCueClickable(-1, cue.lifetime, 0, cue.repeatTime, text, cue.desc, cue.template, cue.icon, cue.sfx, cue.color.r, cue.color.g, cue.color.b, cue.color.a, cue.style, nothing)
+	end
+	if tribute.gold > 0 then 
+		local text = Loc_FormatText(11161261, tribute.gold, Player_GetDisplayName(tribute.sender.id))		-- "%1AMOUNT% gold received from %2PLAYER_NAME%"
+		UI_CreateEventCueClickable(-1, cue.lifetime, 0, cue.repeatTime, text, cue.desc, cue.template, cue.icon, cue.sfx, cue.color.r, cue.color.g, cue.color.b, cue.color.a, cue.style, nothing)
+	end	
+end

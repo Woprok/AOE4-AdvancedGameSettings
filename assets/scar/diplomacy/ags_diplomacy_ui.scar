@@ -1,0 +1,978 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- UI part of diplomacy module.
+---------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+function Diplomacy_OnGameRestore()
+	_diplomacy.is_ui_created = false	
+	-- coming in from a savegame - the UI won't have been saved so we need to clear this flag and then recreate the UI
+	Diplomacy_CreateUI()
+	Diplomacy_OnPlayerNameChanged()
+	--Diplomacy_UpdateUI()	
+end
+
+---------------------------------------------------------------------------------------------------
+-- Callbacks:
+---------------------------------------------------------------------------------------------------
+
+function Diplomacy_UpdateNameColours()
+	if _diplomacy == nil then 
+		return
+	end
+	
+	for _, context_player in pairs(_diplomacy.data_context.players) do
+		for _, player in pairs(PLAYERS) do
+			if context_player.player_index == player.index then
+				context_player.name.color = UI_GetColourAsString(Player_GetUIColour(player.id))
+				break
+			end
+		end
+	end
+end
+
+-- Callback invoked by Diplomacy button
+function Diplomacy_ToggleDiplomacyUI()	
+	_diplomacy.data_context.is_ui_expanded = not _diplomacy.data_context.is_ui_expanded	
+	if(_diplomacy.data_context.is_ui_expanded) then
+		UI_AddEventHandler("Scar", "HUDPageBase.Cancel", "Diplomacy_HideDiplomacyUI")
+		Rule_AddGlobalEvent(Diplomacy_OnPlayerAddResource, GE_PlayerAddResource)		
+		Rule_AddGlobalEvent(Diplomacy_OnPlayerTeamChanged, GE_PlayerTeamIdUpdated)
+	else
+		UI_RemoveEventHandler("Scar", "HUDPageBase.Cancel", "Diplomacy_HideDiplomacyUI")
+		Rule_RemoveGlobalEvent(Diplomacy_OnPlayerAddResource)		
+		Rule_RemoveGlobalEvent(Diplomacy_OnPlayerTeamChanged)
+	end
+	Diplomacy_UpdateDataContext()
+end
+
+-- Force menu open or closed (more for use by mission scripts)
+function Diplomacy_ShowDiplomacyUI(show)
+	if(_diplomacy.data_context.is_ui_expanded ~= show) then
+		Diplomacy_ToggleDiplomacyUI()
+	end
+end
+
+-- callback invoked by pressing the ESC key while Diplomacy panel is open
+function Diplomacy_HideDiplomacyUI(context)
+	if(_diplomacy.data_context.is_ui_expanded) then
+		Diplomacy_ToggleDiplomacyUI()
+	end
+end
+
+-- Callback used to show/hide scripted UI elements. 
+function Diplomacy_ShowUI(show)
+	if _diplomacy ~= nil and scartype(show) == ST_BOOLEAN then 
+		_diplomacy.data_context.is_ui_visible = show
+		Diplomacy_UpdateUI()
+	end
+end
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function Diplomacy_CreateUI()
+	
+	if not _diplomacy.is_ui_created then 
+	
+		PlayerColour_SetConfigChangedCallback(Diplomacy_UpdateNameColours)
+		
+		local Xaml =
+[[<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+		xmlns:esControls="clr-namespace:WPFGUI.Shared.Controls;assembly=EngineUI"
+		xmlns:esUtility="clr-namespace:WPFGUI.Shared.Utility;assembly=EngineUI"
+		xmlns:wm="clr-namespace:WPFGUI.Shared.MarkupExtensions;assembly=EngineUI"
+		HorizontalAlignment="Right" 
+		VerticalAlignment="Top" 
+		SnapsToDevicePixels="True"
+		Margin="0,10,69,0"
+		Visibility="{Binding [is_ui_visible], Converter={StaticResource BoolToVis}}">
+	<Grid.Resources>
+		<ResourceDictionary.MergedDictionaries>
+			<ResourceDictionary Source="pack://application:,,,ui/Resources/HUDResources.xaml" />
+		</ResourceDictionary.MergedDictionaries>
+		<!-- Tribute tooltip style -->
+		<Style x:Key="TributeToolTipStyle" TargetType="{x:Type ToolTip}">
+            <Setter Property="HasDropShadow" Value="True" />
+			<Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToolTip}">
+                        <ContentPresenter />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>		
+		<!-- Resource button style - a clone of HUDBaseButtonStyle but IsEnabled setter changes Opacity instead of Visibility of background -->
+		<Style x:Key="DiplomacyResourceButtonStyle" TargetType="Button">
+	        <Setter Property="SnapsToDevicePixels" Value="true" />
+	        <Setter Property="OverridesDefaultStyle" Value="true" />
+	        <Setter Property="HorizontalAlignment" Value="Left" />
+	        <Setter Property="Width" Value="47" />
+	        <Setter Property="Height" Value="47" />
+			<Setter Property="esUtility:AudioAttachedProperty.PreviewMouseLeftButtonUpSound"
+	                Value="sfx_ui_hud_inGame_button_play" />
+	        <Setter Property="Template">
+	            <Setter.Value>
+	                <ControlTemplate TargetType="Button">
+	                    <Border Name="ResourceButton">
+	                        <Grid>
+								<Border Background="{DynamicResource TertiaryColorLightBrush}">
+									<Border>
+										<Border.Background>
+											<RadialGradientBrush Center="0.5,0" GradientOrigin="0.5,0" RadiusX="0.7" RadiusY="0.6">
+										        <GradientStop Offset="0" Color="{DynamicResource TertiaryColorExtraLight}" />
+										        <GradientStop Offset="1" Color="{DynamicResource TertiaryColorExtraLightTransparent}" />
+										    </RadialGradientBrush>
+										</Border.Background>
+									</Border>
+                                </Border>
+								
+	                            <Rectangle Name="Base" Fill="#33505050" />
+	                            
+								<Rectangle Name="Rollover" Fill="{StaticResource ButtonHighlightBrush}" Visibility="Collapsed" />
+	                            
+								<Rectangle Name="Highlight" Fill="#FF93BED7" Visibility="Collapsed" />
+								
+	                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+	                        </Grid>
+	                    </Border>
+	                    <ControlTemplate.Triggers>
+	                        <Trigger Property="IsMouseOver" Value="true">
+	                            <Setter TargetName="Rollover" Property="Visibility" Value="Visible" />
+	                        </Trigger>
+	                        <Trigger Property="IsPressed" Value="true">
+	                            <Setter TargetName="Highlight" Property="Visibility" Value="Visible" />
+	                        </Trigger>
+	                        <Trigger Property="IsEnabled" Value="false">
+								 <Setter TargetName="ResourceButton" Property="Opacity" Value="{StaticResource ButtonDisabledOpacity}" />
+	                        </Trigger>
+	                    </ControlTemplate.Triggers>
+	                </ControlTemplate>
+	            </Setter.Value>
+	        </Setter>
+	    </Style>
+		<Style x:Key="DiplomacyHorizontalSeparatorStyle" TargetType="Rectangle">
+            <Setter Property="Fill" Value="#616C8C"/>
+            <Setter Property="Height" Value="1.2"/>
+            <Setter Property="Margin" Value="0,2"/>
+        </Style>
+		<Style x:Key="DiplomacyVerticalSeparatorStyle" TargetType="Rectangle">
+            <Setter Property="Effect" Value="{StaticResource DiplomacyTextDropShadow}" />
+            <Setter Property="Fill" Value="{DynamicResource Gray80Brush}" />
+            <Setter Property="Margin" Value="8,0" />
+            <Setter Property="Width" Value="1.2" />
+        </Style>
+	</Grid.Resources>
+
+	<Grid.RowDefinitions>
+	    <RowDefinition Height="Auto" />
+	    <RowDefinition Height="*" />
+	</Grid.RowDefinitions>
+	
+	<!-- Diplomacy button -->	
+	<Button Grid.Row="0"
+            Margin="0,0,0,2" HorizontalAlignment="Right"
+            VerticalAlignment="Top" Panel.ZIndex="2"
+            esControls:TagAdorner.AlignmentMode="Relative"
+            esControls:TagAdorner.ArrowDataTemplate="{StaticResource hudPage:TagArrowDataTemplate}"
+            esControls:TagAdorner.DataTemplate="{StaticResource TagDataTemplate}"
+            esControls:TagAdorner.HorizontalAnchor="Right" esControls:TagAdorner.HorizontalPlacement="Left"
+            esControls:TagAdorner.TargetDataTemplate="{StaticResource hudPage:EmptyTagDataTemplate}"
+            esControls:TagAdorner.VerticalAnchor="Top" esControls:TagAdorner.VerticalPlacement="Bottom"
+			Style="{StaticResource DiplomacyButtonStyle}"
+            Command="{Binding [command][toggle_ui]}"
+            ToolTipService.InitialShowDelay="0" ToolTipService.ShowDuration="86400000">  
+        <Button.ToolTip>
+            <ToolTip MaxWidth="300"
+                     Placement="Bottom"
+                     Style="{StaticResource TributeToolTipStyle}"
+                     VerticalOffset="6">
+                <ContentControl Style="{StaticResource HUDTooltipBorderStyle}">
+                    <TextBlock Style="{StaticResource HUDGray80BodyTextBlock14ptStyle}"
+                               Text="{esUtility:LocString $11183102}"
+                               TextWrapping="Wrap" />
+                </ContentControl>
+            </ToolTip>
+        </Button.ToolTip>
+        <esControls:TagAdorner.IsTagged>
+            <MultiBinding Converter="{StaticResource IsTaggedConverter}" ConverterParameter="DiplomacyButton">
+                <Binding Path="TagVersion" Source="{x:Static model:HUDModel.Instance}" />
+            </MultiBinding>
+        </esControls:TagAdorner.IsTagged>
+        <esControls:TagAdorner.Data>
+            <MultiBinding Converter="{StaticResource TagDataConverter}" ConverterParameter="DiplomacyButton">
+                <Binding Path="TagVersion" Source="{x:Static model:HUDModel.Instance}" />
+            </MultiBinding>
+        </esControls:TagAdorner.Data>
+    </Button>
+	
+	<!-- Diplomacy panel -->
+	<Grid Grid.Row="1"
+		  Panel.ZIndex="1"
+		  Visibility="{Binding [is_ui_expanded], Converter={StaticResource BoolToVis}}">
+		<ContentControl Template="{StaticResource CanvasTertiaryVerticalGradientBackgroundBox}">
+            <ContentControl Template="{StaticResource TexturedTertiaryThickDoubleBorders}">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Grid Grid.Row="0" Margin="0,0,0,3">
+	                    <Grid.ColumnDefinitions>
+	                        <ColumnDefinition MaxWidth="315" />
+	                        <ColumnDefinition Width="150" />
+	                        <ColumnDefinition Width="200" />
+	                        <ColumnDefinition Width="200" />
+	                    </Grid.ColumnDefinitions>
+						
+						<!--  Header labels  -->
+	                    <esControls:Marquee Grid.Row="0" Grid.Column="0">
+							<!-- "PLAYER" -->
+	                        <TextBlock Style="{StaticResource HUDPrimaryColorGradientVerticalSubtitleTextBlock14ptStyle}"
+	                                   Text="{esUtility:LocString $11164878}" /> 
+	                    </esControls:Marquee>
+	
+	                    <Grid Grid.Row="0" Grid.Column="1">
+	                        <Grid.ColumnDefinitions>
+	                            <ColumnDefinition Width="*" />
+	                            <ColumnDefinition Width="Auto" />
+	                            <ColumnDefinition Width="*" />
+	                        </Grid.ColumnDefinitions>
+	
+	                        <esControls:Marquee Grid.Column="1"
+	                                                      MarqueeType="Alternate" Speed="60">
+								<!-- "TEAM" -->
+	                            <TextBlock Margin="4,0" HorizontalAlignment="Center"
+	                                       Style="{StaticResource HUDPrimaryColorGradientVerticalSubtitleTextBlock14ptStyle}"
+	                                       Text="{esUtility:LocString $11164879}" />
+	                        </esControls:Marquee>
+	                    </Grid>
+	
+	                    <Grid Grid.Row="0" Grid.Column="3">
+	                        <Grid.ColumnDefinitions>
+	                            <ColumnDefinition Width="*" />
+	                            <ColumnDefinition Width="Auto" />
+	                            <ColumnDefinition Width="*" />
+	                        </Grid.ColumnDefinitions>
+	
+	                        <esControls:Marquee Grid.Column="1"
+	                                                      MarqueeType="Alternate" Speed="60">
+								<!-- "TRIBUTE" -->
+	                            <TextBlock HorizontalAlignment="Center"
+	                                       Style="{StaticResource HUDPrimaryColorGradientVerticalSubtitleTextBlock14ptStyle}"
+	                                       Text="{esUtility:LocString $11164880}" />
+	                        </esControls:Marquee>
+	                    </Grid>
+						
+						
+	                    <Grid Grid.Row="0" Grid.Column="2">
+	                        <Grid.ColumnDefinitions>
+	                            <ColumnDefinition Width="*" />
+	                            <ColumnDefinition Width="Auto" />
+	                            <ColumnDefinition Width="*" />
+	                        </Grid.ColumnDefinitions>
+	
+	                        <esControls:Marquee Grid.Column="1"
+	                                                      MarqueeType="Alternate" Speed="60">
+								<!-- "DIPLO" -->
+	                            <TextBlock HorizontalAlignment="Center"
+	                                       Style="{StaticResource HUDPrimaryColorGradientVerticalSubtitleTextBlock14ptStyle}"
+	                                       Text="{Binding [headerRelations]}" />
+	                        </esControls:Marquee>
+	                    </Grid>
+					</Grid>
+					<Rectangle Grid.Row="1"
+                               Style="{StaticResource DiplomacyHorizontalSeparatorStyle}" />
+					<!-- Player list -->
+					<ItemsControl Grid.Row="2" ItemsSource="{Binding [players]}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>								
+								<Grid Visibility="{Binding [is_visible], Converter={StaticResource BoolToVis}}">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition MaxWidth="315" />
+										<ColumnDefinition Width="150" />  
+										<ColumnDefinition Width="200" /> 
+										<ColumnDefinition Width="200" />
+									</Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+									
+									<!-- Player name & details -->
+									<Grid Grid.Column="0" VerticalAlignment="Center" Margin="0,2,0,4">
+										<Grid.RowDefinitions>
+											<RowDefinition Height="Auto" />
+											<RowDefinition Height="Auto" />
+										</Grid.RowDefinitions>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="*" />
+										</Grid.ColumnDefinitions>
+										
+										<TextBlock Grid.ColumnSpan="3" Margin="0,0,0,1"
+                                                   Foreground="{Binding [name][color]}"
+                                                   Text="{Binding [name][text]}"
+												   ToolTipService.InitialShowDelay="0"
+                                        		   ToolTipService.ShowDuration="86400000"
+												   ToolTipService.ShowOnDisabled="True">
+											<TextBlock.Style>
+												<Style BasedOn="{StaticResource HUDDiplomacyPlayerNameTextBlockStyle}" TargetType="TextBlock">
+													<Style.Triggers>
+														<DataTrigger Binding="{Binding [is_eliminated]}" Value="true">
+															<Setter Property="TextDecorations" Value="Strikethrough" />
+														</DataTrigger>
+													</Style.Triggers>
+												</Style>
+											</TextBlock.Style>
+											<TextBlock.ToolTip>
+												<ToolTip Style="{StaticResource TributeToolTipStyle}" 
+														Placement="Left" 
+														Content="{Binding}" 
+														DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}" >
+													<ToolTip.ContentTemplate>
+														<DataTemplate>
+															<ContentControl Style="{StaticResource HUDTooltipBorderStyle}" Width="{StaticResource HUDTooltipMaxWidthSmall}">
+																<Grid>
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="{StaticResource HUDTooltipGutterWidthGridLength}" />
+																		<ColumnDefinition Width="*" />
+																	</Grid.ColumnDefinitions>											
+																	<StackPanel Orientation="Vertical" Grid.Column="1">		
+																		<TextBlock Text="{Binding [relationToolTipHeader]}"
+																					Style="{StaticResource HUDPrimaryColorLightTitleTextBlock18ptStyle}" />							
+																		<TextBlock Text="{Binding [relationTooltip]}" 
+																				Style="{StaticResource HUDGray80ParagraphTextBlock14ptStyle}" 
+																				Margin="{StaticResource SmallMarginTop}" />
+																	</StackPanel>
+																</Grid>
+															</ContentControl>													
+														</DataTemplate>
+													</ToolTip.ContentTemplate>
+												</ToolTip>
+											</TextBlock.ToolTip>
+										</TextBlock>
+
+                                        <Image Grid.Row="1" Grid.Column="0"
+                                               Height="14" Margin="0,0,3,0"
+                                               VerticalAlignment="Center"
+                                               Effect="{StaticResource DropShadowTextStyle}"
+                                               Source="{Binding [civ_flag]}" />
+
+                                        <Rectangle Grid.Row="1" Grid.Column="1"
+                                                   Style="{StaticResource DiplomacyVerticalSeparatorStyle}" />
+
+                                        <TextBlock Grid.Row="1" Grid.Column="2" Margin="2,0,0,0"
+                                                   Style="{StaticResource HUDDiplomacyAgeSubTitleTextBlockStyle}"
+                                                   Text="{Binding [age]}" HorizontalAlignment="Left"/>
+									</Grid>
+									
+									<!-- Team -->
+									<Grid Grid.Column="1">
+										<Border Width="24"
+                                                Height="24"
+                                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                BorderBrush="Lime"
+                                                BorderThickness="1"
+                                                Visibility="{Binding [is_ally], Converter={StaticResource BoolToVis}}" />
+										<Border Width="24"
+                                                Height="24"
+                                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                BorderBrush="Snow"
+                                                BorderThickness="1"
+                                                Visibility="{Binding [is_neutral], Converter={StaticResource BoolToVis}}" />
+										<Border Width="24"
+                                                Height="24"
+                                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                BorderBrush="Red"
+                                                BorderThickness="1"
+                                                Visibility="{Binding [is_enemy], Converter={StaticResource BoolToVis}}" />
+
+                                        <TextBlock Margin="0,2,0,0" HorizontalAlignment="Center"
+                                                   Style="{StaticResource HUDDiplomacyTeamTextBlockStyle}"
+                                                   Text="{Binding [team][name]}" 
+														ToolTipService.InitialShowDelay="0"
+                                            			ToolTipService.ShowDuration="86400000"
+														ToolTipService.ShowOnDisabled="True">
+											<TextBlock.ToolTip>
+												<ToolTip Style="{StaticResource TributeToolTipStyle}" 
+														Placement="Left" 
+														Content="{Binding}" 
+														DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}" >
+													<ToolTip.ContentTemplate>
+														<DataTemplate>
+															<ContentControl Style="{StaticResource HUDTooltipBorderStyle}" Width="{StaticResource HUDTooltipMaxWidthSmall}">
+																<Grid>
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="{StaticResource HUDTooltipGutterWidthGridLength}" />
+																		<ColumnDefinition Width="*" />
+																	</Grid.ColumnDefinitions>											
+																	<StackPanel Orientation="Vertical" Grid.Column="1">		
+																		<TextBlock Text="{Binding [relationToolTipHeader]}"
+																					Style="{StaticResource HUDPrimaryColorLightTitleTextBlock18ptStyle}" />						
+																		<TextBlock Text="{Binding [name][tooltip]}" 
+																				Style="{StaticResource HUDGray80ParagraphTextBlock14ptStyle}" 
+																				Margin="{StaticResource SmallMarginTop}" />
+																	</StackPanel>
+																</Grid>
+															</ContentControl>													
+														</DataTemplate>
+													</ToolTip.ContentTemplate>
+												</ToolTip>
+											</TextBlock.ToolTip>
+										</TextBlock>
+									</Grid>
+									
+									<!-- Resource amount buttons -->
+									<ItemsControl Grid.Column="3" 
+												  VerticalAlignment="Center" HorizontalAlignment="Right"
+												  ItemsSource="{Binding [tribute]}"
+												  Visibility="{Binding [is_tribute_visible], Converter={StaticResource BoolToVis}}" >
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<esControls:SpacedStackPanel Orientation="Horizontal" Spacing="3" />
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>           
+												<Button Command="{Binding [resourceClickedCommand]}"
+														CommandParameter="{Binding [resourceClickedParameter]}"
+														esControls:ButtonHelper.RightClickCommand="{Binding [resourceRightClickedCommand]}"
+														esControls:ButtonHelper.CommandParameter="{Binding [resourceClickedParameter]}"
+														ToolTipService.InitialShowDelay="0"
+                                            			ToolTipService.ShowDuration="86400000"
+														ToolTipService.ShowOnDisabled="True"													
+														IsEnabled="{Binding [is_enabled]}"						
+														Style="{StaticResource DiplomacyResourceButtonStyle}">
+													<Button.Content>
+														<Grid>
+															<Image Source="{Binding [imageSource]}"
+																   Opacity="{Binding [opacity]}" Width="32">
+																<Image.Effect>
+																	<DropShadowEffect BlurRadius="6" Direction="-71.5"
+												                                      Opacity="0.6" ShadowDepth="3"
+												                                      Color="Black" />
+																</Image.Effect>
+															</Image>
+												
+                        									<!-- StringFormat=N0 not supported, so using CastToIntOperator converter instead. -->
+															<TextBlock Text="{Binding [amount], Converter={StaticResource CastToIntOperator}}"
+																	Visibility="{Binding [amount], Converter={StaticResource NumberToVis}}"
+																	Style="{StaticResource HUDWhiteDiplomacyScoreTextBlockStyle}"
+																	HorizontalAlignment="Center" />
+														</Grid>
+													</Button.Content>
+													<!-- Resource tooltip -->
+													<Button.ToolTip>
+														<ToolTip Style="{StaticResource TributeToolTipStyle}" 
+																Placement="Left" 
+																Content="{Binding}" 
+																DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}" >
+															<ToolTip.ContentTemplate>
+																<DataTemplate>
+																	<ContentControl Style="{StaticResource HUDTooltipBorderStyle}" Width="{StaticResource HUDTooltipMaxWidthSmall}">
+																		<Grid>
+																			<Grid.ColumnDefinitions>
+																				<ColumnDefinition Width="{StaticResource HUDTooltipGutterWidthGridLength}" />
+																				<ColumnDefinition Width="*" />
+																			</Grid.ColumnDefinitions>											
+																			<StackPanel Orientation="Vertical" Grid.Column="1">
+																				<!-- "Tribute" -->
+																				<TextBlock Text="{esUtility:LocString $11164972}"
+																						Style="{StaticResource HUDPrimaryColorLightTitleTextBlock18ptStyle}" />
+																				<Grid HorizontalAlignment="Left">
+																					<Border Background="{StaticResource ButtonBackgroundBrush}" Opacity="0.5" />
+																					<!-- "Left-click to increase. Right-click to decrease." -->
+																					<TextBlock Text="{esUtility:LocString $11164971}"
+																							   Style="{StaticResource HUDWhiteBaseTextBlock14ptStyle}"
+																							   TextWrapping="Wrap"
+																							   Margin="6,2,7,2" />
+																				</Grid>																			
+																				<TextBlock Text="{Binding [tooltip][help]}" 
+																						Style="{StaticResource HUDGray80ParagraphTextBlock14ptStyle}" 
+																						Margin="{StaticResource SmallMarginTop}" />
+																				<TextBlock Text="{Binding [tooltip][requirements]}" 
+																						Style="{StaticResource HUDErrorColorLightParagraphTextBlock14ptStyle}" 
+																						Margin="{StaticResource SmallMarginTop}" />
+																			</StackPanel>
+																		</Grid>
+																	</ContentControl>													
+																</DataTemplate>
+															</ToolTip.ContentTemplate>
+														</ToolTip>
+													</Button.ToolTip>
+												</Button>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+									
+									<!-- Relation buttons -->
+									<ItemsControl Grid.Column="2" 
+												  VerticalAlignment="Center" HorizontalAlignment="Center"
+												  ItemsSource="{Binding [relations]}"
+												  Visibility="{Binding [is_diplomacy_visible], Converter={StaticResource BoolToVis}}" >
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<esControls:SpacedStackPanel Orientation="Horizontal" Spacing="3" />
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>           
+												<Button Command="{Binding [relationClickedCommand]}"
+														CommandParameter="{Binding [relationParameter]}"
+														esControls:ButtonHelper.RightClickCommand="{Binding [relationClickedCommand]}"
+														esControls:ButtonHelper.CommandParameter="{Binding [relationParameter]}"
+														ToolTipService.InitialShowDelay="0"
+                                            			ToolTipService.ShowDuration="86400000"
+														ToolTipService.ShowOnDisabled="True"													
+														IsEnabled="{Binding [isChecked]}"						
+														Style="{StaticResource DiplomacyResourceButtonStyle}">
+													<Button.Content>
+														<Grid>
+															<Image Source="{Binding [imageSource]}"
+																   Opacity="{Binding [opacity]}" Width="32">
+																<Image.Effect>
+																	<DropShadowEffect BlurRadius="6" Direction="-71.5"
+												                                      Opacity="0.6" ShadowDepth="3"
+												                                      Color="Black" />
+																</Image.Effect>
+															</Image>
+														</Grid>
+													</Button.Content>
+													<!-- Resource tooltip -->
+													<Button.ToolTip>
+														<ToolTip Style="{StaticResource TributeToolTipStyle}" 
+																Placement="Left" 
+																Content="{Binding}" 
+																DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}" >
+															<ToolTip.ContentTemplate>
+																<DataTemplate>
+																	<ContentControl Style="{StaticResource HUDTooltipBorderStyle}" Width="{StaticResource HUDTooltipMaxWidthSmall}">
+																		<Grid>
+																			<Grid.ColumnDefinitions>
+																				<ColumnDefinition Width="{StaticResource HUDTooltipGutterWidthGridLength}" />
+																				<ColumnDefinition Width="*" />
+																			</Grid.ColumnDefinitions>											
+																			<StackPanel Orientation="Vertical" Grid.Column="1">	
+																				<TextBlock Text="{Binding [tooltip][title]}"
+																						Style="{StaticResource HUDPrimaryColorLightTitleTextBlock18ptStyle}" />														
+																				<TextBlock Text="{Binding [tooltip][help]}" 
+																						Style="{StaticResource HUDGray80ParagraphTextBlock14ptStyle}" 
+																						Margin="{StaticResource SmallMarginTop}" />
+																			</StackPanel>
+																		</Grid>
+																	</ContentControl>													
+																</DataTemplate>
+															</ToolTip.ContentTemplate>
+														</ToolTip>
+													</Button.ToolTip>
+												</Button>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+									
+									<Rectangle Grid.Row="1" Grid.ColumnSpan="4"
+											   Style="{StaticResource DiplomacyHorizontalSeparatorStyle}" />
+								</Grid>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>		
+					</ItemsControl>
+					
+					<!-- Total Resources and buttons -->
+					<Grid Grid.Row="3" Margin="0,7,0,0"
+						  Visibility="{Binding [is_subtotal_visible], Converter={StaticResource BoolToVis}}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						
+						<!-- Resource total -->
+						<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+								   Text="{Binding [total_resources][amount], Converter={StaticResource LocalizedStringConverter}, ConverterParameter=$11164616}"
+								   Style="{StaticResource HUDDiplomacyScoreTextBlockStyle}" />
+						
+						<!-- Resource subtotals-->
+						<ItemsControl Grid.Row="0" Grid.Column="2" 
+									  ItemsSource="{Binding [subtotal]}" 
+									  HorizontalAlignment="Right" VerticalAlignment="Center"
+									  Margin="0,0,0,7">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<esControls:SpacedStackPanel Orientation="Horizontal" Spacing="3" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding [amount], Converter={StaticResource CastToIntOperator}}"
+											   Opacity="{Binding [opacity]}"
+											   Style="{StaticResource HUDDiplomacyScoreTextBlockStyle}"
+											   TextAlignment="Center"
+											   Width="47" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+						
+						<!-- Tax -->
+						<TextBlock Grid.Row="1" Grid.Column="0"
+								   Style="{StaticResource HUDDiplomacyScoreTextBlockStyle}"
+								   Visibility="{Binding [is_tribute_enabled], Converter={StaticResource BoolToVis}}">
+							<TextBlock.Text>
+								<!--"Tax (%1TAX_PERCENT:.0%%%): %2TAX_AMOUNT%"-->
+								<MultiBinding Converter="{StaticResource LocalizedStringMultiConverter}" ConverterParameter="$11164617">
+									<Binding Path="[tax_rate]" />
+									<Binding Path="[total_taxes][amount]" />
+								</MultiBinding>
+							</TextBlock.Text>
+						</TextBlock>
+						
+						<!-- Total cost -->
+						<TextBlock Grid.Row="1" Grid.Column="1"
+								   Text="{Binding [total_cost][amount], Converter={StaticResource LocalizedStringConverter}, ConverterParameter=$11164618}"
+								   Style="{StaticResource HUDDiplomacyScoreTextBlockStyle}"
+								   HorizontalAlignment="Right"
+								   Margin="20,0"
+								   Visibility="{Binding [is_tribute_enabled], Converter={StaticResource BoolToVis}}" />
+					
+						<!-- Buttons -->			
+						<StackPanel Grid.Row="1" Grid.Column="2" 
+									Orientation="Horizontal" 
+									Visibility="{Binding [is_tribute_enabled], Converter={StaticResource BoolToVis}}" 
+									HorizontalAlignment="Right" VerticalAlignment="Center">
+							<!-- Send button -->
+							<Button Content="{esUtility:LocString $11161243}"
+									Command="{Binding [command][send_tribute]}"
+									Style="{StaticResource HUDPrimaryRaisedTextButton}"
+									Margin="0,0,12,0"
+									IsEnabled="{Binding [total_resources][amount], Converter={StaticResource GreaterCompare}, ConverterParameter=0}"
+									esUtility:AudioAttachedProperty.PreviewMouseLeftButtonUpSound="sfx_ui_hud_inGame_tribute_send_play">
+
+							</Button>
+							<!-- Clear button -->
+							<Button Content="{esUtility:LocString $11161244}"
+									Command="{Binding [command][clear_tribute]}"
+									Style="{StaticResource HUDSecondaryRaisedTextButton}" 
+									IsEnabled="{Binding [total_resources][amount], Converter={StaticResource GreaterCompare}, ConverterParameter=0}"
+									esUtility:AudioAttachedProperty.PreviewMouseLeftButtonUpSound="sfx_ui_hud_inGame_tribute_clear_play" />
+						</StackPanel>
+					</Grid>
+				</Grid>
+			</ContentControl>
+		</ContentControl>
+	</Grid>
+</Grid>]]
+		
+		UI_AddChild("ScarNotReplay", "XamlPresenter", "DiplomacyUI", { IsHitTestVisible = true, Xaml = Xaml, DataContext = UI_CreateDataContext(_diplomacy.data_context) })		
+		UI_AddCommandBinding("hud_game", "toggle_diplomacy_panel", "Diplomacy_ToggleDiplomacyUI")
+		_diplomacy.is_ui_created = true
+	end
+end
+
+-- Temporary function used for testing.
+function Diplomacy_Restart()
+	Diplomacy_RemoveUI()
+	Diplomacy_CreateUI()
+	Diplomacy_UpdateDataContext()
+end
+
+
+function Diplomacy_RemoveUI()
+	if _diplomacy ~= nil then
+		UI_RemoveCommandBinding("hud_game", "toggle_diplomacy_panel")
+		UI_Remove("DiplomacyUI")
+		_diplomacy.is_ui_created = false
+		PlayerColour_ClearConfigChangedCallback()
+	end
+end
+
+function Diplomacy_UpdateUI()
+	-- UI_SetDataContext() is expensive so only call it once per frame (e.g. score changes when >1 squads die in a frame)
+	if not Rule_Exists(Rule_Diplomacy_UpdateUI) then
+		Rule_AddOneShot(Rule_Diplomacy_UpdateUI, 0.125)
+	end
+end
+
+function Rule_Diplomacy_UpdateUI()		 			
+	if _diplomacy ~= nil and _diplomacy.is_ui_created then 
+		UI_SetDataContext("DiplomacyUI", _diplomacy.data_context)
+	end
+end
+
+
+-----------------------------------------------------------------------
+-- Internal helper functions
+-----------------------------------------------------------------------
+
+-- Updates all data related to UI state (enabled, visibility, etc)
+function Diplomacy_UpdateDataContext()
+	
+	if _diplomacy == nil then 
+		return
+	end
+	
+	if _diplomacy.tribute.is_enabled_override ~= nil then
+		_diplomacy.data_context.is_tribute_enabled = _diplomacy.tribute.is_enabled_override 
+	else
+		_diplomacy.data_context.is_tribute_enabled = --[[_diplomacy.tribute.is_age_2 and]] _diplomacy.tribute.is_market_built and not _diplomacy.tribute.is_in_progress
+	end
+	
+	if _diplomacy.tribute.is_subtotal_visible_override ~= nil then  
+		_diplomacy.data_context.is_subtotal_visible = _diplomacy.data_context.is_tribute_enabled and _diplomacy.tribute.is_subtotal_visible_override
+	else
+		_diplomacy.data_context.is_subtotal_visible = _diplomacy.data_context.is_tribute_enabled
+	end
+	
+	if _diplomacy.tribute.is_team_visible_override ~= nil then  
+		_diplomacy.data_context.is_team_visible = _diplomacy.tribute.is_team_visible_override
+	else
+		_diplomacy.data_context.is_team_visible = true
+	end	
+		
+	Diplomacy_UpdateRelationContext()
+	
+	-- Individual players
+	for i, context_player in pairs(_diplomacy.data_context.players) do
+			
+		if context_player.is_visible_override ~= nil then  
+			context_player.is_visible = context_player.is_visible_override
+		else
+			context_player.is_visible = true 
+		end
+		 		
+		context_player.is_team_visible = _diplomacy.data_context.is_team_visible
+		
+		if _diplomacy.tribute.is_score_visible_override ~= nil then  
+			context_player.is_score_visible = _diplomacy.tribute.is_score_visible_override
+		else 
+			context_player.is_score_visible = true
+		end		
+		
+		if context_player.is_tribute_visible_override ~= nil then 
+			context_player.is_tribute_visible = not context_player.is_local and not context_player.is_eliminated and context_player.is_tribute_visible_override
+		else
+			context_player.is_tribute_visible = not context_player.is_local and not context_player.is_eliminated
+		end
+			
+		if context_player.is_diplomacy_visible_override ~= nil then 
+			context_player.is_diplomacy_visible = not context_player.is_local and not context_player.is_eliminated and context_player.is_diplomacy_visible_override
+		else
+			context_player.is_diplomacy_visible = not context_player.is_local and not context_player.is_eliminated 
+		end
+		
+		
+		--Individual resource buttons
+		for j, resource in pairs(context_player.tribute) do
+			
+			if not context_player.is_eliminated and resource.is_enabled_override ~= nil then 
+				resource.is_enabled = resource.is_enabled_override
+				resource.tooltip.requirements = Loc_Empty()
+			else
+				local currResources = Player_GetResource(Game_GetLocalPlayer(), _diplomacy.resources[j].resource_type)
+				local minTaxedIncrement = _diplomacy.tribute.increment * (1.0 + Diplomacy_GetTaxRate(Game_GetLocalPlayer()))
+				
+				local underMinTribute = currResources < minTaxedIncrement
+			
+				resource.is_enabled = _diplomacy.data_context.is_tribute_enabled
+					and not context_player.is_eliminated
+					and not context_player.is_enemy  -- TODO: When diplomacy works replace with:  Player_ObserveRelationship(player_local.id, Core_GetPlayersTableEntryFromIndex(context_player.player_index).id) ~= R_ENEMY
+					and not (_diplomacy.resources[j].resource_type == RT_Stone and Core_GetPlayersTableEntryFromIndex(context_player.player_index).race == RACE.MONGOL)					
+					and not underMinTribute
+			
+				-- Update requirements
+				if resource.is_enabled then
+					resource.tooltip.requirements = Loc_Empty()
+				elseif context_player.is_eliminated then
+					resource.tooltip.requirements = Loc_GetString(11165016)		-- "Requires: Not eliminated"
+				elseif context_player.is_enemy then
+					resource.tooltip.requirements = Loc_GetString(11165017)		--"Requires: Not hostile"
+				elseif (_diplomacy.resources[j].resource_type == RT_Stone and Core_GetPlayersTableEntryFromIndex(context_player.player_index).race == RACE.MONGOL) then
+					resource.tooltip.requirements = Loc_GetString(11165018)		--"Requires: Not Mongol"
+				--elseif not _diplomacy.tribute.is_age_2 and not _diplomacy.tribute.is_market_built then 
+				--	resource.tooltip.requirements = Loc_GetString(11165019)		-- "Requires: Progress to Age II and a Market"
+				elseif --[[_diplomacy.tribute.is_age_2 and]]  not _diplomacy.tribute.is_market_built then
+					resource.tooltip.requirements = Loc_GetString(11165020)		--"Requires: Market"
+				elseif _diplomacy.tribute.is_in_progress then
+					resource.tooltip.requirements = Loc_GetString(11204803)		--"Requires: Tribute not in progress"
+				elseif underMinTribute then
+					resource.tooltip.requirements = Loc_GetString(38077)		--"Not enough Resources"
+				else
+					resource.tooltip.requirements = Loc_Empty()
+				end
+			end
+			
+			-- HACK: Converts true/false to opacity values for enabled/disabled state of resource buttons
+			if resource.is_enabled then 
+				resource.opacity = 1.0
+			else 
+				resource.opacity = 0.44
+			end
+		end
+	end	
+	Diplomacy_UpdateUI()
+end
+
+
+-- Overrides the default diplomacy UI behaviour for a given player. true/false to override a value. nil to use default.
+function Diplomacy_OverrideAllPlayerDiplomacySettings(is_tribute_visible, is_diplomacy_visible)	
+	--local player = Core_GetPlayersTableEntry(playerID)
+	for i, context_player in pairs(_diplomacy.data_context.players) do		
+		--if context_player.player_index == player.index then
+			context_player.is_tribute_visible_override = is_tribute_visible
+			context_player.is_diplomacy_visible_override = is_diplomacy_visible
+		--	break
+		--end		
+	end
+	Diplomacy_UpdateDataContext()
+end
+
+-- Overrides the default UI behaviour for a given player. true/false to override a value. nil to use default.
+function Diplomacy_OverridePlayerSettings(playerID, is_player_visible, is_tribute_visible, is_food_enabled, is_wood_enabled, is_gold_enabled, is_stone_enabled)	
+	local player = Core_GetPlayersTableEntry(playerID)
+	for i, context_player in pairs(_diplomacy.data_context.players) do		
+		if context_player.player_index == player.index then
+			context_player.is_visible_override = is_player_visible
+			context_player.is_tribute_visible_override = is_tribute_visible
+			context_player.tribute[1].is_enabled_override = is_food_enabled
+			context_player.tribute[2].is_enabled_override = is_wood_enabled
+			context_player.tribute[3].is_enabled_override = is_gold_enabled
+			context_player.tribute[4].is_enabled_override = is_stone_enabled
+			break
+		end		
+	end
+	Diplomacy_UpdateDataContext()
+end
+
+
+-- Overrides the default UI behaviour. true/false to override a value. nil to use default.
+function Diplomacy_OverrideSettings(is_tribute_enabled, is_subtotal_visible, is_score_visible, is_team_visible)	
+	_diplomacy.tribute.is_enabled_override = is_tribute_enabled
+	_diplomacy.tribute.is_subtotal_visible_override = is_subtotal_visible
+	_diplomacy.tribute.is_score_visible_override = is_score_visible
+	_diplomacy.tribute.is_team_visible_override = is_team_visible	
+	Diplomacy_UpdateDataContext()
+end
+
+-----------------------------------------------------------------------
+-- UI functions
+-----------------------------------------------------------------------
+
+function Diplomacy_CreateDataContext()
+	
+	local CreatePlayerDataContext = function(player)
+		local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())
+		local context_player = { 	
+				player_index = player.index,
+				is_local = player.isLocal,
+				is_eliminated = player.isEliminated,
+				name = {
+					text = Player_GetDisplayName(player.id).LocString,
+					color = UI_GetColourAsString(Player_GetUIColour(player.id)),
+					tooltip = Diplomacy_RelationToTooltipConverter(player, player_local),
+				},			
+				civ_flag = string.format("pack://application:,,,/WPFGUI;component/%s.png", string.gsub(World_GetRaceIcon(Player_GetRace(player.id)), "\\", "/" )),
+				team = {
+					number = player.AGS_Team.index, --player.team.index,
+					name = Diplomacy_FormatTeamNumber(player.AGS_Team.index), --Diplomacy_FormatTeamNumber(player.team.index)
+				},
+				age = _diplomacy.age[Player_GetCurrentAge(player.id)],
+				is_visible = true,																	-- whether to show this row at all
+				is_score_visible = true,				
+				is_tribute_visible = not player.isLocal,	
+				is_diplomacy_visible = not player.isLocal,			
+				is_tribute_enabled = _diplomacy.tribute.is_enabled and _diplomacy.tribute.is_market_built,-- and not player.isLocal,
+				relationTooltip = Diplomacy_RelationToTooltipConverter(player_local, player),
+				relationToolTipHeader = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:238"),
+				is_ally = Player_ObserveRelationship(player.id, player_local.id) == R_ALLY,
+				is_neutral = Player_ObserveRelationship(player.id, player_local.id) == R_NEUTRAL,
+				is_enemy = Player_ObserveRelationship(player.id, player_local.id) == R_ENEMY,
+				relations = {},
+				tribute = {},				
+		}
+		
+		for j, relation in ipairs(_diplomacy.relations) do
+			table.insert(context_player.relations, {
+				relation = Diplomacy_RelationConverter(relation.relation_type),
+				relationGroup = string.format("group%d", player.index),					
+				imageSource = relation.image,
+				isChecked = Player_ObserveRelationship(player_local.id, player.id) ~= relation.relation_type,
+				relationClickedCommand = UI_CreateCommand("Diplomacy_ChangeRelation"),
+				relationParameter = string.format("%d,%d", player.index, Diplomacy_RelationConverter(relation.relation_type)),
+				tooltip = {
+					title = Loc_FormatText(relation.title),
+					help = Loc_FormatText(relation.help, Player_GetDisplayName(player.id)),
+				},
+			})
+		end
+		
+		for j, resource in ipairs(_diplomacy.resources) do	
+			table.insert(context_player.tribute, {
+				amount = 0, 
+				imageSource = resource.image, 
+				resourceClickedCommand = UI_CreateCommand("Diplomacy_IncreaseTribute"),
+				resourceRightClickedCommand = UI_CreateCommand("Diplomacy_DecreaseTribute"),
+				resourceClickedParameter = string.format("%d,%d", player.index, j),		 
+				is_enabled = false,
+				tooltip = {
+					help = Loc_FormatText(resource.help, Player_GetDisplayName(player.id)),
+					requirements = Loc_Empty(),	
+				},
+			})
+		end
+		return context_player
+	end
+	
+	-- Add local player to data context first so it appears at the top of the list. 
+	local player_local = Core_GetPlayersTableEntry(Game_GetLocalPlayer())	
+	table.insert(_diplomacy.data_context.players, CreatePlayerDataContext(player_local))
+	
+	for _, player in pairs(PLAYERS) do		
+		if not player.isLocal then 
+			table.insert(_diplomacy.data_context.players, CreatePlayerDataContext(player))
+		end
+	end		
+	Diplomacy_SortDataContext()	
+	
+	-- TODO: Hide tribute UI if teams are locked and player is on a team of one.
+	--_diplomacy.data_context.is_ui_visible = (_diplomacy.is_enabled or #player_local.team.players > 1)		
+	
+	_diplomacy.data_context.tax_rate = Diplomacy_GetTaxRate(player_local.id) * 100
+end
+
+function Diplomacy_FormatTeamNumber(team_number)	
+	if team_number > 10000 then 
+		return "-"
+	end
+	return tostring(team_number)
+end
+
+-- Sort player list by team number and player name if teams are locked.
+function Diplomacy_SortDataContext()	
+	if not _diplomacy.is_enabled then
+		local SortTeamsAndPlayers = function(a, b)
+			if a.team.number == b.team.number then 				
+				return a.name.text < b.name.text
+			end
+			return a.team.number < b.team.number 
+		end
+		table.sort(_diplomacy.data_context.players, SortTeamsAndPlayers)
+	end
+end
