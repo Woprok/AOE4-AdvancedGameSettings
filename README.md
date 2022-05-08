@@ -63,3 +63,7 @@ Currently there is issue where King is T-Posing on death. This issue can't be fi
 ## FAQ
 * Can I use anything from this mod for another mod... ?  
 Yes as long as you are doing more than minimal amount of changes or your mod isn't suitable to be add to Advanced Game Settings as an option.   
+* I have this cool idea...  
+Create ticket and we will see...
+* Mod Localization to other languages  
+If you can provide translation, if will be incorporated into the mod. Current english database is ~[here](https://github.com/Woprok/AOE4-AdvancedGameSettings/blob/master/assets/locdb/Advanced%20Game%20Settings_en.csv)
