@@ -60,6 +60,9 @@ I suggest you to provide feedback to Relic, so they can improve AI or provide of
 #### King Unit
 Currently there is issue where King is T-Posing on death. This issue can't be fixed in the mod as this is currently only Game Mode script.
 
+#### Chinese Save Game
+Saving game with chinese might cause bad mod data, if anyone figures out what exactly is causing it. I will be really happy :)
+
 ## FAQ
 * Can I use anything from this mod for another mod... ?  
 Yes as long as you are doing more than minimal amount of changes or your mod isn't suitable to be add to Advanced Game Settings as an option.   
