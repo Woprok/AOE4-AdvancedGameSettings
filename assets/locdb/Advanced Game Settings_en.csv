@@ -1,7 +1,7 @@
 ﻿ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
 1,,,,Mod Title,,Advanced Game Settings
-2,,,,Mod Page Description,,"Extends Age of Empires 4 standard game mode with new options and truly gives you an ability to customize match settings.\n\nContains additional win conditions. Different starts such as nomad. And even treaty & diplomacy...\n\nHelp, feedback, bug reports and contribution to mode can be done at: https://github.com/search?q=AOE4-AdvancedGameSettings "
-3,,,,Mod Gamemode Description,,"Advanced Game Settings provides you with a variety of match options and win conditions to customize your game and play it how you want to.\n\nHelp, feedback, bug reports and contribution to mode can be done at: https://github.com/Woprok/AOE4-AdvancedGameSettings"
+2,,,,Mod Page Description,,"Extends Age of Empires 4 standard game mode with new options and truly gives you an ability to customize match settings.\n\nContains additional win conditions. Different starts such as nomad. And even treaty & diplomacy...\n\nHelp, feedback, bug reports and contribution to mode can be done at: \nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+3,,,,Mod Gamemode Description,,"Advanced Game Settings provides you with a variety of match options and win conditions to customize your game and play it how you want to.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/Woprok/AOE4-AdvancedGameSettings"
 4,,,,Option Header,,Win Conditions
 5,,,,Annihilation Option,,Annihilation
 6,,,,Annihilation Option,,"Destroy all enemies. This option is required, unless you wish for player to be never eliminated even if he loses everything."
@@ -312,5 +312,8 @@
 311,,,ags_conditions_notifications,Score,,1 minute until Game Ends
 312,,,ags_conditions_objectives,Score,,Survive and outshine everyone. Rank %1RANK_POSITION%.
 313,,,ags_conditions_notifications,Religious,,%1PLAYER_NAME% bowed down before new god
-314,,,,,,1.50x
-315,,,,,,1.75x
+314,,,,Number,,1.50x
+315,,,,Number,,1.75x
+316,,,,Ingame Button,,Hide Objectives
+317,,,,Ingame Button,,Show Objectives
+318,,,,Ingame Button,,Active Settings:

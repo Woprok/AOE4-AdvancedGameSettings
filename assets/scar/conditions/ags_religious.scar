@@ -12,7 +12,7 @@
 AGS_RELIGIOUS_MODULE = "AGS_Religious"
 AGS_RELIGIOUS_ACTIVE = true
 AGS_RELIGIOUS_OBJECTIVE = nil
-AGS_RELIGIOUS_SACRED_SITE_OBJECTIVES = nil
+AGS_RELIGIOUS_SACRED_SITE_OBJECTIVES = { }
 AGS_RELIGIOUS_VICTORY_TIME = 10 * 60
 AGS_RELIGIOUS_TIMER = "capture_victory_timer"
 AGS_RELIGIOUS_OBJECTIVE_IS_TIMER = false
@@ -95,7 +95,7 @@ function AGS_Religious_OnRelationshipChanged(observer_id, target_id)
 	end
 	if AGS_RELIGIOUS_OBJECTIVE_IS_TIMER then
 		local title = AGS_Religious_GetSacredSiteTimerContestTitle(AGS_RELIGIOUS_LAST_CAPTURER)
-	AGS_Objectives_Set(AGS_RELIGIOUS_OBJECTIVE, nil, nil, nil, nil, title)
+		AGS_Objectives_SetTitle(AGS_RELIGIOUS_OBJECTIVE, title)
 	end
 	AGS_Religious_UpdateObjective()
 end
@@ -111,7 +111,7 @@ end
 -- Callbacks:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_Religious_OnStrategicPointChanged()
+function AGS_Religious_OnStrategicPointChanged(context)
 	-- Check if squad is nil and exit function if there is no instigating squad, except for changeType CT_StartedRevertingCooldown (7)
 	-- since that change type doesn't require a squad, and the squad can be nil when a squad dies within the capture radius.
 	if context.instigatorSquad == nil and not context.changeType == 7 then
@@ -192,7 +192,7 @@ function AGS_Religious_CreateObjective()
 	local secondary_objective = AGS_Objectives_CreateFromCore(AGS_OBJECTIVES_RELIGIOUS, AGS_OBJECTIVES_RELIGIOUS_SECONDARY)
 	for index, site in pairs(AGS_RELIGIOUS_SACRED_SITE_OBJECTIVES) do		
 		site.objective = AGS_Objectives_Create(secondary_objective, AGS_GS_LOCAL_PLAYER, index, AGS_RELIGIOUS_OBJECTIVE)
-		AGS_Objectives_Set(site.objective, nil, true, true)
+		AGS_Objectives_Set(site.objective, OS_Incomplete, true, true)
 	end
 end
 
@@ -210,14 +210,16 @@ function AGS_Religious_UpdateSacredSiteObjectives()
 	for _, site in pairs(AGS_RELIGIOUS_SACRED_SITE_OBJECTIVES) do
 		-- This once iterated over every player... but it doesn't make sense unless this method lies.
 		-- Only one team has progress higher than 0, so everyone else should have negative.  
-		site.progress = Player_GetStrategicPointCaptureProgress(AGS_GS_LOCAL_PLAYER.id, site)
-		local state = OS_Incomplete
-		if site.progress == -1.0 then 
+		site.progress = Player_GetStrategicPointCaptureProgress(AGS_GS_LOCAL_PLAYER.id, site.entity)
+		local state = nil
+		if site.progress == -1 and AGS_Objectives_GetCurrentState(site.objective) == OS_Incomplete then 
 			state = OS_Failed
-		elseif site.progress == 1.0 then
+		elseif site.progress == 1 and AGS_Objectives_GetCurrentState(site.objective) == OS_Incomplete then
 			state = OS_Complete
+		elseif site.progress == 0 then
+			state = OS_Incomplete
 		end			
-		AGS_Objectives_SetColorProgress(site.objective, state, site.color_last_capturing, site.progress)		
+		AGS_Objectives_SetColorProgress(site.objective, state, site.color_last_capturing, math.abs(site.progress))		
 	end	
 end
 
@@ -239,7 +241,7 @@ function AGS_Religious_VictoryTriggered()
 		AGS_Presentations_LossReligious, 
 		AGS_WR_RELIGIOUS,
 		AGS_Objectives_PresentWrap(
-			winner.AGS_Wonder.objective, 
+			AGS_RELIGIOUS_OBJECTIVE, 
 			OS_Failed, 
 			AGS_OBJECTIVES_RELIGIOUS.title_neutralize))
 end
@@ -299,7 +301,8 @@ function AGS_Religious_SwitchToCounter(actor)
 	end	
 	Music_UnlockIntensity()
 	ResetMinimumIntensityMusicUnforced()
-	AGS_Objectives_Set(AGS_RELIGIOUS_OBJECTIVE, nil, nil, nil, COUNTER_CountUpTo, title)
+	AGS_Objectives_Set(AGS_RELIGIOUS_OBJECTIVE, nil, nil, nil, COUNTER_CountUpTo)
+	AGS_Objectives_SetTitle(AGS_RELIGIOUS_OBJECTIVE, title)
 	AGS_RELIGIOUS_OBJECTIVE_IS_TIMER = false
 	-- Create objective presentation for changed objective.
 	AGS_Objectives_Present(AGS_RELIGIOUS_OBJECTIVE, nil, title)
@@ -308,7 +311,8 @@ end
 function AGS_Religious_SwitchToTimer(actor)
 	AGS_Notifications_SoundCue(actor, AGS_NOTIFICATIONS_RELIGIOUS_STARTED)
 	local title = AGS_Religious_GetSacredSiteTimerContestTitle(actor)
-	AGS_Objectives_Set(AGS_RELIGIOUS_OBJECTIVE, nil, nil, nil, COUNTER_TimerDecreasing, title)
+	AGS_Objectives_Set(AGS_RELIGIOUS_OBJECTIVE, nil, nil, nil, COUNTER_TimerDecreasing)
+	AGS_Objectives_SetTitle(AGS_RELIGIOUS_OBJECTIVE, title)
 	AGS_RELIGIOUS_OBJECTIVE_IS_TIMER = true
 	-- Create objective presentation for changed objective.
 	AGS_Objectives_Present(AGS_RELIGIOUS_OBJECTIVE, nil, title)
@@ -429,7 +433,10 @@ function AGS_Religious_OnHolySiteChange(context)
 	-- Get Holy Site progress - 0 to 1 for player/allies, 0 to -1 for enemies
 	local holy_site_progress = Player_GetStrategicPointCaptureProgress(AGS_GS_LOCAL_PLAYER.id, context.strategicPointEntity)
 	-- Get instigating player
-	local instigating_player = Core_GetPlayersTableEntry(Squad_GetPlayerOwner(context.instigatorSquad))
+	local instigating_player = nil 
+	if context.instigatorSquad ~= nil then
+		instigating_player = Core_GetPlayersTableEntry(Squad_GetPlayerOwner(context.instigatorSquad))
+	end
 	local site_entity_id = context.strategicPointEntity
 	
 	-- CT_Captured: If captured
@@ -437,7 +444,7 @@ function AGS_Religious_OnHolySiteChange(context)
 		AGS_Religious_OnHolySiteChangeTypeCapture(instigating_player, holy_site_pos)
 	-- CT_Reverting: If owned Holy Site is being neutralized
 	elseif context.changeType == 1 then
-		AGS_Religious_OnHolySiteChangeTypeNeutralizing(instigating_player, site_entity_id, holy_site_progress, context.strategicPointOwner)
+		AGS_Religious_OnHolySiteChangeTypeNeutralizing(instigating_player, site_entity_id, holy_site_progress, holy_site_pos, context.strategicPointOwner)
 	-- Currently not used CT_Secured: if secured.
 	-- elseif context.changeType == 2 then
 	-- CT_UnCaptured: If Holy Site is neutralized
@@ -456,7 +463,7 @@ function AGS_Religious_OnHolySiteChange(context)
 		AGS_Religious_OnHolySiteChangeTypeResume(site_entity_id)
 	-- CT_Halted: If progress halted (e.g. enemy enters proximity while you are present)
 	elseif context.changeType == 8 then
-		AGS_Religious_OnHolySiteChangeTypeContested(instigating_player, site_entity_id, holy_site_progress)
+		AGS_Religious_OnHolySiteChangeTypeContested(instigating_player, site_entity_id, holy_site_progress, holy_site_pos)
 	end	
 end
 
@@ -499,7 +506,7 @@ function AGS_Religious_OnHolySiteChangeTypeContinue(instigating_player, site_ent
 	if holy_site_progress == 0 then
 		local selected_relation = AGS_GetRelation(instigating_player)
 		-- Simply based on relation to instigator
-		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_CAPTURING, owner_relation)
+		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_CAPTURING, selected_relation)
 		-- Just why is this here ?
 		if selected_relation == AGS_SAE_SELF then
 			Game_SendCustomChallengeEvent(AGS_GS_LOCAL_PLAYER.id, CE_ACHIEVBEGINSACREDSITECAPTURE, 1)				
@@ -555,7 +562,7 @@ function AGS_Religious_OnHolySiteChangeTypeNeutralized(instigating_player, site_
 	UI_CreateMinimapBlipOnPosFrom(instigating_player.id, holy_site_pos, 5, "objective_holy_site_spin")
 end
 
-function AGS_Religious_OnHolySiteChangeTypeNeutralizing(instigating_player, site_entity_id, holy_site_progress, owning_player)
+function AGS_Religious_OnHolySiteChangeTypeNeutralizing(instigating_player, site_entity_id, holy_site_progress, holy_site_pos, owning_player)
 	for _, site in pairs(AGS_RELIGIOUS_SACRED_SITE_OBJECTIVES) do
 		if site.entity == site_entity_id then
 			AGS_Religious_SetSiteFlash(site, true)

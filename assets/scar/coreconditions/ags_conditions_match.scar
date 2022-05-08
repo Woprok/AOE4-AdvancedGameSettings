@@ -18,7 +18,6 @@ AGS_WR_RELIGIOUS = WR_RELIGIOUS
 AGS_WR_REGICIDE = 107
 AGS_WR_TEAM_SOLIDARITY = 108
 AGS_WR_TREATY = 109
-AGS_WR_STALEMATE = 110
 AGS_WR_SCORE = 110
 ---------------------------------------------------------------------------------------------------
 -- Player Win and Lose

@@ -319,7 +319,7 @@ function AGS_Objectives_Progress(objective, current_count, max_count, progress_p
 end
 -- State is either OS_Complete, OS_Incomplete or OS_Failed
 -- Counter is either COUNTER_TimerDecreasing or COUNTER_CountUpTo
-function AGS_Objectives_Set(objective, state, visibility, progress, counter, title)
+function AGS_Objectives_Set(objective, state, visibility, progress, counter)
 	if objective == nil then
 		AGS_Print("AGS: OBJECTIVE WAS NOT DEFINED!")
 	end
@@ -372,6 +372,12 @@ function AGS_Objectives_Create(objective_data, player, title_param, parent)
 	return AGS_Objectives_CreateNew(objective_data, player, title, template, parent)
 end
 
+function AGS_Objectives_GetCurrentState(objective)
+	if objective == nil then
+		AGS_Print("AGS: OBJECTIVE WAS NOT DEFINED!")
+	end
+	return Obj_GetState(objective)
+end
 ---------------------------------------------------------------------------------------------------
 -- Internal Functions:
 ---------------------------------------------------------------------------------------------------
