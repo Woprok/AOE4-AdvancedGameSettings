@@ -30,12 +30,12 @@ _Allows players to change relations during the game._
 * Tree Bombardment  
 _Makes all siege and ships with attack ground able to destroy trees_
 ### Full Menu Preview
-![image](https://user-images.githubusercontent.com/37557138/167272719-32d5087c-794f-46e9-8ec1-bf674c8b62ee.png)
-![image](https://user-images.githubusercontent.com/37557138/167272731-036610fb-7021-4d34-89c8-879e684a22b4.png)
-![image](https://user-images.githubusercontent.com/37557138/167272736-5b8b0890-e9f8-4255-8974-08ab9d034b9b.png)
-![image](https://user-images.githubusercontent.com/37557138/167272744-1819f0c3-7e43-4a2f-9c55-a9fd2ae866eb.png)
-![image](https://user-images.githubusercontent.com/37557138/167272748-28b8d81a-8e43-422a-8272-42dc51289a98.png)
-![image](https://user-images.githubusercontent.com/37557138/167299668-dbd44689-99ed-4f45-bf29-d9f2784c4c84.png)
+![image](https://user-images.githubusercontent.com/37557138/167272719-32d5087c-794f-46e9-8ec1-bf674c8b62ee.png)  
+![image](https://user-images.githubusercontent.com/37557138/167272731-036610fb-7021-4d34-89c8-879e684a22b4.png)  
+![image](https://user-images.githubusercontent.com/37557138/167272736-5b8b0890-e9f8-4255-8974-08ab9d034b9b.png)   
+![image](https://user-images.githubusercontent.com/37557138/167272744-1819f0c3-7e43-4a2f-9c55-a9fd2ae866eb.png)  
+![image](https://user-images.githubusercontent.com/37557138/167272748-28b8d81a-8e43-422a-8272-42dc51289a98.png)  
+![image](https://user-images.githubusercontent.com/37557138/167299668-dbd44689-99ed-4f45-bf29-d9f2784c4c84.png)  
 
 ## Feedback & Contribution:
 Contribution in any form is welcomed. Let's built something great together :)   
@@ -66,4 +66,4 @@ Yes as long as you are doing more than minimal amount of changes or your mod isn
 * I have this cool idea...  
 Create ticket and we will see...
 * Mod Localization to other languages  
-If you can provide translation, if will be incorporated into the mod. Current english database is [here](https://github.com/Woprok/AOE4-AdvancedGameSettings/blob/master/assets/locdb/Advanced%20Game%20Settings_en.csv)
+If you can provide translation, it will be incorporated into the mod. Current english database is [here](https://github.com/Woprok/AOE4-AdvancedGameSettings/blob/master/assets/locdb/Advanced%20Game%20Settings_en.csv)
