@@ -1,7 +1,7 @@
 ﻿ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
 1,,,,Mod Title,,Advanced Game Settings
 2,,,,Mod Page Description,,"Extends Age of Empires 4 standard game mode with new options and truly gives you an ability to customize match settings.\n\nContains additional win conditions. Different starts such as nomad. And even treaty & diplomacy...\n\nHelp, feedback, bug reports and contribution to mode can be done at: \nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
-3,,,,Mod Gamemode Description,,"Advanced Game Settings provides you with a variety of match options and win conditions to customize your game and play it how you want to.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/Woprok/AOE4-AdvancedGameSettings"
+3,,,,Mod Gamemode Description,,"Advanced Game Settings provides you with a variety of match options and win conditions to customize your game and play it how you want to.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
 4,,,,Option Header,,Win Conditions
 5,,,,Annihilation Option,,Annihilation
 6,,,,Annihilation Option,,"Destroy all enemies. This option is required, unless you wish for player to be never eliminated even if he loses everything."
