@@ -77,6 +77,13 @@ function AGS_Score_OnRelationshipChanged(observer_id, target_id)
 	AGS_Score_UpdateObjective()
 end
 
+function AGS_Score_OnObjectiveToggle(toggle)
+	AGS_Print("AGS_Score_OnObjectiveToggle")
+	if AGS_SCORE_OBJECTIVE ~= nil then
+		AGS_Objectives_Set(AGS_SCORE_OBJECTIVE, nil, toggle)	
+	end
+end
+
 function AGS_Score_OnGameOver()
 	AGS_Print("AGS_Score_OnGameOver")
 	Rule_RemoveGlobalEvent(AGS_Score_OnEntityKilled)

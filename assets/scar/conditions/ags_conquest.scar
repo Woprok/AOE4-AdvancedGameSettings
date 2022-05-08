@@ -84,6 +84,13 @@ function AGS_Conquest_OnRelationshipChanged(observer_id, target_id)
 	AGS_Conquest_UpdateObjective()
 end
 
+function AGS_Conquest_OnObjectiveToggle(toggle)
+	AGS_Print("AGS_Conquest_OnObjectiveToggle")
+	if AGS_CONQUEST_OBJECTIVE ~= nil then
+		AGS_Objectives_Set(AGS_CONQUEST_OBJECTIVE, nil, toggle)	
+	end
+end
+
 function AGS_Conquest_OnGameOver()
 	AGS_Print("AGS_Conquest_OnGameOver")
 	Rule_RemoveGlobalEvent(AGS_Conquest_OnConstructionComplete)

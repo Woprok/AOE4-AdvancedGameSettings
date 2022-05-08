@@ -73,6 +73,13 @@ function AGS_Annihilation_OnPlayerDefeated(player, reason)
 	end
 end
 
+function AGS_Annihilation_OnObjectiveToggle(toggle)
+	AGS_Print("AGS_Annihilation_OnObjectiveToggle")
+	if AGS_ANNIHILATION_OBJECTIVE ~= nil then
+		AGS_Objectives_Set(AGS_ANNIHILATION_OBJECTIVE, nil, toggle)	
+	end
+end
+
 function AGS_Annihilation_OnGameOver()
 	AGS_Print("AGS_Annihilation_OnGameOver")
 	Rule_RemoveGlobalEvent(AGS_Annihilation_OnEntityKilled)

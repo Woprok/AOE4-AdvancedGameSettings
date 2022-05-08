@@ -79,6 +79,13 @@ function AGS_Elimination_OnPlayerDefeated(player, reason)
 	end
 end
 
+function AGS_Elimination_OnObjectiveToggle(toggle)
+	AGS_Print("AGS_Elimination_OnObjectiveToggle")
+	if AGS_ELIMINATION_OBJECTIVE ~= nil then
+		AGS_Objectives_Set(AGS_ELIMINATION_OBJECTIVE, nil, toggle)	
+	end
+end
+
 function AGS_Elimination_OnGameOver()
 	AGS_Print("AGS_Elimination_OnGameOver")
 	AGS_Elimination_RemoveObjective()

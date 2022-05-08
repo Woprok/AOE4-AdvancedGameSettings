@@ -72,6 +72,13 @@ function AGS_Regicide_TreatyEnded()
 	AGS_REGICIDE_ACTIVE = true
 end
 
+function AGS_Regicide_OnObjectiveToggle(toggle)
+	AGS_Print("AGS_Regicide_OnObjectiveToggle")
+	if AGS_REGICIDE_OBJECTIVE ~= nil then
+		AGS_Objectives_Set(AGS_REGICIDE_OBJECTIVE, nil, toggle)	
+	end
+end
+
 function AGS_Regicide_OnGameOver()
 	AGS_Print("AGS_Regicide_OnGameOver")
 	Rule_RemoveGlobalEvent(AGS_Regicide_OnEntityKilled)

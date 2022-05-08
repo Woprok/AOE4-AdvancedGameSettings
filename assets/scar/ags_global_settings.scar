@@ -148,7 +148,7 @@ AGS_GLOBAL_SETTINGS = {
 		Radius = 70, -- undefined
 		Duration = 0.25, -- undefined
 	},
-	IsTestMode = true, -- undefined
+	IsTestMode = false, -- undefined
 	IsAdjustingAI = true, -- undefined
 	EnableUtilities = true, -- undefined
 	AllowLoserSpectation = true, -- undefined
@@ -166,7 +166,9 @@ AGS_GLOBAL_SETTINGS = {
 		EighthSlot = AGS_GS_COLOR_PINK, 
 		-- Not used, but defined by Relic. Might be useful for scenarios.
 		NinthSlot = AGS_GS_COLOR_GREY, 
-	}
+	},
+	
+	MatchUI = true, -- undefined
 }
 
 ---------------------------------------------------------------------------------------------------

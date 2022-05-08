@@ -5,12 +5,6 @@
 --
 -- Description:
 -- Enables testing and cheating functionality. WIP.
--- Ideas
--- - score victory
--- -> has timer
--- -> has objectives
--- -> final winner is highest scoring team or individual
--- -> score is awarded for objectives, fighitning, economy etc.
 ---------------------------------------------------------------------------------------------------
 
 AGS_TESTING_MODULE = "AGS_Testing"
@@ -27,6 +21,12 @@ function AGS_Testing_UpdateModuleSettings()
 		Core_UnregisterModule(AGS_TESTING_MODULE)
 	end
 end
+
+function AGS_Testing_OnPlay()
+	for _, player in pairs(PLAYERS) do
+		AGS_Print(player.id, player.raceName)
+	end
+end		
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:

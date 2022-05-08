@@ -125,6 +125,8 @@ import("gameplay/ags_wonder_scale_cost.scar")
 import("specials/ags_utilities.scar")
 -- Special container for testing and unfinished functionality.
 import("specials/ags_testing.scar")
+-- Additional UI elements
+import("specials/ags_match_ui.scar")
 
 ---------------------------------------------------------------------------------------------------
 -- AGS LIBRARY GUIDELINES AND INFORMATIONS
@@ -169,6 +171,7 @@ import("specials/ags_testing.scar")
 -- TreatyStarted
 -- TreatyEnded
 -- OnPlayerEliminated preceeded by OnPlayerDefeated, used for group elimination to be not interfered by other win conditions.
+-- OnObjectiveToggle user clicked
 ---------------------------------------------------------------------------------------------------
 -- Relic Core_CallDelegateFunctions("<suffix>") Calls:
 ---------------------------------------------------------------------------------------------------

@@ -65,12 +65,12 @@ end
 
 function AGS_TechnologyAge_ApplyUpgradeList(player_id, list)
 	for _, upgrade in pairs(list) do 
-		AGS_RemoveUpgrade(player_id, upgrade)
+		AGS_ApplyUpgrade(player_id, upgrade)
 	end	
 end
 
 function AGS_TechnologyAge_RemoveUpgradeList(player_id, list)
 	for _, upgrade in pairs(list) do 
-		AGS_ApplyUpgrade(player_id, upgrade)
+		AGS_RemoveUpgrade(player_id, upgrade)
 	end	
 end

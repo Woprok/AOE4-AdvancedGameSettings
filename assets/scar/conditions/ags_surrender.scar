@@ -66,6 +66,13 @@ function AGS_Surrender_OnPlayerDefeated(player, reason)
 	AGS_Surrender_CheckAI()
 end
 
+function AGS_Surrender_OnObjectiveToggle(toggle)
+	AGS_Print("AGS_Surrender_OnObjectiveToggle")
+	if AGS_SURRENDER_OBJECTIVE ~= nil then
+		AGS_Objectives_Set(AGS_SURRENDER_OBJECTIVE, nil, toggle)	
+	end
+end
+
 function AGS_Surrender_OnGameOver()
 	AGS_Print("AGS_Surrender_OnGameOver")
 	-- Network event does not need to be removed ?

@@ -109,6 +109,13 @@ function AGS_Wonder_OnRelationshipChanged(observer_id, target_id)
 	end
 end
 
+function AGS_Wonder_OnObjectiveToggle(toggle)
+	AGS_Print("AGS_Wonder_OnObjectiveToggle")
+	if AGS_WONDER_OBJECTIVE ~= nil then
+		AGS_Objectives_Set(AGS_WONDER_OBJECTIVE, nil, toggle)	
+	end
+end
+
 function AGS_Wonder_OnGameOver()
 	AGS_Print("AGS_Wonder_OnGameOver")
 	-- Kill timers and time checks before everything else.

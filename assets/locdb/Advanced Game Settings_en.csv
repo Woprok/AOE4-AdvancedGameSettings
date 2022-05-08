@@ -314,6 +314,8 @@
 313,,,ags_conditions_notifications,Religious,,%1PLAYER_NAME% bowed down before new god
 314,,,,Number,,1.50x
 315,,,,Number,,1.75x
-316,,,,Ingame Button,,Hide Objectives
-317,,,,Ingame Button,,Show Objectives
-318,,,,Ingame Button,,Active Settings:
+316,,,,Ingame Button,,Toggle Objectives
+317,,,,Ingame Button,,Switches between showing objectives or temporarily hiding them.
+318,,,,Ingame Button,,Advanced Game Settings
+319,,,,Ingame Button,,Feedback
+320,,,ags_match_ui,Ingame Button,,Match Settings

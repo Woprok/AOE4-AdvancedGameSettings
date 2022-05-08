@@ -39,7 +39,6 @@ function AGS_GameRates_ApplyGameRates(bps)
 			AGS_GAME_RATES_MODIFIERS[ebp.PropertyBagGroupID] = true
 			for _, player in pairs(PLAYERS) do	
 				AGS_GameRates_ApplyModifier(player.id, ebp, "production_speed_modifier", AGS_GLOBAL_SETTINGS.GameRates)
-				AGS_GameRates_ApplyModifier(player.id, ebp, "speed_maximum_modifier", math.max(AGS_GLOBAL_SETTINGS.GameRates))
 				AGS_GameRates_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_food", AGS_GLOBAL_SETTINGS.GameRates)
 				AGS_GameRates_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_wood", AGS_GLOBAL_SETTINGS.GameRates)
 				AGS_GameRates_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_gold", AGS_GLOBAL_SETTINGS.GameRates)

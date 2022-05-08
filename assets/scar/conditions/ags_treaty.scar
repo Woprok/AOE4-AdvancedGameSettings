@@ -55,6 +55,13 @@ function AGS_Treaty_OnPlayerEliminated(player, reason)
 	end
 end
 
+function AGS_Treaty_OnObjectiveToggle(toggle)
+	AGS_Print("AGS_Treaty_OnObjectiveToggle")
+	if AGS_TREATY_OBJECTIVE ~= nil and Timer_Exists(AGS_TREATY_TIMER) and Timer_GetRemaining(AGS_TREATY_TIMER) > 0.0 then
+		AGS_Objectives_Set(AGS_TREATY_OBJECTIVE, nil, toggle)	
+	end
+end
+
 -- This is not expected to be required at all.
 function AGS_Treaty_OnGameOver()
 	AGS_Print("AGS_Treaty_OnGameOver")

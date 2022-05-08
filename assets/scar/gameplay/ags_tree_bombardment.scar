@@ -86,12 +86,17 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Bridge between interfaces.
 function AGS_TreeBombardment_OnExpectedLanding(context, data)
-	if data.target.EntityID ~= nil then		
-		local e = Entity_FromID(data.target.EntityID)
-		projectile_target = Entity_GetPosition(e)
-		AGS_TreeBombardment_DestroyTreeGroup(projectile_target)
-	else
-		AGS_TreeBombardment_DestroyTreeGroup(data.target)		
+	if data.target == nil then
+		return
+	end
+	if data.target.x ~= nil and data.target.y ~= nil and data.target.z ~= nil then
+		AGS_TreeBombardment_DestroyTreeGroup(data.target)	
+	elseif data.target ~= nil and data.target.EntityID ~= nil and Entity_IsValid(data.target.EntityID) then
+		local entity = Entity_FromID(data.target.EntityID)
+		if entity then	
+			projectile_target = Entity_GetPosition(entity)
+			AGS_TreeBombardment_DestroyTreeGroup(projectile_target)	
+		end
 	end	
 end
 -- Remove any tree from projectile_target radius.
