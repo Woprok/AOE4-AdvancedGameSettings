@@ -38,7 +38,7 @@ _Makes all siege and ships with attack ground able to destroy trees_
 ![image](https://user-images.githubusercontent.com/37557138/167299668-dbd44689-99ed-4f45-bf29-d9f2784c4c84.png)
 
 ## Feedback & Contribution:
-Contribution in any form is welcomed. Let's built something great together :)
+Contribution in any form is welcomed. Let's built something great together :)   
 Be free to also provide ideas or requests via issues/tickets.  
 
 ## Bug & other issues:    
