@@ -243,7 +243,7 @@
 242,,,,Settlement Option Summary,,Scattered Start
 243,,,,King Option,,Empowered King
 244,,,,King Option,,King will have additional bonuses and abilities
-245,,,,Team Balance Option,,Maintain Team Balance
+245,,,,Team Balance Option,,Team Balance
 246,,,,Team Balance Option,,"Should team lose a player, remaining members will share his population capacity and resources. Dynamic teams are not eligible for this."
 247,,,,Team Balance Option,,Population
 248,,,,Team Balance Option,,Population & Resources
@@ -319,3 +319,4 @@
 318,,,,Ingame Button,,Advanced Game Settings
 319,,,,Ingame Button,,Feedback
 320,,,ags_match_ui,Ingame Button,,Match Settings
+321,,,ags_match_ui,Ingame Button,,Mod version:

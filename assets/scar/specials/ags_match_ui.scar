@@ -15,16 +15,21 @@ AGS_MATCH_UI_CONTEXT = {
 	data_context = {
 		is_ui_visible = true,
 		is_dropdown_visible = false,
-		--about_image = "pack://application:,,,/WPFGUI;component/icons/races/common/buildings/university.png",
-		about_image = "pack://application:,,,/WPFGUI;component/images/fe/taskbar_settings.png",
-		about_text = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:318"),
-		toggle_image = "pack://application:,,,/WPFGUI;component/icons/races/sultanate/upgrades/all_seeing_eye.png",
-		toggle_text = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:317"),
-		toggle_title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:316"),
-		github_title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:319"),
-		github_url = "https://github.com/" .. "W" .. "o" .. "p" .. "r" .. "o" .. "k" .. "/AOE4-AdvancedGameSettings",
-		info_title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:320"),
-		info_text = "Good Luck",
+		match_settings_icon = "pack://application:,,,/WPFGUI;component/images/fe/taskbar_settings.png",
+						
+		core = {
+			about_title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:318"),
+			toggle_title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:316"),
+			toggle_icon = "pack://application:,,,/WPFGUI;component/icons/races/sultanate/upgrades/all_seeing_eye.png",
+			toggle_tooltip = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:317"),
+			info_title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:320"),
+			github_title = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:319"),
+			github_url = "https:/".. "/github.com/" .. "W" .. "o" .. "p" .. "r" .. "o" .. "k" .. "/AOE4-AdvancedGameSettings",
+		},	
+		info = {
+			title_version = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:321"),
+		},
+		
 		command = {
 			toggle_dropdown = UI_CreateCommand("AGS_MatchUI_ToggleDropdown"),
 			toggle_objectives = UI_CreateCommand("AGS_MatchUI_ToggleObjectives"),
@@ -74,138 +79,26 @@ function AGS_MatchUI_OnPlayerDefeated(player, reason)
 end
 
 ---------------------------------------------------------------------------------------------------
--- Rules
+-- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_MatchUI_CreateDataContext()
-	local final = "AGS VERSION: " .. AGS_GLOBAL_SETTINGS_BUILD .. "\n"
-	final = final .. "OBJECTIVES:" .. "\n"
-	if AGS_GLOBAL_SETTINGS.Annihilation then
-		final = final .. "Annihilation" .. "\n"		
-	end
-	if AGS_GLOBAL_SETTINGS.Elimination then
-		final = final .. "Elimination"
-		final = final .. ", AI TakeOver: " .. tostring(AGS_GLOBAL_SETTINGS.EliminationSettings.EnableAITakeover)	
-		final = final .. "\n"
-	end
-	if AGS_GLOBAL_SETTINGS.Surrender then
-		final = final .. "Surrender" .. "\n"
-	end
-	if AGS_GLOBAL_SETTINGS.Conquest then
-		final = final .. "Conquest of "	
-		if AGS_GLOBAL_SETTINGS.ConquestSettings.Capital then
-			final = final .. "Capital, "		
-		end
-		if AGS_GLOBAL_SETTINGS.ConquestSettings.Landmarks then
-			final = final .. "Landmarks, "		
-		end
-		if AGS_GLOBAL_SETTINGS.ConquestSettings.TownCenters then
-			final = final .. "TownCenters, "		
-		end
-		if AGS_GLOBAL_SETTINGS.ConquestSettings.Keeps then
-			final = final .. "Keeps, "	
-		end
-		if AGS_GLOBAL_SETTINGS.ConquestSettings.Wonder then
-			final = final .. "Wonder, "		
-		end
-		final = final .. "\n"
-	end
-	if AGS_GLOBAL_SETTINGS.Regicide then
-		final = final .. "Regicide" 
-		final = final .. ", King: " .. tostring(AGS_GLOBAL_SETTINGS.StartingKings)
-		final = final .. ", Strong King: " .. tostring(AGS_GLOBAL_SETTINGS.EmpoweredKings)
-		final = final .. "\n"
-	end
-	if AGS_GLOBAL_SETTINGS.Religious then
-		final = final .. "Religious"
-		final = final .. ", Timer: " .. tostring(AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer)
-		final = final .. ", Resumable: " .. tostring(AGS_GLOBAL_SETTINGS.ReligiousSettings.ResumableTimer)		
-		final = final .. "\n"
-	end
-	if AGS_GLOBAL_SETTINGS.Wonder then
-		final = final .. "Wonder"
-		final = final .. ", Timer: " .. tostring(AGS_GLOBAL_SETTINGS.WonderSettings.Timer)
-		final = final .. ", Last Stand: " .. tostring(AGS_GLOBAL_SETTINGS.WonderSettings.LastStand)	
-		final = final .. ", Scale Cost: " .. tostring(AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost)	
-		final = final .. "\n"
-	end
-	if AGS_GLOBAL_SETTINGS.Score then
-		final = final .. "Score"
-		final = final .. ", Timer: " .. tostring(AGS_GLOBAL_SETTINGS.ScoreSettings.Timer)
-		final = final .. ", Show Placements: " .. tostring(AGS_GLOBAL_SETTINGS.ScoreSettings.ShowPlacement)	
-		final = final .. "\n"
-	end
-	if AGS_GLOBAL_SETTINGS.Treaty then
-		final = final .. "Treaty"
-		final = final .. ", Timer: " .. tostring(AGS_GLOBAL_SETTINGS.TreatySettings.Timer)
-		final = final .. "\n"
-	end
-	
-	final = final .. "SETTINGS:" .. "\n"
-	if AGS_GLOBAL_SETTINGS.Diplomacy then
-		final = final .. "Send Tributes: " .. tostring(AGS_GLOBAL_SETTINGS.Tributes) .. "\n"
-		final = final .. "Change Relations: " .. tostring(AGS_GLOBAL_SETTINGS.Relations) .. "\n"
-	end
-	final = final .. "Settlement: " .. tostring(AGS_GLOBAL_SETTINGS.Settlement) .. "\n"
-	final = final .. "Team Victory: " .. tostring(AGS_GLOBAL_SETTINGS.TeamVictory) .. "\n"
-	final = final .. "Team Vision: " .. tostring(AGS_GLOBAL_SETTINGS.TeamVision) .. "\n"
-	final = final .. "Team Solidarity: " .. tostring(AGS_GLOBAL_SETTINGS.TeamSolidarity) .. "\n"
-	final = final .. "Team Balance: " .. tostring(AGS_GLOBAL_SETTINGS.MaintainTeamBalance) .. "\n"
-	final = final .. "Map Vision: " .. tostring(AGS_GLOBAL_SETTINGS.MapVision) .. "\n"
-	final = final .. "Starting Age: " .. tostring(AGS_GLOBAL_SETTINGS.StartingAge) .. "\n"
-	final = final .. "Ending Age: " .. tostring(AGS_GLOBAL_SETTINGS.EndingAge) .. "\n"
-	final = final .. "Technology Age: " .. tostring(AGS_GLOBAL_SETTINGS.TechnologyAge) .. "\n"
-	final = final .. "Starting Resources: " .. tostring(AGS_GLOBAL_SETTINGS.StartingResources) .. "\n"
-	final = final .. "FOW: " .. tostring(AGS_GLOBAL_SETTINGS.RevealFowOnElimination) .. "\n"
-	final = final .. "Score Visibility: " .. tostring(AGS_GLOBAL_SETTINGS.ScoreVisibility) .. "\n"
-	final = final .. "Population: " .. tostring(AGS_GLOBAL_SETTINGS.MinimumPopulation) .. " , " .. tostring(AGS_GLOBAL_SETTINGS.MaximumPopulation) .. "\n"
-	final = final .. "Starting Villagers: " .. tostring(AGS_GLOBAL_SETTINGS.StartingVillagers) .. "\n"
-	final = final .. "Starting Keeps: " .. tostring(AGS_GLOBAL_SETTINGS.StartingKeeps) .. "\n"
-	final = final .. "Early Market: " .. tostring(AGS_GLOBAL_SETTINGS.EarlyMarket) .. "\n"
-	final = final .. "No Dock: " .. tostring(AGS_GLOBAL_SETTINGS.NoDock) .. "\n"
-	final = final .. "Tree Bombardment: " .. tostring(AGS_GLOBAL_SETTINGS.TreeBombardment) .. "\n"
-	final = final .. "Game Rates: " .. tostring(AGS_GLOBAL_SETTINGS.GameRates) .. "\n"
-	final = final .. "Unit Rates: " .. tostring(AGS_GLOBAL_SETTINGS.UnitRates) .. "\n"
-	final = final .. "Simulation Speed: " .. tostring(AGS_GLOBAL_SETTINGS.SimulationSpeed) .. "\n"
-	final = final .. "Ding: " .. tostring(AGS_GLOBAL_SETTINGS.Ding) .. "\n"
-	final = final .. "Tributes: " .. tostring(AGS_GLOBAL_SETTINGS.Tributes) .. "\n"
-		
-	if AGS_GLOBAL_SETTINGS.PlayerColors.IsEnforcing then
-		final = final .. "Player Colors: "	
-		final = final .. tostring(AGS_GLOBAL_SETTINGS.PlayerColors.FirstSlot) .. ", "	
-		final = final .. tostring(AGS_GLOBAL_SETTINGS.PlayerColors.SecondSlot) .. ", "	
-		final = final .. tostring(AGS_GLOBAL_SETTINGS.PlayerColors.ThirdSlot) .. ", "	
-		final = final .. tostring(AGS_GLOBAL_SETTINGS.PlayerColors.FourthSlot) .. ", "	
-		final = final .. tostring(AGS_GLOBAL_SETTINGS.PlayerColors.FifthSlot) .. ", "	
-		final = final .. tostring(AGS_GLOBAL_SETTINGS.PlayerColors.SixthSlot) .. ", "	
-		final = final .. tostring(AGS_GLOBAL_SETTINGS.PlayerColors.SeventhSlot) .. ", "		
-		final = final .. tostring(AGS_GLOBAL_SETTINGS.PlayerColors.EighthSlot) .. ", "		
-		final = final .. "\n"
-	end
-	final = final .. "\n"
-		
-	AGS_MATCH_UI_CONTEXT.data_context.info_text = final
+function AGS_MatchUI_CreateDataContext()		
+	AGS_MATCH_UI_CONTEXT.data_context.info.version = AGS_GLOBAL_SETTINGS_BUILD
+	-- doing this is time consuming and it cant be one long string as game will crash...
 end
 
-function Rule_AGS_MatchUI_UpdateUI()		 			
-	if AGS_MATCH_UI_CONTEXT ~= nil and AGS_MATCH_UI_CONTEXT.data_context ~= nil then 
-		AGS_MatchUI_Update()
-	end
-end
+---------------------------------------------------------------------------------------------------
+-- Update Functions:
+---------------------------------------------------------------------------------------------------
 
 function AGS_MatchUI_Update()
-	--local local_player = Game_GetLocalPlayer()
-	--local update = AGS_MATCH_UI_CONTEXT.data_context.data.update_count + 1
-	--AGS_MATCH_UI_CONTEXT.data_context.data.update_count = update	
-	--AGS_MATCH_UI_CONTEXT.data_context.data.update_value = tostring(update)	
-		
-	if AGS_MATCH_UI_CONTEXT.is_ui_created then 
+	if AGS_MATCH_UI_CONTEXT ~= nil and AGS_MATCH_UI_CONTEXT.data_context ~= nil and AGS_MATCH_UI_CONTEXT.is_ui_created then 
 		UI_SetDataContext(AGS_MATCH_UI_CONTEXT.ui, AGS_MATCH_UI_CONTEXT.data_context)	
 	end
 end
 
 ---------------------------------------------------------------------------------------------------
--- Functions:
+-- UI Functions:
 ---------------------------------------------------------------------------------------------------
 
 function AGS_MatchUI_Show(show_ui)
@@ -216,12 +109,8 @@ function AGS_MatchUI_Show(show_ui)
 end
 
 function AGS_MatchUI_CreateAndUpdateUI()	
-	
 	AGS_MatchUI_CreateUI()
 	
-	if not Rule_Exists(Rule_AGS_MatchUI_UpdateUI) then
-		Rule_AddInterval(Rule_AGS_MatchUI_UpdateUI, 0.250)
-	end
 end
 
 function AGS_MatchUI_CreateUI()	
@@ -328,7 +217,7 @@ function AGS_MatchUI_CreateUI()
             ToolTipService.InitialShowDelay="0" ToolTipService.ShowDuration="86400000"
 			MinWidth="34" MaxWidth="34" Width="34" Height="34"> 
 		<Button.Content>
-				<Image Source="{Binding [about_image]}" Width="34">
+				<Image Source="{Binding [match_settings_icon]}" Width="34">
 				<Image.Effect>
 					<DropShadowEffect BlurRadius="6" Direction="-71.5"
 		                              Opacity="0.6" ShadowDepth="3"
@@ -361,7 +250,7 @@ function AGS_MatchUI_CreateUI()
                        <esControls:Marquee Grid.Column="1" MarqueeType="Alternate" Speed="60">
                   	  	 <TextBlock HorizontalAlignment="Center"
                        	      	    Style="{StaticResource HUDPrimaryColorGradientVerticalSubtitleTextBlock14ptStyle}"
-                               	   Text="{Binding [about_text]}" />
+                               	   Text="{Binding [core][about_title]}" />
                        </esControls:Marquee>
                     </Grid>
 				    <Rectangle Grid.Row="1" Style="{StaticResource DiplomacyHorizontalSeparatorStyle}" />
@@ -374,7 +263,7 @@ function AGS_MatchUI_CreateUI()
                   	  		<TextBlock Grid.Column="0"  HorizontalAlignment="Left"
 									   VerticalAlignment="Center"
                        	      	  	   Style="{StaticResource HUDPrimaryColorGradientVerticalSubtitleTextBlock14ptStyle}"
-                               	  	   Text="{Binding [toggle_title]}" />
+                               	  	   Text="{Binding [core][toggle_title]}" />
 					
 							<Button Grid.Column="2" Command="{Binding [command][toggle_objectives]}"
 									ToolTipService.InitialShowDelay="0"
@@ -384,7 +273,7 @@ function AGS_MatchUI_CreateUI()
 									Style="{StaticResource DiplomacyResourceButtonStyle}">
 								<Button.Content>
 									<Grid>
-										<Image Source="{Binding [toggle_image]}" Width="32">
+										<Image Source="{Binding [core][toggle_icon]}" Width="32">
 											<Image.Effect>
 												<DropShadowEffect BlurRadius="6" Direction="-71.5"
 																  Opacity="0.6" ShadowDepth="3"
@@ -407,7 +296,7 @@ function AGS_MatchUI_CreateUI()
 															<ColumnDefinition Width="*" />
 														</Grid.ColumnDefinitions>											
 														<StackPanel Orientation="Vertical" Grid.Column="1">														
-															<TextBlock Text="{Binding [toggle_text]}" 
+															<TextBlock Text="{Binding [core][toggle_tooltip]}" 
 																	Style="{StaticResource HUDGray80ParagraphTextBlock14ptStyle}" 
 																	Margin="{StaticResource SmallMarginTop}" />
 														</StackPanel>
@@ -430,20 +319,28 @@ function AGS_MatchUI_CreateUI()
 						</Grid.RowDefinitions>
               	  		<TextBlock Grid.Row="0" HorizontalAlignment="Left"
                    	      	  	   Style="{StaticResource HUDPrimaryColorGradientVerticalSubtitleTextBlock14ptStyle}"
-                           	  	   Text="{Binding [info_title]}" />					
-						<TextBlock Grid.Row="1"
-									Text="{Binding [info_text]}" 
-									Style="{StaticResource HUDGray80ParagraphTextBlock14ptStyle}" 
-									Margin="{StaticResource SmallMarginTop}" />						
+                           	  	   Text="{Binding [core][info_title]}" />					
+						<Grid>
+							<Grid.RowDefinitions>
+							    <RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="5"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+								<TextBlock Grid.Row="0"		Text="{Binding [info][title_version]}" Style="{StaticResource HUDGray80ParagraphTextBlock14ptStyle}" Margin="{StaticResource SmallMarginTop}"/>								
+								<TextBlock Grid.Row="0"		Grid.Column="2" Text="{Binding [info][version]}" Style="{StaticResource HUDGray80ParagraphTextBlock14ptStyle}" Margin="{StaticResource SmallMarginTop}"/>							
+						</Grid>				
 						<Grid Grid.Row="2">
 							<Grid.RowDefinitions>
 							    <RowDefinition Height="Auto" />
 							    <RowDefinition Height="Auto" />
 							</Grid.RowDefinitions>
-							<TextBlock Grid.Row="0" Text="{Binding [github_title]}" 
+							<TextBlock Grid.Row="0" Text="{Binding [core][github_title]}" 
 									Style="{StaticResource HUDPrimaryColorGradientVerticalSubtitleTextBlock14ptStyle}" 
 									Margin="{StaticResource SmallMarginTop}" />
-							<TextBlock Grid.Row="1" Text="{Binding [github_url]}" 
+							<TextBlock Grid.Row="1" Text="{Binding [core][github_url]}" 
 									Style="{StaticResource HUDPrimaryColorGradientVerticalSubtitleTextBlock14ptStyle}" 
 									Margin="{StaticResource SmallMarginTop}" />
 						</Grid>
@@ -471,7 +368,7 @@ function AGS_MatchUI_ToggleDropdown(context)
 	end
 end
 
--- callback invoked by pressing the ESC key while Cookie panel is open
+-- Callback for ESC key to close this UI.
 function AGS_MatchUI_HideDropdown(context)
 	if(AGS_MATCH_UI_CONTEXT.data_context.is_dropdown_visible) then
 		AGS_MatchUI_ToggleDropdown()
