@@ -1,0 +1,30 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Entry point for an gamemode.
+-- Contains only gamemode specific functionality and generic delegate calls.
+-- Everything else is imported and done as part of "ags_cardinal.scar"
+---------------------------------------------------------------------------------------------------
+
+import("ags_cardinal.scar")
+-- Unload AGS default version of scattered
+Core_UnregisterModule(AGS_SCATTERED_MODULE)
+import("startconditions/ags_start_scattered_villagers.scar")
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+-- This file is loaded last, this means that all methods are invoked at the end of chain.
+-- It might be possible to assume that all imported modules are finished with the stage when we are called.
+Core_RegisterModule("AGS_GameModeNomad")	
+
+function AGS_GameModeNomad_AdjustSettings()
+	AGS_Print("AGS_GameModeNomad_AdjustSettings")
+	-- Disabling everything that would potentially interfere with this version of a nomad.
+	AGS_GLOBAL_SETTINGS.UsingPrefabStart = false
+	AGS_GLOBAL_SETTINGS.RevealSpawn = false
+	AGS_GLOBAL_SETTINGS.IsAdjustingAI = false
+end
