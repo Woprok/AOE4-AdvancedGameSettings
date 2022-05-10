@@ -55,7 +55,7 @@ function AGS_ScatteredVillagers_OnStarting()
 		-- Insist that player do not have capital.
 		Player_SetStateModelFloat(player.id, "has_capital", 0)
 		-- Player should be able to build structures.
-		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)	
+		Player_SetStateModelBool(player.id, "player_can_construct_structures", false)	
 		-- This is just for case we decide to allow AI adjustments back.
 		Core_CallDelegateFunctions("AdjustAIPlayers", AGS_AI_ADJUSTREASON_NOMAD, player)
 		
