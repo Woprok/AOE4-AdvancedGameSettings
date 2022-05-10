@@ -24,7 +24,7 @@ Core_RegisterModule(AGS_CONQUEST_MODULE)
 -- If Conquest setting for wonder is enabled in settings, force wonder construction if wonder victory is not.
 function AGS_Conquest_AdjustSettings()
 	AGS_Print("AGS_Conquest_AdjustSettings")
-	if not AGS_GLOBAL_SETTINGS.Wonder and AGS_GLOBAL_SETTINGS.ConquestSettings.Wonder then
+	if AGS_GLOBAL_SETTINGS.Conquest and not AGS_GLOBAL_SETTINGS.Wonder and AGS_GLOBAL_SETTINGS.ConquestSettings.Wonder then
 		AGS_GLOBAL_SETTINGS.WonderConstruction = true
 	end
 end

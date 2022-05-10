@@ -40,7 +40,7 @@ function AGS_Scattered_PresetInitialize()
 	-- Tune villager spawn out from the middle of the map.
 	AGS_SCATTERED_RADIUS = math.max(World_GetWidth(), World_GetLength())/AGS_SCATTERED_TUNING 
 	FOW_UnExploreAll()
-	Camera_MoveTo(World_Pos(0,0,0))
+	Camera_MoveTo(World_Pos(0,World_GetHeightAt(0,0),0))
 end
 
 function AGS_Scattered_PresetExecute()
