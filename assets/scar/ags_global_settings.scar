@@ -141,6 +141,7 @@ AGS_GLOBAL_SETTINGS = {
 	Ding = false,
 	SimulationSpeed = 1.00,
 	EmpoweredKings = false,
+	WonderConstruction = false,
 	
 	StartingScouts = 1, -- undefined
 	StartingSheeps = 1, -- undefined
@@ -409,6 +410,9 @@ function AGS_GlobalSettings_DefineLegacySettings(category)
 	end
 	if category.option_legacy_setting_unit_rates then
 		AGS_GlobalSettings_SetUnitRates(category.option_legacy_setting_unit_rates)
+	end
+	if category.option_legacy_setting_wonder_construction ~= nil then
+		AGS_GLOBAL_SETTINGS.WonderConstruction = category.option_legacy_setting_wonder_construction
 	end
 end
 

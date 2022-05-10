@@ -21,12 +21,21 @@ AGS_CONQUEST_TICK_WAIT = 0.25 -- 0.125 is a single tick
 
 Core_RegisterModule(AGS_CONQUEST_MODULE)	
 
+-- If Conquest setting for wonder is enabled in settings, force wonder construction if wonder victory is not.
+function AGS_Conquest_AdjustSettings()
+	AGS_Print("AGS_Conquest_AdjustSettings")
+	if not AGS_GLOBAL_SETTINGS.Wonder and AGS_GLOBAL_SETTINGS.ConquestSettings.Wonder then
+		AGS_GLOBAL_SETTINGS.WonderConstruction = true
+	end
+end
+
 function AGS_Conquest_UpdateModuleSettings()
 	AGS_Print("AGS_Conquest_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.Conquest then
 		Core_UnregisterModule(AGS_CONQUEST_MODULE)
 	end
 end
+
 -- Disable this if there is noone else or nothing to conquer.
 function AGS_Conquest_EarlyInitializations()
 	AGS_Print("AGS_Conquest_EarlyInitializations")
@@ -37,8 +46,8 @@ function AGS_Conquest_EarlyInitializations()
 		not AGS_GLOBAL_SETTINGS.ConquestSettings.Landmarks and
 		not AGS_GLOBAL_SETTINGS.ConquestSettings.TownCenters and 
 		not AGS_GLOBAL_SETTINGS.ConquestSettings.Keeps and
-		-- Wonder victory must be enabled for this to work.
-		not (AGS_GLOBAL_SETTINGS.ConquestSettings.Wonder and AGS_GLOBAL_SETTINGS.Wonder) then
+		-- Wonder victory or construction must be enabled for this to work.
+		not (AGS_GLOBAL_SETTINGS.ConquestSettings.Wonder and (AGS_GLOBAL_SETTINGS.Wonder or AGS_GLOBAL_SETTINGS.WonderConstruction)) then
 		Core_UnregisterModule(AGS_CONQUEST_MODULE)
 	end	
 end

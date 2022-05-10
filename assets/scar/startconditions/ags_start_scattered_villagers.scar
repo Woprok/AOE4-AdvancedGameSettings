@@ -31,15 +31,17 @@ end
 function AGS_ScatteredVillagers_EarlyInitializations()
 	AGS_Print("AGS_ScatteredVillagers_EarlyInitializations")
 	if AGS_GLOBAL_SETTINGS.UsingPrefabStart then
-		AGS_ScatteredVillagers_DestroySpawn()
+		-- This will create nothing if this module would be loaded along with prefab start.
+		-- Might reintruduce back destroy spawn later, but currently this should be used only for AGS Nomad.
+		Core_UnregisterModule(AGS_SCATTERED_VILLAGERS_VILLAGERS_MODULE)
 	end
 end
 
 function AGS_ScatteredVillagers_PresetInitialize()
 	AGS_Print("AGS_ScatteredVillagers_PresetInitialize")
 	-- Tune villager spawn out from the middle of the map.
-	AGS_SCATTERED_VILLAGERS_RADIUS = math.max(World_GetWidth(), World_GetLength())/AGS_SCATTERED_VILLAGERS_TUNING 
-	FOW_UnExploreAll()
+	AGS_SCATTERED_VILLAGERS_RADIUS = math.max(World_GetWidth(), World_GetLength())/AGS_SCATTERED_VILLAGERS_TUNING
+	Camera_MoveTo(World_Pos(0,0,0))
 end
 
 function AGS_ScatteredVillagers_PresetExecute()
@@ -53,7 +55,8 @@ function AGS_ScatteredVillagers_OnStarting()
 		-- Insist that player do not have capital.
 		Player_SetStateModelFloat(player.id, "has_capital", 0)
 		-- Player should be able to build structures.
-		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)		
+		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)	
+		-- This is just for case we decide to allow AI adjustments back.
 		Core_CallDelegateFunctions("AdjustAIPlayers", AGS_AI_ADJUSTREASON_NOMAD, player)
 		
 		-- Increase starting resources to cover cost of building an TC
@@ -66,28 +69,6 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
--- Removing prefab start.
-function AGS_ScatteredVillagers_DestroySpawn()
-	for _, player in pairs(PLAYERS) do	
-		local sgroup = Player_GetSquads(player.id)
-		local AGS_ScatteredVillagers_DestroySquad = function(gid, idx, sid)
-			if sid ~= nil then
-				Squad_WarpToPos(sid, World_Pos(5000,5000,5000))
-				Squad_Destroy(sid)
-			end
-		end
-		SGroup_ForEach(sgroup, AGS_ScatteredVillagers_DestroySquad)
-		
-		local egroup = Player_GetEntities(player.id)
-		local AGS_ScatteredVillagers_DestroyEntities = function(gid, idx, eid)
-			if eid ~= nil then
-				Entity_WarpToPos(eid, World_Pos(5000,5000,5000))
-				Entity_Destroy(eid)
-			end
-		end
-		EGroup_ForEach(egroup, AGS_ScatteredVillagers_DestroyEntities)		
-	end
-end
 -- Get spawn dimensions and initial squad location.
 function AGS_ScatteredVillagers_GetScatterPosition()
 	local x = World_GetRand(0 - AGS_SCATTERED_VILLAGERS_RADIUS, AGS_SCATTERED_VILLAGERS_RADIUS)
