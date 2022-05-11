@@ -1,0 +1,38 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Allows construction of wonder for players and notifies AI module for adjustments.
+---------------------------------------------------------------------------------------------------
+
+AGS_WONDER_CONSTRUCTION_MODULE = "AGS_WonderConstruction"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+Core_RegisterModule(AGS_WONDER_CONSTRUCTION_MODULE)	
+
+function AGS_WonderConstruction_UpdateModuleSettings()
+	AGS_Print("AGS_WonderConstruction_UpdateModuleSettings")
+	if AGS_GLOBAL_SETTINGS.Wonder or not AGS_GLOBAL_SETTINGS.WonderConstruction then
+		Core_UnregisterModule(AGS_WONDER_CONSTRUCTION_MODULE)
+	end
+end
+
+function AGS_WonderConstruction_PresetFinalize()	
+	AGS_Print("AGS_WonderConstruction_PresetFinalize")
+	AGS_WonderConstruction_EnableConstruction()	
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_WonderConstruction_EnableConstruction()
+	for _, player in pairs(PLAYERS) do
+		Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", true)	
+		Core_CallDelegateFunctions("AdjustAIPlayers", AGS_AI_ADJUSTREASON_WONDER_CONSTRUCTION, player)
+	end
+end

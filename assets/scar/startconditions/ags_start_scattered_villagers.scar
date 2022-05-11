@@ -1,0 +1,92 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+-- jackelpobelope (inspiration for current scattered villagers)
+--
+-- Description:
+-- Spawns villagers randomly on the map.
+---------------------------------------------------------------------------------------------------
+
+AGS_SCATTERED_VILLAGERS_RADIUS = 1
+AGS_SCATTERED_VILLAGERS_TUNING = 1.9
+AGS_SCATTERED_VILLAGERS_WOOD = 400
+AGS_SCATTERED_VILLAGERS_STONE = 300
+AGS_SCATTERED_VILLAGERS_MAP_CENTER = World_Pos(0, 0, 0)	
+AGS_SCATTERED_VILLAGERS_VILLAGERS_MODULE = "AGS_ScatteredVillagers"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_SCATTERED_VILLAGERS_VILLAGERS_MODULE)	
+
+function AGS_ScatteredVillagers_UpdateModuleSettings()
+	AGS_Print("AGS_ScatteredVillagers_UpdateModuleSettings")
+	if AGS_GLOBAL_SETTINGS.Settlement ~= AGS_GS_SETTLEMENT_SCATTERED then
+		Core_UnregisterModule(AGS_SCATTERED_VILLAGERS_VILLAGERS_MODULE)
+	end
+end
+
+function AGS_ScatteredVillagers_EarlyInitializations()
+	AGS_Print("AGS_ScatteredVillagers_EarlyInitializations")
+	if AGS_GLOBAL_SETTINGS.UsingPrefabStart then
+		-- This will create nothing if this module would be loaded along with prefab start.
+		-- Might reintruduce back destroy spawn later, but currently this should be used only for AGS Nomad.
+		Core_UnregisterModule(AGS_SCATTERED_VILLAGERS_VILLAGERS_MODULE)
+	end
+end
+
+function AGS_ScatteredVillagers_PresetInitialize()
+	AGS_Print("AGS_ScatteredVillagers_PresetInitialize")
+	-- Tune villager spawn out from the middle of the map.
+	AGS_SCATTERED_VILLAGERS_RADIUS = math.max(World_GetWidth(), World_GetLength())/AGS_SCATTERED_VILLAGERS_TUNING
+	Camera_MoveTo(World_Pos(0,World_GetHeightAt(0,0),0))
+end
+
+function AGS_ScatteredVillagers_PresetExecute()
+	AGS_Print("AGS_ScatteredVillagers_PresetExecute")
+	AGS_ScatteredVillagers_CreateSpawn()
+end
+
+function AGS_ScatteredVillagers_OnStarting()
+	AGS_Print("AGS_ScatteredVillagers_OnStarting")
+	for _, player in pairs(PLAYERS) do	
+		-- Insist that player do not have capital.
+		Player_SetStateModelFloat(player.id, "has_capital", 0)
+		-- Player should be able to build structures.
+		Player_SetStateModelBool(player.id, "player_can_construct_structures", false)	
+		-- This is just for case we decide to allow AI adjustments back.
+		Core_CallDelegateFunctions("AdjustAIPlayers", AGS_AI_ADJUSTREASON_NOMAD, player)
+		
+		-- Increase starting resources to cover cost of building an TC
+		if player.raceName ~= AGS_CIV_MONGOL then
+			Player_GiftResource(player.id, RT_Stone, AGS_SCATTERED_VILLAGERS_STONE)
+		end
+		Player_GiftResource(player.id, RT_Wood, AGS_SCATTERED_VILLAGERS_WOOD)
+	end
+end
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Get spawn dimensions and initial squad location.
+function AGS_ScatteredVillagers_GetScatterPosition()
+	local x = World_GetRand(0 - AGS_SCATTERED_VILLAGERS_RADIUS, AGS_SCATTERED_VILLAGERS_RADIUS)
+	local z = World_GetRand(0 - AGS_SCATTERED_VILLAGERS_RADIUS, AGS_SCATTERED_VILLAGERS_RADIUS)
+	local y = World_GetHeightAt(x, z)
+	return World_Pos(x, y, z)
+end
+-- Distributes all players all units randomly around the map.
+function AGS_ScatteredVillagers_CreateSpawn()	
+	for _, player in pairs(PLAYERS) do		
+		-- Get Villager BP and spawn them at single location, before spreading them out to create artificial home for AI.
+		local sbp_vil = AGS_GetCivilizationUnit(player.raceName, AGS_BP_VILLAGER)		
+		for i=1,AGS_GLOBAL_SETTINGS.StartingVillagers do
+			local snameVIL = AGS_SGroupName(player.id, AGS_BP_VILLAGER) .. i
+			local squad_group = SGroup_CreateIfNotFound(snameVIL)
+			local spawn_pos = AGS_ScatteredVillagers_GetScatterPosition()
+			UnitEntry_DeploySquads(player.id, squad_group, {{sbp = sbp_vil, numSquads = 1 }}, spawn_pos)
+			Core_CallDelegateFunctions("UnitsSpawned", player.id, nil, squad_group)				
+		end			
+	end
+end	

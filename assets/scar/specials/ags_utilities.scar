@@ -117,11 +117,14 @@ function Wonder_UpdatePlayerStats(player, scarModel)
 			scarModel.Wonder_Target = AGS_WONDER_VICTORY_TIMER 								
 			scarModel.Wonder_Current = Timer_GetRemaining(player.AGS_Wonder.objective_timer) 	
 			return
-		elseif Entity_GetBuildingProgress(player.AGS_Wonder.entity) < 1.0 then
-			scarModel.Wonder_Target = AGS_WONDER_VICTORY_TIMER 	
-			-- 0 : under construction
-			scarModel.Wonder_Current = 0 					
-			return
+		elseif Entity_IsValid(player.AGS_Wonder.entity_uwid) then
+			local entity = Entity_FromID(player.AGS_Wonder.entity_uwid)
+			if entity ~= nil and Entity_GetBuildingProgress(entity) < 1.0 then
+				scarModel.Wonder_Target = AGS_WONDER_VICTORY_TIMER 	
+				-- 0 : under construction
+				scarModel.Wonder_Current = 0 					
+				return
+			end
 		end
 	end
 	scarModel.Wonder_Target = 0 	-- in sec

@@ -12,6 +12,7 @@ AGS_AI_MODULE = "AGS_AI"
 AGS_AI_ADJUSTREASON_NONE = 0
 AGS_AI_ADJUSTREASON_NOMAD = 1
 AGS_AI_ADJUSTREASON_HIDE_KING = 2
+AGS_AI_ADJUSTREASON_WONDER_CONSTRUCTION = 3
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -46,6 +47,10 @@ function AGS_AI_AdjustAIPlayers(reason, opt_player)
 		if reason == AGS_AI_ADJUSTREASON_NOMAD then
 			AGS_AI_ApplyAdjustment_Nomad(opt_player)
 			AGS_Print("AGS_AI_AdjustAIPlayers-NOMADED")
+		end
+		if reason == AGS_AI_ADJUSTREASON_WONDER_CONSTRUCTION then
+			AGS_AI_ApplyAdjustment_WonderConstruction(opt_player)
+			AGS_Print("AGS_AI_AdjustAIPlayers-WONDER")
 		end
 	end	
 end
@@ -100,6 +105,10 @@ function AGS_AI_ApplyAdjustment_StoneVision()
 			EGroup_ForEach(outcrop_group, _AGS_ShowStone)	
 		end
 	end
+end
+-- Disables construction for AI players to prevent AI from camping next to useless wonder.
+function AGS_AI_ApplyAdjustment_WonderConstruction(player)
+	Player_SetStateModelBool(player.id, "is_wonder_construction_enabled", false)	
 end
 -- Changes certain value as AI might not be able to manage certain nomad conditions.
 function AGS_AI_ApplyAdjustment_Nomad(player)	

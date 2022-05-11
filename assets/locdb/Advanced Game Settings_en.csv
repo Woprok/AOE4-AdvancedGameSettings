@@ -320,3 +320,7 @@
 319,,,,Ingame Button,,Feedback
 320,,,ags_match_ui,Ingame Button,,Match Settings
 321,,,ags_match_ui,Ingame Button,,Mod version:
+322,,,,Mod Title,,AGS Nomad
+323,,,,Mod Gamemode Description,,"AGS Nomad is alternative version to well known nomad that provides diplomacy and few options that stays true to nomad nature.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+324,,,,Wonder Construction,,Wonder Construction
+325,,,,Wonder Construction,,Enables Wonder construction without Wonder win condition or Conquest win condition with Conquest Wonder selected.

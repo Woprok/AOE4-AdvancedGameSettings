@@ -66,7 +66,7 @@ AGS_GS_COLOR_GREY = 9 -- Monsoon/Natural Grey
 -- Local player should never change. And be ready after Initialization Phase.
 -- Local player is used for UI & visual logic. Gameplay logic should never use it as it will cause desync.
 AGS_GS_LOCAL_PLAYER = nil
-AGS_GLOBAL_SETTINGS_BUILD = "3.0"
+AGS_GLOBAL_SETTINGS_BUILD = "3.1"
 AGS_GLOBAL_SETTINGS_MODULE = "AGS_GlobalSettings"
 AGS_GLOBAL_SETTINGS = {
 	Annihilation = true, -- Player loses everything.
@@ -141,6 +141,7 @@ AGS_GLOBAL_SETTINGS = {
 	Ding = false,
 	SimulationSpeed = 1.00,
 	EmpoweredKings = false,
+	WonderConstruction = false,
 	
 	StartingScouts = 1, -- undefined
 	StartingSheeps = 1, -- undefined
@@ -409,6 +410,9 @@ function AGS_GlobalSettings_DefineLegacySettings(category)
 	end
 	if category.option_legacy_setting_unit_rates then
 		AGS_GlobalSettings_SetUnitRates(category.option_legacy_setting_unit_rates)
+	end
+	if category.option_legacy_setting_wonder_construction ~= nil then
+		AGS_GLOBAL_SETTINGS.WonderConstruction = category.option_legacy_setting_wonder_construction
 	end
 end
 
