@@ -147,7 +147,7 @@ function AGS_Conquest_OnConstructionComplete(context)
 		entity_uwid = Entity_GetID(context.entity),
 	}	
 	-- Eliminated players are not interesting for victory conditions.
-	if new_context.player.isEliminated then
+	if new_context.player == nil or new_context.player.isEliminated then
 		return
 	end
 	if AGS_Conquest_IsConquerable(new_context.entity_id) then

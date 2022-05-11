@@ -79,6 +79,8 @@ function AGS_Wonder_OnPlayerDefeated(player, reason)
 				AGS_WONDER_WINNER.AGS_Wonder.objective_success_title,
 				AGS_WONDER_WINNER.AGS_Wonder.objective_success_param)
 			)
+	else
+		AGS_Wonder_CleanWonder(player)
 	end
 end
 
@@ -180,6 +182,9 @@ function AGS_Wonder_Construction(context, construction_callback)
 	if context == nil or context.player == nil or context.entity == nil then 
 		return
 	end	
+	if World_OwnsEntity(context.entity) then
+		return
+	end	
 	-- We are looking only for wonders.
 	if not AGS_IsAWonder(context.entity) then
 		return
@@ -209,7 +214,6 @@ end
 function AGS_Wonder_ConstructionCompleted(player, entity_id)
 	-- Start the victory timer and objective across all peers, including those already defeated
 	player.AGS_Wonder.is_alive = true
-	player.AGS_Wonder.entity = entity_id
 	AGS_Wonder_StartCountdown(player)
 end
 
@@ -272,7 +276,6 @@ function AGS_Wonder_InitializeWonders()
 	for _, player in pairs(PLAYERS) do
 		player.AGS_Wonder = {
 			entity_uwid = nil,
-			entity = nil,
 			is_alive = false,
 			objective = nil,
 			objective_timer = string.format("ags_wonder.victory_timer_%d", player.index),
@@ -414,8 +417,11 @@ end
 function AGS_Wonder_CleanWonder(player)
 	if player.AGS_Wonder.is_alive then
 		player.AGS_Wonder.is_alive = false
-		if player.AGS_Wonder.entity ~= nil and Entity_IsAlive(player.AGS_Wonder.entity) then
-			Entity_Kill(player.AGS_Wonder.entity)
+		if player.AGS_Wonder.entity_uwid ~= nil and Entity_IsValid(player.AGS_Wonder.entity_uwid) then
+			local entity = Entity_FromID(player.AGS_Wonder.entity_uwid)
+			if entity ~= nil and Entity_IsAlive(entity) then
+				Entity_Kill(entity)
+			end			
 		end			
 		-- If wonder timer exists. End and reset timer
 		if Timer_Exists(player.AGS_Wonder.objective_timer) then				
