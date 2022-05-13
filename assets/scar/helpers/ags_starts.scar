@@ -32,7 +32,7 @@ function AGS_Starts_GetStartPosition(player_id)
 		return Player_GetStartingPosition(player_id) 			
 	end
 	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_SCATTERED then
-		return AGS_ScatteredVillagers_GetScatterPosition() 	
+		return AGS_Scattered_GetScatterPosition() 	
 	end
 	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_FORTIFIED then
 		return Player_GetStartingPosition(player_id) 	

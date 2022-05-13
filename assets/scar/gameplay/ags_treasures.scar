@@ -1,0 +1,109 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Spawns treasures and allows players to pick them up.
+---------------------------------------------------------------------------------------------------
+
+AGS_TREASURES_MODULE = "AGS_Treasures"
+AGS_TREASURES_COUNT_PER_PLAYER = 1 -- 4 total as we spawn for each resource one
+AGS_TREASURES_COUNT_BASE = 1 -- 4 total as we spawn for each resource one
+AGS_TREASURES_COUNT_TOTAL = 2 
+AGS_TREASURES_RADIUS = 1
+AGS_TREASURES_TUNING = 1.9
+AGS_TREASURES_WORLD_CENTER = World_Pos(0, 0, 0)
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_TREASURES_MODULE)	
+
+function AGS_Treasures_UpdateModuleSettings()
+	AGS_Print("AGS_Treasures_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.Treasures then
+		Core_UnregisterModule(AGS_TREASURES_MODULE)
+	end
+end
+
+function AGS_Treasures_PresetInitialize()
+	AGS_Print("AGS_Treasures_PresetInitialize")
+	-- Radius around the map. Exclude 
+	AGS_TREASURES_RADIUS = math.max(World_GetWidth(), World_GetLength())/AGS_TREASURES_TUNING
+	local pc = #PLAYERS 
+	AGS_TREASURES_COUNT_TOTAL = AGS_TREASURES_COUNT_BASE + AGS_TREASURES_COUNT_PER_PLAYER * pc
+	AGS_Treasures_AllowPickups()
+end
+
+function AGS_Treasures_OnStarting()
+	AGS_Print("AGS_Treasures_OnStarting")
+	AGS_Treasures_CreateTreasures()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Get spawn dimensions and initial squad location.
+function AGS_Treasures_GetScatterPosition()
+	local x = World_GetRand(0 - AGS_TREASURES_RADIUS, AGS_TREASURES_RADIUS)
+	local z = World_GetRand(0 - AGS_TREASURES_RADIUS, AGS_TREASURES_RADIUS)
+	local y = World_GetHeightAt(x, z)
+	return World_Pos(x, y, z)
+end
+-- Allow players to pickup treasures with their units.
+function AGS_Treasures_AllowPickups()
+	for _, player in pairs(PLAYERS) do
+		AGS_Print(AGS_UPGRADE_TABLE[AGS_UP_SPECIAL].treasures)
+		Player_SetStateModelBool(player.id, "player_can_interact_with_resource_pickups", true)
+		AGS_ApplyUpgrade(player.id, AGS_UPGRADE_TABLE[AGS_UP_SPECIAL].treasures)	
+	end	
+end
+-- Distributes all players all units randomly around the map.
+function AGS_Treasures_CreateTreasures()
+	local tf_group = EGroup_CreateIfNotFound(AGS_BP_TREASURE_FOOD)
+	local tw_group = EGroup_CreateIfNotFound(AGS_BP_TREASURE_WOOD)
+	local tg_group = EGroup_CreateIfNotFound(AGS_BP_TREASURE_GOLD)
+	local ts_group = EGroup_CreateIfNotFound(AGS_BP_TREASURE_STONE)
+	local ebp_tf = AGS_GetNeutralEntity(AGS_BP_TREASURE_FOOD)
+	local ebp_tw = AGS_GetNeutralEntity(AGS_BP_TREASURE_WOOD)
+	local ebp_tg = AGS_GetNeutralEntity(AGS_BP_TREASURE_GOLD)
+	local ebp_ts = AGS_GetNeutralEntity(AGS_BP_TREASURE_STONE)
+	for i = 1, AGS_TREASURES_COUNT_TOTAL do
+		AGS_Treasures_Spawn(tf_group, ebp_tf)
+		AGS_Treasures_Spawn(tw_group, ebp_tw)
+		AGS_Treasures_Spawn(tg_group, ebp_tg)
+		AGS_Treasures_Spawn(ts_group, ebp_ts)
+	end
+	
+	AGS_Treasures_SetTreasures(tf_group, tw_group, tg_group, ts_group)
+end	
+
+function AGS_Treasures_Spawn(group, ebp)
+	local spawn_pos = AGS_Treasures_GetScatterPosition()
+	local entityid = Entity_CreateENVFacing(ebp, spawn_pos, AGS_TREASURES_WORLD_CENTER, false)
+	local safe_spawn = World_GetSpawnablePosition(spawn_pos, entityid)
+	Entity_Spawn(entityid)
+	Entity_WarpToPos(entityid, safe_spawn)
+	EGroup_Add(group, entityid)
+end
+
+function AGS_Treasures_SetTreasures(efood, ewood, egold, estone)	
+	local AGS_SetFood = function(gid, idx, eid)
+		Entity_SetStateModelFloat(eid, "resource_pickup_amount_food", 200)
+	end
+	local AGS_SetWood = function(gid, idx, eid)
+		Entity_SetStateModelFloat(eid, "resource_pickup_amount_wood", 175)
+	end
+	local AGS_SetGold = function(gid, idx, eid)
+		Entity_SetStateModelFloat(eid, "resource_pickup_amount_gold", 150)
+	end
+	local AGS_SetStone = function(gid, idx, eid)
+		Entity_SetStateModelFloat(eid, "resource_pickup_amount_stone", 125)
+	end
+	EGroup_ForEach(efood, AGS_SetFood)
+	EGroup_ForEach(ewood, AGS_SetWood)
+	EGroup_ForEach(egold, AGS_SetGold)
+	EGroup_ForEach(estone, AGS_SetStone)
+end

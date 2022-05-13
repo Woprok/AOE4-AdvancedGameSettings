@@ -36,7 +36,7 @@ function AGS_Nomadic_UpdateModuleSettings()
 end
 
 function AGS_Nomadic_EarlyInitializations()
-	AGS_Print("AGS_ScatteredVillagers_EarlyInitializations")
+	AGS_Print("AGS_Nomadic_EarlyInitializations")
 	if AGS_GLOBAL_SETTINGS.UsingPrefabStart then
 		AGS_Nomadic_DestroySpawn()
 	end
@@ -67,6 +67,7 @@ function AGS_Nomadic_DestroySpawn()
 	AGS_Print("AGS_Nomadic_DestroySpawn")
 	for _, player in pairs(PLAYERS) do	
 		EGroup_DestroyAllEntities(Player_GetEntities(player.id))
+		SGroup_DestroyAllSquads(Player_GetSquads(player.id))
 	end
 end
 

@@ -46,10 +46,19 @@ AGS_BP_SIEGE = "siege"
 AGS_BP_WORKER = "worker"
 AGS_BP_MILITARY = "military"
 
+AGS_BP_TREASURE = "resource_pickup"
+AGS_BP_TREASURE_FOOD = "resource_pickup_food"
+AGS_BP_TREASURE_WOOD = "resource_pickup_wood"
+AGS_BP_TREASURE_GOLD = "resource_pickup_gold"
+AGS_BP_TREASURE_STONE = "resource_pickup_stone"
 
 AGS_ENTITY_TABLE = {
 	neutral = {
 		sheep = "gaia_herdable_sheep",
+		resource_pickup_food = "resource_pickup_food",
+		resource_pickup_wood = "resource_pickup_wood",
+		resource_pickup_gold = "resource_pickup_gold",
+		resource_pickup_stone = "resource_pickup_stone",
 	},
 	english = {
 		castle = "building_defense_keep_eng",
@@ -154,6 +163,7 @@ AGS_ENTITY_TABLE = {
 }
 
 AGS_UP_ANY = "common"
+AGS_UP_SPECIAL = "special"
 AGS_UP_DARK = "AGE_DARK"
 AGS_UP_FEUDAL = "AGE_FEUDAL"
 AGS_UP_CASTLE = "AGE_CASTLE"
@@ -687,6 +697,8 @@ function AGS_SpawnEntity(player_id, egroup_name, bp_entity, position, position_o
 	local placement = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z)
 	local rotation = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z + 5)
 	-- Spawn
+	-- could have been done with
+	-- Util_CreateEntities(playerid, egroupid, blueprintID, pos, numentities, toward, snapToGround, skipForceConstruct, useMarkerTransform)
 	local e = Entity_CreateFacing(bp_entity, player_id, placement, rotation, true)
 	Entity_Spawn(e)
 	Entity_ForceConstruct(e)
@@ -712,7 +724,7 @@ function AGS_SpawnSquad(player_id, sgroup_name, bp_squad, position, position_off
 	local rotation = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z - 1)
 	-- Spawn
 	-- This probably caused lot of issues, let's do simple method from now on.
-	-- local squad_group = Util_CreateSquads(player_id, sgroup_name, bp_squad, placement, placement, count, nil, false, rotation, nil, rotation, nil, nil, nil, nil, false)	
+	-- local squad_group = Util_CreateSquads(player_id, sgroup_name, bp_squad, placement, nil, count, nil, false, rotation, nil, rotation, nil, nil, nil, nil, false)	
 	local squad_group = SGroup_CreateIfNotFound(sgroup_name)
 	UnitEntry_DeploySquads(player_id, squad_group, {{sbp = bp_squad, numSquads = count }}, placement)
 	Core_CallDelegateFunctions("UnitsSpawned", player_id, position, squad_group)

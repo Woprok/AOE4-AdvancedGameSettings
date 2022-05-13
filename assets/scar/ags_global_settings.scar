@@ -148,6 +148,7 @@ AGS_GLOBAL_SETTINGS = {
 	SimulationSpeed = 1.00,
 	EmpoweredKings = false,
 	WonderConstruction = false,
+	Treasures = false,
 	
 	StartingScouts = 1, -- undefined
 	StartingSheeps = 1, -- undefined
@@ -413,6 +414,9 @@ function AGS_GlobalSettings_DefineMatchSettings(category)
 	end
 	if category.option_match_setting_town_center_restrictions then
 		AGS_GlobalSettings_SetTownCenterRestricts(category.option_match_setting_town_center_restrictions)
+	end
+	if category.option_match_setting_treasures ~= nil then
+		AGS_GLOBAL_SETTINGS.Treasures = category.option_match_setting_treasures
 	end
 end
 
