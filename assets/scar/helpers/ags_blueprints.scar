@@ -44,6 +44,7 @@ AGS_BP_ANY_GATE = "gate"
 AGS_BP_MOBILE = "mobile_building"
 AGS_BP_SIEGE = "siege"
 AGS_BP_WORKER = "worker"
+AGS_BP_MILITARY = "military"
 
 
 AGS_ENTITY_TABLE = {

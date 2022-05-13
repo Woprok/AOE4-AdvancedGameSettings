@@ -26,9 +26,17 @@ _Customize certain rules and values for win conditions such as timers._
 * Team Vision  
 _Changes how players vision is shared between allied players. Only team allies that can win together can share vision._
 * Diplomacy  
-_Allows players to change relations during the game._
+_Allows players to change relations during the game via Players & Tributes._
+* Empowered King  
+_King unit receives 4 additional active abilities: attack speed, production speed, attack damage, healing. Passive aura that boosts damage by 50% and 4 armor. Additional 800 health, 3.5 movement speed, 1 armor and 10 radius for vision._
 * Tree Bombardment  
-_Makes all siege and ships with attack ground able to destroy trees_
+_Makes all siege and ships with attack ground able to destroy trees._
+* Treasures  
+_Search for small treasures around the map and claim them before your enemies._
+* Double Production  
+_Speeds up production and reduces cost of economic units to help establish strong economy faster._
+* Handicaps  
+_Provides percantage bonus to each player based on selected value. Economic bonuses are faster gather rates, larger carrying capacity and higher trade. Military bonuses include higher armor, health for all units and buildings. Buildings also receive higher production and research speed._
 ### Full Menu Preview
 ![image](https://user-images.githubusercontent.com/37557138/167272719-32d5087c-794f-46e9-8ec1-bf674c8b62ee.png)  
 ![image](https://user-images.githubusercontent.com/37557138/167272731-036610fb-7021-4d34-89c8-879e684a22b4.png)  

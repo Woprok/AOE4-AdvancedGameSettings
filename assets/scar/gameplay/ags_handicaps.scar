@@ -1,1 +1,131 @@
--- TODO provide handicap for each player
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Bonus to players based on their slot and type chosen.
+---------------------------------------------------------------------------------------------------
+
+AGS_HANDICAPS_MODULE = "AGS_Handicaps"
+-- Indices are 1 - 8, so it's 1:1 to default slot mapping.
+AGS_HANDICAPS_TABLE = {
+	{ 0.0 },
+	{ 0.0 },
+	{ 0.0 },
+	{ 0.0 },
+	{ 0.0 },
+	{ 0.0 },
+	{ 0.0 },
+	{ 0.0 },
+}
+AGS_HANDICAPS_ECO_MODIFIERS = { }
+AGS_HANDICAPS_MIL_MODIFIERS = { }
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+Core_RegisterModule(AGS_HANDICAPS_MODULE)	
+
+function AGS_Handicaps_UpdateModuleSettings()
+	AGS_Print("AGS_Handicaps_UpdateModuleSettings")
+	if AGS_GLOBAL_SETTINGS.PlayerHandicaps.HandicapType == AGS_GS_HANDICAP_TYPE_DISABLED then
+		Core_UnregisterModule(AGS_HANDICAPS_MODULE)
+	end
+end
+
+function AGS_Handicaps_PresetFinalize()
+	AGS_Print("AGS_Handicaps_PresetFinalize")
+	AGS_Handicaps_ApplyPerPlayer()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Handicaps_ApplyPerPlayer()
+	AGS_Handicaps_CreateListFrom(AGS_GLOBAL_SETTINGS.PlayerHandicaps)
+	local buildings = BP_GetEntityBlueprintsWithType(AGS_BP_BUILDING)
+	local workers = BP_GetEntityBlueprintsWithType(AGS_BP_WORKER)
+	local military = BP_GetEntityBlueprintsWithType(AGS_BP_UNIT_CLASS)
+	if AGS_GLOBAL_SETTINGS.PlayerHandicaps.HandicapType == AGS_GS_HANDICAP_TYPE_ECONOMIC 
+		or AGS_GLOBAL_SETTINGS.PlayerHandicaps.HandicapType == AGS_GS_HANDICAP_TYPE_BOTH then
+		AGS_Handicaps_ApplyWorkerBonus(workers)		
+	end
+	if AGS_GLOBAL_SETTINGS.PlayerHandicaps.HandicapType == AGS_GS_HANDICAP_TYPE_MILITARY 
+		or AGS_GLOBAL_SETTINGS.PlayerHandicaps.HandicapType == AGS_GS_HANDICAP_TYPE_BOTH then
+		AGS_Handicaps_ApplyMilitaryBonus(buildings)
+		AGS_Handicaps_ApplyMilitaryBonus(military)
+	end
+end
+
+function AGS_Handicaps_ApplyWorkerBonus(bps)
+	for _, ebp in pairs(bps) do 
+		if AGS_HANDICAPS_ECO_MODIFIERS[ebp.PropertyBagGroupID] == nil then
+			AGS_HANDICAPS_ECO_MODIFIERS[ebp.PropertyBagGroupID] = true
+			for _, player in pairs(PLAYERS) do	
+				local handicap = AGS_HANDICAPS_TABLE[player.slotIndex]
+				if handicap.percantage ~= 0.0 then
+					-- Multiplies several values that we considered as useful.
+					AGS_Handicaps_ApplyModifier(player.id, ebp, "trade_route_resource_generation_modifier", handicap.percantage)
+					AGS_Handicaps_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_food", handicap.percantage)
+					AGS_Handicaps_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_wood", handicap.percantage)
+					AGS_Handicaps_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_gold", handicap.percantage)
+					AGS_Handicaps_ApplyModifier(player.id, ebp, "resource_entity_harvest_rate_stone", handicap.percantage)
+					AGS_Handicaps_ApplyModifier(player.id, ebp, "resource_carry_capacity_food", handicap.percantage)
+					AGS_Handicaps_ApplyModifier(player.id, ebp, "resource_carry_capacity_wood", handicap.percantage)
+					AGS_Handicaps_ApplyModifier(player.id, ebp, "resource_carry_capacity_gold", handicap.percantage)
+					AGS_Handicaps_ApplyModifier(player.id, ebp, "resource_carry_capacity_stone", handicap.percantage)
+				end
+			end
+		end
+	end
+end
+
+function AGS_Handicaps_ApplyMilitaryBonus(bps)
+	for _, ebp in pairs(bps) do 
+		if AGS_HANDICAPS_MIL_MODIFIERS[ebp.PropertyBagGroupID] == nil then
+			AGS_HANDICAPS_MIL_MODIFIERS[ebp.PropertyBagGroupID] = true
+			for _, player in pairs(PLAYERS) do	
+				local handicap = AGS_HANDICAPS_TABLE[player.slotIndex]
+				if handicap.percantage ~= 0.0 then				
+					-- Multiplies several values that we considered as useful.
+					AGS_Handicaps_AddModifier(player.id, ebp, "armor_scalar_for_ranged_damage", handicap.raw)
+					AGS_Handicaps_AddModifier(player.id, ebp, "armor_scalar_for_fire_damage", handicap.raw)
+					AGS_Handicaps_AddModifier(player.id, ebp, "armor_scalar_for_melee_damage", handicap.raw)
+					AGS_Handicaps_ApplyModifier(player.id, ebp, "production_speed_modifier", handicap.percantage)
+					AGS_Handicaps_ApplyModifier(player.id, ebp, "health_maximum_modifier", handicap.percantage)				
+				end				
+			end
+		end
+	end
+end
+
+-- Apply function.
+function AGS_Handicaps_ApplyModifier(player_id, modifier_ebp, modifier_type, modifier_value)
+	Modifier_ApplyToPlayer(Modifier_Create(MAT_EntityType, modifier_type, MUT_Multiplication, false, modifier_value, modifier_ebp), player_id, 0.0)
+end	
+function AGS_Handicaps_AddModifier(player_id, modifier_ebp, modifier_type, modifier_value)
+	Modifier_ApplyToPlayer(Modifier_Create(MAT_EntityType, modifier_type, MUT_Addition, false, modifier_value, modifier_ebp), player_id, 0.0)
+end	
+
+-- This returns list of all slots as they are defined in PlayerHandicaps of GlobalSettings table.
+function AGS_Handicaps_CreateListFrom(slots)	
+	AGS_HANDICAPS_TABLE = {
+		{ percantage = slots.FirstSlot, 	raw = AGS_Handicaps_ToRaw(slots.FirstSlot) },	
+		{ percantage = slots.SecondSlot, 	raw = AGS_Handicaps_ToRaw(slots.SecondSlot) },	
+		{ percantage = slots.ThirdSlot, 	raw = AGS_Handicaps_ToRaw(slots.ThirdSlot) },	
+		{ percantage = slots.FourthSlot, 	raw = AGS_Handicaps_ToRaw(slots.FourthSlot) },	
+		{ percantage = slots.FifthSlot, 	raw = AGS_Handicaps_ToRaw(slots.FifthSlot) },	
+		{ percantage = slots.SixthSlot, 	raw = AGS_Handicaps_ToRaw(slots.SixthSlot) },	
+		{ percantage = slots.SeventhSlot, 	raw = AGS_Handicaps_ToRaw(slots.SeventhSlot) },	
+		{ percantage = slots.EighthSlot, 	raw = AGS_Handicaps_ToRaw(slots.EighthSlot) },	
+	}
+end
+
+function AGS_Handicaps_ToRaw(perc_value)
+	-- we will remove 1 as that is percentage thing only due to using multiplication.
+	-- as we are not multiplying we will added raw value.
+	local raw_value = perc_value - 1
+	return raw_value	
+end
