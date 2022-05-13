@@ -102,6 +102,7 @@ import("gameplay/ags_color_maintainer.scar")
 import("gameplay/ags_ding.scar")
 import("gameplay/ags_early_market.scar")
 import("gameplay/ags_ending_age.scar")
+import("gameplay/ags_double_workers.scar")
 import("gameplay/ags_game_rates.scar")
 import("gameplay/ags_map_vision.scar")
 import("gameplay/ags_no_dock.scar")
@@ -235,10 +236,10 @@ import("specials/ags_match_ui.scar")
 -- GE_UpgradeComplete -> OnUpgradeComplete
 -- GE_PlayerNameChanged -> OnPlayerNameChanged
 -- GE_PlayerAddResource -> OnPlayerAddResource
--- GE_PlayerTeamIdUpdated -> OnPlayerTeamIdUpdated TODO from OnPlayerTeamChanged
--- GE_EntityLandmarkDestroyed -> OnEntityLandmarkDestroyed TODO from OnLandmarkDestroyed
+-- GE_PlayerTeamIdUpdated -> OnPlayerTeamIdUpdated 
+-- GE_EntityLandmarkDestroyed -> OnEntityLandmarkDestroyed 
 -- GE_LocalPlayerChanged -> OnLocalPlayerChanged
--- GE_StrategicPointChanged -> OnStrategicPointChanged TODO from OnHolySiteChange 
+-- GE_StrategicPointChanged -> OnStrategicPointChanged 
 -- GE_DamageReceived -> OnDamageReceived 
 -- GE_ConstructionStart -> OnConstructionStart
 ---------------------------------------------------------------------------------------------------

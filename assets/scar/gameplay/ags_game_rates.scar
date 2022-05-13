@@ -25,15 +25,15 @@ end
 
 function AGS_GameRates_PresetFinalize()	
 	AGS_Print("AGS_GameRates_PresetFinalize")
-	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_BUILDING))	
-	AGS_GameRates_ApplyGameRates(BP_GetEntityBlueprintsWithType(AGS_BP_UNIT_CLASS))	
+	AGS_GameRates_ApplyBonus(BP_GetEntityBlueprintsWithType(AGS_BP_BUILDING))	
+	AGS_GameRates_ApplyBonus(BP_GetEntityBlueprintsWithType(AGS_BP_UNIT_CLASS))	
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_GameRates_ApplyGameRates(bps)
+function AGS_GameRates_ApplyBonus(bps)
 	for _, ebp in pairs(bps) do 
 		if AGS_GAME_RATES_MODIFIERS[ebp.PropertyBagGroupID] == nil then
 			AGS_GAME_RATES_MODIFIERS[ebp.PropertyBagGroupID] = true

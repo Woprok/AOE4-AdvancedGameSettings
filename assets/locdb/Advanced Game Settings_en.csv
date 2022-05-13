@@ -324,3 +324,34 @@
 323,,,,Mod Gamemode Description,,"AGS Nomad is alternative version to well known nomad that provides diplomacy and few options that stays true to nomad nature.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
 324,,,,Wonder Construction,,Wonder Construction
 325,,,,Wonder Construction,,Enables Wonder construction without Wonder win condition or Conquest win condition with Conquest Wonder selected.
+326,,,,,,Double Workers
+327,,,,,,"Halves the cost and production speed of all economic units: villager, trader, fishing boat for all players."
+328,,,,,,Handicap Settings
+329,,,,,,Handicap Type
+330,,,,,,"If not disabled, provides to each player slot level of bonus specified for that slot. Bonus type is either Economic, Military or Both."
+331,,,,,,Both
+332,,,,,,Military
+333,,,,,,Economic
+334,,,,,,Slot 1 Handicap
+335,,,,,,Determines value of bonus provided by handicap to player on this slot in lobby.
+336,,,,,,10%
+337,,,,,,20%
+338,,,,,,30%
+339,,,,,,40%
+340,,,,,,50%
+341,,,,,,60%
+342,,,,,,70%
+343,,,,,,80%
+344,,,,,,90%
+345,,,,,,100%
+346,,,,,,150%
+347,,,,,,200%
+348,,,,,,250%
+349,,,,,,300%
+350,,,,,,Slot 2 Handicap
+351,,,,,,Slot 3 Handicap
+352,,,,,,Slot 4 Handicap
+353,,,,,,Slot 5 Handicap
+354,,,,,,Slot 6 Handicap
+355,,,,,,Slot 7 Handicap
+356,,,,,,Slot 8 Handicap

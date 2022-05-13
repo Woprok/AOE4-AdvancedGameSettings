@@ -6,6 +6,7 @@
 -- Description:
 -- Wrapper around relic diplomacy module.
 -- This needs to be finished. TODO !!! refactor to AGS style modules
+-- TODO change the one for teamId changed thingy from OnPlayerTeamChanged to full name of teamId change thingy
 ---------------------------------------------------------------------------------------------------
 import("diplomacy/ags_diplomacy_ui.scar")
 import("diplomacy/ags_relations.scar")

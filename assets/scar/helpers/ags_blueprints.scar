@@ -43,6 +43,8 @@ AGS_BP_ANY_WALL = "wall"
 AGS_BP_ANY_GATE = "gate"
 AGS_BP_MOBILE = "mobile_building"
 AGS_BP_SIEGE = "siege"
+AGS_BP_WORKER = "worker"
+
 
 AGS_ENTITY_TABLE = {
 	neutral = {
@@ -708,8 +710,10 @@ function AGS_SpawnSquad(player_id, sgroup_name, bp_squad, position, position_off
 	local placement = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z)
 	local rotation = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z - 1)
 	-- Spawn
-	local squad_group = Util_CreateSquads(player_id, sgroup_name, bp_squad, placement, placement, count, nil, false, rotation, nil, rotation, nil, nil, nil, nil, false)	
-
+	-- This probably caused lot of issues, let's do simple method from now on.
+	-- local squad_group = Util_CreateSquads(player_id, sgroup_name, bp_squad, placement, placement, count, nil, false, rotation, nil, rotation, nil, nil, nil, nil, false)	
+	local squad_group = SGroup_CreateIfNotFound(sgroup_name)
+	UnitEntry_DeploySquads(player_id, squad_group, {{sbp = bp_squad, numSquads = count }}, placement)
 	Core_CallDelegateFunctions("UnitsSpawned", player_id, position, squad_group)
 	
 	return squad_group	

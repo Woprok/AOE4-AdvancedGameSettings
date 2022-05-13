@@ -7,7 +7,6 @@
 -- Treaty subcondition.
 -- Handles treaty functionality and all asociated events invokes.
 -- Creates cease fire at the start of the game.
--- TODO TREATY ENDGAME IF EVERY VALID OPPONENT LEFT
 ---------------------------------------------------------------------------------------------------
 
 AGS_TREATY_MODULE = "AGS_Treaty"

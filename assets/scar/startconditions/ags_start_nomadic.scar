@@ -21,6 +21,13 @@ AGS_NOMADIC_DURATION = 60 -- Accumulation time
 
 Core_RegisterModule(AGS_NOMADIC_MODULE)	
 
+function AGS_Nomadic_AdjustSettings()
+	AGS_Print("AGS_Nomadic_AdjustSettings")
+	if AGS_GLOBAL_SETTINGS.StartingVillagers == 0 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 1
+	end
+end
+
 function AGS_Nomadic_UpdateModuleSettings()
 	AGS_Print("AGS_Nomadic_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.Settlement ~= AGS_GS_SETTLEMENT_NOMADIC then
@@ -43,8 +50,6 @@ end
 function AGS_Nomadic_OnStarting()
 	AGS_Print("AGS_Nomadic_OnStarting")
 	for _, player in pairs(PLAYERS) do	
-		-- Insist that player do not have capital.
-		Player_SetStateModelFloat(player.id, "has_capital", 0)
 		-- Player should be able to build structures
 		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)		
 		Core_CallDelegateFunctions("AdjustAIPlayers", AGS_AI_ADJUSTREASON_NOMAD, player)
@@ -56,22 +61,11 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Removing prefab start.
 function AGS_Nomadic_DestroySpawn()
+	AGS_Print("AGS_Nomadic_DestroySpawn")
 	for _, player in pairs(PLAYERS) do	
-		local sgroup = Player_GetSquads(player.id)
-		local AGS_Nomadic_DestroySquad = function(gid, idx, sid)
-			if sid ~= nil then
-				Squad_Destroy(sid)
-			end
-		end
-		SGroup_ForEach(sgroup, AGS_Nomadic_DestroySquad)
-		
-		local egroup = Player_GetEntities(player.id)
-		local AGS_Nomadic_DestroyEntities = function(gid, idx, eid)
-			if eid ~= nil then
-				Entity_Destroy(eid)
-			end
-		end
-		EGroup_ForEach(egroup, AGS_Nomadic_DestroyEntities)		
+		EGroup_DestroyAllEntities(Player_GetEntities(player.id))
+		-- Insist that player do not have capital.
+		Player_SetStateModelFloat(player.id, "has_capital", 0)	
 	end
 end
 

@@ -8,18 +8,24 @@
 -- Spawns villagers randomly on the map.
 ---------------------------------------------------------------------------------------------------
 
+AGS_SCATTERED_MODULE = "AGS_Scattered"
 AGS_SCATTERED_RADIUS = 1
 AGS_SCATTERED_TUNING = 1.9
 AGS_SCATTERED_WOOD = 400
 AGS_SCATTERED_STONE = 300
-AGS_SCATTERED_MAP_CENTER = World_Pos(0, 0, 0)	
-AGS_SCATTERED_MODULE = "AGS_Scattered"
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
 
 Core_RegisterModule(AGS_SCATTERED_MODULE)	
+
+function AGS_Scattered_AdjustSettings()
+	AGS_Print("AGS_Scattered_AdjustSettings")
+	if AGS_GLOBAL_SETTINGS.StartingVillagers == 0 then
+		AGS_GLOBAL_SETTINGS.StartingVillagers = 1
+	end
+end
 
 function AGS_Scattered_UpdateModuleSettings()
 	AGS_Print("AGS_Scattered_UpdateModuleSettings")
@@ -51,8 +57,6 @@ end
 function AGS_Scattered_OnStarting()
 	AGS_Print("AGS_Scattered_OnStarting")
 	for _, player in pairs(PLAYERS) do	
-		-- Insist that player do not have capital.
-		Player_SetStateModelFloat(player.id, "has_capital", 0)
 		-- Player should be able to build structures.
 		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)		
 		Core_CallDelegateFunctions("AdjustAIPlayers", AGS_AI_ADJUSTREASON_NOMAD, player)
@@ -69,24 +73,11 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Removing prefab start.
 function AGS_Scattered_DestroySpawn()
+	AGS_Print("AGS_Scattered_DestroySpawn")
 	for _, player in pairs(PLAYERS) do	
-		local sgroup = Player_GetSquads(player.id)
-		local AGS_Scattered_DestroySquad = function(gid, idx, sid)
-			if sid ~= nil then
-				Squad_WarpToPos(sid, World_Pos(5000,5000,5000))
-				Squad_Destroy(sid)
-			end
-		end
-		SGroup_ForEach(sgroup, AGS_Scattered_DestroySquad)
-		
-		local egroup = Player_GetEntities(player.id)
-		local AGS_Scattered_DestroyEntities = function(gid, idx, eid)
-			if eid ~= nil then
-				Entity_WarpToPos(eid, World_Pos(5000,5000,5000))
-				Entity_Destroy(eid)
-			end
-		end
-		EGroup_ForEach(egroup, AGS_Scattered_DestroyEntities)		
+		EGroup_DestroyAllEntities(Player_GetEntities(player.id))
+		-- Insist that player do not have capital.
+		Player_SetStateModelFloat(player.id, "has_capital", 0)	
 	end
 end
 -- Get spawn dimensions and initial squad location.
@@ -100,19 +91,14 @@ end
 function AGS_Scattered_CreateSpawn()	
 	for _, player in pairs(PLAYERS) do		
 		-- Get Villager BP and spawn them at single location, before spreading them out to create artificial home for AI.
-		local sbp_vil = AGS_GetCivilizationUnit(player.raceName, AGS_BP_VILLAGER)		
+		local sbp_vil = AGS_GetCivilizationUnit(player.raceName, AGS_BP_VILLAGER)
 		local snameVIL = AGS_SGroupName(player.id, AGS_BP_VILLAGER)
-				
-		local spawn_pos = AGS_Scattered_GetScatterPosition()
-		-- Finish squad spawn and assign it to AI if required.
-		local sg_vil = AGS_SpawnSquad(player.id, snameVIL, sbp_vil, spawn_pos, nil, AGS_GLOBAL_SETTINGS.StartingVillagers)	
-		LocalCommand_Squad(player.id, sg_vil, SCMD_Stop, false)			
+		local squad_group = SGroup_CreateIfNotFound(snameVIL)		
+		for i=1,AGS_GLOBAL_SETTINGS.StartingVillagers do
+			local spawn_pos = AGS_Scattered_GetScatterPosition()
+			UnitEntry_DeploySquads(player.id, squad_group, {{sbp = sbp_vil, numSquads = 1 }}, spawn_pos)
+		end		
 		
-		local _f_randomize_unit = function(gid, idx, sid)
-			Squad_WarpToPos(sid, AGS_Scattered_GetScatterPosition())
-		end
-		
-		--Randomize all members location. 
-		SGroup_ForEach(sg_vil, _f_randomize_unit)
+		Core_CallDelegateFunctions("UnitsSpawned", player.id, nil, squad_group)			
 	end
 end	

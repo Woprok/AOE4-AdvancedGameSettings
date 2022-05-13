@@ -1,0 +1,54 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Doubles production of all workers: villager, trader, fishing ship and trade ship.
+---------------------------------------------------------------------------------------------------
+
+AGS_DOUBLE_WORKERS_MODULE = "AGS_DoubleWorkers"
+AGS_DOUBLE_WORKERS_MODIFIERS = { }
+AGS_DOUBLE_WORKERS_COST = 0.5
+AGS_DOUBLE_WORKERS_PRODUCTION_TICKS = 0.5
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_DOUBLE_WORKERS_MODULE)	
+
+function AGS_DoubleWorkers_UpdateModuleSettings()
+	AGS_Print("AGS_DoubleWorkers_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.DoubleWorkers then
+		Core_UnregisterModule(AGS_DOUBLE_WORKERS_MODULE)
+	end
+end
+
+function AGS_DoubleWorkers_PresetFinalize()	
+	AGS_Print("AGS_DoubleWorkers_PresetFinalize")
+	AGS_DoubleWorkers_ApplyBonus(BP_GetEntityBlueprintsWithType(AGS_BP_WORKER))	
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_DoubleWorkers_ApplyBonus(bps)
+	for _, ebp in pairs(bps) do 
+		if AGS_DOUBLE_WORKERS_MODIFIERS[ebp.PropertyBagGroupID] == nil then
+			AGS_DOUBLE_WORKERS_MODIFIERS[ebp.PropertyBagGroupID] = true
+			for _, player in pairs(PLAYERS) do	
+				AGS_DoubleWorkers_ApplyModifier(player.id, ebp, "cost_ticks_modifier", AGS_DOUBLE_WORKERS_PRODUCTION_TICKS)
+				AGS_DoubleWorkers_ApplyModifier(player.id, ebp, "resource_entity_cost_food", AGS_DOUBLE_WORKERS_COST)
+				AGS_DoubleWorkers_ApplyModifier(player.id, ebp, "resource_entity_cost_wood", AGS_DOUBLE_WORKERS_COST)
+				AGS_DoubleWorkers_ApplyModifier(player.id, ebp, "resource_entity_cost_gold", AGS_DOUBLE_WORKERS_COST)
+				AGS_DoubleWorkers_ApplyModifier(player.id, ebp, "resource_entity_cost_stone", AGS_DOUBLE_WORKERS_COST)
+			end
+		end
+	end
+end
+-- Apply function.
+function AGS_DoubleWorkers_ApplyModifier(player_id, modifier_ebp, modifier_type, modifier_value)
+	Modifier_ApplyToPlayer(Modifier_Create(MAT_EntityType, modifier_type, MUT_Multiplication, false, modifier_value, modifier_ebp), player_id, 0.0)
+end	
