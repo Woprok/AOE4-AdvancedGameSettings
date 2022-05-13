@@ -80,11 +80,7 @@ function AGS_Religious_OnPlayerDefeated(player, reason)
 	AGS_Print("AGS_Religious_OnPlayerDefeated")
 	if reason == AGS_WR_RELIGIOUS then 
 		AGS_Notifications_Eliminated(player, AGS_NOTIFICATIONS_RELIGIOUS)
-		AGS_Conditions_CheckVictory(AGS_RELIGIOUS_ACTIVE, AGS_Presentations_VictoryReligious, AGS_WR_RELIGIOUS,
-			AGS_Objectives_PresentWrap(
-				AGS_RELIGIOUS_OBJECTIVE, 
-				OS_Complete, 
-				AGS_OBJECTIVES_RELIGIOUS.title_defend))
+		AGS_Religious_TryDeclareWinners()
 	end
 end
 
@@ -236,14 +232,27 @@ function AGS_Religious_VictoryTriggered()
 	Music_PersistentStop()
 	
 	-- Eliminate all players that are not in his valid team.
-	AGS_SetPlayerGroupDefeated(
-		AGS_Teams_GetAllCurrentOpponents(AGS_RELIGIOUS_LAST_CAPTURER),
-		AGS_Presentations_LossReligious, 
-		AGS_WR_RELIGIOUS,
+	local losers = AGS_Teams_GetAllCurrentOpponents(AGS_RELIGIOUS_LAST_CAPTURER)
+	if #losers > 0 then
+		AGS_SetPlayerGroupDefeated(
+			losers,
+			AGS_Presentations_LossReligious, 
+			AGS_WR_RELIGIOUS,
+			AGS_Objectives_PresentWrap(
+				AGS_RELIGIOUS_OBJECTIVE, 
+				OS_Failed, 
+				AGS_OBJECTIVES_RELIGIOUS.title_neutralize))
+	else
+		AGS_Religious_TryDeclareWinners()
+	end
+end
+
+function AGS_Religious_TryDeclareWinners()
+	AGS_Conditions_CheckVictory(AGS_RELIGIOUS_ACTIVE, AGS_Presentations_VictoryReligious, AGS_WR_RELIGIOUS,
 		AGS_Objectives_PresentWrap(
 			AGS_RELIGIOUS_OBJECTIVE, 
-			OS_Failed, 
-			AGS_OBJECTIVES_RELIGIOUS.title_neutralize))
+			OS_Complete, 
+			AGS_OBJECTIVES_RELIGIOUS.title_defend))
 end
 
 ---------------------------------------------------------------------------------------------------

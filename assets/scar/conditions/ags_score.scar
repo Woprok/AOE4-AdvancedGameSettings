@@ -53,11 +53,7 @@ function AGS_Score_OnPlayerDefeated(player, reason)
 	AGS_Print("AGS_Score_OnPlayerDefeated")
 	if reason == AGS_WR_SCORE then 
 		AGS_Notifications_Eliminated(player, AGS_NOTIFICATIONS_SCORE)
-		AGS_Conditions_CheckVictory(AGS_SCORE_ACTIVE, AGS_Presentations_Victory, AGS_WR_SCORE,
-			AGS_Objectives_PresentWrap(
-				AGS_SCORE_OBJECTIVE, 
-				OS_Complete, 
-				AGS_OBJECTIVES_SCORE.title_victory))
+		AGS_Score_TryDeclareWinners()
 	end	
 	AGS_Score_UpdateObjective()
 end
@@ -292,16 +288,28 @@ function AGS_Score_EndWar()
 	
 	-- This always has players, so the first one is winner and thats enough for us.
 	local winner = final_ranking[1].data
-	
-	-- Eliminate all players that are not in his valid team.
-	AGS_SetPlayerGroupDefeated(
-		AGS_Teams_GetAllCurrentOpponents(winner),
-		AGS_Presentations_Loss, 
-		AGS_WR_SCORE,
+	local losers = AGS_Teams_GetAllCurrentOpponents(winner)
+	if #losers > 0 then
+		-- Eliminate all players that are not in his valid team.
+		AGS_SetPlayerGroupDefeated(
+			losers,
+			AGS_Presentations_Loss, 
+			AGS_WR_SCORE,
+			AGS_Objectives_PresentWrap(
+				AGS_SCORE_OBJECTIVE, 
+				OS_Failed, 
+				AGS_OBJECTIVES_SCORE.title_lost))
+	else
+		AGS_Score_TryDeclareWinners()
+	end
+end
+
+function AGS_Score_TryDeclareWinners()
+	AGS_Conditions_CheckVictory(AGS_SCORE_ACTIVE, AGS_Presentations_Victory, AGS_WR_SCORE,
 		AGS_Objectives_PresentWrap(
 			AGS_SCORE_OBJECTIVE, 
-			OS_Failed, 
-			AGS_OBJECTIVES_SCORE.title_lost))
+			OS_Complete, 
+			AGS_OBJECTIVES_SCORE.title_victory))
 end
 
 function AGS_Score_FinalizeScore()

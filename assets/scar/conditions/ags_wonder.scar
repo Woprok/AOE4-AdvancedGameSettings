@@ -72,13 +72,7 @@ function AGS_Wonder_OnPlayerDefeated(player, reason)
 	AGS_Print("AGS_Wonder_OnPlayerDefeated")
 	if reason == AGS_WR_WONDER then 
 		AGS_Notifications_Eliminated(player, AGS_NOTIFICATIONS_WONDER)
-		AGS_Conditions_CheckVictory(AGS_WONDER_ACTIVE, AGS_Presentations_VictoryWonder, AGS_WR_WONDER,
-			AGS_Objectives_PresentWrap(
-				AGS_WONDER_OBJECTIVE, 
-				OS_Complete, 
-				AGS_WONDER_WINNER.AGS_Wonder.objective_success_title,
-				AGS_WONDER_WINNER.AGS_Wonder.objective_success_param)
-			)
+		AGS_Wonder_TryDeclareWinners()
 	else
 		AGS_Wonder_CleanWonder(player)
 	end
@@ -442,16 +436,31 @@ function AGS_Wonder_VictoryTriggered(winner)
 	-- Update this for first and final time.
 	AGS_WONDER_WINNER = winner
 	
-	-- Eliminate all players that are not in his valid team.
-	AGS_SetPlayerGroupDefeated(
-		AGS_Teams_GetAllCurrentOpponents(winner),
-		AGS_Presentations_LossWonder, 
-		AGS_WR_WONDER,
+	local losers = AGS_Teams_GetAllCurrentOpponents(winner)
+	if #losers > 0 then
+		-- Eliminate all players that are not in his valid team.
+		AGS_SetPlayerGroupDefeated(
+			losers,
+			AGS_Presentations_LossWonder, 
+			AGS_WR_WONDER,
+			AGS_Objectives_PresentWrap(
+				winner.AGS_Wonder.objective, 
+				OS_Failed, 
+				AGS_OBJECTIVES_WONDER_ENEMY.title,
+				winner.playerName))
+	else
+		AGS_Wonder_TryDeclareWinners()		
+	end
+end
+
+function AGS_Wonder_TryDeclareWinners()
+	AGS_Conditions_CheckVictory(AGS_WONDER_ACTIVE, AGS_Presentations_VictoryWonder, AGS_WR_WONDER,
 		AGS_Objectives_PresentWrap(
-			winner.AGS_Wonder.objective, 
-			OS_Failed, 
-			AGS_OBJECTIVES_WONDER_ENEMY.title,
-			winner.playerName))
+			AGS_WONDER_OBJECTIVE, 
+			OS_Complete, 
+			AGS_WONDER_WINNER.AGS_Wonder.objective_success_title,
+			AGS_WONDER_WINNER.AGS_Wonder.objective_success_param)
+		)
 end
 
 function AGS_Wonder_InformNegativeProgressChange(owner)

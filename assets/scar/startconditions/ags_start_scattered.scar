@@ -57,15 +57,18 @@ end
 function AGS_Scattered_OnStarting()
 	AGS_Print("AGS_Scattered_OnStarting")
 	for _, player in pairs(PLAYERS) do	
+		-- Insist that player do not have capital.
+		Player_SetStateModelFloat(player.id, "has_capital", 0)	
 		-- Player should be able to build structures.
 		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)		
-		Core_CallDelegateFunctions("AdjustAIPlayers", AGS_AI_ADJUSTREASON_NOMAD, player)
 		
 		-- Increase starting resources to cover cost of building an TC
 		if player.raceName ~= AGS_CIV_MONGOL then
 			Player_GiftResource(player.id, RT_Stone, AGS_SCATTERED_STONE)
 		end
 		Player_GiftResource(player.id, RT_Wood, AGS_SCATTERED_WOOD)
+		
+		Core_CallDelegateFunctions("AdjustAIPlayers", AGS_AI_ADJUSTREASON_NOMAD, player)
 	end
 end
 ---------------------------------------------------------------------------------------------------
@@ -76,8 +79,6 @@ function AGS_Scattered_DestroySpawn()
 	AGS_Print("AGS_Scattered_DestroySpawn")
 	for _, player in pairs(PLAYERS) do	
 		EGroup_DestroyAllEntities(Player_GetEntities(player.id))
-		-- Insist that player do not have capital.
-		Player_SetStateModelFloat(player.id, "has_capital", 0)	
 	end
 end
 -- Get spawn dimensions and initial squad location.
