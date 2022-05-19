@@ -1,0 +1,47 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Reveals area around all cities.
+---------------------------------------------------------------------------------------------------
+
+AGS_REVEAL_CITIES_MODULE = "AGS_RevealCities"
+AGS_REVEAL_CITIES_RADIUS = 25
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_REVEAL_CITIES_MODULE)	
+
+function AGS_RevealCities_UpdateModuleSettings()
+	AGS_Print("AGS_RevealCities_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.RevealCities then
+		Core_UnregisterModule(AGS_REVEAL_CITIES_MODULE)
+	end
+end
+
+function AGS_RevealCities_OnPlay()
+	AGS_Print("AGS_RevealCities_OnPlay")
+	AGS_RevealCities_Show()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Reveal fog of war around city states position for each player.
+function AGS_RevealCities_Show()	
+	local citystate_group = EGroup_CreateIfNotFound("city_states")
+	World_GetAllNeutralEntities(citystate_group)
+	for _, player in pairs(PLAYERS) do 						
+		local _AGS_ShowCity = function(gid, idx, eid)		
+			if eid ~= nil and Entity_IsOfType(eid, AGS_BP_SACRED_SITE) then
+				local city_position = Entity_GetPosition(eid)
+				FOW_PlayerRevealArea(player.id, city_position, AGS_REVEAL_CITIES_RADIUS, 15)
+			end		
+		end			
+		EGroup_ForEach(citystate_group, _AGS_ShowCity)	
+	end
+end

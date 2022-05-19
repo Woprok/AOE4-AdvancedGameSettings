@@ -3,7 +3,7 @@
 	<DataObject Name="" Type="WinCondition" Id="14864933867492913264">
 		<DataProperty Name="m_maxTeams" Type="Int32" Value="-1"/>
 		<DataProperty Name="m_gameModeType" Type="String" Value=""/>
-		<DataProperty Name="m_scarWinConditionFile" Type="String" Value="gamemodes\ags_game_mode"/>
+		<DataProperty Name="m_scarWinConditionFile" Type="String" Value="gamemodes\ags_standard"/>
 		<DataProperty Name="m_playerUpgrades" Type="Object"/>
 		<DataProperty Name="m_feIcon" Type="String" Value="images\illustrations\create_game\game_mode_regicide_selected"/>
 		<DataProperty Name="m_scarMissionFile" Type="String" Value=""/>
@@ -16392,7 +16392,7 @@
 				</DataProperty>
 			</DataObject>
 		</DataProperty>
-		<DataProperty Name="m_name" Type="String" Value="advanced_game_settings"/>
+		<DataProperty Name="m_name" Type="String" Value="advanced_game_settings_standard"/>
 		<DataProperty Name="m_objectiveUnitTypes" Type="Object"/>
 		<DataProperty Name="m_devOnly" Type="Bool" Value="false"/>
 		<DataProperty Name="m_egroupNamePrefixDestroyList" Type="String"/>

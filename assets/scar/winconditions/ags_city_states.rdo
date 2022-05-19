@@ -1,0 +1,242 @@
+<DataWarehouse>
+	<!--WinCondition/-->
+	<DataObject Name="" Type="WinCondition" Id="10214847421124029044">
+		<DataProperty Name="m_maxTeams" Type="Int32" Value="-1"/>
+		<DataProperty Name="m_gameModeType" Type="String" Value=""/>
+		<DataProperty Name="m_scarWinConditionFile" Type="String" Value="gamemodes\ags_city_states"/>
+		<DataProperty Name="m_playerUpgrades" Type="Object"/>
+		<DataProperty Name="m_feIcon" Type="String" Value="images\illustrations\create_game\game_mode_keep_rush_selected"/>
+		<DataProperty Name="m_scarMissionFile" Type="String" Value=""/>
+		<DataProperty Name="m_feImageSelected" Type="String" Value="images\illustrations\create_game\game_mode_keep_rush_selected"/>
+		<DataProperty Name="m_feDescriptionTooltip" Type="Object">
+			<DataValue Name="util::ReflectLocString">805274806318225389</DataValue>
+			<!--WinCondition/util::ReflectLocString/-->
+			<DataObject Name="" Type="util::ReflectLocString" Id="805274806318225389" OwnerId="10214847421124029044">
+				<DataProperty Name="m_modPart2" Type="UInt32" Value="3554363556"/>
+				<DataProperty Name="m_modPart3" Type="UInt32" Value="514256557"/>
+				<DataProperty Name="m_modPart0" Type="UInt32" Value="1690632602"/>
+				<DataProperty Name="m_modPart1" Type="UInt32" Value="1313674332"/>
+				<DataProperty Name="m_locStringKey" Type="Int32" Value="360"/>
+			</DataObject>
+		</DataProperty>
+		<DataProperty Name="m_startingBuildingReplacements" Type="Object">
+			<DataValue Name="WinCondition::StartingBuildingReplacement">2888823489435006590</DataValue>
+			<!--WinCondition/WinCondition::StartingBuildingReplacement/-->
+			<DataObject Name="" Type="WinCondition::StartingBuildingReplacement" Id="2888823489435006590" OwnerId="10214847421124029044">
+				<DataProperty Name="m_raceStartingBuildingKey" Type="String" Value=""/>
+				<DataProperty Name="m_startingBuildings" Type="Object">
+					<DataValue Name="WinCondition::StartingBuilding">7970228331517436763</DataValue>
+					<DataValue Name="WinCondition::StartingBuilding">11953081812884027753</DataValue>
+					<DataValue Name="WinCondition::StartingBuilding">9779644745338964703</DataValue>
+					<DataValue Name="WinCondition::StartingBuilding">17124592405157260630</DataValue>
+					<DataValue Name="WinCondition::StartingBuilding">15969609166205970853</DataValue>
+					<DataValue Name="WinCondition::StartingBuilding">5601717706674074998</DataValue>
+					<DataValue Name="WinCondition::StartingBuilding">17451763335208556665</DataValue>
+					<DataValue Name="WinCondition::StartingBuilding">7510249661858571331</DataValue>
+					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
+					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="5601717706674074998" OwnerId="2888823489435006590">
+						<DataProperty Name="m_playerUpgrades" Type="Object"/>
+						<DataProperty Name="m_startingSquads" Type="Object"/>
+						<DataProperty Name="m_race" Type="Object">
+							<DataValue Name="ReflectPBG_Race">6118523900139801703</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_Race/-->
+							<DataObject Name="" Type="ReflectPBG_Race" Id="6118523900139801703" OwnerId="5601717706674074998">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value="mongol"/>
+							</DataObject>
+						</DataProperty>
+						<DataProperty Name="m_building" Type="Object">
+							<DataValue Name="ReflectPBG_EntityProperties">3848359594103845350</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
+							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="3848359594103845350" OwnerId="5601717706674074998">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value=""/>
+							</DataObject>
+						</DataProperty>
+					</DataObject>
+					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
+					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="7510249661858571331" OwnerId="2888823489435006590">
+						<DataProperty Name="m_playerUpgrades" Type="Object"/>
+						<DataProperty Name="m_startingSquads" Type="Object"/>
+						<DataProperty Name="m_race" Type="Object">
+							<DataValue Name="ReflectPBG_Race">1031167625950658050</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_Race/-->
+							<DataObject Name="" Type="ReflectPBG_Race" Id="1031167625950658050" OwnerId="7510249661858571331">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value="sultanate"/>
+							</DataObject>
+						</DataProperty>
+						<DataProperty Name="m_building" Type="Object">
+							<DataValue Name="ReflectPBG_EntityProperties">2926848004405428521</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
+							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="2926848004405428521" OwnerId="7510249661858571331">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value=""/>
+							</DataObject>
+						</DataProperty>
+					</DataObject>
+					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
+					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="7970228331517436763" OwnerId="2888823489435006590">
+						<DataProperty Name="m_playerUpgrades" Type="Object"/>
+						<DataProperty Name="m_startingSquads" Type="Object"/>
+						<DataProperty Name="m_race" Type="Object">
+							<DataValue Name="ReflectPBG_Race">16453538953504604567</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_Race/-->
+							<DataObject Name="" Type="ReflectPBG_Race" Id="16453538953504604567" OwnerId="7970228331517436763">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value="abbasid"/>
+							</DataObject>
+						</DataProperty>
+						<DataProperty Name="m_building" Type="Object">
+							<DataValue Name="ReflectPBG_EntityProperties">13747881359460171048</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
+							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="13747881359460171048" OwnerId="7970228331517436763">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value=""/>
+							</DataObject>
+						</DataProperty>
+					</DataObject>
+					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
+					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="9779644745338964703" OwnerId="2888823489435006590">
+						<DataProperty Name="m_playerUpgrades" Type="Object"/>
+						<DataProperty Name="m_startingSquads" Type="Object"/>
+						<DataProperty Name="m_race" Type="Object">
+							<DataValue Name="ReflectPBG_Race">13028484303388568638</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_Race/-->
+							<DataObject Name="" Type="ReflectPBG_Race" Id="13028484303388568638" OwnerId="9779644745338964703">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value="english"/>
+							</DataObject>
+						</DataProperty>
+						<DataProperty Name="m_building" Type="Object">
+							<DataValue Name="ReflectPBG_EntityProperties">11230302182857104399</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
+							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="11230302182857104399" OwnerId="9779644745338964703">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value=""/>
+							</DataObject>
+						</DataProperty>
+					</DataObject>
+					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
+					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="11953081812884027753" OwnerId="2888823489435006590">
+						<DataProperty Name="m_playerUpgrades" Type="Object"/>
+						<DataProperty Name="m_startingSquads" Type="Object"/>
+						<DataProperty Name="m_race" Type="Object">
+							<DataValue Name="ReflectPBG_Race">12247698189532852311</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_Race/-->
+							<DataObject Name="" Type="ReflectPBG_Race" Id="12247698189532852311" OwnerId="11953081812884027753">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value="chinese"/>
+							</DataObject>
+						</DataProperty>
+						<DataProperty Name="m_building" Type="Object">
+							<DataValue Name="ReflectPBG_EntityProperties">5895002501080080264</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
+							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="5895002501080080264" OwnerId="11953081812884027753">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value=""/>
+							</DataObject>
+						</DataProperty>
+					</DataObject>
+					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
+					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="15969609166205970853" OwnerId="2888823489435006590">
+						<DataProperty Name="m_playerUpgrades" Type="Object"/>
+						<DataProperty Name="m_startingSquads" Type="Object"/>
+						<DataProperty Name="m_race" Type="Object">
+							<DataValue Name="ReflectPBG_Race">6560633397918499281</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_Race/-->
+							<DataObject Name="" Type="ReflectPBG_Race" Id="6560633397918499281" OwnerId="15969609166205970853">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value="hre"/>
+							</DataObject>
+						</DataProperty>
+						<DataProperty Name="m_building" Type="Object">
+							<DataValue Name="ReflectPBG_EntityProperties">9279086019058421012</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
+							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="9279086019058421012" OwnerId="15969609166205970853">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value=""/>
+							</DataObject>
+						</DataProperty>
+					</DataObject>
+					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
+					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="17124592405157260630" OwnerId="2888823489435006590">
+						<DataProperty Name="m_playerUpgrades" Type="Object"/>
+						<DataProperty Name="m_startingSquads" Type="Object"/>
+						<DataProperty Name="m_race" Type="Object">
+							<DataValue Name="ReflectPBG_Race">12588916677914448182</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_Race/-->
+							<DataObject Name="" Type="ReflectPBG_Race" Id="12588916677914448182" OwnerId="17124592405157260630">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value="french"/>
+							</DataObject>
+						</DataProperty>
+						<DataProperty Name="m_building" Type="Object">
+							<DataValue Name="ReflectPBG_EntityProperties">8118800079916938586</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
+							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="8118800079916938586" OwnerId="17124592405157260630">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value=""/>
+							</DataObject>
+						</DataProperty>
+					</DataObject>
+					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
+					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="17451763335208556665" OwnerId="2888823489435006590">
+						<DataProperty Name="m_playerUpgrades" Type="Object"/>
+						<DataProperty Name="m_startingSquads" Type="Object"/>
+						<DataProperty Name="m_race" Type="Object">
+							<DataValue Name="ReflectPBG_Race">9507999682226364683</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_Race/-->
+							<DataObject Name="" Type="ReflectPBG_Race" Id="9507999682226364683" OwnerId="17451763335208556665">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value="rus"/>
+							</DataObject>
+						</DataProperty>
+						<DataProperty Name="m_building" Type="Object">
+							<DataValue Name="ReflectPBG_EntityProperties">6682843555218163522</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
+							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="6682843555218163522" OwnerId="17451763335208556665">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value=""/>
+							</DataObject>
+						</DataProperty>
+					</DataObject>
+				</DataProperty>
+				<DataProperty Name="m_startingBuildingKey" Type="String" Value="default_mp"/>
+			</DataObject>
+		</DataProperty>
+		<DataProperty Name="m_feName" Type="Object">
+			<DataValue Name="util::ReflectLocString">2314595256627448564</DataValue>
+			<!--WinCondition/util::ReflectLocString/-->
+			<DataObject Name="" Type="util::ReflectLocString" Id="2314595256627448564" OwnerId="10214847421124029044">
+				<DataProperty Name="m_modPart2" Type="UInt32" Value="3554363556"/>
+				<DataProperty Name="m_modPart3" Type="UInt32" Value="514256557"/>
+				<DataProperty Name="m_modPart0" Type="UInt32" Value="1690632602"/>
+				<DataProperty Name="m_modPart1" Type="UInt32" Value="1313674332"/>
+				<DataProperty Name="m_locStringKey" Type="Int32" Value="359"/>
+			</DataObject>
+		</DataProperty>
+		<DataProperty Name="m_tuningModGUID" Type="String" Value=""/>
+		<DataProperty Name="m_optionsUIDescriptor" Type="Object">
+			<DataValue Name="WinCondition::OptionsUIDescriptor">12574232785461517934</DataValue>
+			<!--WinCondition/WinCondition::OptionsUIDescriptor/-->
+			<DataObject Name="" Type="WinCondition::OptionsUIDescriptor" Id="12574232785461517934" OwnerId="10214847421124029044">
+				<DataProperty Name="m_optionSections" Type="Object"/>
+			</DataObject>
+		</DataProperty>
+		<DataProperty Name="m_precacheList" Type="Object">
+			<DataValue Name="PrecacheList">1243494978782051260</DataValue>
+			<!--WinCondition/PrecacheList/-->
+			<DataObject Name="" Type="PrecacheList" Id="1243494978782051260" OwnerId="10214847421124029044">
+				<DataProperty Name="m_precacheItems" Type="Object"/>
+			</DataObject>
+		</DataProperty>
+		<DataProperty Name="m_name" Type="String" Value="advanced_game_settings_city_states"/>
+		<DataProperty Name="m_objectiveUnitTypes" Type="Object"/>
+		<DataProperty Name="m_devOnly" Type="Bool" Value="false"/>
+		<DataProperty Name="m_egroupNamePrefixDestroyList" Type="String"/>
+		<DataProperty Name="m_permittedInventoryItemCategories" Type="String"/>
+		<DataProperty Name="m_feImageUnselected" Type="String" Value="images\illustrations\create_game\game_mode_keep_rush_unselected"/>
+	</DataObject>
+</DataWarehouse>
+

@@ -3,7 +3,7 @@
 	<DataObject Name="" Type="WinCondition" Id="2370090511412617792">
 		<DataProperty Name="m_maxTeams" Type="Int32" Value="-1"/>
 		<DataProperty Name="m_gameModeType" Type="String" Value=""/>
-		<DataProperty Name="m_scarWinConditionFile" Type="String" Value="gamemodes\ags_game_mode_nomad"/>
+		<DataProperty Name="m_scarWinConditionFile" Type="String" Value="gamemodes\ags_nomad"/>
 		<DataProperty Name="m_playerUpgrades" Type="Object"/>
 		<DataProperty Name="m_feIcon" Type="String" Value="icons\districts\district_bonus_population"/>
 		<DataProperty Name="m_scarMissionFile" Type="String" Value=""/>
