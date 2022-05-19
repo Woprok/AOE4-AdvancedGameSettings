@@ -7,6 +7,34 @@
 -- Contains condition helpers for objective handling.
 ---------------------------------------------------------------------------------------------------
 
+AGS_OBJECTIVES_CULTURE_SECONDARY = {
+	-- "%1NAMEORNUMBER% City"
+	title = "$64c5019a145c4e4da448dbd3adeea61e:363", 
+	data_template = "HolySiteSecondaryObjectiveDataTemplate",
+	data_template_or = "HolySiteSecondaryObjectiveDataTemplate",
+	priority = OT_Secondary,
+	telemetry = "cultureSiteObj",	
+}
+
+AGS_OBJECTIVES_CULTURE = {
+	reason = AGS_WR_CULTURE,
+	-- "Control majority of cities"
+	title = "$64c5019a145c4e4da448dbd3adeea61e:362", 
+	title_capture = "$64c5019a145c4e4da448dbd3adeea61e:362", 
+	-- "Neutralize a Sacred Site"
+	title_neutralize = 11183992,
+	-- "Defend all Sacred Sites"
+	title_defend = 11190384,
+	description = Loc_Empty(),
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_settlements",
+	data_template = "HolySiteObjectiveDataTemplate",
+	data_template_or = "HolySiteOrObjectiveDataTemplate",
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "cultureObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
 AGS_OBJECTIVES_RELIGIOUS_SECONDARY = {
 	-- "Site %1NUMBER%"
 	title = 11184017, 

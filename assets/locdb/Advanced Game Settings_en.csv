@@ -358,5 +358,7 @@
 357,,,,Treasure Option,,Treasures
 358,,,,Treasure Option,,Few treasures will appear randomly around the map.
 359,,,,Resource Option,,Low
-361,,,,,,City-States Wars
-360,,,,,,Conquer majority of city-states to ensure victory.
+360,,,,State Wars,,Conquer majority of city-states to ensure victory.
+361,,,,State Wars,,City-State Wars
+362,,,ags_conditions_objectives,State Wars,,Control majority of cities
+363,,,ags_conditions_objectives,State Wars,,%1NAMEORNUMBER% City
