@@ -151,7 +151,7 @@ AGS_GLOBAL_SETTINGS = {
 	WonderConstruction = false,
 	Treasures = false,
 	
-	StartingMonk = 1, --undefined
+	StartingMonks = 1, --undefined
 	StartingScouts = 1, -- undefined
 	StartingSheeps = 1, -- undefined
 	StartingTownCenters = 1, -- undefined

@@ -157,13 +157,13 @@ function AGS_Nomadic_SpawnUnits(player_id, player_civ)
 	local snameSCO = AGS_SGroupName(player_id, AGS_BP_SCOUT)
 	local sg_sco = AGS_SpawnSquad(player_id, snameSCO, sbp_sco, nil, World_Pos(-12, 0, -12), AGS_GLOBAL_SETTINGS.StartingScouts)
 	
-	local sbp_shp = AGS_GetNeutralUnit(player_civ, AGS_BP_SHEEP)
+	local sbp_shp = AGS_GetNeutralUnit(AGS_BP_SHEEP)
 	local snameSHP = AGS_SGroupName(player_id, AGS_BP_SHEEP)
-	local sg_shp = AGS_SpawnSquad(player_id, snameSHP, sbp_shp, nil, World_Pos(-13, 0, -13), AGS_GLOBAL_SETTINGS.StartingSheep)
+	local sg_shp = AGS_SpawnSquad(player_id, snameSHP, sbp_shp, nil, World_Pos(-13, 0, -13), AGS_GLOBAL_SETTINGS.StartingSheeps)
 
 	if player_civ == AGS_CIV_HRE then		
 		local sbp_mnk = AGS_GetCivilizationUnit(player_civ, AGS_BP_MONK)
 		local snameMNK = AGS_SGroupName(player_id, AGS_BP_MONK)
-		local sg_mnk = AGS_SpawnSquad(player_id, snameMNK, sbp_mnk, nil, World_Pos(-14, 0, -14), AGS_GLOBAL_SETTINGS.StartingMonk)	
+		local sg_mnk = AGS_SpawnSquad(player_id, snameMNK, sbp_mnk, nil, World_Pos(-14, 0, -14), AGS_GLOBAL_SETTINGS.StartingMonks)	
 	end
 end
