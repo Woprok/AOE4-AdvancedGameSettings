@@ -72,6 +72,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_eng",	
 		palisade_wall = "building_defense_palisade_eng",
 		palisade_gate = "building_defense_palisade_gate_eng",
+		monk = "unit_monk_3_eng",
 	},
 	chinese = {
 		castle = "building_defense_keep_chi",
@@ -84,6 +85,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_chi",	
 		palisade_wall = "building_defense_palisade_chi",
 		palisade_gate = "building_defense_palisade_gate_chi",
+		monk = "unit_monk_3_chi",
 	},
 	french = {
 		castle = "building_defense_keep_fre",
@@ -96,6 +98,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_fre",
 		palisade_wall = "building_defense_palisade_fre",
 		palisade_gate = "building_defense_palisade_gate_fre",
+		monk = "unit_monk_3_fre",
 	},
 	hre = {
 		castle = "building_defense_keep_hre",
@@ -109,6 +112,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_hre",
 		palisade_wall = "building_defense_palisade_hre",
 		palisade_gate = "building_defense_palisade_gate_hre",
+		monk = "unit_monk_1_hre",
 	},
 	rus = {	
 		castle = "building_defense_keep_control_rus",
@@ -121,6 +125,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_rus",
 		palisade_wall = "building_defense_palisade_rus",
 		palisade_gate = "building_defense_palisade_gate_rus",
+		monk = "unit_monk_3_rus",
 	},
 	abbasid = {
 		castle = "building_defense_keep_control_abb",
@@ -134,6 +139,7 @@ AGS_ENTITY_TABLE = {
 		house_of_wisdom = "building_house_of_wisdom_control_abb",
 		palisade_wall = "building_defense_palisade_abb",
 		palisade_gate = "building_defense_palisade_gate_abb",
+		monk = "unit_monk_3_abb",
 	},
 	mongol = {
 		castle = "building_defense_keep_control_nov",
@@ -147,6 +153,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_mon",
 		house = "building_house_mon",
 		house_moving = "building_house_moving_mon",
+		monk = "unit_monk_3_mon",
 	},
 	sultanate = {
 		castle = "building_defense_keep_control_sul",
@@ -159,6 +166,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_sul",
 		palisade_wall = "building_defense_palisade_sul",
 		palisade_gate = "building_defense_palisade_gate_sul",
+		monk = "unit_monk_2_sul",
 	},
 }
 

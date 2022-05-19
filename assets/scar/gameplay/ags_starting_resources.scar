@@ -9,7 +9,8 @@
 
 AGS_STARTING_RESOURCES_MODULE = "AGS_StartingResources"
 AGS_STARTING_RESOURCES_VALUES = {
-	{ Key = AGS_GS_RESOURCES_NONE, Food = 0, Wood = 0,  Gold = 0, Stone = 0, },
+	{ Key = AGS_GS_RESOURCES_NONE, Food = 0, Wood = 0,  Gold = 0, Stone = 0, },	
+	{ Key = AGS_GS_RESOURCES_LOW, Food = 200, Wood = 150,  Gold = 100, Stone = 0, },
 	{ Key = AGS_GS_RESOURCES_NORMAL, Food = 0, Wood = 0,  Gold = 0, Stone = 0, },
 	{ Key = AGS_GS_RESOURCES_MEDIUM, Food = 2000, Wood = 2000,  Gold = 1000, Stone = 800, },
 	{ Key = AGS_GS_RESOURCES_HIGH, Food = 10000, Wood = 7500,  Gold = 5000, Stone = 2500, },

@@ -42,11 +42,12 @@ AGS_GS_AGE_IMPERIAL = 4
 AGS_GS_AGE_LATE_IMPERIAL = 5
 -- Resources
 AGS_GS_RESOURCES_NONE = 0
-AGS_GS_RESOURCES_NORMAL = 1
-AGS_GS_RESOURCES_MEDIUM = 2
-AGS_GS_RESOURCES_HIGH = 3
-AGS_GS_RESOURCES_VERY_HIGH = 4
-AGS_GS_RESOURCES_MAXIMUM = 5
+AGS_GS_RESOURCES_LOW = 1
+AGS_GS_RESOURCES_NORMAL = 2
+AGS_GS_RESOURCES_MEDIUM = 3
+AGS_GS_RESOURCES_HIGH = 4
+AGS_GS_RESOURCES_VERY_HIGH = 5
+AGS_GS_RESOURCES_MAXIMUM = 6
 -- Town Centers
 AGS_GS_TC_RESTRICTIONS_NONE = 0
 AGS_GS_TC_RESTRICTIONS_NORMAL = 1
@@ -150,6 +151,7 @@ AGS_GLOBAL_SETTINGS = {
 	WonderConstruction = false,
 	Treasures = false,
 	
+	StartingMonks = 1, --undefined
 	StartingScouts = 1, -- undefined
 	StartingSheeps = 1, -- undefined
 	StartingTownCenters = 1, -- undefined
@@ -871,6 +873,8 @@ end
 function AGS_GlobalSettings_SetStartingResources(starting_resources)
 	if starting_resources.enum_value == starting_resources.enum_items.starting_resources_none then
 		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_NONE	
+	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_low then
+		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_LOW
 	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_normal then
 		AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_NORMAL
 	elseif starting_resources.enum_value == starting_resources.enum_items.starting_resources_medium then
