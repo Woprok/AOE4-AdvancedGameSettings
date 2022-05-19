@@ -45,6 +45,7 @@ AGS_BP_MOBILE = "mobile_building"
 AGS_BP_SIEGE = "siege"
 AGS_BP_WORKER = "worker"
 AGS_BP_MILITARY = "military"
+AGS_BP_MONASTERY = "monastery"
 
 AGS_BP_TREASURE = "resource_pickup"
 AGS_BP_TREASURE_FOOD = "resource_pickup_food"
@@ -73,6 +74,7 @@ AGS_ENTITY_TABLE = {
 		palisade_wall = "building_defense_palisade_eng",
 		palisade_gate = "building_defense_palisade_gate_eng",
 		monk = "unit_monk_3_eng",
+		monastery = "building_unit_religious_control_eng",
 	},
 	chinese = {
 		castle = "building_defense_keep_chi",
@@ -86,6 +88,7 @@ AGS_ENTITY_TABLE = {
 		palisade_wall = "building_defense_palisade_chi",
 		palisade_gate = "building_defense_palisade_gate_chi",
 		monk = "unit_monk_3_chi",
+		monastery = "building_unit_religious_control_chi",
 	},
 	french = {
 		castle = "building_defense_keep_fre",
@@ -99,6 +102,7 @@ AGS_ENTITY_TABLE = {
 		palisade_wall = "building_defense_palisade_fre",
 		palisade_gate = "building_defense_palisade_gate_fre",
 		monk = "unit_monk_3_fre",
+		monastery = "building_unit_religious_control_fre",
 	},
 	hre = {
 		castle = "building_defense_keep_hre",
@@ -113,6 +117,7 @@ AGS_ENTITY_TABLE = {
 		palisade_wall = "building_defense_palisade_hre",
 		palisade_gate = "building_defense_palisade_gate_hre",
 		monk = "unit_monk_1_hre",
+		monastery = "building_unit_religious_control_hre",
 	},
 	rus = {	
 		castle = "building_defense_keep_control_rus",
@@ -126,6 +131,7 @@ AGS_ENTITY_TABLE = {
 		palisade_wall = "building_defense_palisade_rus",
 		palisade_gate = "building_defense_palisade_gate_rus",
 		monk = "unit_monk_3_rus",
+		monastery = "building_unit_religious_control_rus",
 	},
 	abbasid = {
 		castle = "building_defense_keep_control_abb",
@@ -140,6 +146,7 @@ AGS_ENTITY_TABLE = {
 		palisade_wall = "building_defense_palisade_abb",
 		palisade_gate = "building_defense_palisade_gate_abb",
 		monk = "unit_monk_3_abb",
+		monastery = "building_unit_religious_control_abb",
 	},
 	mongol = {
 		castle = "building_defense_keep_control_nov",
@@ -154,6 +161,7 @@ AGS_ENTITY_TABLE = {
 		house = "building_house_mon",
 		house_moving = "building_house_moving_mon",
 		monk = "unit_monk_3_mon",
+		monastery = "building_unit_religious_mon",
 	},
 	sultanate = {
 		castle = "building_defense_keep_control_sul",
@@ -167,6 +175,7 @@ AGS_ENTITY_TABLE = {
 		palisade_wall = "building_defense_palisade_sul",
 		palisade_gate = "building_defense_palisade_gate_sul",
 		monk = "unit_monk_2_sul",
+		monastery = "building_unit_religious_control_sul",
 	},
 }
 
