@@ -1,0 +1,65 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Additional data for condition. Imported by appropriate condition.
+---------------------------------------------------------------------------------------------------
+
+AGS_OBJECTIVES_CONQUEST = {
+	reason = WR_CONQUEST,
+	-- "Destroy all enemy landmarks"
+	title = "$11159056", 
+	-- "Your empire has been conquered."
+	title_lost = "$64c5019a145c4e4da448dbd3adeea61e:268",
+	-- "Conquered all enemies."
+	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:269",
+	description = Loc_Empty(),
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
+	data_template = "ConquestObjectiveTemplate",
+	data_template_or = "ConquestObjectiveTemplate",
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "conquestObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+AGS_NOTIFICATIONS_CONQUEST = {
+	-- "%1PLAYER_NAME% conquered"
+	title = "$64c5019a145c4e4da448dbd3adeea61e:267",
+	sfx = nil,	
+}
+
+AGS_NOTIFICATIONS_CONQUEST_ATTACKED = {
+	-- "Enemy attacking Landmark"
+	self_attacked = 11198265,
+	-- "Enemy attacking %1PLAYER_NAME%'s Landmark"
+	ally_attacked = 11198266,
+	attacked_sfx = "mus_stinger_landmark_building_damaged",
+}
+
+AGS_NOTIFICATIONS_CONQUEST_DESTROYED = {
+	-- "Destroyed Landmark"
+	self_destroyed = "$64c5019a145c4e4da448dbd3adeea61e:276",
+	-- "Enemy destroyed %1PLAYER_NAME%'s Landmark"
+	ally_destroyed = 11198268,
+	-- "Enemy destroyed %1PLAYER_NAME%'s Landmark"
+	enemy_destroyed = 11198268,
+	
+	-- "Enemy destroyed Landmark"
+	self_crushed = 11198267,
+	-- "Enemy destroyed %1PLAYER_NAME%'s Landmark"
+	ally_crushed = 11198268,
+	
+	-- "Destroyed %1PLAYER_NAME%'s landmark"
+	self_killed = 11198590,
+	-- "Ally destroyed %1PLAYER_NAME%'s landmark"
+	ally_killed = 11198591,
+	-- "Enemy destroyed %1PLAYER_NAME%'s landmark"
+	enemy_killed = 11201826,
+	
+	self_destroyed_sfx = "mus_stinger_players_landmark_destroyed",
+	ally_destroyed_sfx = "mus_stinger_ally_landmark_destroyed",
+	enemy_destroyed_sfx = "mus_stinger_enemy_landmark_destroyed",
+}

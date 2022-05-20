@@ -51,9 +51,17 @@ function AGS_Conditions_IsPrimary(reason)
 	-- Conquest is always primary objective.
 	if reason == AGS_WR_CONQUEST then
 		return true
-	elseif reason == AGS_WR_RELIGIOUS and not AGS_GLOBAL_SETTINGS.Conquest then
+	elseif reason == AGS_WR_RELIGIOUS and 
+		not AGS_GLOBAL_SETTINGS.Conquest then
 		return true
-	elseif reason == AGS_WR_WONDER and not AGS_GLOBAL_SETTINGS.Conquest and not AGS_GLOBAL_SETTINGS.Religious then
+	elseif reason == AGS_WR_WONDER and 
+		not AGS_GLOBAL_SETTINGS.Conquest and 
+		not AGS_GLOBAL_SETTINGS.Religious then
+		return true
+	elseif reason == AGS_WR_CULTURE and 
+		not AGS_GLOBAL_SETTINGS.Conquest and 
+		not AGS_GLOBAL_SETTINGS.Religious and 
+		not AGS_GLOBAL_SETTINGS.Wonder then
 		return true
 	end
 	-- All other winconditions dont have custom template so we will skip this and return false even for them.

@@ -1,0 +1,114 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Additional data for condition. Imported by appropriate condition.
+---------------------------------------------------------------------------------------------------
+
+AGS_OBJECTIVES_WONDER_SELF = {	
+	-- "Defend your Wonder"
+	title = "$11159071",
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	telemetry = "defendWonderObj",
+	music = "mus_stinger_wonder_win_countdown_player",
+}
+
+AGS_OBJECTIVES_WONDER_ALLY = {	
+	-- "Defend %1PLAYER_NAME%'s Wonder"	
+	title = "$11159070",
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	telemetry = "defendWonderObj",
+	music = "mus_stinger_wonder_win_countdown_ally",
+}
+
+AGS_OBJECTIVES_WONDER_ENEMY = {	
+	-- "Destroy %1PLAYER_NAME%'s Wonder"
+	title = "$11159069",
+	icon = "icons/objectives/objectives_warning_small",
+	telemetry = "destroyWonderObj",
+	music = "mus_stinger_wonder_win_countdown_enemy",
+}
+
+AGS_OBJECTIVES_WONDER = {
+	reason = WR_WONDER,
+	-- "Build a Wonder"
+	title = "$11159068", 
+	-- "Failed to hold the wonder."
+	title_lost = "$64c5019a145c4e4da448dbd3adeea61e:277",
+	description = Loc_Empty(),
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
+	data_template = "WonderObjectiveTemplate",
+	data_template_or = "WonderOrObjectiveTemplate",
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "wonderObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+AGS_NOTIFICATIONS_WONDER = {
+	-- "%1PLAYER_NAME% couldn't withstand the glory of the wonder"
+	title = "$64c5019a145c4e4da448dbd3adeea61e:274",
+	sfx = nil,	
+}
+
+AGS_NOTIFICATIONS_WONDER_ATTACKED = {
+	-- "Enemy attacking Wonder"
+	self_attacked = 11198265,
+	-- "Enemy attacking %1PLAYER_NAME%'s Wonder"
+	ally_attacked = 11198637,	
+	attacked_sfx = "mus_stinger_wonder_building_damaged",
+}
+
+AGS_NOTIFICATIONS_WONDER_CONSTRUCTION = {
+	-- "Building a Wonder"
+	self_action = "$64c5019a145c4e4da448dbd3adeea61e:275",
+	-- "%1PLAYER_NAME% is building a Wonder"
+	ally_action = 11159074,
+	-- "%1PLAYER_NAME% is building a Wonder"
+	enemy_action = 11159074,
+	self_action_sfx = "mus_stinger_wonder_win_build_start_ally",
+	ally_action_sfx = "mus_stinger_wonder_win_build_start_ally",
+	enemy_action_sfx = "mus_stinger_wonder_win_build_start_enemy",
+	-- Not used as its always overwritten.
+	action_sfx = "mus_stinger_wonder_win_build_start_ally",
+}
+
+AGS_NOTIFICATIONS_WONDER_DESTROYED = {
+	-- "Wonder destroyed"
+	self_destroyed = 11159075,
+	-- "%1PLAYER_NAME%'s Wonder destroyed"
+	ally_destroyed = 11159076,
+	-- "%1PLAYER_NAME%'s Wonder destroyed"
+	enemy_destroyed = 11159076,
+	
+	-- "Enemy destroyed Wonder"
+	self_crushed = 11198645,
+	-- "Enemy destroyed %1PLAYER_NAME%'s Wonder"
+	ally_crushed = 11198646,
+	
+	-- "Destroyed %1PLAYER_NAME%'s Wonder"
+	self_killed = 11198647,
+	-- "Ally destroyed %1PLAYER_NAME%'s Wonder"
+	ally_killed = 11198648,
+	-- "Enemy destroyed %1PLAYER_NAME%'s Wonder"
+	enemy_killed = 11198649,
+	
+	self_destroyed_sfx = "mus_stinger_wonder_win_interrupted_player",
+	ally_destroyed_sfx = "mus_stinger_wonder_win_interrupted_ally",
+	enemy_destroyed_sfx = "mus_stinger_wonder_win_interrupted_enemy",
+	-- Not used as its always overwritten.
+	destroyed_sfx = "mus_stinger_wonder_build_destroy_player_neg",
+}
+
+AGS_NOTIFICATIONS_WONDER_COUNTDOWN = {
+	-- "%1MINUTES_REMAINING% minutes until Wonder Victory"
+	title_victory = 11197864,
+	-- "%1MINUTES_REMAINING% minutes until Wonder Defeat"
+	title_defeat = 11197865,
+	-- "1 minute until Wonder Victory"
+	title_final_victory = 11197866,
+	-- "1 minute until Wonder Defeat"
+	title_final_defeat = 11197867,	
+}

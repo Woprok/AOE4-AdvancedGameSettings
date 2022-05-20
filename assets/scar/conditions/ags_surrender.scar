@@ -9,6 +9,7 @@
 -- The last remaining player/team wins if last opponent surrendered. 
 ---------------------------------------------------------------------------------------------------
 
+import("conditions/conditiondata/ags_surrender_data.scar")
 AGS_SURRENDER_MODULE = "AGS_Surrender"
 AGS_SURRENDER_OBJECTIVE = nil
 AGS_SURRENDER_ACTIVE = true

@@ -1,0 +1,28 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Additional data for condition. Imported by appropriate condition.
+---------------------------------------------------------------------------------------------------
+
+AGS_OBJECTIVES_SURRENDER = {
+	reason = AGS_WR_SURRENDER,
+	-- "Fight until the bitter end."
+	title = "$64c5019a145c4e4da448dbd3adeea61e:252", 
+	description = Loc_Empty(),
+	icon = "icons\\objectives\\objectives_generic",
+	data_template = DT_PRIMARY_DEFAULT,
+	data_template_or = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "surrenderObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+AGS_NOTIFICATIONS_SURRENDER = {
+	-- "%1PLAYER_NAME% surrendered"
+	title = 11161289,
+	sfx = "sfx_ui_surrendered_notification_play",	
+}

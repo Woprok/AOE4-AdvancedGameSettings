@@ -9,6 +9,7 @@
 -- The last remaining player/team wins. 
 ---------------------------------------------------------------------------------------------------
 
+import("conditions/conditiondata/ags_team_solidarity_data.scar")
 AGS_TEAM_SOLIDARITY_MODULE = "AGS_TeamSolidarity"
 AGS_TEAM_SOLIDARITY_OBJECTIVE = nil
 AGS_TEAM_SOLIDARITY_ACTIVE = true

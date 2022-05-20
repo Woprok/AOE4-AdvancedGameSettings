@@ -1,0 +1,28 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Additional data for condition. Imported by appropriate condition.
+---------------------------------------------------------------------------------------------------
+
+AGS_OBJECTIVES_ELIMINATION = {
+	reason = AGS_WR_ELIMINATION,
+	-- "Prevail until the end."
+	title = "$64c5019a145c4e4da448dbd3adeea61e:253", 
+	description = Loc_Empty(),
+	icon = "icons\\objectives\\objectives_generic",
+	data_template = DT_PRIMARY_DEFAULT,
+	data_template_or = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "eliminationObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+AGS_NOTIFICATIONS_ELIMINATION = {
+	-- "%1PLAYER_NAME% eliminated"
+	title = 11165820,
+	sfx = nil,	
+}

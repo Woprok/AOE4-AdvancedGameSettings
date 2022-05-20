@@ -9,6 +9,7 @@
 -- The last remaining player/team wins. 
 ---------------------------------------------------------------------------------------------------
 
+import("conditions/conditiondata/ags_regicide_data.scar")
 AGS_REGICIDE_MODULE = "AGS_Regicide"
 AGS_REGICIDE_OBJECTIVE = nil
 AGS_REGICIDE_ACTIVE = true

@@ -9,6 +9,7 @@
 -- The last remaining player/team wins. 
 ---------------------------------------------------------------------------------------------------
 
+import("conditions/conditiondata/ags_elimination_data.scar")
 AGS_ELIMINATION_MODULE = "AGS_Elimination"
 AGS_ELIMINATION_OBJECTIVE = nil
 AGS_ELIMINATION_ACTIVE = true

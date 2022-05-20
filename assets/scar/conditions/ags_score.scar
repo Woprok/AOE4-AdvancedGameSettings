@@ -9,6 +9,7 @@
 -- Highest score player/team wins. 
 ---------------------------------------------------------------------------------------------------
 
+import("conditions/conditiondata/ags_score_data.scar")
 AGS_SCORE_MODULE = "AGS_Score"
 AGS_SCORE_OBJECTIVE = nil
 AGS_SCORE_ACTIVE = true

@@ -362,3 +362,22 @@
 361,,,,State Wars,,City-State Wars
 362,,,ags_conditions_objectives,State Wars,,Control majority of cities
 363,,,ags_conditions_objectives,State Wars,,%1NAMEORNUMBER% City
+364,,,ags_culture_data,State Wars,,%1PLAYER_NAME% was assimilated
+365,,,ags_culture_data,State Wars,,You are approaching Culture Victory
+366,,,ags_culture_data,State Wars,,Your team is approaching Culture Victory
+367,,,ags_culture_data,State Wars,,Enemy is approaching Culture Victory
+368,,,ags_culture_data,State Wars,,Capturing City-State
+369,,,ags_culture_data,State Wars,,Ally capturing City-State
+370,,,ags_culture_data,State Wars,,Enemy capturing City-State
+371,,,ags_culture_data,State Wars,,City-State captured
+372,,,ags_culture_data,State Wars,,Ally captured City-State
+373,,,ags_culture_data,State Wars,,Enemy captured City-State
+374,,,ags_culture_data,State Wars,,Contesting City-State
+375,,,ags_culture_data,State Wars,,Ally contesting City-State
+376,,,ags_culture_data,State Wars,,Enemy contesting City-State
+377,,,ags_culture_data,State Wars,,Liberated City-State
+378,,,ags_culture_data,State Wars,,Ally liberated City-State
+379,,,ags_culture_data,State Wars,,City-State lost
+380,,,ags_culture_data,State Wars,,Liberating City-State
+381,,,ags_culture_data,State Wars,,Ally liberating City-State
+382,,,ags_culture_data,State Wars,,Enemy liberating City-State

@@ -4,27 +4,29 @@
 -- Woprock
 --
 -- Description:
--- Religious win condition.
+-- Culture win condition.
 -- Players (or Teams) use Monks to capture Strategic Points around the map.
 -- When the player or team captures majority of Cities, they win the match.
 ---------------------------------------------------------------------------------------------------
 
+import("conditions/conditiondata/ags_culture_data.scar")
 AGS_CULTURE_MODULE = "AGS_Culture"
 AGS_CULTURE_ACTIVE = true
 AGS_CULTURE_OBJECTIVE = nil
 AGS_CULTURE_SACRED_SITE_OBJECTIVES = { }
-AGS_CULTURE_TIMER = "culture_victory_timer"
 -- Holds group that contains all sites, used only during initialization.
 AGS_CULTURE_SACRED_SITE_EGROUP = nil
--- One frame is 0.125, this should be defined in frame count.
-AGS_CULTURE_CHECK_FREQUENCY = 0.125
--- Player that last captured all sites.
-AGS_CULTURE_LAST_CAPTURER = nil
+-- Player that last captured majority of states sacred sites.
+AGS_CULTURE_LAST_MAJORITY_CAPTURER = nil
 -- Radius for capturing or decapturing site.
 AGS_CULTURE_CONVERSION_RADIUS = 10.0
 AGS_CULTURE_VISION_RADIUS = 12
 AGS_CULTURE_PROGRESS_MIN = 0.00
 AGS_CULTURE_PROGRESS_MAX = 1.00
+-- Progress required for victory.
+AGS_CULTURE_VICTORY_THRESHOLD = 0.75
+-- Progress required for warning.
+AGS_CULTURE_WARNING_THRESHOLD = 0.5
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -34,7 +36,7 @@ Core_RegisterModule(AGS_CULTURE_MODULE)
 
 function AGS_Culture_UpdateModuleSettings()
 	AGS_Print("AGS_Culture_UpdateModuleSettings")
-	if not AGS_GLOBAL_SETTINGS.Religious then
+	if not AGS_GLOBAL_SETTINGS.Culture then
 		Core_UnregisterModule(AGS_CULTURE_MODULE)
 		return
 	end
@@ -53,12 +55,10 @@ end
 
 function AGS_Culture_OnPlay()
 	AGS_Print("AGS_Culture_OnPlay")
-	AGS_Culture_InitializeSacredSites()
+	AGS_Culture_CreateSiteData()
 	Rule_AddGlobalEvent(AGS_Culture_OnStrategicPointChanged, GE_StrategicPointChanged)
 	AGS_Culture_CreateObjective()
 	AGS_Culture_UpdateObjective()
-	-- Timers and time checks are initialized last.
-	Rule_AddInterval(AGS_Culture_OnTimerTick, AGS_CULTURE_CHECK_FREQUENCY)
 end
 
 function AGS_Culture_TreatyStarted()
@@ -75,8 +75,8 @@ end
 
 function AGS_Culture_OnPlayerDefeated(player, reason)
 	AGS_Print("AGS_Culture_OnPlayerDefeated")
-	if reason == AGS_WR_RELIGIOUS then 
-		AGS_Notifications_Eliminated(player, AGS_NOTIFICATIONS_RELIGIOUS)
+	if reason == AGS_WR_CULTURE then 
+		AGS_Notifications_Eliminated(player, AGS_NOTIFICATIONS_CULTURE)
 		AGS_Culture_TryDeclareWinners()
 	end
 end
@@ -91,7 +91,6 @@ end
 
 function AGS_Culture_OnGameOver()
 	AGS_Print("AGS_Culture_OnGameOver")
-	Rule_Remove(AGS_Culture_OnTimerTick)
 	Rule_RemoveGlobalEvent(AGS_Culture_OnStrategicPointChanged)
 	AGS_Culture_RemoveObjective()
 end
@@ -109,17 +108,8 @@ function AGS_Culture_OnStrategicPointChanged(context)
 	end
 	-- Sacred site changing owneship. (Note: this is too long resolution, so it will be at the end of file.)
 	AGS_Culture_OnHolySiteChange(context)
-end
-
-function AGS_Culture_OnTimerTick()
 	-- Determine current objective progress.
 	AGS_Culture_UpdateSacredSiteObjectives()
-	-- Update objectives
-	AGS_Culture_UpdateObjective()
-	-- Attempt to trigger victory.
-	if AGS_Culture_AreSitesUniformlyControlled() then
-		AGS_Culture_ProgressTimer()
-	end	
 	-- Update objectives
 	AGS_Culture_UpdateObjective()
 end
@@ -127,17 +117,6 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
-
-function AGS_Culture_InitializeSacredSites()
-	AGS_Culture_CreateSiteData()	
-	
-	for _, player in pairs(PLAYERS) do
-		player.AGS_SacredSites = {
-			objective_remaining_time = nil,
-			notifications = { }
-		}
-	end	
-end
 
 function AGS_Culture_CreateSiteData()
 	for i = 1, EGroup_CountSpawned(AGS_CULTURE_SACRED_SITE_EGROUP) do
@@ -154,7 +133,7 @@ function AGS_Culture_CreateSiteData()
 		table.insert(AGS_CULTURE_SACRED_SITE_OBJECTIVES, site)
 	end
 end
-
+-- This needs to disable it for treaties as it could lead to fast victory.
 function AGS_Culture_EnableSacredSitesCapture(is_enabled)
 	for _, site in pairs(AGS_CULTURE_SACRED_SITE_OBJECTIVES) do 
 		Entity_EnableStrategicPoint(site.entity, is_enabled) 
@@ -162,10 +141,10 @@ function AGS_Culture_EnableSacredSitesCapture(is_enabled)
 end
 -- Even through we have multiple objectives, we will consider them as one whenever we talk about them.
 function AGS_Culture_CreateObjective() 
-	AGS_CULTURE_OBJECTIVE = AGS_Objectives_Create(AGS_OBJECTIVES_RELIGIOUS, AGS_GS_LOCAL_PLAYER)
+	AGS_CULTURE_OBJECTIVE = AGS_Objectives_Create(AGS_OBJECTIVES_CULTURE, AGS_GS_LOCAL_PLAYER)
 	AGS_Objectives_Set(AGS_CULTURE_OBJECTIVE, OS_Incomplete, true, true, COUNTER_CountUpTo)
 	-- Create secondary from main objective template.
-	local secondary_objective = AGS_Objectives_CreateFromCore(AGS_OBJECTIVES_RELIGIOUS, AGS_OBJECTIVES_RELIGIOUS_SECONDARY)
+	local secondary_objective = AGS_Objectives_CreateFromCore(AGS_OBJECTIVES_CULTURE, AGS_OBJECTIVES_CULTURE_SECONDARY)
 	for index, site in pairs(AGS_CULTURE_SACRED_SITE_OBJECTIVES) do		
 		site.objective = AGS_Objectives_Create(secondary_objective, AGS_GS_LOCAL_PLAYER, index, AGS_CULTURE_OBJECTIVE)
 		AGS_Objectives_Set(site.objective, OS_Incomplete, true, true)
@@ -202,67 +181,45 @@ function AGS_Culture_RemoveObjective()
 	end
 end
 
--- Religious victory was triggered by a religious timer finishing.
+-- Culture victory was triggered by a player obtaining majority of sites.
 function AGS_Culture_VictoryTriggered()
 	-- Stop the music.
 	Music_PersistentStop()
 	
 	-- Eliminate all players that are not in his valid team.
-	local losers = AGS_Teams_GetAllCurrentOpponents(AGS_CULTURE_LAST_CAPTURER)
+	local losers = AGS_Teams_GetAllCurrentOpponents(AGS_CULTURE_LAST_MAJORITY_CAPTURER)
 	if #losers > 0 then
 		AGS_SetPlayerGroupDefeated(
 			losers,
-			AGS_Presentations_LossReligious, 
-			AGS_WR_RELIGIOUS,
+			AGS_Presentations_LossCulture, 
+			AGS_WR_CULTURE,
 			AGS_Objectives_PresentWrap(
 				AGS_CULTURE_OBJECTIVE, 
 				OS_Failed, 
-				AGS_OBJECTIVES_RELIGIOUS.title_neutralize))
+				AGS_OBJECTIVES_CULTURE.title))
 	else
 		AGS_Culture_TryDeclareWinners()
 	end
 end
 
 function AGS_Culture_TryDeclareWinners()
-	AGS_Conditions_CheckVictory(AGS_CULTURE_ACTIVE, AGS_Presentations_VictoryReligious, AGS_WR_RELIGIOUS,
+	AGS_Conditions_CheckVictory(AGS_CULTURE_ACTIVE, AGS_Presentations_VictoryCulture, AGS_WR_CULTURE,
 		AGS_Objectives_PresentWrap(
 			AGS_CULTURE_OBJECTIVE, 
 			OS_Complete, 
-			AGS_OBJECTIVES_RELIGIOUS.title_defend))
-end
-
----------------------------------------------------------------------------------------------------
--- Timer Functions:
----------------------------------------------------------------------------------------------------
-
--- Tries to progress the timer.
-function AGS_Culture_ProgressTimer()
-	-- Disables attempts to tick during treaties.
-	if not AGS_CULTURE_ACTIVE then
-		return
-	end
-	-- This should trigger only if player controls enough sites
-	AGS_Culture_VictoryTriggered()
+			AGS_OBJECTIVES_CULTURE.title))
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Helper Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_Culture_GetSacredSiteTimerContestTitle(actor)
-	local relation = AGS_GetRelation(actor)	
-	if relation == AGS_SAE_ENEMY then
-		return AGS_OBJECTIVES_RELIGIOUS.title_neutralize		
-	end	
-    return AGS_OBJECTIVES_RELIGIOUS.title_defend
-end
--- Returns true if all sites are controlled by same team.
-function AGS_Culture_AreSitesUniformlyControlled()
-	for _, player in pairs(PLAYERS) do
-		if AGS_Culture_CountSitesControlledTeam(player) >= #AGS_CULTURE_SACRED_SITE_OBJECTIVES then
-			return true	
-		end			
-	end
+-- Returns true if all sites are controlled by same team of specified player/capturer.
+function AGS_Culture_AreSitesThresholdControlled(threshold, player)
+	local desired_count = (#AGS_CULTURE_SACRED_SITE_OBJECTIVES) * threshold
+	if AGS_Culture_CountSitesControlledTeam(player) >= desired_count then
+		return true	
+	end			
 	return false
 end
 -- Return count of sites under single team.
@@ -283,30 +240,13 @@ function AGS_Culture_CountSitesControlled(player)
 	end	
 	return controlled	
 end
--- Pings all Holy Sites (can be called at interval)
+-- Pings all Holy Sites once.
 function AGS_Culture_HolySiteMinimapBlips()
-	if Timer_Exists(AGS_CULTURE_TIMER) then
-		for _, site in pairs(AGS_CULTURE_SACRED_SITE_OBJECTIVES) do
-			-- Triggers a blip that corresponds to Holy Site owner's colour, so we verify that its owned by a player.
-			if not World_OwnsEntity(site.entity) then
-				UI_CreateMinimapBlipOnPosFrom(Entity_GetPlayerOwner(site.entity), site.pos, 5, "objective_holy_site")
-			end
+	for _, site in pairs(AGS_CULTURE_SACRED_SITE_OBJECTIVES) do
+		-- Triggers a blip that corresponds to Holy Site owner's colour, so we verify that its owned by a player.
+		if not World_OwnsEntity(site.entity) then
+			UI_CreateMinimapBlipOnPosFrom(Entity_GetPlayerOwner(site.entity), site.pos, 5, "objective_holy_site")
 		end
-	else
-		Rule_RemoveMe()
-	end	
-end
--- Flashes all Holy Sites
-function AGS_Culture_FlashAllHolySites()
-	if Timer_Exists(AGS_CULTURE_TIMER) then
-		for _, site in pairs(AGS_CULTURE_SACRED_SITE_OBJECTIVES) do
-			AGS_Culture_SetSiteFlash(site, true)
-		end		
-	else
-		for _, site in pairs(AGS_CULTURE_SACRED_SITE_OBJECTIVES) do
-			AGS_Culture_SetSiteFlash(site, false)
-		end
-		Rule_RemoveMe()
 	end
 end
 -- Change site flashing on or off.
@@ -379,10 +319,7 @@ function AGS_Culture_OnHolySiteChangeTypeResume(site_entity_id)
 		if site.entity == site_entity_id then
 			AGS_Culture_SetSiteFlash(site, false)
 		end
-	end
-	if Timer_Exists(AGS_CULTURE_TIMER) then
-		Timer_Resume(AGS_CULTURE_TIMER)
-	end		
+	end	
 end
 
 function AGS_Culture_OnHolySiteChangeTypeCooldown(site_entity_id)
@@ -413,16 +350,11 @@ function AGS_Culture_OnHolySiteChangeTypeContinue(instigating_player, site_entit
 	if holy_site_progress == 0 then
 		local selected_relation = AGS_GetRelation(instigating_player)
 		-- Simply based on relation to instigator
-		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_CAPTURING, selected_relation)
-		-- Just why is this here ?
-		if selected_relation == AGS_SAE_SELF then
-			Game_SendCustomChallengeEvent(AGS_GS_LOCAL_PLAYER.id, CE_ACHIEVBEGINSACREDSITECAPTURE, 1)				
-		end
+		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_CULTURE_CAPTURING, selected_relation)
 	end
 end
 
-function AGS_Culture_OnHolySiteChangeTypeContested(instigating_player, site_entity_id, holy_site_progress, holy_site_pos)
-	
+function AGS_Culture_OnHolySiteChangeTypeContested(instigating_player, site_entity_id, holy_site_progress, holy_site_pos)	
 	if holy_site_progress ~= 0 then
 		local selected_relation = AGS_SAE_ALLY
 		-- positive progress is bad for us as enemy is taking it
@@ -432,7 +364,7 @@ function AGS_Culture_OnHolySiteChangeTypeContested(instigating_player, site_enti
 		elseif holy_site_progress < 0 and instigating_player == AGS_GS_LOCAL_PLAYER then
 			selected_relation = AGS_SAE_SELF
 		end
-		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_CONTESTING,	selected_relation)	
+		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_CULTURE_CONTESTING,	selected_relation)	
 	end
 	for _, site in pairs(AGS_CULTURE_SACRED_SITE_OBJECTIVES) do
 		if site.entity == site_entity_id then
@@ -462,7 +394,7 @@ function AGS_Culture_OnHolySiteChangeTypeNeutralized(instigating_player, site_en
 		elseif instigating_player == AGS_GS_LOCAL_PLAYER then
 			selected_relation = AGS_SAE_SELF
 		end
-		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZED, selected_relation)
+		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_CULTURE_NEUTRALIZED, selected_relation)
 	end
 	
 	-- Trigger a blip that matches colour of instigator
@@ -481,40 +413,39 @@ function AGS_Culture_OnHolySiteChangeTypeNeutralizing(instigating_player, site_e
 		local is_owner_relation = AGS_GetRelation(Core_GetPlayersTableEntry(owning_player))
 		-- For self or ally instigation do this
 		if instigator_relation ~= AGS_SAE_ENEMY then
-			AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZING, instigator_relation)
+			AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_CULTURE_NEUTRALIZING, instigator_relation)
 		-- For enemy owner do this
 		elseif is_owner_relation == AGS_SAE_SELF then 
-			AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZING, AGS_SAE_SELF)
+			AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_CULTURE_NEUTRALIZING, AGS_SAE_SELF)
 		end
 	end	
 	
 	-- Trigger a blip that matches colour of instigator
 	UI_CreateMinimapBlipOnPosFrom(instigating_player.id, holy_site_pos, 5, "objective_holy_site_spin")
-	-- Pause timer, if it's running
-	if Timer_Exists(AGS_CULTURE_TIMER) then
-		Timer_Pause(AGS_CULTURE_TIMER)
-	end		
 end
 
 function AGS_Culture_OnHolySiteChangeTypeCapture(instigating_player, holy_site_pos)
-	AGS_CULTURE_LAST_CAPTURER = instigating_player
 	local instigator_relation = AGS_GetRelation(instigating_player)
-	if AGS_Culture_AreSitesUniformlyControlled() then
-		-- pass normally in this case, but execute additional actions after it.
+	-- Check if this capture created a winner, if yes then trigger game over.
+	if AGS_Culture_AreSitesThresholdControlled(AGS_CULTURE_VICTORY_THRESHOLD, instigating_player) then
+		-- Acknowledge and save winner for later
+		AGS_CULTURE_LAST_MAJORITY_CAPTURER = instigating_player
+		-- Trigger victory.
+		AGS_Culture_VictoryTriggered()
+	-- Inform all players about team approaching dangerous amount of states under control.
+	elseif AGS_Culture_AreSitesThresholdControlled(AGS_CULTURE_WARNING_THRESHOLD, instigating_player) then
+		-- Notify all players about this.
+		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_CULTURE_APPROACH, instigator_relation)
 		if instigator_relation ~= AGS_SAE_ENEMY then
-			AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZING, instigator_relation)
-
-			-- Trigger a blip that matches colour of instigator
+			-- Trigger a blip that matches colour of instigator for new site that bringed it to control warning threshold
 			UI_CreateMinimapBlipOnPosFrom(instigating_player.id, holy_site_pos, 5, "objective_holy_site")
 		else
-			AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZING, instigator_relation)
-			-- Initiate minimap blips
-			-- Flash Holy Sites
-			Rule_AddInterval(AGS_Culture_HolySiteMinimapBlips, 5)
-			Rule_AddInterval(AGS_Culture_FlashAllHolySites, 1)
+			-- Blips all sites as warning to persuade players that they need to do something.
+			AGS_Culture_HolySiteMinimapBlips()
 		end
 	else 
-		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZING, instigator_relation)
+		-- Capture of this site did not change anything or it shifted balance to neutral
+		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_CULTURE_CAPTURED, instigator_relation)
 		-- Trigger a blip that matches colour of instigator
 		UI_CreateMinimapBlipOnPosFrom(instigating_player.id, holy_site_pos, 5, "objective_holy_site")
 	end
