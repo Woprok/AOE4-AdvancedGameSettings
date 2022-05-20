@@ -23,9 +23,11 @@ AGS_CULTURE_CONVERSION_RADIUS = 10.0
 AGS_CULTURE_VISION_RADIUS = 12
 AGS_CULTURE_PROGRESS_MIN = 0.00
 AGS_CULTURE_PROGRESS_MAX = 1.00
--- Progress required for victory.
+-- One frame is 0.125, this should be defined in frame count.
+AGS_CULTURE_CHECK_FREQUENCY = 0.125
+-- Progress % required for victory.
 AGS_CULTURE_VICTORY_THRESHOLD = 0.75
--- Progress required for warning.
+-- Progress % required for warning.
 AGS_CULTURE_WARNING_THRESHOLD = 0.5
 
 ---------------------------------------------------------------------------------------------------
@@ -38,7 +40,6 @@ function AGS_Culture_UpdateModuleSettings()
 	AGS_Print("AGS_Culture_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.Culture then
 		Core_UnregisterModule(AGS_CULTURE_MODULE)
-		return
 	end
 end
 
@@ -46,7 +47,7 @@ function AGS_Culture_PresetFinalize()
 	AGS_Print("AGS_Culture_PresetFinalize")
 	-- Create new group and allocate all sacred sites to it. If group is empty unload this module.
 	AGS_CULTURE_SACRED_SITE_EGROUP = EGroup_CreateUnique()
-	World_GetBlueprintEntities(BP_GetEntityBlueprint(AGS_BP_SACRED_SITE), AGS_CULTURE_SACRED_SITE_EGROUP)	
+	World_GetBlueprintEntities(AGS_GetNeutralEntity(AGS_BP_SACRED_SITE), AGS_CULTURE_SACRED_SITE_EGROUP)	
 	if EGroup_CountSpawned(AGS_CULTURE_SACRED_SITE_EGROUP) == 0 then
 		Core_UnregisterModule(AGS_CULTURE_MODULE)
 		return	
@@ -59,6 +60,8 @@ function AGS_Culture_OnPlay()
 	Rule_AddGlobalEvent(AGS_Culture_OnStrategicPointChanged, GE_StrategicPointChanged)
 	AGS_Culture_CreateObjective()
 	AGS_Culture_UpdateObjective()
+	-- Updates progress of state capture, initialized last.
+	Rule_AddInterval(AGS_Culture_OnTimerTick, AGS_CULTURE_CHECK_FREQUENCY)
 end
 
 function AGS_Culture_TreatyStarted()
@@ -91,6 +94,7 @@ end
 
 function AGS_Culture_OnGameOver()
 	AGS_Print("AGS_Culture_OnGameOver")
+	Rule_Remove(AGS_Culture_OnTimerTick)
 	Rule_RemoveGlobalEvent(AGS_Culture_OnStrategicPointChanged)
 	AGS_Culture_RemoveObjective()
 end
@@ -108,6 +112,9 @@ function AGS_Culture_OnStrategicPointChanged(context)
 	end
 	-- Sacred site changing owneship. (Note: this is too long resolution, so it will be at the end of file.)
 	AGS_Culture_OnHolySiteChange(context)
+end
+
+function AGS_Culture_OnTimerTick()
 	-- Determine current objective progress.
 	AGS_Culture_UpdateSacredSiteObjectives()
 	-- Update objectives

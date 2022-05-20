@@ -35,9 +35,9 @@ end
 function AGS_RevealCities_Show()	
 	local citystate_group = EGroup_CreateIfNotFound("city_states")
 	World_GetAllNeutralEntities(citystate_group)
-	for _, player in pairs(PLAYERS) do 						
+	for _, player in pairs(PLAYERS) do 		
 		local _AGS_ShowCity = function(gid, idx, eid)		
-			if eid ~= nil and Entity_IsOfType(eid, AGS_BP_SACRED_SITE) then
+			if eid ~= nil and Entity_IsStrategicPoint(eid) then
 				local city_position = Entity_GetPosition(eid)
 				FOW_PlayerRevealArea(player.id, city_position, AGS_REVEAL_CITIES_RADIUS, 15)
 			end		

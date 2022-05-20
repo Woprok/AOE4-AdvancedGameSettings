@@ -272,3 +272,4 @@ import("specials/ags_match_ui.scar")
 -- AGS_Score by score module
 -- AGS_TeamVisionAllowed by team vision module
 -- AGS_SacredSites by religious module
+-- AGS_Culture by starting cities module

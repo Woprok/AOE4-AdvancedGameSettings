@@ -1,0 +1,72 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Spawns relics inplace of majority of natural resources.
+---------------------------------------------------------------------------------------------------
+
+AGS_RELICIZATION_MODULE = "AGS_Relicization"
+AGS_RELICIZATION_WORLD_CENTER = World_Pos(0, 0, 0)
+AGS_RELICIZATION_TABLE = { }
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_RELICIZATION_MODULE)	
+
+function AGS_Relicization_UpdateModuleSettings()
+	AGS_Print("AGS_Relicization_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.Relicization then
+		Core_UnregisterModule(AGS_RELICIZATION_MODULE)
+	end
+end
+
+function AGS_Relicization_EarlyInitializations()
+	AGS_Print("AGS_Relicization_EarlyInitializations")
+	AGS_Relicization_DestroyResources()
+end
+
+function AGS_Relicization_OnStarting()
+	AGS_Print("AGS_Relicization_OnStarting")
+	AGS_Relicization_ReplaceResources()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_Relicization_DestroyResources()
+	local all_neutral = EGroup_CreateIfNotFound("all_natural_resources")
+	World_GetAllNeutralEntities(all_neutral)
+	
+	local _AGS_Relicization = function(gid, idx, eid)
+		if eid ~= nil and Entity_IsSpawned(eid) then
+			if Entity_IsOfType(eid, AGS_BP_DEPOSIT_GOLD) or	Entity_IsOfType(eid, AGS_BP_DEPOSIT_STONE) then
+				table.insert(AGS_RELICIZATION_TABLE, Entity_GetPosition(eid))
+				Entity_Destroy(eid)				
+			elseif Entity_IsOfType(eid, AGS_BP_DEPOSIT_FOOD) then
+				Entity_Destroy(eid)						
+			end
+		end		
+	end		
+	
+	EGroup_ForEach(all_neutral, _AGS_Relicization)	
+end
+
+-- Distributes all players all units randomly around the map.
+function AGS_Relicization_ReplaceResources()
+	local additional_relics = EGroup_CreateIfNotFound("additional_relics")
+	local ebp_relic = AGS_GetNeutralEntity(AGS_BP_RELIC)
+	for _, relic_spawn in pairs(AGS_RELICIZATION_TABLE) do
+		AGS_Relicization_Spawn(additional_relics, ebp_relic, relic_spawn)
+	end
+end	
+
+function AGS_Relicization_Spawn(group, ebp, position)
+	local entityid = Entity_CreateENVFacing(ebp, position, AGS_RELICIZATION_WORLD_CENTER, false)
+	Entity_Spawn(entityid)
+	EGroup_Add(group, entityid)
+end

@@ -11,8 +11,12 @@
 ---------------------------------------------------------------------------------------------------
 
 import("ags_cardinal.scar")
+import("conditions/ags_culture.scar")
+import("startconditions/statewars/ags_start_pilgrims.scar")
 import("gameplay/statewars/ags_reveal_cities.scar")
+import("gameplay/statewars/ags_relicization.scar")
 AGS_GS_SETTLEMENT_CITYSTATE = 5
+AGS_GS_SETTLEMENT_PILGRIMS = 6
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
@@ -33,11 +37,15 @@ function AGS_CityStates_AdjustSettings()
 	AGS_GLOBAL_SETTINGS.MaximumPopulation = 40
 	AGS_GLOBAL_SETTINGS.StartingAge = AGS_GS_AGE_CASTLE
 	AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_FEUDAL
+	AGS_GLOBAL_SETTINGS.Annihilation = false
+	AGS_GLOBAL_SETTINGS.Religious = false
 	AGS_GLOBAL_SETTINGS.Wonder = false
-	AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_CITYSTATE
+	AGS_GLOBAL_SETTINGS.StartingMonks = 8
+	AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_PILGRIMS
 	-- New Settings
 	AGS_GLOBAL_SETTINGS.Culture = true
 	AGS_GLOBAL_SETTINGS.RevealCities = true
+	AGS_GLOBAL_SETTINGS.Relicization = true
 end
 
 function AGS_CityStates_PrepareStart()

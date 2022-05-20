@@ -1,0 +1,143 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Spawns king near default position.
+---------------------------------------------------------------------------------------------------
+
+AGS_STARTING_CITIES_MODULE = "AGS_StartingCities"
+
+AGS_STARTING_CITIES_COUNTS = {
+	Monastery = 1,
+	Barracks = 1,
+	ArcheryRange = 1,
+	Stable = 1,
+	Workshop = 0,
+	Dock = 0,
+	House = 3,
+	Blacksmith = 1,
+	SacredSite = 1,
+}
+
+AGS_STARTING_CITIES_COUNT = 0
+
+AGS_STARTING_CITIES_POSITIONS = {
+	
+}
+
+AGS_STARTING_CITIES_SECTORS = {
+	{ x = 0, y = 0 },
+	{ x = 0, y = 0 },
+	{ x = 0, y = 0 },
+	{ x = 0, y = 0 },
+}
+
+AGS_STARTING_CITIES_TABLE = {
+	
+}
+-- Small sizes cant hold too many as they will be very close to each other.
+-- Spawning strategy is to place them on grid.
+AGS_STARTING_CITIES_EXPECTED = {
+	{ size = 416, count = 4, x = 3, y = 3 },
+	{ size = 480, count = 8, x = 3, y = 3 },
+	{ size = 512, count = 12, x = 4, y = 4 },
+	{ size = 640, count = 16, x = 4, y = 4 },
+	{ size = 768, count = 20, x = 5, y = 5 },
+	{ size = 1024, count = 24, x = 5, y = 5 },
+}
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_STARTING_CITIES_MODULE)	
+
+function AGS_StartingCities_UpdateModuleSettings()
+	AGS_Print("AGS_StartingCities_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.Culture then
+		Core_UnregisterModule(AGS_STARTING_CITIES_MODULE)
+	end
+end
+
+function AGS_StartingCities_PresetInitialize()
+	AGS_Print("AGS_StartingCities_PresetInitialize")
+	AGS_StartingCities_SaveSacredSites()
+	AGS_StartingCities_DetermineSacredSites()
+end
+
+function AGS_StartingCities_PresetExecute()
+	AGS_Print("AGS_StartingCities_PresetExecute")
+	AGS_StartingCities_Create()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- This function spawns a king next each player's Town Center
+function AGS_StartingCities_Create()
+	local sbp_king = AGS_GetCivilizationUnit(player.raceName, AGS_BP_KING)				
+	local sname = AGS_SGroupName(player.id, AGS_BP_KING)	
+	local start_adjusted_pos = AGS_Starts_GetStartPosition(player.id)			
+	local sg_king = AGS_SpawnSquad(player.id, sname, sbp_king, start_adjusted_pos, World_Pos(0, 0, -10), AGS_GLOBAL_SETTINGS.StartingKings)
+		
+	if AGS_GLOBAL_SETTINGS.EmpoweredKings then	
+		for i = 1, SGroup_CountSpawned(sg_king) do
+			AGS_StartingKing_Empower(SGroup_GetSquadAt(sg_king, i), player)
+		end			
+	end
+	
+	local ebp_building = AGS_GetCivilizationEntity(player.raceName, AGS_BP_KEEP)		
+	local ename = AGS_EGroupName(player.id, AGS_BP_KEEP)		
+	
+	local start_adjusted_pos = AGS_Starts_GetStartPosition(player.id)		
+	center_pos = AGS_CalculateCenterOffset(start_adjusted_pos, 25, 25)	
+	
+	AGS_SpawnEntity(player.id, ename, ebp_building, center_pos, nil, false)
+end
+
+function AGS_StartingCities_GiveImmunity(eid)
+	Entity_RemoveAbility(eid, BP_GetAbilityBlueprint("core_building_scuttle"))
+	Entity_RemoveAbility(eid, BP_GetAbilityBlueprint("core_unit_death"))
+	Entity_RemoveAbility(eid, BP_GetAbilityBlueprint("pack_building_mon"))
+end
+
+function AGS_StartingCities_SaveSacredSites()	
+	local all_prefab_sites = EGroup_CreateUnique()
+	World_GetBlueprintEntities(AGS_GetNeutralEntity(AGS_BP_SACRED_SITE), all_prefab_sites)
+	for i = 1, EGroup_CountSpawned(all_prefab_sites) do
+		local site = {
+			uwid = Entity_GetID(EGroup_GetSpawnedEntityAt(all_prefab_sites, i)),
+			eid = EGroup_GetSpawnedEntityAt(all_prefab_sites, i),
+			pos = Entity_GetPosition(EGroup_GetSpawnedEntityAt(all_prefab_sites, i)),
+			last_owner = nil,
+			spawned_site = true,
+			spawned_all = false,
+		}
+		table.insert(AGS_STARTING_CITIES_TABLE, site)
+	end
+end
+-- This is expecting square maps.
+function AGS_StartingCities_DetermineSacredSites()	
+	AGS_Print("DIMENSION X", World_GetWidth())
+	AGS_Print("DIMENSION Y", World_GetLength())
+	
+	local dimension = World_GetWidth()
+	local desired = nil
+	for _, map_choice in pairs(AGS_STARTING_CITIES_EXPECTED) do
+		if map_choice.size >= dimension then
+			desired = map_choice
+			break
+		end
+	end
+	AGS_Print("DESIRED", desired)
+	
+	local side_length = dimension / math.sqrt(desired.count)
+	
+--	table.insert(AGS_STARTING_CITIES_POSITIONS, )
+	--AGS_STARTING_CITIES_COUNT = #PLAYERS + 
+	--World_GetEntitiesNearPoint
+--	AGS_STARTING_CITIES_WIDTH = math.max(, World_GetLength())/AGS_PILGRIMS_TUNING 
+end
+
+

@@ -8,6 +8,8 @@
 -- Referenceable by any other script.
 ---------------------------------------------------------------------------------------------------
 
+-- This is stricly list of unit types, it might refer to real entity if they are called same
+-- For most entities this is not true... Use getters for ENTITY_TABLE.
 AGS_BP_KEEP = "castle" --scar_keep or castle
 AGS_BP_TC_CAPITAL = "town_center_capital"
 AGS_BP_TC_CAPITAL_UNIT = "town_center_capital_moving"
@@ -26,15 +28,13 @@ AGS_BP_SHEEP = "sheep"
 AGS_BP_TREE = "tree"
 AGS_BP_LANDMARK = "wonder"
 AGS_BP_WONDER = "wonder_imperial_age"
-AGS_BP_SACRED_SITE = "holy_site"
+AGS_BP_SACRED_SITE = "special_beacon"
 -- All buildings should be tagged with this otherwise winconditions & others will not work.
 AGS_BP_BUILDING = "building"
 -- All untis should be tagged with this otherwise winconditions & others will not work.
 AGS_BP_UNIT_CLASS = "annihilation_condition"
 AGS_BP_GAIA = "gaia"
 AGS_BP_MOVING_BUILDINGS = "mongol_moving_structure"
-AGS_BP_DOCK = "scar_dock"
-AGS_BP_HOUSE = "house"
 AGS_BP_HOUSE_UNIT = "house_moving"
 AGS_BP_HOW = "house_of_wisdom"
 AGS_BP_PALISADE = "palisade_wall"
@@ -46,12 +46,22 @@ AGS_BP_SIEGE = "siege"
 AGS_BP_WORKER = "worker"
 AGS_BP_MILITARY = "military"
 AGS_BP_MONASTERY = "monastery"
-
+AGS_BP_BARRACKS = "barracks"
+AGS_BP_ARCHERY_RANGE = "archery_range"
+AGS_BP_STABLE = "stable"
+AGS_BP_WORKSHOP = "siege_workshop"
+AGS_BP_DOCK = "scar_dock"
+AGS_BP_HOUSE = "house"
+AGS_BP_BLACKSMITH = "blacksmith"
+AGS_BP_RELIC = "relic"
 AGS_BP_TREASURE = "resource_pickup"
 AGS_BP_TREASURE_FOOD = "resource_pickup_food"
 AGS_BP_TREASURE_WOOD = "resource_pickup_wood"
 AGS_BP_TREASURE_GOLD = "resource_pickup_gold"
 AGS_BP_TREASURE_STONE = "resource_pickup_stone"
+AGS_BP_DEPOSIT_GOLD = "gold"
+AGS_BP_DEPOSIT_STONE = "stone"
+AGS_BP_DEPOSIT_FOOD = "forage_bush"
 
 AGS_ENTITY_TABLE = {
 	neutral = {
@@ -60,6 +70,8 @@ AGS_ENTITY_TABLE = {
 		resource_pickup_wood = "resource_pickup_wood",
 		resource_pickup_gold = "resource_pickup_gold",
 		resource_pickup_stone = "resource_pickup_stone",
+		relic = "relic",
+		special_beacon = "holy_site",
 	},
 	english = {
 		castle = "building_defense_keep_eng",
@@ -75,6 +87,13 @@ AGS_ENTITY_TABLE = {
 		palisade_gate = "building_defense_palisade_gate_eng",
 		monk = "unit_monk_3_eng",
 		monastery = "building_unit_religious_control_eng",
+		barracks = "building_unit_infantry_control_eng",
+		stable = "building_unit_cavalry_control_eng",
+		archery_range = "building_unit_ranged_control_eng",
+		siege_workshop = "building_unit_siege_control_eng",
+		scar_dock = "building_unit_naval_eng",		
+		house = "building_house_control_eng",
+		blacksmith = "building_tech_unit_infantry_control_eng",
 	},
 	chinese = {
 		castle = "building_defense_keep_chi",
@@ -89,6 +108,13 @@ AGS_ENTITY_TABLE = {
 		palisade_gate = "building_defense_palisade_gate_chi",
 		monk = "unit_monk_3_chi",
 		monastery = "building_unit_religious_control_chi",
+		barracks = "building_unit_infantry_control_chi",
+		stable = "building_unit_cavalry_control_chi",
+		archery_range = "building_unit_ranged_control_chi",
+		siege_workshop = "building_unit_siege_control_chi",
+		scar_dock = "building_unit_naval_chi",	
+		house = "building_house_control_chi",	
+		blacksmith = "building_tech_unit_infantry_control_chi",	
 	},
 	french = {
 		castle = "building_defense_keep_fre",
@@ -103,6 +129,13 @@ AGS_ENTITY_TABLE = {
 		palisade_gate = "building_defense_palisade_gate_fre",
 		monk = "unit_monk_3_fre",
 		monastery = "building_unit_religious_control_fre",
+		barracks = "building_unit_infantry_control_fre",
+		stable = "building_unit_cavalry_control_fre",
+		archery_range = "building_unit_ranged_control_fre",
+		siege_workshop = "building_unit_siege_control_fre",
+		scar_dock = "building_unit_naval_fre",	
+		house = "building_house_control_fre",	
+		blacksmith = "building_tech_unit_infantry_control_fre",
 	},
 	hre = {
 		castle = "building_defense_keep_hre",
@@ -118,6 +151,13 @@ AGS_ENTITY_TABLE = {
 		palisade_gate = "building_defense_palisade_gate_hre",
 		monk = "unit_monk_1_hre",
 		monastery = "building_unit_religious_control_hre",
+		barracks = "building_unit_infantry_control_hre",
+		stable = "building_unit_cavalry_control_hre",
+		archery_range = "building_unit_ranged_control_hre",
+		siege_workshop = "building_unit_siege_control_hre",
+		scar_dock = "building_unit_naval_hre",	
+		house = "building_house_control_hre",
+		blacksmith = "building_tech_unit_infantry_control_hre",	
 	},
 	rus = {	
 		castle = "building_defense_keep_control_rus",
@@ -132,6 +172,13 @@ AGS_ENTITY_TABLE = {
 		palisade_gate = "building_defense_palisade_gate_rus",
 		monk = "unit_monk_3_rus",
 		monastery = "building_unit_religious_control_rus",
+		barracks = "building_unit_infantry_control_rus",
+		stable = "building_unit_cavalry_control_rus",
+		archery_range = "building_unit_ranged_control_rus",
+		siege_workshop = "building_unit_siege_control_rus",
+		scar_dock = "building_unit_naval_rus",	
+		house = "building_house_control_rus",	
+		blacksmith = "building_tech_unit_infantry_control_rus",
 	},
 	abbasid = {
 		castle = "building_defense_keep_control_abb",
@@ -147,6 +194,13 @@ AGS_ENTITY_TABLE = {
 		palisade_gate = "building_defense_palisade_gate_abb",
 		monk = "unit_monk_3_abb",
 		monastery = "building_unit_religious_control_abb",
+		barracks = "building_unit_infantry_control_abb",
+		stable = "building_unit_cavalry_control_abb",
+		archery_range = "building_unit_ranged_control_abb",
+		siege_workshop = "building_unit_siege_control_abb",
+		scar_dock = "building_unit_naval_abb",		
+		house = "building_house_control_abb",	
+		blacksmith = "building_tech_unit_infantry_control_abb",
 	},
 	mongol = {
 		castle = "building_defense_keep_control_nov",
@@ -158,10 +212,16 @@ AGS_ENTITY_TABLE = {
 		scout = "unit_khan_1_mon",
 		king = "unit_king_1_mon",
 		scar_dock = "building_unit_naval_mon",
-		house = "building_house_mon",
 		house_moving = "building_house_moving_mon",
 		monk = "unit_monk_3_mon",
 		monastery = "building_unit_religious_mon",
+		barracks = "building_unit_infantry_mon",
+		stable = "building_unit_cavalry_mon",
+		archery_range = "building_unit_ranged_mon",
+		siege_workshop = "building_unit_siege_mon",
+		scar_dock = "building_unit_naval_mon",	
+		house = "building_house_mon",
+		blacksmith = "building_tech_unit_infantry_mon",
 	},
 	sultanate = {
 		castle = "building_defense_keep_control_sul",
@@ -176,6 +236,13 @@ AGS_ENTITY_TABLE = {
 		palisade_gate = "building_defense_palisade_gate_sul",
 		monk = "unit_monk_2_sul",
 		monastery = "building_unit_religious_control_sul",
+		barracks = "building_unit_infantry_control_sul",
+		stable = "building_unit_cavalry_control_sul",
+		archery_range = "building_unit_ranged_control_sul",
+		siege_workshop = "building_unit_siege_control_sul",
+		scar_dock = "building_unit_naval_sul",	
+		house = "building_house_control_sul",	
+		blacksmith = "building_tech_unit_infantry_control_sul",
 	},
 }
 
@@ -191,7 +258,8 @@ AGS_CIV_HRE = "hre"
 AGS_CIV_MONGOL = "mongol"
 AGS_CIV_ABBASID = "abbasid"
 AGS_CIV_CHINESE = "chinese"
-
+AGS_CIV_RUS = "rus"
+AGS_CIV_FRENCH = "french"
 
 AGS_CIV_PREFIXES = {
 	chinese = "chi_",

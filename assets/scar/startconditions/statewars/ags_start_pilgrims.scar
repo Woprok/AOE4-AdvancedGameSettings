@@ -1,0 +1,126 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Spawns few pilgrims randomly on the map.
+---------------------------------------------------------------------------------------------------
+
+AGS_PILGRIMS_MODULE = "AGS_Pilgrims"
+AGS_PILGRIMS_RADIUS = 1
+AGS_PILGRIMS_TUNING = 1.9
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_PILGRIMS_MODULE)	
+
+function AGS_Pilgrims_AdjustSettings()
+	AGS_Print("AGS_Pilgrims_AdjustSettings")
+	if AGS_GLOBAL_SETTINGS.StartingMonks == 0 then
+		AGS_GLOBAL_SETTINGS.StartingMonks = 1
+	end
+end
+
+function AGS_Pilgrims_UpdateModuleSettings()
+	AGS_Print("AGS_Pilgrims_UpdateModuleSettings")
+	if AGS_GLOBAL_SETTINGS.Settlement ~= AGS_GS_SETTLEMENT_PILGRIMS then
+		Core_UnregisterModule(AGS_PILGRIMS_MODULE)
+	end
+end
+
+function AGS_Pilgrims_EarlyInitializations()
+	AGS_Print("AGS_Pilgrims_EarlyInitializations")
+	if AGS_GLOBAL_SETTINGS.UsingPrefabStart then
+		AGS_Pilgrims_DestroySpawn()
+	end
+end
+
+function AGS_Pilgrims_PresetInitialize()
+	AGS_Print("AGS_Pilgrims_PresetInitialize")
+	-- Tune pilgrims spawn out from the middle of the map.
+	AGS_PILGRIMS_RADIUS = math.max(World_GetWidth(), World_GetLength())/AGS_PILGRIMS_TUNING 
+	Camera_MoveTo(World_Pos(0,World_GetHeightAt(0,0),0))
+end
+
+function AGS_Pilgrims_PresetExecute()
+	AGS_Print("AGS_Pilgrims_PresetExecute")
+	AGS_Pilgrims_CreateSpawn()
+end
+
+function AGS_Pilgrims_OnStarting()
+	AGS_Print("AGS_Pilgrims_OnStarting")
+	for _, player in pairs(PLAYERS) do	
+		-- Insist that player do not have capital.
+		Player_SetStateModelFloat(player.id, "has_capital", 0)	
+		-- Player should be able to build structures.
+		Player_SetStateModelBool(player.id, "player_can_construct_structures", true)	
+		if AGS_GLOBAL_SETTINGS.UsingPrefabStart then
+			FOW_UnExploreAll()
+		end
+	end
+end
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- Removing prefab start.
+function AGS_Pilgrims_DestroySpawn()
+	AGS_Print("AGS_Pilgrims_DestroySpawn")
+	for _, player in pairs(PLAYERS) do	
+		EGroup_DestroyAllEntities(Player_GetEntities(player.id))
+		SGroup_DestroyAllSquads(Player_GetSquads(player.id))
+	end
+end
+-- Get spawn dimensions and initial squad location.
+function AGS_Pilgrims_GetScatterPosition()
+	local x = World_GetRand(0 - AGS_PILGRIMS_RADIUS, AGS_PILGRIMS_RADIUS)
+	local z = World_GetRand(0 - AGS_PILGRIMS_RADIUS, AGS_PILGRIMS_RADIUS)
+	local y = World_GetHeightAt(x, z)
+	return World_Pos(x, y, z)
+end
+-- Creates list based on count up to 8, creating each.
+function AGS_Pilgrims_CreateMonkList(desired_count)
+	local monks = { }
+	if desired_count >= 1 then
+		table.insert(monks, AGS_GetCivilizationUnit(AGS_CIV_RUS, AGS_BP_MONK))
+	end
+	if desired_count >= 2 then
+		table.insert(monks, AGS_GetCivilizationUnit(AGS_CIV_ABBASID, AGS_BP_MONK))
+	end
+	if desired_count >= 3 then
+		table.insert(monks, AGS_GetCivilizationUnit(AGS_CIV_HRE, AGS_BP_MONK))
+	end
+	if desired_count >= 4 then
+		table.insert(monks, AGS_GetCivilizationUnit(AGS_CIV_SULTANATE, AGS_BP_MONK))
+	end
+	if desired_count >= 5 then
+		table.insert(monks, AGS_GetCivilizationUnit(AGS_CIV_MONGOL, AGS_BP_MONK))
+	end
+	if desired_count >= 6 then
+		table.insert(monks, AGS_GetCivilizationUnit(AGS_CIV_CHINESE, AGS_BP_MONK))
+	end
+	if desired_count >= 7 then
+		table.insert(monks, AGS_GetCivilizationUnit(AGS_CIV_ENGLISH, AGS_BP_MONK))
+	end
+	if desired_count >= 8 then
+		table.insert(monks, AGS_GetCivilizationUnit(AGS_CIV_FRENCH, AGS_BP_MONK))
+	end
+	return monks
+end
+-- Distributes all players all units randomly around the map.
+function AGS_Pilgrims_CreateSpawn()	
+	-- Get list of all pilgrim brothers
+	local monk_list = AGS_Pilgrims_CreateMonkList(AGS_GLOBAL_SETTINGS.StartingMonks)
+	for _, player in pairs(PLAYERS) do		
+		local snameMNK = AGS_SGroupName(player.id, AGS_BP_MONK)
+		local squad_group = SGroup_CreateIfNotFound(snameMNK)	
+		for _, sbp_mnk in pairs(monk_list) do
+			local spawn_pos = AGS_Pilgrims_GetScatterPosition()
+			UnitEntry_DeploySquads(player.id, squad_group, {{sbp = sbp_mnk, numSquads = 1 }}, spawn_pos)
+		end		
+		
+		Core_CallDelegateFunctions("UnitsSpawned", player.id, nil, squad_group)			
+	end
+end	

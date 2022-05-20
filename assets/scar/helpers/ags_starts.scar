@@ -37,5 +37,12 @@ function AGS_Starts_GetStartPosition(player_id)
 	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_FORTIFIED then
 		return Player_GetStartingPosition(player_id) 	
 	end
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_CITYSTATE then		
+		return Player_GetStartingPosition(player_id) 	
+	end
+	if AGS_GLOBAL_SETTINGS.Settlement == AGS_GS_SETTLEMENT_PILGRIMS then
+		return AGS_Pilgrims_GetScatterPosition() 	
+	end
+		
 	return Player_GetStartingPosition(player_id) 
 end
