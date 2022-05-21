@@ -154,12 +154,12 @@ function AGS_Culture_CreateObjective()
 	local secondary_objective = AGS_Objectives_CreateFromCore(AGS_OBJECTIVES_CULTURE, AGS_OBJECTIVES_CULTURE_SECONDARY)
 	for index, site in pairs(AGS_CULTURE_SACRED_SITE_OBJECTIVES) do		
 		site.objective = AGS_Objectives_Create(secondary_objective, AGS_GS_LOCAL_PLAYER, index, AGS_CULTURE_OBJECTIVE)
-		AGS_Objectives_Set(site.objective, OS_Incomplete, true, true)
+		AGS_Objectives_Set(site.objective, OS_Incomplete, false, true)
 	end
 end
 
 function AGS_Culture_UpdateObjective()
-	local sacred_count = #AGS_CULTURE_SACRED_SITE_OBJECTIVES
+	local sacred_count = math.ceil(#AGS_CULTURE_SACRED_SITE_OBJECTIVES * AGS_CULTURE_VICTORY_THRESHOLD)
 	local sacred_team_count = AGS_Culture_CountSitesControlledTeam(AGS_GS_LOCAL_PLAYER)
 	AGS_Objectives_Progress(AGS_CULTURE_OBJECTIVE, sacred_team_count, sacred_count, sacred_team_count / sacred_count)
 end
@@ -172,10 +172,13 @@ function AGS_Culture_UpdateSacredSiteObjectives()
 		local state = nil
 		if site.progress == -1 and AGS_Objectives_GetCurrentState(site.objective) == OS_Incomplete then 
 			state = OS_Failed
+			AGS_Objectives_Set(site.objective, nil, true)
 		elseif site.progress == 1 and AGS_Objectives_GetCurrentState(site.objective) == OS_Incomplete then
 			state = OS_Complete
+			AGS_Objectives_Set(site.objective, nil, false)
 		elseif site.progress == 0 then
 			state = OS_Incomplete
+			AGS_Objectives_Set(site.objective, nil, false)
 		end			
 		AGS_Objectives_SetColorProgress(site.objective, state, site.color_last_capturing, math.abs(site.progress))		
 	end	

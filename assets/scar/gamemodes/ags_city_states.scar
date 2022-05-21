@@ -16,8 +16,9 @@ import("startconditions/statewars/ags_start_pilgrims.scar")
 import("startconditions/statewars/ags_starting_cities.scar")
 import("gameplay/statewars/ags_reveal_cities.scar")
 import("gameplay/statewars/ags_relicization.scar")
-AGS_GS_SETTLEMENT_CITYSTATE = 5
-AGS_GS_SETTLEMENT_PILGRIMS = 6
+import("gameplay/statewars/ags_statewars_bonuses.scar")
+
+
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
@@ -33,21 +34,24 @@ function AGS_CityStates_AdjustSettings()
 	-- Optimized only for multiplayer experience.
 	AGS_GLOBAL_SETTINGS.IsAdjustingAI = false
 	-- Customization
-	AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_NONE
 	AGS_GLOBAL_SETTINGS.MinimumPopulation = 10
-	AGS_GLOBAL_SETTINGS.MaximumPopulation = 40
+	AGS_GLOBAL_SETTINGS.MinimumPopulationReset = true
+	AGS_GLOBAL_SETTINGS.MaximumPopulation = 150
 	AGS_GLOBAL_SETTINGS.StartingAge = AGS_GS_AGE_CASTLE
-	AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_FEUDAL
+	AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_NONE
 	AGS_GLOBAL_SETTINGS.Annihilation = false
 	AGS_GLOBAL_SETTINGS.Religious = false
 	AGS_GLOBAL_SETTINGS.Wonder = false
 	AGS_GLOBAL_SETTINGS.Conquest = false
-	AGS_GLOBAL_SETTINGS.StartingMonks = 8
+	AGS_GLOBAL_SETTINGS.StartingMonks = 3
 	AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_PILGRIMS
 	-- New Settings
 	AGS_GLOBAL_SETTINGS.Culture = true
-	AGS_GLOBAL_SETTINGS.RevealCities = true
+	AGS_GLOBAL_SETTINGS.RevealCities = false
 	AGS_GLOBAL_SETTINGS.Relicization = true
+	AGS_GLOBAL_SETTINGS.StatewarsBonuses = true
+	-- TMP
+	--AGS_GLOBAL_SETTINGS.SimulationSpeed = 5
 end
 
 function AGS_CityStates_PrepareStart()

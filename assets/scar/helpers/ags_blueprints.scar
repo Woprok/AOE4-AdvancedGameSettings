@@ -62,6 +62,8 @@ AGS_BP_TREASURE_STONE = "resource_pickup_stone"
 AGS_BP_DEPOSIT_GOLD = "gold"
 AGS_BP_DEPOSIT_STONE = "stone"
 AGS_BP_DEPOSIT_FOOD = "forage_bush"
+AGS_BP_DEPOSIT_MARKET = "settlement"
+AGS_BP_DEPOSIT_ANIMAL = "animal"
 
 AGS_ENTITY_TABLE = {
 	neutral = {

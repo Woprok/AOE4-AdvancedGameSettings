@@ -48,7 +48,11 @@ function AGS_Relicization_DestroyResources()
 				table.insert(AGS_RELICIZATION_TABLE, Entity_GetPosition(eid))
 				Entity_Destroy(eid)				
 			elseif Entity_IsOfType(eid, AGS_BP_DEPOSIT_FOOD) then
-				Entity_Destroy(eid)						
+				Entity_Destroy(eid)									
+			elseif Entity_IsOfType(eid, AGS_BP_DEPOSIT_MARKET) then
+				Entity_Destroy(eid)							
+			elseif Entity_IsOfType(eid, AGS_BP_DEPOSIT_ANIMAL) then
+				Entity_Destroy(eid)								
 			end
 		end		
 	end		

@@ -358,10 +358,10 @@
 357,,,,Treasure Option,,Treasures
 358,,,,Treasure Option,,Few treasures will appear randomly around the map.
 359,,,,Resource Option,,Low
-360,,,,State Wars,,Conquer majority of city-states to ensure victory.
+360,,,,State Wars,,Conquer majority of city-states to ensure victory. Each players starts with few monks and has to find and takeover city.\n\n Civilization choice has no effect. Population is limited to 150. Team that controls 75% of cities will win the game.
 361,,,,State Wars,,City-State Wars
 362,,,ags_conditions_objectives,State Wars,,Control majority of cities
-363,,,ags_conditions_objectives,State Wars,,%1NAMEORNUMBER% City
+363,,,ags_conditions_objectives,State Wars,,City %1NAMEORNUMBER% 
 364,,,ags_culture_data,State Wars,,%1PLAYER_NAME% was assimilated
 365,,,ags_culture_data,State Wars,,You are approaching Culture Victory
 366,,,ags_culture_data,State Wars,,Your team is approaching Culture Victory
