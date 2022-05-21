@@ -8,7 +8,35 @@
 ---------------------------------------------------------------------------------------------------
 
 AGS_STARTING_CITIES_MODULE = "AGS_StartingCities"
-
+-- Holds all strategic points
+AGS_STARTING_CITIES_GROUP = nil
+-- List of all types we support
+AGS_STARTING_CITIES_TYPES = {
+	Standard = {	
+		Radius = 40,
+		Monastery = 1,
+		Barracks = 1,
+		ArcheryRange = 1,
+		Stable = 1,
+		House = 3,
+		Blacksmith = 1,
+		Market = 1,
+		MonasteryOff = World_Pos(-25, 0, 0),
+		BarracksOff = World_Pos(-25, 0, 25),
+		ArcheryRangeOff = World_Pos(0, 0, 25),
+		StableOff = World_Pos(25, 0, 25),
+		HouseOff = {
+			World_Pos(-25, 0, -25),
+			World_Pos(-15, 0, -25),
+			World_Pos(-5, 0, -25),
+		},
+		BlacksmithOff = World_Pos(25, 0, 0),
+		MarketOff = World_Pos(25, 0, -25),
+		-- This is not used currently.
+		SacredSite = 1,
+	},
+}
+-- List of all combinations we support
 AGS_STARTING_CITIES_OPTIONS = {
 	{
 		civ = AGS_CIV_ENGLISH,
@@ -43,21 +71,6 @@ AGS_STARTING_CITIES_OPTIONS = {
 		option = AGS_STARTING_CITIES_TYPES.Standard,
 	},
 }
-
-AGS_STARTING_CITIES_TYPES = {
-	Standard = {		
-		Monastery = 1,
-		Barracks = 1,
-		ArcheryRange = 1,
-		Stable = 1,
-		Workshop = 0,
-		Dock = 0,
-		House = 3,
-		Blacksmith = 1,
-		SacredSite = 1,
-	},
-}
-
 AGS_STARTING_CITIES_POSITIONS = {
 	
 }
@@ -217,29 +230,30 @@ end
 -- This function spawns a city on each position that is currently in AGS_STARTING_CITIES_POSITIONS
 -- Also cities are saved in AGS_STARTING_CITIES_TABLE for future reference
 function AGS_StartingCities_Create()
-	
-	for _, city_pos in pairs(AGS_STARTING_CITIES_POSITIONS) do
-		
+	AGS_STARTING_CITIES_GROUP = EGroup_CreateIfNotFound("all_city_state_points")
+	for index, city_pos in pairs(AGS_STARTING_CITIES_POSITIONS) do
+		local city_type = Table_GetRandomItem(AGS_STARTING_CITIES_OPTIONS)
+		AGS_StartingCities_Build(city_pos, city_type, index)
 	end
 	
-	local sbp_king = AGS_GetCivilizationUnit(player.raceName, AGS_BP_KING)				
-	local sname = AGS_SGroupName(player.id, AGS_BP_KING)	
-	local start_adjusted_pos = AGS_Starts_GetStartPosition(player.id)			
-	local sg_king = AGS_SpawnSquad(player.id, sname, sbp_king, start_adjusted_pos, World_Pos(0, 0, -10), AGS_GLOBAL_SETTINGS.StartingKings)
-		
-	if AGS_GLOBAL_SETTINGS.EmpoweredKings then	
-		for i = 1, SGroup_CountSpawned(sg_king) do
-			AGS_StartingKing_Empower(SGroup_GetSquadAt(sg_king, i), player)
-		end			
-	end
+--local sbp_king = AGS_GetCivilizationUnit(player.raceName, AGS_BP_KING)				
+--local sname = AGS_SGroupName(player.id, AGS_BP_KING)	
+--local start_adjusted_pos = AGS_Starts_GetStartPosition(player.id)			
+--local sg_king = AGS_SpawnSquad(player.id, sname, sbp_king, start_adjusted_pos, World_Pos(0, 0, -10), AGS_GLOBAL_SETTINGS.StartingKings)
+--	
+--if AGS_GLOBAL_SETTINGS.EmpoweredKings then	
+--	for i = 1, SGroup_CountSpawned(sg_king) do
+--		AGS_StartingKing_Empower(SGroup_GetSquadAt(sg_king, i), player)
+--	end			
+--end
+--
+--local ebp_building = AGS_GetCivilizationEntity(player.raceName, AGS_BP_KEEP)		
+--local ename = AGS_EGroupName(player.id, AGS_BP_KEEP)		
+--
+--local start_adjusted_pos = AGS_Starts_GetStartPosition(player.id)		
+--center_pos = AGS_CalculateCenterOffset(start_adjusted_pos, 25, 25)	
 	
-	local ebp_building = AGS_GetCivilizationEntity(player.raceName, AGS_BP_KEEP)		
-	local ename = AGS_EGroupName(player.id, AGS_BP_KEEP)		
-	
-	local start_adjusted_pos = AGS_Starts_GetStartPosition(player.id)		
-	center_pos = AGS_CalculateCenterOffset(start_adjusted_pos, 25, 25)	
-	
-	AGS_SpawnEntity(player.id, ename, ebp_building, center_pos, nil, false)
+--	AGS_SpawnEntity(player.id, ename, ebp_building, center_pos, nil, false)
 --	table.insert(AGS_STARTING_CITIES_POSITIONS, )
 	--AGS_STARTING_CITIES_COUNT = #PLAYERS + 
 	--World_GetEntitiesNearPoint
@@ -256,10 +270,83 @@ function AGS_StartingCities_Create()
 	--	table.insert(AGS_STARTING_CITIES_TABLE, site)
 end
 
+function AGS_StartingCities_Build(city_pos, city_type, index)
+	
+	--table.insert(AGS_STARTING_CITIES_TABLE, egroup_buildings)
+	AGS_StartingCities_TreeCutter(city_pos, city_type)
+	
+	-- Create city point
+	local ebp_site = AGS_GetNeutralEntity(AGS_BP_SACRED_SITE)
+	local e = AGS_StartingCities_CreateEntity(AGS_STARTING_CITIES_GROUP, ebp_site, city_pos)
+	-- Create additional structures around
+	local egroup_name = AGS_EGroupNeutralName(index, AGS_BP_SACRED_SITE) 
+	local egroup_buildings = EGroup_CreateIfNotFound(egroup_name)
+	-- Monastery
+	local ebp_monastery = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_MONASTERY)
+	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_monastery, city_pos, city_type.option.MonasteryOff)
+	-- Barracks
+	local ebp_infantry = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_BARRACKS)
+	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_infantry, city_pos, city_type.option.BarracksOff)
+	-- Archery
+	local ebp_archery = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_ARCHERY_RANGE)
+	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_archery, city_pos, city_type.option.ArcheryRangeOff)
+	-- Stable
+	local ebp_cavalry = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_STABLE)
+	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_cavalry, city_pos, city_type.option.StableOff)
+	-- House
+	local ebp_house = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_HOUSE)
+	for i=1, city_type.option.House do 
+		AGS_StartingCities_CreateEntity(egroup_buildings, ebp_house, city_pos, city_type.option.HouseOff[i])
+	end
+	-- Blacksmith
+	local ebp_smith = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_BLACKSMITH)
+	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_smith, city_pos, city_type.option.BlacksmithOff)
+	-- Market
+	local ebp_market = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_MARKET)
+	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_market, city_pos, city_type.option.MarketOff)
+	
+end
+
+function AGS_StartingCities_TreeCutter(city_pos, city_type)	
+	local neutral_entities = EGroup_CreateIfNotFound("tree_free_radius")
+	World_GetEntitiesNearPoint(Game_GetLocalPlayer(), neutral_entities, city_pos, city_type.option.Radius, OT_Neutral)
+	-- Destroy after we found them.
+	local _AGS_DestroyAnyTree = function(gid, idx, eid)		
+		if eid ~= nil and Entity_IsOfType(eid, AGS_BP_TREE) then
+			Entity_Destroy(eid)
+		end		
+	end	
+	EGroup_ForEach(neutral_entities, _AGS_DestroyAnyTree)	
+end
+
 function AGS_StartingCities_GiveImmunity(eid)
 	Entity_RemoveAbility(eid, BP_GetAbilityBlueprint("core_building_scuttle"))
 	Entity_RemoveAbility(eid, BP_GetAbilityBlueprint("core_unit_death"))
 	Entity_RemoveAbility(eid, BP_GetAbilityBlueprint("pack_building_mon"))
+end
+
+-- Spawn entity as neutral and return it to caller. Entity is added to egroup.
+function AGS_StartingCities_CreateEntity(egroup, bp_entity, position, position_offset)
+	if position_offset == nil then
+		position_offset = World_Pos(0, 0, 0)	
+	end	
+	-- Determine proper position and rotation.
+	local nx = position.x
+	local ny = position.y
+	local nz = position.z
+	local placement = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z)
+	local rotation = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z + 5)
+	-- Spawn
+	local e = Entity_CreateENVFacing(bp_entity, placement, rotation, true)
+	
+	local safe_spawn = World_GetSpawnablePosition(placement, e)
+	Entity_WarpToPos(e, safe_spawn)
+	
+	Entity_Spawn(e)
+	Entity_ForceConstruct(e)
+	Entity_SnapToGridAndGround(e, false)
+	EGroup_Add(egroup, e)
+	return e	
 end
 
 function AGS_StartingCities_RemoveMapSacredSites()	

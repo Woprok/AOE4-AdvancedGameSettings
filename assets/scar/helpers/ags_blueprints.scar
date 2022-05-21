@@ -15,7 +15,6 @@ AGS_BP_TC_CAPITAL = "town_center_capital"
 AGS_BP_TC_CAPITAL_UNIT = "town_center_capital_moving"
 AGS_BP_TC = "town_center"
 AGS_BP_TC_LANDMARK = "town_center_landmark"
-AGS_BP_MARKET = "market"
 AGS_BP_VILLAGER = "villager"
 AGS_BP_SPEARMAN = "spearman"
 AGS_BP_ARCHER = "archer"
@@ -50,6 +49,7 @@ AGS_BP_BARRACKS = "barracks"
 AGS_BP_ARCHERY_RANGE = "archery_range"
 AGS_BP_STABLE = "stable"
 AGS_BP_WORKSHOP = "siege_workshop"
+AGS_BP_MARKET = "market"
 AGS_BP_DOCK = "scar_dock"
 AGS_BP_HOUSE = "house"
 AGS_BP_BLACKSMITH = "blacksmith"
@@ -762,6 +762,11 @@ end
 function AGS_SGroupName(player_id, unit_category)
 	return "sg_player_" .. unit_category .. "_" .. tostring(player_id)
 end
+
+function AGS_EGroupNeutralName(unique_num, egroup_focus_name)
+	return "eg_neutral_" .. egroup_focus_name .. "_" .. tostring(unique_num)
+end
+
 -- Spawn entity and return it to caller.
 function AGS_SpawnEntity(player_id, egroup_name, bp_entity, position, position_offset, opt_do_rounding)
 	if position == nil then
