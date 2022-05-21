@@ -1,0 +1,40 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Additional data for condition. Imported by appropriate condition.
+---------------------------------------------------------------------------------------------------
+
+AGS_OBJECTIVES_REGICIDE = {
+	reason = AGS_WR_REGICIDE,
+	-- Your King must survive. 
+	title = "$11218487", 
+	-- "Failed to protect the king."
+	title_lost = "$64c5019a145c4e4da448dbd3adeea61e:263",
+	-- "Truly a king of everyone you are."
+	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:262",
+	description = Loc_Empty(),
+	icon = "icons\\objectives\\objectives_leader",
+	data_template = DT_PRIMARY_DEFAULT,
+	data_template_or = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "regicideObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+AGS_NOTIFICATIONS_REGICIDE = {
+	-- "%1PLAYER_NAME% assassinated"
+	title = "$64c5019a145c4e4da448dbd3adeea61e:264",
+	sfx = nil,	
+}
+
+AGS_NOTIFICATIONS_REGICIDE_ATTACKED = {
+	-- "King under attack"
+	self_attacked = "$64c5019a145c4e4da448dbd3adeea61e:266",
+	-- "Enemy attacking %1PLAYER_NAME%'s king"
+	ally_attacked = "$64c5019a145c4e4da448dbd3adeea61e:265",
+	attacked_sfx = "mus_stinger_landmark_building_damaged",
+}

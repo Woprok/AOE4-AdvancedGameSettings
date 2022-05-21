@@ -15,6 +15,7 @@ AGS_PRESENTATIONS_DEFAULT_SUFFIX = "default"
 AGS_PRESENTATIONS_CONQUEST_SUFFIX = "conquest"
 AGS_PRESENTATIONS_RELIGIOUS_SUFFIX = "religious"
 AGS_PRESENTATIONS_WONDER_SUFFIX = "wonder"
+AGS_PRESENTATIONS_CULTURE_SUFFIX = "culture"
 AGS_PRESENTATIONS_DEFEAT = {
 	-- Endgame
 	endgame_music = MUS_STING_PRIMARY_OBJ_FAIL,
@@ -28,10 +29,12 @@ AGS_PRESENTATIONS_DEFEAT = {
 	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
 	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
 	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
+	icon_culture = "icons\\races\\common\\victory_conditions\\victory_condition_settlements",
 	sound_default = "mus_stinger_landmark_objective_complete_fail", -- should be same as conquest
 	sound_conquest = "ConquestDefeatEvent",
 	sound_wonder = "DefendWonderDefeatEvent",
 	sound_religious = "ReligiousDefeatEvent",
+	sound_culture = "ReligiousDefeatEvent",	
 }
 AGS_PRESENTATIONS_ELIMINATION = {
 	-- Endgame
@@ -46,10 +49,12 @@ AGS_PRESENTATIONS_ELIMINATION = {
 	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
 	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
 	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
+	icon_culture = "icons\\races\\common\\victory_conditions\\victory_condition_settlements",
 	sound_default = "mus_stinger_landmark_objective_complete_fail", -- should be same as conquest
 	sound_conquest = "ConquestDefeatEvent",
 	sound_wonder = "DefendWonderDefeatEvent",
 	sound_religious = "ReligiousDefeatEvent",	
+	sound_culture = "ReligiousDefeatEvent",	
 }
 AGS_PRESENTATIONS_VICTORY = {
 	-- Endgame
@@ -64,14 +69,24 @@ AGS_PRESENTATIONS_VICTORY = {
 	icon_conquest = "icons\\races\\common\\victory_conditions\\victory_condition_conquest",
 	icon_wonder = "icons\\races\\common\\victory_conditions\\victory_condition_wonder",
 	icon_religious = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
+	icon_culture = "icons\\races\\common\\victory_conditions\\victory_condition_settlements",
 	sound_default = "mus_stinger_landmark_objective_complete_success", -- should be same as conquest
 	sound_conquest = "ConquestVictoryEvent",
 	sound_wonder = "DefendWonderVictoryEvent",
 	sound_religious = "ReligiousVictoryEvent",	
+	sound_culture = "ReligiousVictoryEvent",	
 }
 ---------------------------------------------------------------------------------------------------
 -- Pre-Filled Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_Presentations_VictoryCulture(player_id)	
+	AGS_Presentations_Victorious(player_id, AGS_PRESENTATIONS_CULTURE_SUFFIX)
+end
+
+function AGS_Presentations_LossCulture(player_id)
+	AGS_Presentations_Losing(player_id, AGS_PRESENTATIONS_CULTURE_SUFFIX)
+end
 
 function AGS_Presentations_VictoryReligious(player_id)	
 	AGS_Presentations_Victorious(player_id, AGS_PRESENTATIONS_RELIGIOUS_SUFFIX)

@@ -49,7 +49,11 @@ function AGS_PopulationCapacity_SetMinPopulation(player, pop_size)
 	local value = pop_size
 	-- Mongols receive always maximum to maintain their unique bonus.
 	if player.raceName == AGS_CIV_MONGOL then
-		value = AGS_GLOBAL_SETTINGS.MaximumPopulation - 200
+		if AGS_GLOBAL_SETTINGS.MinimumPopulationReset then
+			value = value - 200			
+		else
+			value = AGS_GLOBAL_SETTINGS.MaximumPopulation - 200
+		end		
 	end
 	AGS_PopulationCapacity_ApplyMinPopulation(player, value)	
 end

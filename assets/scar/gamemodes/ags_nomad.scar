@@ -16,12 +16,14 @@ import("ags_cardinal.scar")
 ---------------------------------------------------------------------------------------------------
 -- This file is loaded last, this means that all methods are invoked at the end of chain.
 -- It might be possible to assume that all imported modules are finished with the stage when we are called.
-Core_RegisterModule("AGS_GameModeNomad")	
+-- Hopefully noone will ever confuse this in code with Nomadic start... (I am sure I will :D)
+Core_RegisterModule("AGS_Nomad")	
 
-function AGS_GameModeNomad_AdjustSettings()
-	AGS_Print("AGS_GameModeNomad_AdjustSettings")
-	-- Disabling everything that would potentially interfere with this version of a nomad.
+function AGS_Nomad_AdjustSettings()
+	AGS_Print("AGS_Nomad_AdjustSettings")
+	-- Setting up everything that is not configurable for this mode.
 	AGS_GLOBAL_SETTINGS.UsingPrefabStart = false
 	AGS_GLOBAL_SETTINGS.RevealSpawn = false
+	-- Optimized only for multiplayer experience.
 	AGS_GLOBAL_SETTINGS.IsAdjustingAI = false
 end

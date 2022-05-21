@@ -16,8 +16,8 @@ import("ags_cardinal.scar")
 ---------------------------------------------------------------------------------------------------
 -- This file is loaded last, this means that all methods are invoked at the end of chain.
 -- It might be possible to assume that all imported modules are finished with the stage when we are called.
-Core_RegisterModule("AGS_GameMode")	
+Core_RegisterModule("AGS_Standard")	
 
-function AGS_GameMode_PrepareStart()
-	AGS_Print("AGS_GameMode_PrepareStart")
+function AGS_Standard_PrepareStart()
+	AGS_Print("AGS_Standard_PrepareStart")
 end

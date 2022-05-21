@@ -1,0 +1,43 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Additional data for condition. Imported by appropriate condition.
+---------------------------------------------------------------------------------------------------
+
+AGS_OBJECTIVES_SCORE = {
+	reason = AGS_WR_SCORE,
+	-- "Survive and outshine everyone."
+	title = "$64c5019a145c4e4da448dbd3adeea61e:270", 
+	-- "Survive and outshine everyone. Rank %1RANK_POSITION%."
+	title_rank = "$64c5019a145c4e4da448dbd3adeea61e:312",
+	-- "Your empire was forgotten by the history."
+	title_lost = "$64c5019a145c4e4da448dbd3adeea61e:271",
+	-- "Your Empire shines brightest."
+	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:272",
+	description = Loc_Empty(),
+	icon = "icons\\objectives\\objectives_generic",
+	data_template = DT_PRIMARY_DEFAULT,
+	data_template_or = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "scoreObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+AGS_NOTIFICATIONS_SCORE = {
+	-- "Still waits %1PLAYER_NAME% for Godot."
+	title = "$64c5019a145c4e4da448dbd3adeea61e:273",
+	sfx = nil,	
+}
+
+AGS_NOTIFICATIONS_SCORE_COUNTDOWN = {
+	-- "%1MINUTES_REMAINING% minutes until Game Ends"
+	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:310",
+	title_defeat = "$64c5019a145c4e4da448dbd3adeea61e:310",
+	-- "1 minute until Game Ends"
+	title_final_victory = "$64c5019a145c4e4da448dbd3adeea61e:311",
+	title_final_defeat = "$64c5019a145c4e4da448dbd3adeea61e:311",	
+}

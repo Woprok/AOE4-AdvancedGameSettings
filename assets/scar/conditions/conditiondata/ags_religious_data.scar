@@ -1,0 +1,155 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Additional data for condition. Imported by appropriate condition.
+---------------------------------------------------------------------------------------------------
+
+AGS_OBJECTIVES_RELIGIOUS_SECONDARY = {
+	-- "Site %1NUMBER%"
+	title = 11184017, 
+	data_template = "HolySiteSecondaryObjectiveDataTemplate",
+	data_template_or = "HolySiteSecondaryObjectiveDataTemplate",
+	priority = OT_Secondary,
+	telemetry = "holySiteObj",	
+}
+
+AGS_OBJECTIVES_RELIGIOUS = {
+	reason = AGS_WR_RELIGIOUS,
+	-- "Control all Sacred Sites"
+	title = 11169980, 
+	title_capture = 11169980, 
+	-- "Neutralize a Sacred Site"
+	title_neutralize = 11183992,
+	-- "Defend all Sacred Sites"
+	title_defend = 11190384,
+	description = Loc_Empty(),
+	icon = "icons\\races\\common\\victory_conditions\\victory_condition_religious",
+	data_template = "HolySiteObjectiveDataTemplate",
+	data_template_or = "HolySiteOrObjectiveDataTemplate",
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "religiousObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+AGS_NOTIFICATIONS_RELIGIOUS = {
+	-- "%1PLAYER_NAME% bowed down before new god"
+	title = "$64c5019a145c4e4da448dbd3adeea61e:313",
+	sfx = nil,	
+}
+
+AGS_NOTIFICATIONS_RELIGIOUS_COUNTDOWN = {
+	-- "%1MINUTES_REMAINING% minutes until Religious Victory"
+	title_victory = 11195756,
+	-- "%1MINUTES_REMAINING% minutes until Religious Defeat"
+	title_defeat = 11195757,
+	-- "1 minute until Religious Victory"
+	title_final_victory = 11195758,
+	-- "1 minute until Religious Defeat"
+	title_final_defeat = 11195759,	
+}
+
+AGS_NOTIFICATIONS_RELIGIOUS_STARTED = {	
+	self = "mus_stinger_wonder_win_countdown_player",
+	ally = "mus_stinger_wonder_win_countdown_player",
+	enemy = "mus_stinger_wonder_win_countdown_enemy",
+}
+
+AGS_NOTIFICATIONS_RELIGIOUS_INTERRUPTED = {
+	self = "mus_stinger_religious_countdown_interrupted_player",
+	ally = "mus_stinger_religious_countdown_interrupted_player",
+	enemy = "mus_stinger_religious_countdown_interrupted_enemy",
+}
+
+AGS_NOTIFICATIONS_RELIGIOUS_APPROACH = {
+	-- You are approaching Religious Victory
+	self_action = 11191453,
+	-- You are approaching Religious Victory
+	ally_action = 11191453,
+	-- Enemy is approaching Religious Victory
+	enemy_action = 11191452,
+	self_action_sfx = "sfx_ui_event_queue_religious_player_captured_play",
+	ally_action_sfx = "sfx_ui_event_queue_religious_player_captured_play",
+	enemy_action_sfx = "sfx_ui_event_queue_religious_enemy_captured_play",	
+	self_priority = AGS_NP_LOW,
+	ally_priority = AGS_NP_LOW,
+	enemy_priority = AGS_NP_MAX,	
+}
+
+AGS_NOTIFICATIONS_RELIGIOUS_CAPTURING = {
+	-- Capturing Holy Site
+	self_action = 11190381,
+	-- Ally capturing Holy Site
+	ally_action = 11190382,
+	-- Enemy capturing Holy Site
+	enemy_action = 11185244,	
+	self_action_sfx = "sfx_ui_event_queue_religious_player_capture_start_play",
+	ally_action_sfx = "sfx_ui_event_queue_religious_player_capture_start_play",
+	enemy_action_sfx = "sfx_ui_event_queue_religious_enemy_capture_start_play",	
+	self_priority = AGS_NP_LOW,
+	ally_priority = AGS_NP_LOW,
+	enemy_priority = AGS_NP_MAX,
+}
+
+AGS_NOTIFICATIONS_RELIGIOUS_CAPTURED = {
+	-- Holy Site captured
+	self_action = 11183997,
+	-- Ally captured Holy Site
+	ally_action = 11191225,
+	-- Enemy captured Holy Site
+	enemy_action = 11191226,
+	self_action_sfx = "sfx_ui_event_queue_religious_player_captured_play",
+	ally_action_sfx = "sfx_ui_event_queue_religious_player_captured_play",
+	enemy_action_sfx = "sfx_ui_event_queue_religious_enemy_captured_play",	
+	self_priority = AGS_NP_LOW,
+	ally_priority = AGS_NP_LOW,
+	enemy_priority = AGS_NP_MAX,	
+}
+
+AGS_NOTIFICATIONS_RELIGIOUS_CONTESTING = {
+	-- Contesting Holy Site
+	self_action = 11190419,
+	-- Ally contesting Holy Site
+	ally_action = 11191282,
+	-- Enemy contesting Holy Site
+	enemy_action = 11185245,	
+	self_action_sfx = "sfx_ui_holy_site_contesting_start_player_play",
+	ally_action_sfx = "sfx_ui_holy_site_contesting_start_player_play",
+	enemy_action_sfx = "sfx_ui_holy_site_contesting_start_enemy_play",	
+	self_priority = AGS_NP_LOW,
+	ally_priority = AGS_NP_LOW,
+	enemy_priority = AGS_NP_LOW,	
+}
+
+AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZING = {
+	-- Neutralizing Holy Site
+	self_action = 11197278,
+	-- Ally neutralizing Holy Site
+	ally_action = 11197279,
+	-- Enemy neutralizing Holy Site
+	enemy_action = 11197277,
+	self_action_sfx = "sfx_ui_holy_site_contesting_start_player_play",
+	ally_action_sfx = "sfx_ui_holy_site_contesting_start_player_play",
+	enemy_action_sfx = "sfx_ui_holy_site_contesting_start_enemy_play",	
+	self_priority = AGS_NP_LOW,
+	ally_priority = AGS_NP_LOW,
+	enemy_priority = AGS_NP_LOW,		
+}
+
+AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZED = {
+	-- Neutralized Holy Site
+	self_action = 11191286,
+	-- Ally neutralized Holy Site
+	ally_action = 11191378,
+	-- Holy Site lost
+	enemy_action = 11191287,
+	self_action_sfx = "sfx_ui_holy_site_neutralized_player_play",
+	ally_action_sfx = "sfx_ui_holy_site_neutralized_player_play",
+	enemy_action_sfx = "sfx_ui_holy_site_neutralized_enemy_play",	
+	self_priority = AGS_NP_LOW,
+	ally_priority = AGS_NP_LOW,
+	enemy_priority = AGS_NP_LOW,		
+}

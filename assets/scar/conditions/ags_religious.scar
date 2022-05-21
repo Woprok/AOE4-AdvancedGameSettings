@@ -9,6 +9,7 @@
 -- When the player or team captures all Holy Sites, they must defend them for a period of time to win the match.
 ---------------------------------------------------------------------------------------------------
 
+import("conditions/conditiondata/ags_religious_data.scar")
 AGS_RELIGIOUS_MODULE = "AGS_Religious"
 AGS_RELIGIOUS_ACTIVE = true
 AGS_RELIGIOUS_OBJECTIVE = nil
@@ -47,7 +48,7 @@ function AGS_Religious_PresetFinalize()
 	AGS_Print("AGS_Religious_PresetFinalize")
 	-- Create new group and allocate all sacred sites to it. If group is empty unload this module.
 	AGS_RELIGIOUS_SACRED_SITE_EGROUP = EGroup_CreateUnique()
-	World_GetBlueprintEntities(BP_GetEntityBlueprint(AGS_BP_SACRED_SITE), AGS_RELIGIOUS_SACRED_SITE_EGROUP)	
+	World_GetBlueprintEntities(AGS_GetNeutralEntity(AGS_BP_SACRED_SITE), AGS_RELIGIOUS_SACRED_SITE_EGROUP)	
 	if EGroup_CountSpawned(AGS_RELIGIOUS_SACRED_SITE_EGROUP) == 0 then
 		Core_UnregisterModule(AGS_RELIGIOUS_MODULE)
 		return	
@@ -100,6 +101,7 @@ function AGS_Religious_OnGameOver()
 	AGS_Print("AGS_Religious_OnGameOver")
 	Rule_Remove(AGS_Religious_OnTimerTick)
 	Rule_RemoveGlobalEvent(AGS_Religious_OnStrategicPointChanged)
+	AGS_Religious_DeactivateTimer()
 	AGS_Religious_RemoveObjective()
 end
 
@@ -603,20 +605,18 @@ function AGS_Religious_OnHolySiteChangeTypeCapture(instigating_player, holy_site
 	local instigator_relation = AGS_GetRelation(instigating_player)
 	if AGS_Religious_AreSitesUniformlyControlled() then
 		-- pass normally in this case, but execute additional actions after it.
+		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_APPROACH, instigator_relation)
 		if instigator_relation ~= AGS_SAE_ENEMY then
-			AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZING, instigator_relation)
-
 			-- Trigger a blip that matches colour of instigator
 			UI_CreateMinimapBlipOnPosFrom(instigating_player.id, holy_site_pos, 5, "objective_holy_site")
 		else
-			AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZING, instigator_relation)
 			-- Initiate minimap blips
-			-- Flash Holy Sites
 			Rule_AddInterval(AGS_Religious_HolySiteMinimapBlips, 5)
+			-- Flash Holy Sites
 			Rule_AddInterval(AGS_Religious_FlashAllHolySites, 1)
 		end
 	else 
-		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_NEUTRALIZING, instigator_relation)
+		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_CAPTURED, instigator_relation)
 		-- Trigger a blip that matches colour of instigator
 		UI_CreateMinimapBlipOnPosFrom(instigating_player.id, holy_site_pos, 5, "objective_holy_site")
 	end

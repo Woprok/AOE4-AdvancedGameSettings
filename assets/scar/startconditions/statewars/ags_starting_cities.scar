@@ -1,0 +1,406 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Spawns cities around the map.
+---------------------------------------------------------------------------------------------------
+
+AGS_STARTING_CITIES_MODULE = "AGS_StartingCities"
+-- Holds all strategic points
+AGS_STARTING_CITIES_GROUP = nil
+-- Small randomization of position
+AGS_STARTING_CITIES_RADIUS = 20
+-- List of all types we support
+AGS_STARTING_CITIES_TYPES = {
+	Standard = {	
+		Radius = 40,
+		Monastery = 1,
+		Barracks = 1,
+		ArcheryRange = 1,
+		Stable = 1,
+		House = 3,
+		Blacksmith = 1,
+		Market = 1,
+		MonasteryOff = World_Pos(-25, 0, 0),
+		BarracksOff = World_Pos(-25, 0, 25),
+		ArcheryRangeOff = World_Pos(0, 0, 25),
+		StableOff = World_Pos(25, 0, 25),
+		HouseOff = {
+			World_Pos(-25, 0, -25),
+			World_Pos(-15, 0, -25),
+			World_Pos(-5, 0, -25),
+		},
+		BlacksmithOff = World_Pos(25, 0, 0),
+		MarketOff = World_Pos(25, 0, -25),
+		-- This is not used currently.
+		SacredSite = 1,
+	},
+}
+-- List of all combinations we support
+AGS_STARTING_CITIES_OPTIONS = {
+	{
+		civ = AGS_CIV_ENGLISH,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_FRENCH,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_HRE,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_RUS,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_MONGOL,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_CHINESE,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_ABBASID,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_SULTANATE,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+}
+AGS_STARTING_CITIES_POSITIONS = {
+	
+}
+
+AGS_STARTING_CITIES_TABLE = {
+	
+}
+-- Determines spawning strategy for each map size. For now this is simple grid placement.
+AGS_STARTING_CITIES_STRATEGIES = {
+	{ 
+		size = 416, 
+		count = 4, 
+		x_squares = 3, 
+		z_squares = 3,
+		sectors = {		
+			{ x = 1, z = 1 },
+			{ x = 1, z = 2 },
+			{ x = 1, z = 3 },
+			{ x = 2, z = 1 },
+			{ x = 2, z = 2 },
+			{ x = 2, z = 3 },
+			{ x = 3, z = 1 },
+			{ x = 3, z = 2 },
+			{ x = 3, z = 3 },
+		},
+	},
+	{ 
+		size = 512, 
+		count = 8, 
+		x_squares = 3, 
+		z_squares = 3,
+		sectors = {		
+			{ x = 1, z = 1 },
+			{ x = 1, z = 2 },
+			{ x = 1, z = 3 },
+			{ x = 2, z = 1 },
+			{ x = 2, z = 2 },
+			{ x = 2, z = 3 },
+			{ x = 3, z = 1 },
+			{ x = 3, z = 2 },
+			{ x = 3, z = 3 },
+		},
+	},
+	{ 
+		size = 640, 
+		count = 12, 
+		x_squares = 4, 
+		z_squares = 4,		
+		sectors = {		
+			{ x = 1, z = 1 },
+			{ x = 1, z = 2 },
+			{ x = 1, z = 3 },
+			{ x = 1, z = 4 },
+			{ x = 2, z = 1 },
+			{ x = 2, z = 2 },
+			{ x = 2, z = 3 },
+			{ x = 2, z = 4 },
+			{ x = 3, z = 1 },
+			{ x = 3, z = 2 },
+			{ x = 3, z = 3 },
+			{ x = 3, z = 4 },
+			{ x = 4, z = 1 },
+			{ x = 4, z = 2 },
+			{ x = 4, z = 3 },
+			{ x = 4, z = 4 },
+		},
+	},
+	{ 
+		size = 768, 
+		count = 16, 
+		x_squares = 4, 
+		z_squares = 4,		
+		sectors = {		
+			{ x = 1, z = 1 },
+			{ x = 1, z = 2 },
+			{ x = 1, z = 3 },
+			{ x = 1, z = 4 },
+			{ x = 2, z = 1 },
+			{ x = 2, z = 2 },
+			{ x = 2, z = 3 },
+			{ x = 2, z = 4 },
+			{ x = 3, z = 1 },
+			{ x = 3, z = 2 },
+			{ x = 3, z = 3 },
+			{ x = 3, z = 4 },
+			{ x = 4, z = 1 },
+			{ x = 4, z = 2 },
+			{ x = 4, z = 3 },
+			{ x = 4, z = 4 },
+		},
+	},
+	{ 
+		size = 1024, 
+		count = 20, 
+		x_squares = 5, 
+		z_squares = 5,		
+		sectors = {		
+			{ x = 1, z = 1 },
+			{ x = 1, z = 2 },
+			{ x = 1, z = 3 },
+			{ x = 1, z = 4 },
+			{ x = 1, z = 5 },
+			{ x = 2, z = 1 },
+			{ x = 2, z = 2 },
+			{ x = 2, z = 3 },
+			{ x = 2, z = 4 },
+			{ x = 2, z = 5 },
+			{ x = 3, z = 1 },
+			{ x = 3, z = 2 },
+			{ x = 3, z = 3 },
+			{ x = 3, z = 4 },
+			{ x = 3, z = 5 },
+			{ x = 4, z = 1 },
+			{ x = 4, z = 2 },
+			{ x = 4, z = 3 },
+			{ x = 4, z = 4 },
+			{ x = 4, z = 5 },
+			{ x = 5, z = 1 },
+			{ x = 5, z = 2 },
+			{ x = 5, z = 3 },
+			{ x = 5, z = 4 },
+			{ x = 5, z = 5 },
+		},
+	},
+}
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_STARTING_CITIES_MODULE)	
+
+function AGS_StartingCities_UpdateModuleSettings()
+	AGS_Print("AGS_StartingCities_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.Culture then
+		Core_UnregisterModule(AGS_STARTING_CITIES_MODULE)
+	end
+end
+
+function AGS_StartingCities_EarlyInitializations()
+	AGS_Print("AGS_StartingCities_EarlyInitializations")
+	AGS_StartingCities_RemoveMapSacredSites()
+end
+
+function AGS_StartingCities_PresetInitialize()
+	AGS_Print("AGS_StartingCities_PresetInitialize")
+	AGS_StartingCities_DetermineSacredSites()
+end
+
+function AGS_StartingCities_PresetExecute()
+	AGS_Print("AGS_StartingCities_PresetExecute")
+	AGS_StartingCities_Create()
+end
+
+function AGS_StartingCities_PointCaptured(new_owner, city_entity_id)
+	AGS_Print("AGS_StartingCities_PointCaptured")
+	AGS_StartingCities_AssignOwnership(new_owner, city_entity_id)
+end
+
+function AGS_StartingCities_PointLost(city_entity_id)
+	AGS_Print("AGS_StartingCities_PointLost")
+	AGS_StartingCities_RemoveOwership(city_entity_id)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_StartingCities_AssignOwnership(new_owner, city_entity_id)
+	local uwid = Entity_GetID(city_entity_id)
+	local table_entry = AGS_STARTING_CITIES_TABLE[uwid]
+	function AGS_StartingCities_AssignPlayer(gid, idx, eid)
+		Entity_SetPlayerOwner(eid, new_owner.id)		
+	end
+	EGroup_ForEach(table_entry, AGS_StartingCities_AssignPlayer)
+end
+
+function AGS_StartingCities_RemoveOwership(city_entity_id)
+	local uwid = Entity_GetID(city_entity_id)
+	local table_entry = AGS_STARTING_CITIES_TABLE[uwid]
+	function AGS_StartingCities_AssignWorld(gid, idx, eid)
+		Entity_SetWorldOwned(eid)		
+	end
+	EGroup_ForEach(table_entry, AGS_StartingCities_AssignWorld)
+end
+
+-- This function spawns a city on each position that is currently in AGS_STARTING_CITIES_POSITIONS
+-- Also cities are saved in AGS_STARTING_CITIES_TABLE for future reference
+function AGS_StartingCities_Create()
+	AGS_STARTING_CITIES_GROUP = EGroup_CreateIfNotFound("all_city_state_points")
+	for index, city_pos in pairs(AGS_STARTING_CITIES_POSITIONS) do
+		local city_type = Table_GetRandomItem(AGS_STARTING_CITIES_OPTIONS)
+		local egroup = AGS_StartingCities_Build(city_pos, city_type, index)
+				
+		EGroup_ForEach(egroup, AGS_StartingCities_GiveImmunity)
+	end
+end
+
+function AGS_StartingCities_GiveImmunity(gid, idx, eid)
+	--local ebp = Entity_GetBlueprint(eid)
+	Entity_RemoveAbility(eid, BP_GetAbilityBlueprint("core_building_scuttle"))
+	Entity_RemoveAbility(eid, BP_GetAbilityBlueprint("core_unit_death"))
+	Entity_RemoveAbility(eid, BP_GetAbilityBlueprint("pack_building_mon"))
+	AGS_StartingCities_AddModifier(eid, "armor_scalar_for_ranged_damage", 50)
+	AGS_StartingCities_AddModifier(eid, "armor_scalar_for_fire_damage", 50)
+	AGS_StartingCities_AddModifier(eid, "armor_scalar_for_melee_damage", 50)
+	Entity_SetInvulnerable(eid, true, 0.0)
+end
+
+function AGS_StartingCities_AddModifier(eid, modifier_type, modifier_value)
+	Modifier_ApplyToEntity(Modifier_Create(MAT_Entity, modifier_type, MUT_Addition, false, modifier_value, nil), eid, 0.0)
+end	
+
+function AGS_StartingCities_Build(city_pos, city_type, index)
+	AGS_StartingCities_TreeCutter(city_pos, city_type)
+	
+	-- Create city point
+	local ebp_site = AGS_GetNeutralEntity(AGS_BP_SACRED_SITE)
+	local city_entity_id = AGS_StartingCities_CreateEntity(AGS_STARTING_CITIES_GROUP, ebp_site, city_pos)
+	-- Create additional structures around
+	local egroup_name = AGS_EGroupNeutralName(index, AGS_BP_SACRED_SITE) 
+	local egroup_buildings = EGroup_CreateIfNotFound(egroup_name)
+	-- Monastery
+	local ebp_monastery = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_MONASTERY)
+	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_monastery, city_pos, city_type.option.MonasteryOff)
+	-- Barracks
+	local ebp_infantry = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_BARRACKS)
+	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_infantry, city_pos, city_type.option.BarracksOff)
+	-- Archery
+	local ebp_archery = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_ARCHERY_RANGE)
+	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_archery, city_pos, city_type.option.ArcheryRangeOff)
+	-- Stable
+	local ebp_cavalry = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_STABLE)
+	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_cavalry, city_pos, city_type.option.StableOff)
+	-- House
+	local ebp_house = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_HOUSE)
+	for i=1, city_type.option.House do 
+		AGS_StartingCities_CreateEntity(egroup_buildings, ebp_house, city_pos, city_type.option.HouseOff[i])
+	end
+	-- Blacksmith
+	local ebp_smith = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_BLACKSMITH)
+	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_smith, city_pos, city_type.option.BlacksmithOff)
+	-- Market
+	local ebp_market = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_MARKET)
+	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_market, city_pos, city_type.option.MarketOff)
+	
+	local uwid = Entity_GetID(city_entity_id)
+	AGS_STARTING_CITIES_TABLE[uwid] = egroup_buildings
+	return egroup_buildings
+end
+
+function AGS_StartingCities_TreeCutter(city_pos, city_type)	
+	local neutral_entities = EGroup_CreateIfNotFound("tree_free_radius")
+	World_GetEntitiesNearPoint(Game_GetLocalPlayer(), neutral_entities, city_pos, city_type.option.Radius, OT_Neutral)
+	-- Destroy after we found them.
+	local _AGS_DestroyAnyTree = function(gid, idx, eid)		
+		if eid ~= nil and Entity_IsOfType(eid, AGS_BP_TREE) then
+			Entity_Destroy(eid)
+		end		
+	end	
+	EGroup_ForEach(neutral_entities, _AGS_DestroyAnyTree)	
+end
+-- Spawn entity as neutral and return it to caller. Entity is added to egroup.
+function AGS_StartingCities_CreateEntity(egroup, bp_entity, position, position_offset)
+	if position_offset == nil then
+		position_offset = World_Pos(0, 0, 0)	
+	end	
+	-- Determine proper position and rotation.
+	local nx = position.x
+	local ny = position.y
+	local nz = position.z
+	local placement = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z)
+	local rotation = World_Pos(nx + position_offset.x, ny + position_offset.y, nz + position_offset.z + 5)
+	-- Spawn
+	local e = Entity_CreateENVFacing(bp_entity, placement, rotation, true)
+	
+	local safe_spawn = World_GetSpawnablePosition(placement, e)
+	Entity_WarpToPos(e, safe_spawn)
+	
+	Entity_Spawn(e)
+	Entity_ForceConstruct(e)
+	Entity_SnapToGridAndGround(e, false)
+	EGroup_Add(egroup, e)
+	return e	
+end
+
+function AGS_StartingCities_RemoveMapSacredSites()	
+	local all_prefab_sites = EGroup_CreateUnique()
+	World_GetBlueprintEntities(AGS_GetNeutralEntity(AGS_BP_SACRED_SITE), all_prefab_sites)
+	for i = 1, EGroup_CountSpawned(all_prefab_sites) do
+		local eid = EGroup_GetSpawnedEntityAt(all_prefab_sites, i)
+		if eid ~= nil and Entity_IsSpawned(eid) then
+			Entity_Destroy(eid)
+		end
+	end
+end
+-- Determines all position for cities around the map.
+function AGS_StartingCities_DetermineSacredSites()	
+	local width = World_GetWidth()
+	local height = World_GetLength()
+	AGS_Print("DIMENSION X", width)
+	AGS_Print("DIMENSION Y", height)
+	-- Select spawn strategy
+	local size_strategy = nil
+	for _, map_choice in pairs(AGS_STARTING_CITIES_STRATEGIES) do
+		if map_choice.size >= width or map_choice.size >= height then
+			size_strategy = map_choice
+			break
+		end
+	end
+	AGS_Print("DESIRED", size_strategy)
+	-- Calculate all spawning points, note if you are using crafted map you can replace it with markers
+	-- allowing you to spawn them where you want.
+	local x_step = width / size_strategy.x_squares
+	local z_step = height / size_strategy.z_squares
+	-- We take what would normally be start position in square grid 1,1, in this case -w/2,-h/2
+	local lowest_pos = World_Pos(0 - width/2, 0, 0 - height/2)
+	for _, sect in pairs(size_strategy.sectors) do
+		local next_pos = AGS_StartingCities_SectorToAdjustment(lowest_pos, sect, x_step, z_step)
+		table.insert(AGS_STARTING_CITIES_POSITIONS, next_pos)
+	end
+	AGS_Print(AGS_STARTING_CITIES_POSITIONS)
+end
+-- Determines single city position centre.
+function AGS_StartingCities_SectorToAdjustment(lowest_pos, sector, x_step, z_step)
+	local pos = World_Pos(lowest_pos.x, lowest_pos.y, lowest_pos.z)
+	-- this is same for both and very simple as we only adjust it by half step and then sector of that axis - 1
+	pos.x = pos.x + x_step / 2 +  x_step * (sector.x - 1) + World_GetRand(0 - AGS_STARTING_CITIES_RADIUS, AGS_STARTING_CITIES_RADIUS)
+	pos.z = pos.z + z_step / 2 +  z_step * (sector.z - 1) + World_GetRand(0 - AGS_STARTING_CITIES_RADIUS, AGS_STARTING_CITIES_RADIUS)
+	pos.y = World_GetHeightAt(pos.x, pos.z)
+	return pos
+end

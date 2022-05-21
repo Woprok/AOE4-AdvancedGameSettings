@@ -9,6 +9,7 @@
 -- The last team remaining is the victor.
 ---------------------------------------------------------------------------------------------------
 
+import("conditions/conditiondata/ags_conquest_data.scar")
 AGS_CONQUEST_MODULE = "AGS_Conquest"
 AGS_CONQUEST_OBJECTIVE = nil
 AGS_CONQUEST_ACTIVE = true

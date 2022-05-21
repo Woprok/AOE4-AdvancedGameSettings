@@ -8,6 +8,7 @@
 -- The classic 'wonder' win condition in which the player wins by building a wonder and defending it for some time.
 ---------------------------------------------------------------------------------------------------
 
+import("conditions/conditiondata/ags_wonder_data.scar")
 AGS_WONDER_MODULE = "AGS_Wonder"
 AGS_WONDER_OBJECTIVE = nil 
 AGS_WONDER_ACTIVE = true

@@ -1,0 +1,59 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Entry point for an gamemode.
+-- Contains only gamemode specific functionality and generic delegate calls.
+-- Everything else is imported and done as part of "ags_cardinal.scar"
+-- In this mode players take control of small religious state and try to convert all other states to their religion.
+---------------------------------------------------------------------------------------------------
+
+import("ags_cardinal.scar")
+import("conditions/ags_culture.scar")
+import("startconditions/statewars/ags_start_pilgrims.scar")
+import("startconditions/statewars/ags_starting_cities.scar")
+import("gameplay/statewars/ags_reveal_cities.scar")
+import("gameplay/statewars/ags_relicization.scar")
+import("gameplay/statewars/ags_statewars_bonuses.scar")
+
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+-- This file is loaded last, this means that all methods are invoked at the end of chain.
+-- It might be possible to assume that all imported modules are finished with the stage when we are called.
+Core_RegisterModule("AGS_CityStates")	
+
+function AGS_CityStates_AdjustSettings()
+	AGS_Print("AGS_CityStates_AdjustSettings")
+	-- Setting up everything that is not configurable for this mode.
+	AGS_GLOBAL_SETTINGS.UsingPrefabStart = false
+	AGS_GLOBAL_SETTINGS.RevealSpawn = false
+	-- Optimized only for multiplayer experience.
+	AGS_GLOBAL_SETTINGS.IsAdjustingAI = false
+	-- Customization
+	AGS_GLOBAL_SETTINGS.MinimumPopulation = 10
+	AGS_GLOBAL_SETTINGS.MinimumPopulationReset = true
+	AGS_GLOBAL_SETTINGS.MaximumPopulation = 150
+	AGS_GLOBAL_SETTINGS.StartingAge = AGS_GS_AGE_CASTLE
+	AGS_GLOBAL_SETTINGS.TechnologyAge = AGS_GS_AGE_NONE
+	AGS_GLOBAL_SETTINGS.Annihilation = false
+	AGS_GLOBAL_SETTINGS.Religious = false
+	AGS_GLOBAL_SETTINGS.Wonder = false
+	AGS_GLOBAL_SETTINGS.Conquest = false
+	AGS_GLOBAL_SETTINGS.StartingMonks = 3
+	AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_PILGRIMS
+	-- New Settings
+	AGS_GLOBAL_SETTINGS.Culture = true
+	AGS_GLOBAL_SETTINGS.RevealCities = false
+	AGS_GLOBAL_SETTINGS.Relicization = true
+	AGS_GLOBAL_SETTINGS.StatewarsBonuses = true
+	-- TMP
+	--AGS_GLOBAL_SETTINGS.SimulationSpeed = 5
+end
+
+function AGS_CityStates_PrepareStart()
+	AGS_Print("AGS_CityStates_PrepareStart")
+end

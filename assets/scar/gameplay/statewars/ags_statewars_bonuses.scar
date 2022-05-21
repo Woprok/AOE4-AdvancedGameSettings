@@ -1,0 +1,60 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Enables certain units and gives certain upgrades to all players.
+---------------------------------------------------------------------------------------------------
+
+AGS_STATEWARS_BONUSES_MODULE = "AGS_StatewarsBonuses"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_STATEWARS_BONUSES_MODULE)	
+
+function AGS_StatewarsBonuses_UpdateModuleSettings()
+	AGS_Print("AGS_StatewarsBonuses_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.StatewarsBonuses then
+		Core_UnregisterModule(AGS_STATEWARS_BONUSES_MODULE)
+	end
+end
+
+function AGS_StatewarsBonuses_PresetFinalize()
+	AGS_Print("AGS_StatewarsBonuses_PresetFinalize")
+	AGS_StatewarsBonuses_Apply()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_StatewarsBonuses_Apply()
+	local repeater2 = "unit_repeater_crossbowman_2_chi"
+	local repeater3 = "unit_repeater_crossbowman_3_chi"
+	local lancer3 = "unit_firelancer_3_chi"
+	local uprep3 = "upgrade_unit_repeater_crossbow_3_chi"
+	for _, player in pairs(PLAYERS) do
+		Player_SetEntityProductionAvailability(player.id, BP_GetEntityBlueprint(repeater2), ITEM_UNLOCKED)
+		Player_SetEntityProductionAvailability(player.id, BP_GetEntityBlueprint(repeater3), ITEM_UNLOCKED)
+		Player_SetEntityProductionAvailability(player.id, BP_GetEntityBlueprint(lancer3), ITEM_UNLOCKED)
+		Player_SetSquadProductionAvailability(player.id, BP_GetSquadBlueprint(repeater2), ITEM_UNLOCKED)
+		Player_SetSquadProductionAvailability(player.id, BP_GetSquadBlueprint(repeater3), ITEM_UNLOCKED)
+		Player_SetSquadProductionAvailability(player.id, BP_GetSquadBlueprint(lancer3), ITEM_UNLOCKED)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint(uprep3), ITEM_UNLOCKED)
+		AGS_ApplyUpgrade(player.id, "upgrade_unit_religious_tithe_barn_4_mon")
+		AGS_ApplyUpgrade(player.id, "upgrade_unit_religious_tithe_barn_4_improved_mon")
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_unit_religious_tithe_barn_4_sul"), ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_unit_religious_tithe_barn_4"), ITEM_REMOVED)
+		AGS_ApplyUpgrade(player.id, "upgrade_unit_religious_sanctity_4_sul")
+		AGS_ApplyUpgrade(player.id, "upgrade_cul_conversion_invuln_abb")
+		Player_SetStateModelInt(player.id, "silk_road_requirement_tier_1_mon", 1000)
+		Player_SetStateModelInt(player.id, "silk_road_requirement_tier_2_mon", 1000)
+		Player_SetStateModelInt(player.id, "silk_road_requirement_tier_3_mon", 1000)
+		Player_SetStateModelInt(player.id, "silk_road_requirement_tier_4_mon", 1000)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_trader_silkroad_stone_mon"), ITEM_REMOVED)
+		Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint("upgrade_trader_silkroad_stone_improved_mon"), ITEM_REMOVED)
+	end
+end

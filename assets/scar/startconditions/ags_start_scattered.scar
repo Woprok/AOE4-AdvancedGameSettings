@@ -94,7 +94,7 @@ end
 -- Distributes all players all units randomly around the map.
 function AGS_Scattered_CreateSpawn()	
 	for _, player in pairs(PLAYERS) do		
-		-- Get Villager BP and spawn them at single location, before spreading them out to create artificial home for AI.
+		-- Get Villager BP and spawn them at random location, then ask to create artificial home for AI.
 		local sbp_vil = AGS_GetCivilizationUnit(player.raceName, AGS_BP_VILLAGER)
 		local snameVIL = AGS_SGroupName(player.id, AGS_BP_VILLAGER)
 		local squad_group = SGroup_CreateIfNotFound(snameVIL)		

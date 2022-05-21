@@ -19,6 +19,7 @@ AGS_GS_SETTLEMENT_SCATTERED = 0
 AGS_GS_SETTLEMENT_NOMADIC = 1
 AGS_GS_SETTLEMENT_SETTLED = 2
 AGS_GS_SETTLEMENT_FORTIFIED = 3
+AGS_GS_SETTLEMENT_PILGRIMS = 4
 -- Team Balance
 AGS_GS_TEAM_BALANCE_NONE = 0
 AGS_GS_TEAM_BALANCE_POPULATION = 1
@@ -72,7 +73,7 @@ AGS_GS_COLOR_GREY = 9 -- Monsoon/Natural Grey
 -- Local player should never change. And be ready after Initialization Phase.
 -- Local player is used for UI & visual logic. Gameplay logic should never use it as it will cause desync.
 AGS_GS_LOCAL_PLAYER = nil
-AGS_GLOBAL_SETTINGS_BUILD = "3.1"
+AGS_GLOBAL_SETTINGS_BUILD = "3.2"
 AGS_GLOBAL_SETTINGS_MODULE = "AGS_GlobalSettings"
 AGS_GLOBAL_SETTINGS = {
 	Annihilation = true, -- Player loses everything.
@@ -133,6 +134,7 @@ AGS_GLOBAL_SETTINGS = {
 	
 	ScoreVisibility = false,
 	MinimumPopulation = 0,
+	MinimumPopulationReset = false, -- undefined, removes mongol bonus
 	MaximumPopulation = 200,
 	StartingVillagers = 6,
 	StartingKeeps = 0,
@@ -606,7 +608,7 @@ function AGS_GlobalSettings_SetSettlement(settlement)
 	elseif settlement.enum_value == settlement.enum_items.settlement_settled then
 		AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_SETTLED
 	elseif settlement.enum_value == settlement.enum_items.settlement_settled_fortified then
-		AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_FORTIFIED		
+		AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_FORTIFIED	
 	end
 end
 

@@ -1,0 +1,32 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Additional data for condition. Imported by appropriate condition.
+---------------------------------------------------------------------------------------------------
+
+AGS_OBJECTIVES_TEAMSOLIDARITY = {
+	reason = AGS_WR_TEAM_SOLIDARITY,
+	-- Protect your teammates.
+	title = "$64c5019a145c4e4da448dbd3adeea61e:230", 
+	-- "Failed to protect %1PLAYER_NAME%."
+	title_lost = "$64c5019a145c4e4da448dbd3adeea61e:257",
+	-- "All other teams crumbled."
+	title_victory = "$64c5019a145c4e4da448dbd3adeea61e:258",
+	description = Loc_Empty(),
+	icon = "icons\\objectives\\objectives_generic",
+	data_template = DT_PRIMARY_DEFAULT,
+	data_template_or = DT_PRIMARY_DEFAULT,
+	priority = OT_Primary,
+	parent = 0,
+	telemetry = "teamsolidarityObj",
+	alert = "icons\\event_queue_high_priority_large",
+}
+
+AGS_NOTIFICATIONS_TEAM_SOLIDARITY = {
+	-- "%1PLAYER_NAME% surrendered in solidarity with his teammate"
+	title = "$64c5019a145c4e4da448dbd3adeea61e:231",
+	sfx = nil,	
+}

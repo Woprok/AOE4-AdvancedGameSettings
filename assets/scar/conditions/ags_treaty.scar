@@ -9,6 +9,7 @@
 -- Creates cease fire at the start of the game.
 ---------------------------------------------------------------------------------------------------
 
+import("conditions/conditiondata/ags_treaty_data.scar")
 AGS_TREATY_MODULE = "AGS_Treaty"
 AGS_TREATY_OBJECTIVE = nil
 AGS_TREATY_TIMER = "AGS_TreatyTimer"
