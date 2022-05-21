@@ -295,7 +295,7 @@ function AGS_Culture_OnHolySiteChange(context)
 	
 	-- CT_Captured: If captured
 	if context.changeType == 0 then
-		AGS_Culture_OnHolySiteChangeTypeCapture(instigating_player, holy_site_pos)
+		AGS_Culture_OnHolySiteChangeTypeCapture(instigating_player, holy_site_pos, site_entity_id)
 	-- CT_Reverting: If owned Holy Site is being neutralized
 	elseif context.changeType == 1 then
 		AGS_Culture_OnHolySiteChangeTypeNeutralizing(instigating_player, site_entity_id, holy_site_progress, holy_site_pos, context.strategicPointOwner)
@@ -406,6 +406,7 @@ function AGS_Culture_OnHolySiteChangeTypeNeutralized(instigating_player, site_en
 	
 	-- Trigger a blip that matches colour of instigator
 	UI_CreateMinimapBlipOnPosFrom(instigating_player.id, holy_site_pos, 5, "objective_holy_site_spin")
+	Core_CallDelegateFunctions("PointLost", site_entity_id)
 end
 
 function AGS_Culture_OnHolySiteChangeTypeNeutralizing(instigating_player, site_entity_id, holy_site_progress, holy_site_pos, owning_player)
@@ -431,7 +432,7 @@ function AGS_Culture_OnHolySiteChangeTypeNeutralizing(instigating_player, site_e
 	UI_CreateMinimapBlipOnPosFrom(instigating_player.id, holy_site_pos, 5, "objective_holy_site_spin")
 end
 
-function AGS_Culture_OnHolySiteChangeTypeCapture(instigating_player, holy_site_pos)
+function AGS_Culture_OnHolySiteChangeTypeCapture(instigating_player, holy_site_pos, site_entity_id)
 	local instigator_relation = AGS_GetRelation(instigating_player)
 	-- Check if this capture created a winner, if yes then trigger game over.
 	if AGS_Culture_AreSitesThresholdControlled(AGS_CULTURE_VICTORY_THRESHOLD, instigating_player) then
@@ -456,4 +457,5 @@ function AGS_Culture_OnHolySiteChangeTypeCapture(instigating_player, holy_site_p
 		-- Trigger a blip that matches colour of instigator
 		UI_CreateMinimapBlipOnPosFrom(instigating_player.id, holy_site_pos, 5, "objective_holy_site")
 	end
+	Core_CallDelegateFunctions("PointCaptured", instigating_player, site_entity_id)
 end

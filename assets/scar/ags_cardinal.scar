@@ -143,7 +143,7 @@ import("specials/ags_match_ui.scar")
 -------------------------------------------------
 -- AI PLAYER UPDATES ANYTIME DURING PRESTART
 -------------------------------------------------
--- AdjustAIPlayers(ADJUSTREASON: reason, opt_specific: player_id)
+-- AdjustAIPlayers(ADJUSTREASON: reason, opt_specific: player)
 -------------------------------------------------
 -- SETTINGS & MODULE ADJUSTMENTS DURING ON GAME SETUP
 -------------------------------------------------
@@ -175,6 +175,8 @@ import("specials/ags_match_ui.scar")
 -- TreatyEnded
 -- OnPlayerEliminated preceeded by OnPlayerDefeated, used for group elimination to be not interfered by other win conditions.
 -- OnObjectiveToggle user clicked
+-- PointCaptured(player, entity) by Culture condition
+-- PointLost(entity) by Culture condition
 ---------------------------------------------------------------------------------------------------
 -- Relic Core_CallDelegateFunctions("<suffix>") Calls:
 ---------------------------------------------------------------------------------------------------

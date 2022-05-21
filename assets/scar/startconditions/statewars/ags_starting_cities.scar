@@ -4,48 +4,184 @@
 -- Woprock
 --
 -- Description:
--- Spawns king near default position.
+-- Spawns cities around the map.
 ---------------------------------------------------------------------------------------------------
 
 AGS_STARTING_CITIES_MODULE = "AGS_StartingCities"
 
-AGS_STARTING_CITIES_COUNTS = {
-	Monastery = 1,
-	Barracks = 1,
-	ArcheryRange = 1,
-	Stable = 1,
-	Workshop = 0,
-	Dock = 0,
-	House = 3,
-	Blacksmith = 1,
-	SacredSite = 1,
+AGS_STARTING_CITIES_OPTIONS = {
+	{
+		civ = AGS_CIV_ENGLISH,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_FRENCH,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_HRE,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_RUS,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_MONGOL,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_CHINESE,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_ABBASID,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_SULTANATE,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
 }
 
-AGS_STARTING_CITIES_COUNT = 0
+AGS_STARTING_CITIES_TYPES = {
+	Standard = {		
+		Monastery = 1,
+		Barracks = 1,
+		ArcheryRange = 1,
+		Stable = 1,
+		Workshop = 0,
+		Dock = 0,
+		House = 3,
+		Blacksmith = 1,
+		SacredSite = 1,
+	},
+}
 
 AGS_STARTING_CITIES_POSITIONS = {
 	
 }
 
-AGS_STARTING_CITIES_SECTORS = {
-	{ x = 0, y = 0 },
-	{ x = 0, y = 0 },
-	{ x = 0, y = 0 },
-	{ x = 0, y = 0 },
-}
-
 AGS_STARTING_CITIES_TABLE = {
 	
 }
--- Small sizes cant hold too many as they will be very close to each other.
--- Spawning strategy is to place them on grid.
-AGS_STARTING_CITIES_EXPECTED = {
-	{ size = 416, count = 4, x = 3, y = 3 },
-	{ size = 480, count = 8, x = 3, y = 3 },
-	{ size = 512, count = 12, x = 4, y = 4 },
-	{ size = 640, count = 16, x = 4, y = 4 },
-	{ size = 768, count = 20, x = 5, y = 5 },
-	{ size = 1024, count = 24, x = 5, y = 5 },
+-- Determines spawning strategy for each map size. For now this is simple grid placement.
+AGS_STARTING_CITIES_STRATEGIES = {
+	{ 
+		size = 416, 
+		count = 4, 
+		x_squares = 3, 
+		z_squares = 3,
+		sectors = {		
+			{ x = 1, z = 1 },
+			--{ x = 1, z = 2 },
+			{ x = 1, z = 3 },
+			--{ x = 2, z = 1 },
+			--{ x = 2, z = 2 },
+			--{ x = 2, z = 3 },
+			{ x = 3, z = 1 },
+			--{ x = 3, z = 2 },
+			{ x = 3, z = 3 },
+		},
+	},
+	{ 
+		size = 512, 
+		count = 8, 
+		x_squares = 3, 
+		z_squares = 3,
+		sectors = {		
+			{ x = 1, z = 1 },
+			{ x = 1, z = 2 },
+			{ x = 1, z = 3 },
+			{ x = 2, z = 1 },
+			--{ x = 2, z = 2 },
+			{ x = 2, z = 3 },
+			{ x = 3, z = 1 },
+			{ x = 3, z = 2 },
+			{ x = 3, z = 3 },
+		},
+	},
+	{ 
+		size = 640, 
+		count = 12, 
+		x_squares = 4, 
+		z_squares = 4,		
+		sectors = {		
+			{ x = 1, z = 1 },
+			{ x = 1, z = 2 },
+			{ x = 1, z = 3 },
+			{ x = 1, z = 4 },
+			{ x = 2, z = 1 },
+			--{ x = 2, z = 2 },
+			--{ x = 2, z = 3 },
+			{ x = 2, z = 4 },
+			{ x = 3, z = 1 },
+			--{ x = 3, z = 2 },
+			--{ x = 3, z = 3 },
+			{ x = 3, z = 4 },
+			{ x = 4, z = 1 },
+			{ x = 4, z = 2 },
+			{ x = 4, z = 3 },
+			{ x = 4, z = 4 },
+		},
+	},
+	{ 
+		size = 768, 
+		count = 16, 
+		x_squares = 4, 
+		z_squares = 4,		
+		sectors = {		
+			{ x = 1, z = 1 },
+			{ x = 1, z = 2 },
+			{ x = 1, z = 3 },
+			{ x = 1, z = 4 },
+			{ x = 2, z = 1 },
+			{ x = 2, z = 2 },
+			{ x = 2, z = 3 },
+			{ x = 2, z = 4 },
+			{ x = 3, z = 1 },
+			{ x = 3, z = 2 },
+			{ x = 3, z = 3 },
+			{ x = 3, z = 4 },
+			{ x = 4, z = 1 },
+			{ x = 4, z = 2 },
+			{ x = 4, z = 3 },
+			{ x = 4, z = 4 },
+		},
+	},
+	{ 
+		size = 1024, 
+		count = 20, 
+		x_squares = 5, 
+		z_squares = 5,		
+		sectors = {		
+			{ x = 1, z = 1 },
+			{ x = 1, z = 2 },
+			{ x = 1, z = 3 },
+			{ x = 1, z = 4 },
+			{ x = 1, z = 5 },
+			{ x = 2, z = 1 },
+			{ x = 2, z = 2 },
+			{ x = 2, z = 3 },
+			{ x = 2, z = 4 },
+			{ x = 2, z = 5 },
+			{ x = 3, z = 1 },
+			{ x = 3, z = 2 },
+			{ x = 3, z = 3 },
+			{ x = 3, z = 4 },
+			{ x = 3, z = 5 },
+			{ x = 4, z = 1 },
+			{ x = 4, z = 2 },
+			{ x = 4, z = 3 },
+			{ x = 4, z = 4 },
+			{ x = 4, z = 5 },
+			{ x = 5, z = 1 },
+			{ x = 5, z = 2 },
+			{ x = 5, z = 3 },
+			{ x = 5, z = 4 },
+			{ x = 5, z = 5 },
+		},
+	},
 }
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -60,9 +196,13 @@ function AGS_StartingCities_UpdateModuleSettings()
 	end
 end
 
+function AGS_StartingCities_EarlyInitializations()
+	AGS_Print("AGS_StartingCities_EarlyInitializations")
+	AGS_StartingCities_RemoveMapSacredSites()
+end
+
 function AGS_StartingCities_PresetInitialize()
 	AGS_Print("AGS_StartingCities_PresetInitialize")
-	AGS_StartingCities_SaveSacredSites()
 	AGS_StartingCities_DetermineSacredSites()
 end
 
@@ -74,8 +214,14 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
--- This function spawns a king next each player's Town Center
+-- This function spawns a city on each position that is currently in AGS_STARTING_CITIES_POSITIONS
+-- Also cities are saved in AGS_STARTING_CITIES_TABLE for future reference
 function AGS_StartingCities_Create()
+	
+	for _, city_pos in pairs(AGS_STARTING_CITIES_POSITIONS) do
+		
+	end
+	
 	local sbp_king = AGS_GetCivilizationUnit(player.raceName, AGS_BP_KING)				
 	local sname = AGS_SGroupName(player.id, AGS_BP_KING)	
 	local start_adjusted_pos = AGS_Starts_GetStartPosition(player.id)			
@@ -94,6 +240,20 @@ function AGS_StartingCities_Create()
 	center_pos = AGS_CalculateCenterOffset(start_adjusted_pos, 25, 25)	
 	
 	AGS_SpawnEntity(player.id, ename, ebp_building, center_pos, nil, false)
+--	table.insert(AGS_STARTING_CITIES_POSITIONS, )
+	--AGS_STARTING_CITIES_COUNT = #PLAYERS + 
+	--World_GetEntitiesNearPoint
+--	AGS_STARTING_CITIES_WIDTH = math.max(, World_GetLength())/AGS_PILGRIMS_TUNING 
+	
+	--		local site = {
+	--		uwid = Entity_GetID(EGroup_GetSpawnedEntityAt(all_prefab_sites, i)),
+	--		eid = EGroup_GetSpawnedEntityAt(all_prefab_sites, i),
+	--		pos = Entity_GetPosition(EGroup_GetSpawnedEntityAt(all_prefab_sites, i)),
+	--		last_owner = nil,
+	--		spawned_site = true,
+	--		spawned_all = false,
+	--	}
+	--	table.insert(AGS_STARTING_CITIES_TABLE, site)
 end
 
 function AGS_StartingCities_GiveImmunity(eid)
@@ -102,42 +262,49 @@ function AGS_StartingCities_GiveImmunity(eid)
 	Entity_RemoveAbility(eid, BP_GetAbilityBlueprint("pack_building_mon"))
 end
 
-function AGS_StartingCities_SaveSacredSites()	
+function AGS_StartingCities_RemoveMapSacredSites()	
 	local all_prefab_sites = EGroup_CreateUnique()
 	World_GetBlueprintEntities(AGS_GetNeutralEntity(AGS_BP_SACRED_SITE), all_prefab_sites)
 	for i = 1, EGroup_CountSpawned(all_prefab_sites) do
-		local site = {
-			uwid = Entity_GetID(EGroup_GetSpawnedEntityAt(all_prefab_sites, i)),
-			eid = EGroup_GetSpawnedEntityAt(all_prefab_sites, i),
-			pos = Entity_GetPosition(EGroup_GetSpawnedEntityAt(all_prefab_sites, i)),
-			last_owner = nil,
-			spawned_site = true,
-			spawned_all = false,
-		}
-		table.insert(AGS_STARTING_CITIES_TABLE, site)
+		local eid = EGroup_GetSpawnedEntityAt(all_prefab_sites, i)
+		if eid ~= nil and Entity_IsSpawned(eid) then
+			Entity_Destroy(eid)
+		end
 	end
 end
--- This is expecting square maps.
+-- Determines all position for cities around the map.
 function AGS_StartingCities_DetermineSacredSites()	
-	AGS_Print("DIMENSION X", World_GetWidth())
-	AGS_Print("DIMENSION Y", World_GetLength())
-	
-	local dimension = World_GetWidth()
-	local desired = nil
-	for _, map_choice in pairs(AGS_STARTING_CITIES_EXPECTED) do
-		if map_choice.size >= dimension then
-			desired = map_choice
+	local width = World_GetWidth()
+	local height = World_GetLength()
+	AGS_Print("DIMENSION X", width)
+	AGS_Print("DIMENSION Y", height)
+	-- Select spawn strategy
+	local size_strategy = nil
+	for _, map_choice in pairs(AGS_STARTING_CITIES_STRATEGIES) do
+		if map_choice.size >= width or map_choice.size >= height then
+			size_strategy = map_choice
 			break
 		end
 	end
-	AGS_Print("DESIRED", desired)
-	
-	local side_length = dimension / math.sqrt(desired.count)
-	
---	table.insert(AGS_STARTING_CITIES_POSITIONS, )
-	--AGS_STARTING_CITIES_COUNT = #PLAYERS + 
-	--World_GetEntitiesNearPoint
---	AGS_STARTING_CITIES_WIDTH = math.max(, World_GetLength())/AGS_PILGRIMS_TUNING 
+	AGS_Print("DESIRED", size_strategy)
+	-- Calculate all spawning points, note if you are using crafted map you can replace it with markers
+	-- allowing you to spawn them where you want.
+	local x_step = width / size_strategy.x_squares
+	local z_step = height / size_strategy.z_squares
+	-- We take what would normally be start position in square grid 1,1, in this case -w/2,-h/2
+	local lowest_pos = World_Pos(0 - width/2, 0, 0 - height/2)
+	for _, sect in pairs(size_strategy.sectors) do
+		local next_pos = AGS_StartingCities_SectorToAdjustment(lowest_pos, sect, x_step, z_step)
+		table.insert(AGS_STARTING_CITIES_POSITIONS, next_pos)
+	end
+	AGS_Print(AGS_STARTING_CITIES_POSITIONS)
 end
-
-
+-- Determines single city position centre.
+function AGS_StartingCities_SectorToAdjustment(lowest_pos, sector, x_step, z_step)
+	local pos = World_Pos(lowest_pos.x, lowest_pos.y, lowest_pos.z)
+	-- this is same for both and very simple as we only adjust it by half step and then sector of that axis - 1
+	pos.x = pos.x + x_step / 2 +  x_step * (sector.x - 1)
+	pos.z = pos.z + z_step / 2 +  z_step * (sector.z - 1)
+	pos.y = World_GetHeightAt(pos.x, pos.z)
+	return pos
+end
