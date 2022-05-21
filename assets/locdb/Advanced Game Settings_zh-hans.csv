@@ -357,3 +357,27 @@
 356,,8号位手残度
 357,,宝藏
 358,,少量宝藏会随机出现在地图上。
+359,,Low
+360,,Conquer majority of city-states to ensure victory. Each players starts with few monks and has to find and takeover city.\n\n Civilization choice has no effect. Population is limited to 150. Team that controls 75% of cities will win the game.
+361,,City-State Wars
+362,,Control majority of cities
+363,,City %1NAMEORNUMBER% 
+364,,%1PLAYER_NAME% was assimilated
+365,,You are approaching Culture Victory
+366,,Your team is approaching Culture Victory
+367,,Enemy is approaching Culture Victory
+368,,Capturing City-State
+369,,Ally capturing City-State
+370,,Enemy capturing City-State
+371,,City-State captured
+372,,Ally captured City-State
+373,,Enemy captured City-State
+374,,Contesting City-State
+375,,Ally contesting City-State
+376,,Enemy contesting City-State
+377,,Liberated City-State
+378,,Ally liberated City-State
+379,,City-State lost
+380,,Liberating City-State
+381,,Ally liberating City-State
+382,,Enemy liberating City-State

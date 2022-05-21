@@ -320,3 +320,64 @@
 319,,Отзывы
 320,,Настроики матча
 321,,Версия мода:
+322,,Mod Title,,AGS Nomad
+323,,Mod Gamemode Description,,"AGS Nomad is alternative version to well known nomad that provides diplomacy and few options that stays true to nomad nature.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+324,,Wonder Construction
+325,,Enables Wonder construction without Wonder win condition or Conquest win condition with Conquest Wonder selected.
+326,,Double Workers
+327,,"Halves the cost and production speed of all economic units: villager, trader, fishing boat for all players."
+328,,Handicap Settings
+329,,Handicap Type
+330,,"If not disabled, provides to each player slot level of bonus specified for that slot. Bonus type is either Economic, Military or Both."
+331,,Both
+332,,Military
+333,,Economic
+334,,Slot 1 Handicap
+335,,Determines value of bonus provided by handicap to player on this slot in lobby.
+336,,10%
+337,,20%
+338,,30%
+339,,40%
+340,,50%
+341,,60%
+342,,70%
+343,,80%
+344,,90%
+345,,100%
+346,,150%
+347,,200%
+348,,250%
+349,,300%
+350,,Slot 2 Handicap
+351,,Slot 3 Handicap
+352,,Slot 4 Handicap
+353,,Slot 5 Handicap
+354,,Slot 6 Handicap
+355,,Slot 7 Handicap
+356,,Slot 8 Handicap
+357,,Treasures
+358,,Few treasures will appear randomly around the map.
+359,,Low
+360,,Conquer majority of city-states to ensure victory. Each players starts with few monks and has to find and takeover city.\n\n Civilization choice has no effect. Population is limited to 150. Team that controls 75% of cities will win the game.
+361,,City-State Wars
+362,,Control majority of cities
+363,,City %1NAMEORNUMBER% 
+364,,%1PLAYER_NAME% was assimilated
+365,,You are approaching Culture Victory
+366,,Your team is approaching Culture Victory
+367,,Enemy is approaching Culture Victory
+368,,Capturing City-State
+369,,Ally capturing City-State
+370,,Enemy capturing City-State
+371,,City-State captured
+372,,Ally captured City-State
+373,,Enemy captured City-State
+374,,Contesting City-State
+375,,Ally contesting City-State
+376,,Enemy contesting City-State
+377,,Liberated City-State
+378,,Ally liberated City-State
+379,,City-State lost
+380,,Liberating City-State
+381,,Ally liberating City-State
+382,,Enemy liberating City-State
