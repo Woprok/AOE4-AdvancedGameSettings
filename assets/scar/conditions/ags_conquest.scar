@@ -271,8 +271,6 @@ function AGS_Conquest_RemoveObjective()
 end
 
 function AGS_Conquest_Eliminate(player)
-	-- Disable landmark rebuilt prompt.
-	Player_SetStateModelBool(player.id, "disable_landmark_rebuild", true)
 	-- Finish off all undestroyed objectives that are not yet acting as killed e.g. landmarks ?
 	AGS_Conquest_KillAllConquerables(player)
 	-- Finally eliminate.
@@ -286,7 +284,25 @@ function AGS_Conquest_Eliminate(player)
 			AGS_OBJECTIVES_CONQUEST.title_lost))
 end
 
+function AGS_Conquest_EliminateGroup(player)
+	-- Eliminate teammates as they were leaching on this player at this moment.
+	local teammates = AGS_Teams_GetAllCurrentTeammates(player)
+	AGS_SetPlayerGroupDefeated(teammates, 
+		AGS_Presentations_LossConquest, 
+		AGS_WR_CONQUEST,
+		AGS_Objectives_PresentWrap(
+			AGS_CONQUEST_OBJECTIVE, 
+			OS_Failed, 
+			AGS_OBJECTIVES_CONQUEST.title_lost))
+	
+	-- Continue and eliminate player, finishing off his whole team. 
+	-- Teammates landmark got destroyed by default already or were finished by OnPlayerDefeated
+	AGS_Conquest_Eliminate(player)
+end
+
 function AGS_Conquest_KillAllConquerables(player)
+	-- Disable landmark rebuilt prompt.
+	Player_SetStateModelBool(player.id, "disable_landmark_rebuild", true)
 	for _, conquerable in pairs(player.AGS_Conquerables) do 
 		if conquerable.is_alive then
 			conquerable.is_alive = false
@@ -352,9 +368,20 @@ function AGS_Conquest_ConquerableDestroyed(player, entity_id, killer)
 		
 	-- Verify that this player is still able to continue in his conquest.
 	local conquerable_count = AGS_Conquest_GetPlayerConquerableCount(player)
-	-- Check if player still has reason to be in conquest game.
+	if AGS_GLOBAL_SETTINGS.ConquestSettings.IsTeamShared then
+		local team_count = AGS_Conquest_GetTeammatesConquerableCount(player)
+		conquerable_count.built = conquerable_count.built + team_count.built
+		conquerable_count.remaining = conquerable_count.remaining + team_count.remaining
+		conquerable_count.destroyed = conquerable_count.destroyed + team_count.destroyed		
+	end
+	
+	-- Check if player still has reason to be in conquest game.	
 	if conquerable_count.built > 0 and conquerable_count.remaining <= 0 then
-		AGS_Conquest_Eliminate(player)
+		if AGS_GLOBAL_SETTINGS.ConquestSettings.IsTeamShared then
+			AGS_Conquest_EliminateGroup(player)			
+		else
+			AGS_Conquest_Eliminate(player)
+		end
 	end		
 end
 
@@ -387,6 +414,14 @@ function AGS_Conquest_CountEnemyConquerables(player)
 	local conquerable_counter = nil
 	for _, enemy in pairs(AGS_Teams_GetAllCurrentOpponents(player, true)) do 
 		conquerable_counter = AGS_Conquest_GetPlayerConquerableCount(enemy, conquerable_counter)
+	end
+	return conquerable_counter
+end
+-- Returns number of Friendly Conqerables standing for a given player.
+function AGS_Conquest_GetTeammatesConquerableCount(player)
+	local conquerable_counter = nil
+	for _, ally in pairs(AGS_Teams_GetAllCurrentTeammates(player, true)) do 
+		conquerable_counter = AGS_Conquest_GetPlayerConquerableCount(ally, conquerable_counter)
 	end
 	return conquerable_counter
 end

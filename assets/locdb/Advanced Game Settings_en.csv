@@ -381,3 +381,5 @@
 380,,,ags_culture_data,State Wars,,Liberating City-State
 381,,,ags_culture_data,State Wars,,Ally liberating City-State
 382,,,ags_culture_data,State Wars,,Enemy liberating City-State
+383,,,,,,Team Conquest
+384,,,,,,Players are conquered only if all their teammates conquerable buildings are destroyed.
