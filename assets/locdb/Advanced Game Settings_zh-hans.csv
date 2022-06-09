@@ -1,383 +1,370 @@
-﻿ID,SourceText,TranslatedText
-1,,高级游戏设置
-2,,通过更多选项扩展《帝国时代 4》的游戏模式，真正让您能够自定义比赛设置。\n\n额外获胜条件和不同开局，例如游牧、条约和外交...\n\n帮助、反馈、错误报告和对模式的贡献可前往：\nhttps://github.com/search?q=AOE4-AdvancedGameSettings
-3,,高级游戏设置提供多种比赛选项和获胜条件，以自定义您的游戏并如您所愿进行。\n\n源代码、反馈、错误报告和对模式的贡献可前往：\nhttps://github.com/Woprok/AOE4-AdvancedGameSettings
-4,,获胜条件
-5,,歼灭
-6,,消灭所有敌人，此选项为必选项，否则玩家即使失去一切也不会失败
-7,,淘汰
-8,,比所有敌人更胜一筹，禁用此选项后，如果最后一个对手退出游戏，游戏将不会结束
-9,,投降
-10,,不投降战斗到最后一刻，禁用此选项后，如果最后一个对手投降，游戏将不会结束
-11,,征服
-12,,征服所有敌方目标
-13,,弑君
-14,,击杀所有敌方国王
-15,,圣地
-16,,控制所有圣地
-17,,奇观
-18,,建造并保护奇观
-19,,得分
-20,,在计时器结束前达到最高分
-21,,游戏条件
-22,,定居状态
-23,,起始定居状态
-24,,分散
-25,,游牧
-26,,定居
-27,,条约
-28,,和平时期
-29,,禁用
-30,,5 分钟
-31,,10 分钟
-32,,15 分钟
-33,,20 分钟
-34,,25 分钟
-35,,30 分钟
-36,,35 分钟
-37,,40 分钟
-38,,45 分钟
-39,,50 分钟
-40,,55 分钟
-41,,60 分钟
-42,,65 分钟
-43,,70 分钟
-44,,75 分钟
-45,,80 分钟
-46,,85 分钟
-47,,90 分钟
-48,,95 分钟
-49,,100 分钟
-50,,105 分钟
-51,,110 分钟
-52,,115 分钟
-53,,120 分钟
-54,,团队胜利
-55,,使整个团队能够赢得比赛
-56,,自由对战
-57,,起始团队
-58,,动态团队
-59,,团结一致
-60,,全体为一人，一人为全体
-61,,获胜设置
-62,,征服首都
-63,,摧毁首座城镇中心来击败对手达成征服
-64,,征服地标
-65,,摧毁所有地标建筑来击败对手达成征服
-66,,征服城镇中心
-67,,摧毁所有额外城镇中心来击败对手达成征服
-68,,征服大型箭塔
-69,,摧毁所有大型箭塔来击败对手达成征服
-70,,征服世界奇观
-71,,摧毁所有世界奇观来击败对手达成征服
-72,,圣地胜利计时器
-73,,维持所有圣地获得胜利所需时间
-74,,立即
-75,,1 分钟
-76,,2 分钟
-77,,3 分钟
-78,,4 分钟
-79,,6 分钟
-80,,7 分钟
-81,,8 分钟
-82,,9 分钟
-83,,11 分钟
-84,,12 分钟
-85,,13 分钟
-86,,14 分钟
-87,,圣地恢复计时器
-88,,计时器从重新占领时中断的时刻起继续倒计时
-89,,奇观胜利计时器
-90,,守卫奇观获得胜利所需时间
-91,,守卫奇观至最后一刻
-92,,摧毁完工的奇观将击败其所有者
-93,,奇观成本增益
-94,,根据玩家数量调整奇观成本，定义基于玩家每种资源的额外数量，奇观起始价格为 3000 每种资源
-95,,0 每个玩家
-96,,250 每个玩家
-97,,375 每个玩家
-98,,500 每个玩家
-99,,750 每个玩家
-100,,1000 每个玩家
-101,,1500 每个玩家
-102,,2000 每个玩家
-103,,游戏设置
-104,,贡品
-105,,玩家能够向盟友进贡资源
-106,,外交
-107,,玩家能够建立自己的同盟
-108,,团队视野
-109,,盟友之间共享视野
-110,,无
-111,,需要市场
-112,,总是
-113,,地图视野
-114,,地图的起始视野
-115,,隐藏
-116,,已探索
-117,,显示
-118,,起始时代
-119,,所有玩家的起始时代
-120,,黑暗时代
-121,,封建时代
-122,,城堡时代
-123,,帝王时代
-124,,后帝王时代
-125,,结束时代
-126,,所有玩家的最终时代
-127,,科技时代
-128,,所有玩家的起始科技研究完毕
-129,,起始资源
-130,,所有玩家的起始资源数量
-131,,标准
-132,,高
-133,,非常高
-134,,最大
-135,,消灭时显示
-136,,为被消灭的玩家移除战争迷雾
-137,,比赛设置
-138,,显示玩家分数
-139,,固定的玩家信息开启时会显示玩家分数
-140,,分数显示排名
-141,,在分数模式排名中显示当前名次，如果允许团队获胜，则只在比赛结束时评估团队得分，分数胜利条件不会使用默认分数标准
-142,,分数计时器
-143,,计时结束后根据分数决定比赛胜负
-144,,最小人口数量
-145,,更改无房屋时的起始人口数量，不会超过最大人口数量
-146,,最大人口数量
-147,,更改最大人口数量，需要建造房屋方能达到最大值
-148,,0
-149,,25
-150,,50
-151,,75
-152,,100
-153,,125
-154,,150
-155,,175
-156,,200
-157,,225
-158,,250
-159,,275
-160,,300
-161,,350
-162,,400
-163,,450
-164,,500
-165,,550
-166,,600
-167,,650
-168,,700
-169,,750
-170,,800
-171,,850
-172,,900
-173,,950
-174,,1000
-175,,10000
-176,,起始村民数量
-177,,更改每个玩家的起始村民数量
-178,,1
-179,,2
-180,,3
-181,,4
-182,,5
-183,,6
-184,,7
-185,,8
-186,,9
-187,,10
-188,,15
-189,,20
-190,,30
-191,,35
-192,,40
-193,,45
-194,,大型箭塔开局
-195,,每个玩家开局拥有一座大型箭塔
-196,,传统设置
-197,,国王开局
-198,,每个玩家开局拥有一名国王
-199,,叮当
-200,,彩蛋
-201,,早期市场
-202,,允许在黑暗时代建造市场
-203,,树木爆破
-204,,允许攻城武器和船只摧毁树木
-205,,模拟速度
-206,,更改游戏速度，此选项不能用于多人游戏
-207,,游戏速率
-208,,更改游戏内收集、生产、研究和建造效率
-209,,1x
-210,,2x
-211,,3x
-212,,4x
-213,,5x
-214,,6x
-215,,7x
-216,,8x
-217,,9x
-218,,10x
-219,,0.95x
-220,,0.90x
-221,,0.85x
-222,,0.80x
-223,,0.75x
-224,,20x
-225,,城镇中心限制
-226,,禁止建造额外城镇中心
-227,,无
-228,,标准
-229,,地标
-230,,保护您的队友
-231,,%1PLAYER_NAME% 和团队同生共死，选择投降
-232,,剩余 %1MINUTES_REMAINING% 分钟条约结束
-233,,条约结束，准备好血流成河吧！
-234,,关系
-235,,友好
-236,,中立
-237,,敌对
-238,,当前立场
-239,,%1PLAYER_NAME% 变为友好
-240,,%1PLAYER_NAME% 变为中立
-241,,%1PLAYER_NAME% 变为敌对
-242,,分散开局
-243,,强化国王
-244,,国王拥有额外加成和独特能力
-245,,团队平衡
-246,,如果团队失去一名成员，剩余成员将分享其人口数量和资源，动态团队不适用此选项
-247,,人口
-248,,人口和资源
-249,,无码头
-250,,禁止任何时代建造码头，不建议在玩家被水分隔的地图上使用
-251,,中等
-252,,战斗到最终一刻
-253,,坚持到底
-254,,君主不受世俗权威的约束，其统治权由上帝赐予，切莫挑战他的威严！
-255,,国王
-256,,要塞
-257,,未能保护 %1PLAYER_NAME%
-258,,所有其他队员都溃不成军
-259,,消灭一切
-260,,启用 AI 接管
-261,,退出的玩家将被 AI 接管，而不是被淘汰
-262,,真正的万王之王
-263,,保护国王失败
-264,,%1PLAYER_NAME% 被暗杀
-265,,敌人攻击 %1PLAYER_NAME% 的国王
-266,,国王遭受攻击
-267,,%1PLAYER_NAME% 被征服
-268,,您的帝国已被征服
-269,,征服所有敌人
-270,,存活并超越所有人
-271,,您的帝国被遗忘在历史尘埃中
-272,,您的帝国被永远铭记于历史中
-273,,%1PLAYER_NAME% 仍在等待戈多
-274,,%1PLAYER_NAME% 无法守卫世界奇观的荣耀
-275,,建造一座世界奇观
-276,,摧毁地标
-277,,保护奇观失败
-278,,玩家设置
-279,,强制颜色
-280,,调整外交颜色，并非用作颜色选择器 (但拥有类似功能)，每当游戏产生冲突时，将自动更新每个槽位的颜色，冲突设置将自动解决问题
-281,,强制玩家槽位使用的颜色，要求允许强制颜色
-282,,蓝色
-283,,红色
-284,,黄色
-285,,绿色
-286,,青色
-287,,紫色
-288,,橙色
-289,,粉色
-290,,灰色
-291,,强制玩家 1 颜色
-292,,强制玩家 2 颜色
-293,,强制玩家 3 颜色
-294,,强制玩家 4 颜色
-295,,强制玩家 5 颜色
-296,,强制玩家 6 颜色
-297,,强制玩家 7 颜色
-298,,强制玩家 8 颜色
-299,,部队速率
-300,,更改部队的最高移动速度
-301,,1.05x
-302,,1.10x
-303,,1.15x
-304,,1.20x
-305,,1.25x
-306,,距离条约结束还有 1 分钟
-307,,为战争做好准备
-308,,这是不应该发生的
-309,,笔墨的确是史上最强大的武器
-310,,剩余 %1MINUTES_REMAINING% 分钟游戏结束
-311,,剩余 1 分钟游戏结束
-312,,存活并超越所有人，当前排名 %1RANK_POSITION%
-313,,%1PLAYER_NAME% 供奉新的神祗
-314,,1.50x
-315,,1.75x
-316,,切换目标
-317,,在显示目标或暂时隐藏目标之间切换
-318,,高级游戏设置
-319,,反馈
-320,,比赛设置
-321,,Mod 版本：
-322,,AGS游牧
-323,,AGS游牧就是著名的游牧玩法，加了一些外交和一小部分选项但仍然保持游牧玩法本质。\n\n帮助、反馈、错误报告和对模式的贡献可前往：\nhttps://github.com/search?q=AOE4-AdvancedGameSettings
-324,,奇观建造
-325,,即使没有开启奇观胜利或者征服胜利仍然可以建造奇观。
-326,,双倍工人
-327,,经济单位造价和耗时减半：所有玩家的农民，商人，渔船
-328,,手残补助设置
-329,,手残类型
-330,,如果没有禁用，即加强每个玩家的特定方面，比如经济，军事或者都加强。
-331,,皆有
-332,,军事
-333,,经济
-334,,1号位手残度
-335,,为大厅的该位玩家添加加强等级
-336,,10%
-337,,20%
-338,,30%
-339,,40%
-340,,50%
-341,,60%
-342,,70%
-343,,80%
-344,,90%
-345,,100%
-346,,150%
-347,,200%
-348,,250%
-349,,300%
-350,,2号位手残度
-351,,3号位手残度
-352,,4号位手残度
-353,,5号位手残度
-354,,6号位手残度
-355,,7号位手残度
-356,,8号位手残度
-357,,宝藏
-358,,少量宝藏会随机出现在地图上。
-359,,Low
-360,,Conquer majority of city-states to ensure victory. Each players starts with few monks and has to find and takeover city.\n\n Civilization choice has no effect. Population is limited to 150. Team that controls 75% of cities will win the game.
-361,,City-State Wars
-362,,Control majority of cities
-363,,City %1NAMEORNUMBER% 
-364,,%1PLAYER_NAME% was assimilated
-365,,You are approaching Culture Victory
-366,,Your team is approaching Culture Victory
-367,,Enemy is approaching Culture Victory
-368,,Capturing City-State
-369,,Ally capturing City-State
-370,,Enemy capturing City-State
-371,,City-State captured
-372,,Ally captured City-State
-373,,Enemy captured City-State
-374,,Contesting City-State
-375,,Ally contesting City-State
-376,,Enemy contesting City-State
-377,,Liberated City-State
-378,,Ally liberated City-State
-379,,City-State lost
-380,,Liberating City-State
-381,,Ally liberating City-State
-382,,Enemy liberating City-State
+ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
+1,,,,Mod Title,,进阶游戏设定
+2,,,,Mod Page Description,,"Extends Age of Empires 4 standard game mode with new options and truly gives you an ability to customize match settings.\n\nContains additional win conditions. Different starts such as nomad. And even treaty & diplomacy...\n\nHelp, feedback, bug reports and contribution to mode can be done at: \nhttps://github.com/search?q=AOE4-AdvancedGameSettings\nCommunity Translations:\n - Chinese\n - Russian"
+3,,,,Mod Gamemode Description,,"Advanced Game Settings provides you with a variety of match options and win conditions to customize your game and play it how you want to.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+4,,,,Option Header,,获胜条件
+5,,,,Annihilation Option,,歼灭
+6,,,,Annihilation Option,,消灭所有敌人，此选项为必选项，否则玩家即使失去一切也不会失败
+7,,,,Elimination Option,,淘汰
+8,,,,Elimination Option,,比所有敌人更胜一筹，禁用此选项后，如果最后一个对手退出游戏，游戏将不会结束
+9,,,,Surrender Option,,投降
+10,,,,Surrender Option,,不投降战斗到最后一刻，禁用此选项后，如果最后一个对手投降，游戏将不会结束
+11,,,,Conquest Option,,征服
+12,,,,Conquest Option,,征服所有敌方目标
+13,,,,Regicide Option,,弑君
+14,,,,Regicide Option,,击杀所有敌方国王
+15,,,,Religious Option,,神圣
+16,,,,Religious Option,,控制所有圣地
+17,,,,Wonder Option,,奇观
+18,,,,Wonder Option,,建造并保护奇观
+19,,,,Score Option,,得分
+20,,,,Score Option,,在计时器结束前达到最高分
+21,,,,Option Header,,游戏条件
+22,,,,Settlement Option,,定居状态
+23,,,,Settlement Option,,起始定居状态
+24,,,,Settlement Option,,分散
+25,,,,Settlement Option,,游牧
+26,,,,Settlement Option,,定居
+27,,,,Treaty Option,,条约
+28,,,,Treaty Option,,和平时期
+29,,,,Generic,,禁用
+30,,,,Generic,,5 分钟
+31,,,,Generic,,10 分钟
+32,,,,Generic,,15 分钟
+33,,,,Generic,,20 分钟
+34,,,,Generic,,25 分钟
+35,,,,Generic,,30 分钟
+36,,,,Generic,,35 分钟
+37,,,,Generic,,40 分钟
+38,,,,Generic,,45 分钟
+39,,,,Generic,,50 分钟
+40,,,,Generic,,55 分钟
+41,,,,Generic,,60 分钟
+42,,,,Generic,,65 分钟
+43,,,,Generic,,70 分钟
+44,,,,Generic,,75 分钟
+45,,,,Generic,,80 分钟
+46,,,,Generic,,85 分钟
+47,,,,Generic,,90 分钟
+48,,,,Generic,,95 分钟
+49,,,,Generic,,100 分钟
+50,,,,Generic,,105 分钟
+51,,,,Generic,,110 分钟
+52,,,,Generic,,115 分钟
+53,,,,Generic,,120 分钟
+54,,,,Team Victory Option,,团队胜利
+55,,,,Team Victory Option,,使整个团队能够赢得比赛
+56,,,,Team Victory Option,,自由对战
+57,,,,Team Victory Option,,起始团队
+58,,,,Team Victory Option,,动态团队
+59,,,,Team Solidarity Option,,团结一致
+60,,,,Team Solidarity Option,,"一荣俱荣,一损俱损"
+61,,,,Option Header,,获胜设置
+62,,,,Conquest Option,,征服首都
+63,,,,Conquest Option,,摧毁首座城镇中心来击败对手达成征服
+64,,,,Conquest Option,,征服地标
+65,,,,Conquest Option,,摧毁所有地标建筑来击败对手达成征服
+66,,,,Conquest Option,,征服城镇中心
+67,,,,Conquest Option,,摧毁所有额外城镇中心来击败对手达成征服
+68,,,,Conquest Option,,征服大型箭塔
+69,,,,Conquest Option,,摧毁所有大型箭塔来击败对手达成征服
+70,,,,Conquest Option,,征服世界奇观
+71,,,,Conquest Option,,摧毁所有世界奇观来击败对手达成征服
+72,,,,Religious Option,,神圣胜利计时器
+73,,,,Religious Option,,维持所有圣地获得胜利所需时间
+74,,,,Generic,,立即
+75,,,,Generic,,1 分钟
+76,,,,Generic,,2 分钟
+77,,,,Generic,,3 分钟
+78,,,,Generic,,4 分钟
+79,,,,Generic,,6 分钟
+80,,,,Generic,,7 分钟
+81,,,,Generic,,8 分钟
+82,,,,Generic,,9 分钟
+83,,,,Generic,,11 分钟
+84,,,,Generic,,12 分钟
+85,,,,Generic,,13 分钟
+86,,,,Generic,,14 分钟
+87,,,,Religious Option,,圣地恢复计时器
+88,,,,Religious Option,,计时器从重新占领时中断的时刻起继续倒计时
+89,,,,Wonder Option,,奇观胜利计时器
+90,,,,Wonder Option,,守卫奇观获得胜利所需时间
+91,,,,Wonder Option,,守卫奇观至最后一刻
+92,,,,Wonder Option,,摧毁完工的奇观将击败其所有者
+93,,,,Wonder Option,,奇观成本增益
+94,,,,Wonder Option,,根据玩家数量调整奇观成本，定义基于玩家每种资源的额外数量，奇观起始价格为 3000 每种资源
+95,,,,Generic,,0 每个玩家
+96,,,,Generic,,250 每个玩家
+97,,,,Generic,,375 每个玩家
+98,,,,Generic,,500 每个玩家
+99,,,,Generic,,750 每个玩家
+100,,,,Generic,,1000 每个玩家
+101,,,,Generic,,1500 每个玩家
+102,,,,Generic,,2000 每个玩家
+103,,,,Option Header,,游戏设置
+104,,,,Tribute Option,,贡品
+105,,,,Tribute Option,,玩家能够向盟友进贡资源
+106,,,,Diplomacy Option,,外交
+107,,,,Diplomacy Option,,玩家能够建立自己的同盟
+108,,,,Team Vision Option,,团队视野
+109,,,,Team Vision Option,,盟友之间共享视野
+110,,,,Generic,,无
+111,,,,Team Vision Option,,需要市场
+112,,,,Team Vision Option,,总是
+113,,,,Map Vision Option,,地图视野
+114,,,,Map Vision Option,,地图的起始视野
+115,,,,Map Vision Option,,隐藏
+116,,,,Map Vision Option,,已探索
+117,,,,Map Vision Option,,显示
+118,,,,Age Option,,起始时代
+119,,,,Age Option,,所有玩家的起始时代
+120,,,,Age Option,,黑暗时代
+121,,,,Age Option,,封建时代
+122,,,,Age Option,,城堡时代
+123,,,,Age Option,,帝王时代
+124,,,,Age Option,,后帝王时代
+125,,,,Age Option,,结束时代
+126,,,,Age Option,,所有玩家的最终时代
+127,,,,Age Option,,科技时代
+128,,,,Age Option,,所有玩家的起始科技研究完毕
+129,,,,Resource Option,,起始资源
+130,,,,Resource Option,,所有玩家的起始资源数量
+131,,,,Generic,,标准
+132,,,,Generic,,高
+133,,,,Generic,,非常高
+134,,,,Generic,,最大
+135,,,,FOW Option,,消灭时显示
+136,,,,FOW Option,,为被消灭的玩家移除战争迷雾
+137,,,,Option Header,,比赛设置
+138,,,,Score Visibility Option,,显示玩家分数
+139,,,,Score Visibility Option,,固定的玩家信息开启时会显示玩家分数
+140,,,,Score Option,,分数显示排名
+141,,,,Score Option,,在分数模式排名中显示当前名次，如果允许团队获胜，则只在比赛结束时评估团队得分，分数胜利条件不会使用默认分数标准
+142,,,,Score Option,,分数计时器
+143,,,,Score Option,,计时结束后根据分数决定比赛胜负
+144,,,,Population Option,,最小人口数量
+145,,,,Population Option,,更改无房屋时的起始人口数量，不会超过最大人口数量
+146,,,,Population Option,,最大人口数量
+147,,,,Population Option,,更改最大人口数量，需要建造房屋方能达到最大值
+148,,,,Number,,0
+149,,,,Number,,25
+150,,,,Number,,50
+151,,,,Number,,75
+152,,,,Number,,100
+153,,,,Number,,125
+154,,,,Number,,150
+155,,,,Number,,175
+156,,,,Number,,200
+157,,,,Number,,225
+158,,,,Number,,250
+159,,,,Number,,275
+160,,,,Number,,300
+161,,,,Number,,350
+162,,,,Number,,400
+163,,,,Number,,450
+164,,,,Number,,500
+165,,,,Number,,550
+166,,,,Number,,600
+167,,,,Number,,650
+168,,,,Number,,700
+169,,,,Number,,750
+170,,,,Number,,800
+171,,,,Number,,850
+172,,,,Number,,900
+173,,,,Number,,950
+174,,,,Number,,1000
+175,,,,Number,,10000
+176,,,,Villager Option,,起始村民数量
+177,,,,Villager Option,,更改每个玩家的起始村民数量
+178,,,,Number,,1
+179,,,,Number,,2
+180,,,,Number,,3
+181,,,,Number,,4
+182,,,,Number,,5
+183,,,,Number,,6
+184,,,,Number,,7
+185,,,,Number,,8
+186,,,,Number,,9
+187,,,,Number,,10
+188,,,,Number,,15
+189,,,,Number,,20
+190,,,,Number,,30
+191,,,,Number,,35
+192,,,,Number,,40
+193,,,,Number,,45
+194,,,,Keep Option,,大型箭塔开局
+195,,,,Keep Option,,每个玩家开局拥有一座大型箭塔
+196,,,,Option Header,,传统设置
+197,,,,King Option,,国王开局
+198,,,,King Option,,每个玩家开局拥有一名国王
+199,,,,Ding Option,,叮当
+200,,,,Ding Option,,彩蛋
+201,,,,Market Option,,早期市场
+202,,,,Market Option,,允许在黑暗时代建造市场
+203,,,,Tree Option,,树木爆破
+204,,,,Tree Option,,允许攻城武器和船只摧毁树木
+205,,,,Speed Option,,模拟速度（单人）
+206,,,,Speed Option,,更改游戏速度，此选项不能用于多人游戏
+207,,,,Game Rate Option,,游戏速率（单人）
+208,,,,Game Rate Option,,更改游戏速度，此选项不能用于多人游戏
+209,,,,Number,,1x
+210,,,,Number,,2x
+211,,,,Number,,3x
+212,,,,Number,,4x
+213,,,,Number,,5x
+214,,,,Number,,6x
+215,,,,Number,,7x
+216,,,,Number,,8x
+217,,,,Number,,9x
+218,,,,Number,,10x
+219,,,,Number,,0.95x
+220,,,,Number,,0.90x
+221,,,,Number,,0.85x
+222,,,,Number,,0.80x
+223,,,,Number,,0.75x
+224,,,,Number,,20x
+225,,,,TC Option,,城镇中心限制
+226,,,,TC Option,,禁止建造额外城镇中心
+227,,,,TC Option,,无
+228,,,,TC Option,,标准
+229,,,,TC Option,,地标
+230,,,,Team Solidarity,,保护您的队友
+231,,,,Team Solidarity,,%1PLAYER_NAME% 和团队同生共死，选择投降
+232,,,,Treaty,,剩余 %1MINUTES_REMAINING% 分钟条约结束
+233,,,,Treaty,,条约结束，准备好血流成河吧！
+234,,,,Diplomacy,,关系
+235,,,,Diplomacy,,友好
+236,,,,Diplomacy,,中立
+237,,,,Diplomacy,,敌对
+238,,,,Diplomacy,,当前立场
+239,,,,Diplomacy,,%1PLAYER_NAME% 变为友好
+240,,,,Diplomacy,,%1PLAYER_NAME% 变为中立
+241,,,,Diplomacy,,%1PLAYER_NAME% 变为敌对
+242,,,,Settlement Option Summary,,分散开局
+243,,,,King Option,,强化国王
+244,,,,King Option,,国王拥有额外加成和独特能力
+245,,,,Team Balance Option,,团队平衡
+246,,,,Team Balance Option,,如果团队失去一名成员，剩余成员将分享其人口数量和资源，动态团队不适用此选项
+247,,,,Team Balance Option,,人口
+248,,,,Team Balance Option,,人口和资源
+249,,,,Dock Option,,无码头
+250,,,,Dock Option,,禁止任何时代建造码头，不建议在玩家被水分隔的地图上使用
+251,,,extra_text,Generic,,中等
+252,,,help_text,Surrender,,战斗到最终一刻
+253,,,extra_text,Elimination,,坚持到底
+254,,,help_text,"Regicide King Unit, Requires Attributes",,君主不受世俗权威的约束，其统治权由上帝赐予，切莫挑战他的威严！
+255,,,screen_name,"Regicide King Unit, Requires Attributes",,国王
+256,,,,Settlement Option,,要塞
+257,,,ags_conditions_objectives,Team Solidarity,,未能保护 %1PLAYER_NAME%
+258,,,ags_conditions_objectives,Team Solidarity,,所有其他队员都溃不成军
+259,,,ags_conditions_objectives,Annihilation,,消灭一切
+260,,,,AI Takeover,,启用 AI 接管
+261,,,,AI Takeover,,退出的玩家将被 AI 接管，而不是被淘汰
+262,,,ags_conditions_objectives,Regicide,,真正的万王之王
+263,,,ags_conditions_objectives,Regicide,,保护国王失败
+264,,,ags_conditions_notifications,Regicide,,%1PLAYER_NAME% 被暗杀
+265,,,ags_conditions_objectives,Regicide,,敌人攻击 %1PLAYER_NAME% 的国王
+266,,,ags_conditions_notifications,Regicide,,国王遭受攻击
+267,,,ags_conditions_notifications,Conquest,,%1PLAYER_NAME% 被征服
+268,,,ags_conditions_objectives,Conquest,,您的帝国已被征服
+269,,,ags_conditions_objectives,Conquest,,征服所有敌人
+270,,,ags_conditions_objectives,Score,,存活并超越所有人
+271,,,ags_conditions_objectives,Score,,您的帝国被遗忘在历史尘埃中
+272,,,ags_conditions_objectives,Score,,您的帝国被永远铭记于历史中
+273,,,ags_conditions_notifications,Score,,%1PLAYER_NAME% 仍在等待戈多
+274,,,ags_conditions_notifications,Wonder,,%1PLAYER_NAME% 无法守卫世界奇观的荣耀
+275,,,ags_conditions_notifications,Wonder,,建造一座世界奇观
+276,,,ags_conditions_notifications,Conquest,,摧毁地标
+277,,,ags_conditions_objectives,Wonder,,保护奇观失败
+278,,,,Option Header,,玩家设置
+279,,,,Colors,,强制颜色
+280,,,,Colors,,调整外交颜色，并非用作颜色选择器 (但拥有类似功能)，每当游戏产生冲突时，将自动更新每个槽位的颜色，冲突设置将自动解决问题
+281,,,,Colors,,强制玩家槽位使用的颜色，要求允许强制颜色
+282,,,,Colors,,蓝
+283,,,,Colors,,红
+284,,,,Colors,,黄
+285,,,,Colors,,绿
+286,,,,Colors,,青
+287,,,,Colors,,紫
+288,,,,Colors,,橙
+289,,,,Colors,,粉
+290,,,,Colors,,灰
+291,,,,Colors,,强制玩家 1 颜色
+292,,,,Colors,,强制玩家 2 颜色
+293,,,,Colors,,强制玩家 3 颜色
+294,,,,Colors,,强制玩家 4 颜色
+295,,,,Colors,,强制玩家 5 颜色
+296,,,,Colors,,强制玩家 6 颜色
+297,,,,Colors,,强制玩家 7 颜色
+298,,,,Colors,,强制玩家 8 颜色
+299,,,,Unit Rates Option,,部队速率
+300,,,,Unit Rates Option,,更改部队的最高移动速度
+301,,,,Number,,1.05x
+302,,,,Number,,1.10x
+303,,,,Number,,1.15x
+304,,,,Number,,1.20x
+305,,,,Number,,1.25x
+306,,,,Treaty,,距离条约结束还有 1 分钟
+307,,,ags_conditions_objectives,Treaty,,为战争做好准备
+308,,,ags_conditions_objectives,Treaty,,这是不应该发生的
+309,,,ags_conditions_objectives,Treaty,,笔墨的确是史上最强大的武器
+310,,,ags_conditions_notifications,Score,,剩余 %1MINUTES_REMAINING% 分钟游戏结束
+311,,,ags_conditions_notifications,Score,,剩余 1 分钟游戏结束
+312,,,ags_conditions_objectives,Score,,存活并超越所有人，当前排名 %1RANK_POSITION%
+313,,,ags_conditions_notifications,Religious,,%1PLAYER_NAME% 供奉新的神祗
+314,,,,Number,,1.50x
+315,,,,Number,,1.75x
+316,,,,Ingame Button,,切换目标
+317,,,,Ingame Button,,在显示目标或暂时隐藏目标之间切换
+318,,,,Ingame Button,,高级游戏设置
+319,,,,Ingame Button,,反馈
+320,,,ags_match_ui,Ingame Button,,比赛设置
+321,,,ags_match_ui,Ingame Button,,Mod 版本：
+322,,,,Mod Title,,AGS游牧
+323,,,,Mod Gamemode Description,,AGS游牧就是著名的游牧玩法，加了一些外交和一小部分选项但仍然保持游牧玩法本质。\n\n帮助、反馈、错误报告和对模式的贡献可前往：\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+324,,,,Wonder Construction,,建造奇观
+325,,,,Wonder Construction,,即使没有开启奇观胜利或者征服胜利仍然可以建造奇观
+326,,,,Double Workers Option,,双倍工人
+327,,,,Double Workers Option,,经济单位造价和耗时减半：所有玩家的农民，商人
+328,,,,Handicap Option,,手残补助设置
+329,,,,Handicap Option,,手残类型
+330,,,,Handicap Option,,如果没有禁用，即加强每个玩家的特定方面，比如经济，军事或者都加强
+331,,,,Handicap Option,,全部
+332,,,,Handicap Option,,军事
+333,,,,Handicap Option,,经济
+334,,,,Handicap Option,,1号位手残度
+335,,,,Handicap Option,,为大厅的该位玩家添加加强等级
+336,,,,Number,,10%
+337,,,,Number,,20%
+338,,,,Number,,30%
+339,,,,Number,,40%
+340,,,,Number,,50%
+341,,,,Number,,60%
+342,,,,Number,,70%
+343,,,,Number,,80%
+344,,,,Number,,90%
+345,,,,Number,,100%
+346,,,,Number,,150%
+347,,,,Number,,200%
+348,,,,Number,,250%
+349,,,,Number,,300%
+350,,,,Handicap Option,, 2 号位手残度
+351,,,,Handicap Option,, 3 号位手残度
+352,,,,Handicap Option,, 4 号位手残度
+353,,,,Handicap Option,, 5 号位手残度
+354,,,,Handicap Option,, 6 号位手残度
+355,,,,Handicap Option,, 7 号位手残度
+356,,,,Handicap Option,, 8 号位手残度
+357,,,,Treasure Option,,宝藏
+358,,,,Treasure Option,,少量宝藏会随机出现在地图上
+359,,,,Resource Option,,少量
+360,,,,State Wars,,征服大部分城邦以确保胜利。每个玩家从几个僧侣开始，必须找到并接管城市。\n文明选择没有影响。人口限制为 150 人。 控制 75% 城市的队伍将赢得比赛。\n\n帮助、反馈、错误报告和对模式的贡献可以在以下位置完成：\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+361,,,,State Wars,,城邦战争
+362,,,ags_conditions_objectives,State Wars,,控制大部分城市
+363,,,ags_conditions_objectives,State Wars,,城市 %1NAMEORNUMBER%
+364,,,ags_culture_data,State Wars,,%1PLAYER_NAME%被同化
+365,,,ags_culture_data,State Wars,,你正在接近文化胜利
+366,,,ags_culture_data,State Wars,,您的团队正在接近文化胜利
+367,,,ags_culture_data,State Wars,,敌人正在接近文化胜利
+368,,,ags_culture_data,State Wars,,占领城邦
+369,,,ag
