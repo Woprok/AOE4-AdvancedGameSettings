@@ -357,27 +357,27 @@
 356,,8号位手残度
 357,,宝藏
 358,,少量宝藏会随机出现在地图上。
-359,,Low
-360,,Conquer majority of city-states to ensure victory. Each players starts with few monks and has to find and takeover city.\n\n Civilization choice has no effect. Population is limited to 150. Team that controls 75% of cities will win the game.
-361,,City-State Wars
-362,,Control majority of cities
-363,,City %1NAMEORNUMBER% 
-364,,%1PLAYER_NAME% was assimilated
-365,,You are approaching Culture Victory
-366,,Your team is approaching Culture Victory
-367,,Enemy is approaching Culture Victory
-368,,Capturing City-State
-369,,Ally capturing City-State
-370,,Enemy capturing City-State
-371,,City-State captured
-372,,Ally captured City-State
-373,,Enemy captured City-State
-374,,Contesting City-State
-375,,Ally contesting City-State
-376,,Enemy contesting City-State
-377,,Liberated City-State
-378,,Ally liberated City-State
-379,,City-State lost
-380,,Liberating City-State
-381,,Ally liberating City-State
-382,,Enemy liberating City-State
+359,,少量
+360,,征服大部分城邦以确保胜利。每个玩家从几个僧侣开始，必须找到并接管城市。\n文明选择没有影响。人口限制为 150 人。 控制 75% 城市的队伍将赢得比赛
+361,,城邦战争
+362,,控制大部分城市
+363,,城市 %1NAMEORNUMBER%
+364,,%1PLAYER_NAME%被同化
+365,,你正在接近文化胜利
+366,,您的团队正在接近文化胜利
+367,,敌人正在接近文化胜利
+368,,占领城邦
+369,,盟友正在占领城邦
+370,,敌人正在占领城邦
+371,,城邦已被占领
+372,,盟友已占领城邦
+373,,敌人已占领城邦
+374,,正在争夺城邦
+375,,盟友正在争夺城邦
+376,,敌人正在争夺城邦
+377,,城邦已被解放
+378,,盟友已解放城邦
+379,,城邦丢失
+380,,正在解放城邦
+381,,盟友正在解放城邦
+382,,敌人正在解放城邦
