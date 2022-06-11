@@ -6365,7 +6365,7 @@
 							<DataObject Name="" Type="WinCondition::BooleanOptionUIDescriptor" Id="12215807481219609039" OwnerId="10405591708121373191">
 								<DataProperty Name="#BaseTypes" Type="String" Value="WinCondition::OptionUIDescriptor#0|"/>
 								<DataProperty Name="m_key" Type="String" Value="option_win_setting_conquest_is_team_shared"/>
-								<DataProperty Name="m_defaultValue" Type="Bool" Value="true"/>
+								<DataProperty Name="m_defaultValue" Type="Bool" Value="false"/>
 								<DataProperty Name="m_feSummaryName" Type="Object">
 									<DataValue Name="util::ReflectLocString">11241479337828478803</DataValue>
 									<!--WinCondition/WinCondition::OptionsUIDescriptor/WinCondition::OptionSectionUIDescriptor/WinCondition::BooleanOptionUIDescriptor/util::ReflectLocString/-->

@@ -101,7 +101,7 @@ AGS_GLOBAL_SETTINGS = {
 		TownCenters = false,
 		Keeps = false,
 		Wonder = false,
-		IsTeamShared = true,
+		IsTeamShared = false,
 	},
 	ReligiousSettings = {
 		Timer = 10,
