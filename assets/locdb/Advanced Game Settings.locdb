@@ -8,6 +8,11 @@
 			<EngineName i:nil="true" />
 			<Name>en</Name>
 		</Locale>
+		<Locale>
+			<DisplayName>Chinese (Simplified)</DisplayName>
+			<EngineName i:nil="true" />
+			<Name>zh-Hans</Name>
+		</Locale>
 	</Locales>
 	<Pipelines />
 	<Scans />
