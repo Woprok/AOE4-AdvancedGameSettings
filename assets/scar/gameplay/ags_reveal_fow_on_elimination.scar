@@ -13,6 +13,8 @@ AGS_REVEAL_FOW_ON_ELIMINATION_MODULE = "AGS_RevealFowOnElimination"
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
 
+Core_RegisterModule(AGS_REVEAL_FOW_ON_ELIMINATION_MODULE)	
+
 function AGS_RevealFowOnElimination_UpdateModuleSettings()
 	AGS_Print("AGS_RevealFowOnElimination_UpdateModuleSettings")
 	if not AGS_GLOBAL_SETTINGS.RevealFowOnElimination then
