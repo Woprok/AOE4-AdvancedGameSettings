@@ -44,9 +44,7 @@ end
 
 function AGS_Nomadic_PresetExecute()
 	AGS_Print("AGS_Nomadic_PresetExecute")
-	if not AGS_GLOBAL_SETTINGS.UsingPrefabStart then
-		AGS_Nomadic_CreateSpawn()
-	end
+	AGS_Nomadic_CreateSpawn()
 end
 
 function AGS_Nomadic_OnStarting()
