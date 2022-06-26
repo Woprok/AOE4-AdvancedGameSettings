@@ -22,9 +22,9 @@ Core_RegisterModule(AGS_TEAM_VISION_MODULE)
 
 function AGS_TeamVision_UpdateModuleSettings()
 	AGS_Print("AGS_TeamVision_UpdateModuleSettings")
-	if AGS_GLOBAL_SETTINGS.TeamVision == AGS_GS_TEAM_VISION_NONE then
-		Core_UnregisterModule(AGS_TEAM_VISION_MODULE)
-	end
+	--if AGS_GLOBAL_SETTINGS.TeamVision == AGS_GS_TEAM_VISION_NONE then
+	--	Core_UnregisterModule(AGS_TEAM_VISION_MODULE)
+	--end
 end
 
 function AGS_TeamVision_PresetFinalize()
@@ -77,10 +77,14 @@ function AGS_TeamVision_DefineConditions()
 	AGS_TeamVision_Disable()
 	if AGS_GLOBAL_SETTINGS.TeamVision == AGS_GS_TEAM_VISION_ALWAYS then 
 		AGS_TeamVision_NoRequirements()
+		AGS_TEAM_VISION_ACTIVE = true
 	elseif AGS_GLOBAL_SETTINGS.TeamVision == AGS_GS_TEAM_VISION_REQUIRES_MARKET then 
 		AGS_TeamVision_TrackRequirements()
+		AGS_TEAM_VISION_ACTIVE = true
+	elseif AGS_GLOBAL_SETTINGS.TeamVision == AGS_GS_TEAM_VISION_NONE then
+		Core_UnregisterModule(AGS_TEAM_VISION_MODULE)
+		AGS_TEAM_VISION_ACTIVE = false
 	end
-	AGS_TEAM_VISION_ACTIVE = true
 end
 -- Disables team vision.
 function AGS_TeamVision_Disable()		
