@@ -21,6 +21,18 @@ AGS_COLOR_MAINTAINER_TABLE = {
 	{ Color = AGS_GS_COLOR_GREY },
 }
 
+AGS_COLOR_MAINTAINER_TO_SLOT_TABLE = { -- Holds the slot index of each player colour
+	["#FF188CFF"] = 1,
+	["#FFFF3B30"] = 2,
+	["#FFEBD300"] = 3,
+	["#FF00C700"] = 4,
+	["#FF00E8E8"] = 5,
+	["#FFAE6BFF"] = 6,
+	["#FFFF6600"] = 7,
+	["#FFF65BB2"] = 8,
+	["#FF888888"] = 9
+}
+
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
@@ -35,7 +47,7 @@ end
 
 function AGS_ColorMaintainer_EarlyInitializations()
 	AGS_Print("AGS_ColorMaintainer_EarlyInitializations")
-	AGS_ColorMaintainer_CreateSlots()
+	AGS_ColorMaintainer_CreateAutomaticSlots()
 	AGS_ColorMaintainer_RefreshSlots()
 end
 
@@ -58,51 +70,13 @@ end
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_ColorMaintainer_CreateSlots()
-	local all_colors = AGS_ColorMaintainer_CreateColorList()
-	local new_slot_color_list = AGS_ColorMaintainer_CreateListFrom(AGS_GLOBAL_SETTINGS.PlayerColors)
-	local used_colors = { }
-	local unassigned_slots = { }
-	-- First we assign each color that is uniquely assigned.
-	for i, slot in pairs(new_slot_color_list) do
-		if AGS_Contains(used_colors, slot.Color) then
-			table.insert(unassigned_slots, i)
-		else
-			AGS_COLOR_MAINTAINER_TABLE[i].Color = slot.Color
-			table.insert(used_colors, slot.Color)
-		end		
-	end	
-	-- Now its time to give everyone remaining unique colors.
-	local free_colors = AGS_GetFreeItems(all_colors, used_colors)
-	-- This is double loop as we are at each step moving to next unused slot and color.
-	local i = 1
-	for _, slot in pairs(unassigned_slots) do 
-		AGS_COLOR_MAINTAINER_TABLE[slot].Color = free_colors[i]
-		i = i + 1
+function AGS_ColorMaintainer_CreateAutomaticSlots()
+	for _, player in pairs(PLAYERS) do
+		player.AGS_Colors = {
+			Slot = AGS_COLOR_MAINTAINER_TO_SLOT_TABLE[UI_GetColourAsString(Player_GetUIColour(player.id))],
+		}
 	end
-	AGS_Print("Color table:", AGS_COLOR_MAINTAINER_TABLE)
-end
 	
-function AGS_ColorMaintainer_CreateColorList()
-	local colors = {}
-	for _, slot in pairs(AGS_COLOR_MAINTAINER_TABLE) do
-		table.insert(colors, slot.Color)
-	end
-	return colors
-end
--- This returns list of all slots as they are defined in PlayerSettings of GlobalSettings table.
-function AGS_ColorMaintainer_CreateListFrom(slots)
-	return {
-		{ Color = slots.FirstSlot },	
-		{ Color = slots.SecondSlot },	
-		{ Color = slots.ThirdSlot },	
-		{ Color = slots.FourthSlot },	
-		{ Color = slots.FifthSlot },	
-		{ Color = slots.SixthSlot },	
-		{ Color = slots.SeventhSlot },	
-		{ Color = slots.EighthSlot },	
-		{ Color = slots.NinthSlot },	
-	}
 end
 
 function AGS_ColorMaintainer_RefreshSlots()
@@ -110,7 +84,7 @@ function AGS_ColorMaintainer_RefreshSlots()
 	PlayerColour_Enable()	
 	for _, player in pairs(PLAYERS) do
 		if not player.isEliminated then
-			AGS_ColorMaintainer_ForceColor(player, AGS_COLOR_MAINTAINER_TABLE[player.slotIndex].Color)			
+			AGS_ColorMaintainer_ForceColor(player, player.AGS_Colors.Slot)				
 		end
 	end	
 end

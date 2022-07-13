@@ -277,3 +277,4 @@ import("replay/ObserverUI.scar")
 -- AGS_Score by score module
 -- AGS_TeamVisionAllowed by team vision module
 -- AGS_SacredSites by religious module
+-- AGS_Colors by color maintainer module

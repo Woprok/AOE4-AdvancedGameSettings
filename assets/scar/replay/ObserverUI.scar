@@ -6,11 +6,11 @@
 -- Observer UI
 ---------------------------------------------------------------------------------------------------
 
-import("ObserverUI/xaml/ObserveNPlayers.scar")
-import("ObserverUI/xaml/Observe2Players.scar")
-import("ObserverUI/xaml/ToggleUIButton.scar")
-import("ObserverUI/ObserverUIUpdateUi.scar")
-import("ObserverUI/ObserverUIRules.scar")
+import("replay/xaml/ObserveNPlayers.scar")
+import("replay/xaml/Observe2Players.scar")
+import("replay/xaml/ToggleUIButton.scar")
+import("replay/ObserverUIUpdateUi.scar")
+import("replay/ObserverUIRules.scar")
 
 Core_RegisterModule("ObserverUI")
 

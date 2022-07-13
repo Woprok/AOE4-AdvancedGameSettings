@@ -278,7 +278,7 @@
 277,,,ags_conditions_objectives,Wonder,,Failed to hold the wonder.
 278,,,,Option Header,,Player Settings
 279,,,,Colors,,Enforce Colors
-280,,,,Colors,,"Fixes colors for diplomacy. This is not intended to serve as color picker (But it can be used as one.). Causes automatic update of colors for each slot, whenever game causes conflicting change. Conflicting settings are automatically resolved."
+280,,,,Colors,,"Fixes colors for diplomacy. Causes automatic update of colors for each slot, whenever game causes conflicting change. This option disables team colors and makes them unavailable."
 281,,,,Colors,,Used by Enforce Colors to determine which color is used by this slot. Requires Enforce Colors to be allowed.
 282,,,,Colors,,Blue
 283,,,,Colors,,Red

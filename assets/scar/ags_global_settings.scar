@@ -172,16 +172,6 @@ AGS_GLOBAL_SETTINGS = {
 	
 	PlayerColors = {
 		IsEnforcing = false,
-		FirstSlot = AGS_GS_COLOR_BLUE, 
-		SecondSlot = AGS_GS_COLOR_RED, 
-		ThirdSlot = AGS_GS_COLOR_YELLOW, 
-		FourthSlot = AGS_GS_COLOR_GREEN, 
-		FifthSlot = AGS_GS_COLOR_TURQUOISE, 
-		SixthSlot = AGS_GS_COLOR_PURPLE, 
-		SeventhSlot = AGS_GS_COLOR_ORANGE, 
-		EighthSlot = AGS_GS_COLOR_PINK, 
-		-- Not used, but defined by Relic. Might be useful for scenarios.
-		NinthSlot = AGS_GS_COLOR_GREY, 
 	},
 	PlayerHandicaps = {
 		HandicapType = AGS_GS_HANDICAP_TYPE_DISABLED,
@@ -460,7 +450,6 @@ function AGS_GlobalSettings_DefinePlayerSettings(category)
 	if category.option_player_setting_color_is_enforcing ~= nil then
 		AGS_GLOBAL_SETTINGS.PlayerColors.IsEnforcing = category.option_player_setting_color_is_enforcing
 	end
-	AGS_GlobalSettings_SetSlotColor(category)
 end
 function AGS_GlobalSettings_DefineHandicapSettings(category)
 	if category.option_handicap_setting_handicap_type ~= nil then
@@ -543,58 +532,6 @@ function AGS_GlobalSettings_RetrieveSlotHandicap(slot_handicap)
 		return 3.5
 	elseif slot_handicap.enum_value == slot_handicap.enum_items.slot_handicap_4 then
 		return 4.0
-	end
-end
-
-function AGS_GlobalSettings_SetSlotColor(category)
-	if category.option_player_setting_slot_1 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.FirstSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_1)
-	end
-	if category.option_player_setting_slot_2 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.SecondSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_2)
-	end
-	if category.option_player_setting_slot_3 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.ThirdSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_3)
-	end
-	if category.option_player_setting_slot_4 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.FourthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_4)
-	end
-	if category.option_player_setting_slot_5 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.FifthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_5)
-	end
-	if category.option_player_setting_slot_6 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.SixthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_6)
-	end
-	if category.option_player_setting_slot_7 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.SeventhSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_7)
-	end
-	if category.option_player_setting_slot_8 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.EighthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_8)
-	end
-	if category.option_player_setting_slot_9 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.NinthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_9)
-	end
-end
-
-function AGS_GlobalSettings_RetrieveSlotColor(slot_color)
-	if slot_color.enum_value == slot_color.enum_items.slot_color_1 then
-		return AGS_GS_COLOR_BLUE
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_2 then
-		return AGS_GS_COLOR_RED
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_3 then
-		return AGS_GS_COLOR_YELLOW
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_4 then
-		return AGS_GS_COLOR_GREEN
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_5 then
-		return AGS_GS_COLOR_TURQUOISE
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_6 then
-		return AGS_GS_COLOR_PURPLE
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_7 then
-		return AGS_GS_COLOR_ORANGE
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_8 then
-		return AGS_GS_COLOR_PINK
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_9 then
-		return AGS_GS_COLOR_GREY
 	end
 end
 
