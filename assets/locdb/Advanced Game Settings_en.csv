@@ -383,3 +383,5 @@
 382,,,ags_culture_data,State Wars,,Enemy liberating City-State
 383,,,,Conquest Option,,Team Conquest
 384,,,,Conquest Option,,"Players are conquered only if all their teammates conquerable buildings are destroyed. Does not work with diplomacy teams, due to how relations work."
+385,,,,,,Spawn Scout (Scattered)
+386,,,,,,"Spawns scout in addition to villagers, when Scattered Settlement start is selected."

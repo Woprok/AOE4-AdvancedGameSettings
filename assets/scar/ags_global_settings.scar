@@ -154,6 +154,7 @@ AGS_GLOBAL_SETTINGS = {
 	WonderConstruction = false,
 	Treasures = false,
 	
+	ScatteredScout = false, -- defined only for nomad
 	StartingMonks = 1, --undefined
 	StartingScouts = 1, -- undefined
 	StartingSheeps = 1, -- undefined
@@ -425,6 +426,9 @@ function AGS_GlobalSettings_DefineMatchSettings(category)
 	end
 	if category.option_match_setting_treasures ~= nil then
 		AGS_GLOBAL_SETTINGS.Treasures = category.option_match_setting_treasures
+	end
+	if category.option_match_setting_scattered_scout ~= nil then
+		AGS_GLOBAL_SETTINGS.ScatteredScout = category.option_match_setting_scattered_scout
 	end
 end
 

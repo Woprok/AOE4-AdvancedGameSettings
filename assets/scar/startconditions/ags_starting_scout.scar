@@ -1,0 +1,41 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Spawns scout near default position.
+---------------------------------------------------------------------------------------------------
+
+AGS_STARTING_SCOUT_MODULE = "AGS_StartingScout"
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_STARTING_SCOUT_MODULE)	
+
+function AGS_StartingScout_UpdateModuleSettings()
+	AGS_Print("AGS_StartingScout_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.ScatteredScout or AGS_GLOBAL_SETTINGS.Settlement ~= AGS_GS_SETTLEMENT_SCATTERED then
+		Core_UnregisterModule(AGS_STARTING_SCOUT_MODULE)
+	end
+end
+
+function AGS_StartingScout_PresetExecute()
+	AGS_Print("AGS_StartingScout_PresetExecute")
+	AGS_StartingScout_Create()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- This function spawns a scout, somewhere on the map...
+function AGS_StartingScout_Create()
+	for _, player in pairs(PLAYERS) do		
+		local sbp_scout = AGS_GetCivilizationUnit(player.raceName, AGS_BP_SCOUT)				
+		local sname = AGS_SGroupName(player.id, AGS_BP_SCOUT)	
+		local start_adjusted_pos = AGS_Starts_GetStartPosition(player.id)			
+		local sg_scout = AGS_SpawnSquad(player.id, sname, sbp_scout, start_adjusted_pos, World_Pos(0, 0, -10), AGS_GLOBAL_SETTINGS.StartingScouts)
+	end
+end

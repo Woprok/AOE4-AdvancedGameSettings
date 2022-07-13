@@ -78,6 +78,7 @@ import("startconditions/ags_start_nomadic.scar")
 import("startconditions/ags_start_scattered.scar")
 import("startconditions/ags_starting_keep.scar")
 import("startconditions/ags_starting_king.scar")
+import("startconditions/ags_starting_scout.scar")
 
 -- Conditions based on expected priority.
 import("conditions/ags_treaty.scar") 
