@@ -1,0 +1,81 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Kusch_AOE
+--
+-- Description:
+-- Observer UI
+---------------------------------------------------------------------------------------------------
+
+import("ObserverUI/xaml/ObserveNPlayers.scar")
+import("ObserverUI/xaml/Observe2Players.scar")
+import("ObserverUI/xaml/ToggleUIButton.scar")
+import("ObserverUI/ObserverUIUpdateUi.scar")
+import("ObserverUI/ObserverUIRules.scar")
+
+Core_RegisterModule("ObserverUI")
+
+function ObserverUI_OnInit()
+	print("ObserverUI_OnInit")
+	
+	if not UI_IsReplay() then
+		return
+	end
+	
+	local observeXaml = _ObserveNPlayersXaml
+	if World_GetPlayerCount() == 2 then
+		observeXaml = _Observe2PlayersXaml
+	end
+	
+	UI_AddChild("", "XamlPresenter", "ToggleUIButton", { IsHitTestVisible = true, Xaml = _ToggleUIButtonXaml, DataContext = UI_CreateDataContext(_ToggleUIButtonDataContext)})
+	UI_AddChild("", "XamlPresenter", "ObserverUI", { IsHitTestVisible = false, Xaml = observeXaml})
+	
+	Set_ReplayStatViewer_And_ImprovedUI_Visibility(true)
+end
+
+_ToggleUIButtonDataContext = { 
+	command = UI_CreateCommand("SwitchBetween_ReplayStatViewer_And_ImprovedUI")
+}
+
+_IsImprovedUIVisible = true
+
+function SwitchBetween_ReplayStatViewer_And_ImprovedUI()
+	print("SwitchBetween_ReplayStatViewer_And_ImprovedUI")
+	
+	Set_ReplayStatViewer_And_ImprovedUI_Visibility(not _IsImprovedUIVisible)
+end
+
+function Set_ReplayStatViewer_And_ImprovedUI_Visibility(improvedUIIsVisible)
+	print("Set_ReplayStatViewer_And_ImprovedUI_Visibility")
+	
+	_IsImprovedUIVisible = improvedUIIsVisible
+	
+	if improvedUIIsVisible then
+		ShowImprovedUI()
+		return
+	end
+	ShowClassicUI()
+end
+
+function ShowImprovedUI()
+	InitializeObserverUIDataContext()
+	InitializeObserverUIRules()
+	
+	UI_SetPropertyValue("ObserverUI", "Visibility", "Visible")
+	UI_SetPropertyValue("uniqueSquadsPanel", "Visibility", "Collapsed")
+	UI_SetPropertyValue("DynastyUI", "Visibility", "Collapsed")
+	UI_SetPropertyValue("ReplayStatViewer", "Visibility", "Collapsed")
+	UI_SetPropertyValue("selectionCommandCardsGrid", "Margin", "-205,0,0,0")
+	UI_SetPropertyValue("ReplayControl", "Margin", "0,645,0,0")
+end
+
+function ShowClassicUI()
+	RemoveObserverUIRules()
+	
+	UI_SetPropertyValue("ObserverUI", "Visibility", "Collapsed")
+	UI_SetPropertyValue("uniqueSquadsPanel", "Visibility", "Visible")
+	UI_SetPropertyValue("DynastyUI", "Visibility", "Visible")
+	UI_SetPropertyValue("ReplayStatViewer", "Visibility", "Visible")
+	UI_SetPropertyValue("ReplayControl", "Margin", "0,0,0,0")
+	UI_SetPropertyValue("selectionCommandCardsGrid", "Margin", "0,0,0,0")
+end
+

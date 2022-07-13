@@ -1,0 +1,428 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Kusch_AOE
+--
+-- Description:
+-- Observer UI
+---------------------------------------------------------------------------------------------------
+
+_Observe2PlayersXaml = 
+[[<Grid
+    	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Grid.Resources>
+		<DataTemplate x:Key="ObserverUIBackgroundAndBorder">
+			<Grid>
+                <!-- Background & Border -->
+        		<Rectangle Fill="{DynamicResource TertiaryColorGradientVerticalBrush}" />
+				<ContentControl Template="{StaticResource CanvasBackgroundBox}" />
+            	<Border BorderThickness="2" BorderBrush="{Binding [color]}"/>
+			</Grid>
+		</ControlTemplate>
+		
+		<DataTemplate x:Key="ObserverUIResources">
+            <ItemsControl ItemsSource="{Binding [resources]}">
+	            <ItemsControl.ItemsPanel>
+	                <ItemsPanelTemplate>
+	                    <StackPanel Orientation="Horizontal"/>
+	                </ItemsPanelTemplate>
+	            </ItemsControl.ItemsPanel>
+				
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Width="120">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Image 	Grid.RowSpan="2"
+                                	Height="40"
+                                	HorizontalAlignment="Center"
+                                	VerticalAlignment="Center"
+                                	Source="{Binding [icon]}" />
+                            <TextBlock Grid.RowSpan="2" Margin="5,0,0,0"
+									Style="{StaticResource HUDGray80ParagraphTextBlock12ptStyle}"
+                                	Text="{Binding [workers], Converter={StaticResource CastToIntOperator}}" />
+                            <TextBlock Grid.Column="1"
+                                    Style="{StaticResource nHUDBaseHeavyTextBlockStyle}"
+									FontSize="18"
+									Foreground="White"
+                                    Text="{Binding [amount], Converter={StaticResource CastToIntOperator}}" />
+                            <TextBlock Grid.Row="1" Grid.Column="1"
+                                    Style="{StaticResource HUDGray80ParagraphTextBlock12ptStyle}"
+                                    Text="{Binding [income]}" />
+							
+							PrimaryColorExtraLight
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+		</DataTemplate>
+		
+		<DataTemplate x:Key="ObserverUIPopulation">
+			<Grid HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="120" />
+                </Grid.ColumnDefinitions>
+				
+				<Grid>
+	                <Grid.ColumnDefinitions>
+	                    <ColumnDefinition Width="40" />
+	                    <ColumnDefinition Width="Auto" />
+	                </Grid.ColumnDefinitions>
+	                <Image Grid.Column="0"
+							HorizontalAlignment="Right"
+	                        Height="32" Margin="0,-4,0,0"
+	                        Source="pack://application:,,,/WPFGUI;component/icons/resources/resource_popcap.png"/>
+	                <TextBlock Grid.Column="1"
+							HorizontalAlignment="Left" VerticalAlignment="Center"
+	                        Style="{StaticResource nHUDBaseHeavyTextBlockStyle}"
+	                        Text="{Binding [populationVsMaximumPopulation]}" />
+				</Grid>
+
+				<Grid Grid.Column="1">
+	                <Grid.ColumnDefinitions>
+	                    <ColumnDefinition Width="10" />
+	                    <ColumnDefinition Width="Auto" />
+	                    <ColumnDefinition Width="*" />
+	                    <ColumnDefinition Width="Auto" />
+	                    <ColumnDefinition Width="*" />
+	                    <ColumnDefinition Width="10" />
+	                </Grid.ColumnDefinitions>
+	                <Image Grid.Column="1"
+							HorizontalAlignment="Right"
+	                        Height="32" Margin="0,-4,0,0"
+	                        Source="pack://application:,,,/WPFGUI;component/icons/resources/resource_villager.png"/>
+	                <TextBlock Grid.Column="2"
+							HorizontalAlignment="Left" VerticalAlignment="Center"
+	                        Style="{StaticResource nHUDBaseHeavyTextBlockStyle}"
+	                        Text="{Binding [workerPopulation], Mode=OneWay, Converter={StaticResource CastToIntOperator}}" />
+	                <Image Grid.Column="3" 
+							HorizontalAlignment="Right"
+	                        Height="32" Margin="0,-4,0,0"
+	                        Source="pack://application:,,,/WPFGUI;component/icons/resources/resource_idle_villager.png"/>
+	                <TextBlock Grid.Column="4"
+							HorizontalAlignment="Left" VerticalAlignment="Center"
+	                        Style="{StaticResource nHUDBaseHeavyTextBlockStyle}"
+	                        Text="{Binding [idleWorkerPopulation], Mode=OneWay, Converter={StaticResource CastToIntOperator}}" />
+				</Grid>
+
+				<Grid Grid.Column="2">
+	                <Grid.ColumnDefinitions>
+	                    <ColumnDefinition Width="10" />
+	                    <ColumnDefinition Width="Auto" />
+	                    <ColumnDefinition Width="*" />
+	                    <ColumnDefinition Width="Auto" />
+	                    <ColumnDefinition Width="*" />
+	                    <ColumnDefinition Width="10" />
+	                </Grid.ColumnDefinitions>
+	                <Image Grid.Column="1"  
+							HorizontalAlignment="Right"
+	                        Height="32" Margin="0,-4,0,0"
+	                        Source="pack://application:,,,/WPFGUI;component/icons/resources/resource_military.png"/>
+	                <TextBlock Grid.Column="2"
+							HorizontalAlignment="Left" VerticalAlignment="Center"
+	                        Style="{StaticResource nHUDBaseHeavyTextBlockStyle}"
+	                        Text="{Binding [militaryPopulation], Mode=OneWay, Converter={StaticResource CastToIntOperator}}" />
+	                <Image Grid.Column="3"
+							HorizontalAlignment="Right"
+	                        Height="28"
+	                        Source="pack://application:,,,/WPFGUI;component/icons/races/common/abilities/leader_siege_damage.png"/>
+	                <TextBlock Grid.Column="4" 
+							HorizontalAlignment="Left" VerticalAlignment="Center"
+	                        Style="{StaticResource nHUDBaseHeavyTextBlockStyle}"
+	                        Text="{Binding [siegePopulation], Mode=OneWay, Converter={StaticResource CastToIntOperator}}" />
+				</Grid>
+			</Grid>
+		</DataTemplate>
+		
+		<DataTemplate x:Key="ObserverUIRelics">
+			<Grid Width="120" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="34" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="28" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="34" />
+                </Grid.ColumnDefinitions>
+				
+                <Image Grid.Column="0"
+                        Height="30" HorizontalAlignment="Right"
+                        Source="pack://application:,,,/WPFGUI;component/icons/races/common/abilities/create_relic.png"/>
+                <TextBlock Grid.Column="1"
+                        VerticalAlignment="Center" TextAlignment="Center"
+                        Style="{StaticResource nHUDBaseHeavyTextBlockStyle}"
+                        Text="{Binding [relics], Mode=OneWay, Converter={StaticResource CastToIntOperator}}" />
+                <Image Grid.Column="2"
+                        Height="20"
+                        Source="pack://application:,,,/WPFGUI;component/icons/tooltip_arrow_right.png"/>
+                <TextBlock Grid.Column="3"
+                        VerticalAlignment="Center" TextAlignment="Center"
+                        Style="{StaticResource nHUDBaseHeavyTextBlockStyle}"
+                        Text="{Binding [relicsDeposited], Mode=OneWay, Converter={StaticResource CastToIntOperator}}" />
+                <Image Grid.Column="4"
+                        Height="30" HorizontalAlignment="Left"
+                        Source="pack://application:,,,/WPFGUI;component/icons/races/common/abilities/deposit_relic.png"/>
+			</Grid>
+		</DataTemplate>
+		
+		<DataTemplate x:Key="ObserverUIUpgradesQueued">
+	        <ItemsControl ItemsSource="{Binding [upgradesQueued]}" Margin="-2,0,-2,0">
+	            <ItemsControl.ItemsPanel>
+	                <ItemsPanelTemplate>
+	                    <DockPanel/>
+	                </ItemsPanelTemplate>
+	            </ItemsControl.ItemsPanel>
+				
+			    <ItemsControl.ItemContainerStyle>
+			      	<Style TargetType="ContentPresenter">
+			        	<Setter Property="DockPanel.Dock" Value="Left"/>
+			      	</Style>
+			    </ItemsControl.ItemContainerStyle>
+	
+	            <ItemsControl.ItemTemplate>
+	                <DataTemplate>
+						<Grid Margin="2,4,2,0">
+							<Rectangle Width="{StaticResource HUDBuildQueueIconSize}"
+           							Height="{StaticResource HUDBuildQueueIconSize}"
+									Fill="{StaticResource ResearchButtonBgBrush}" />
+							<Rectangle Width="{StaticResource HUDBuildQueueIconSize}"
+           							Height="{StaticResource HUDBuildQueueIconSize}"
+									Fill="{StaticResource ResearchLightButtonBgHighlightBrush}" />
+							<Image	Width="{StaticResource HUDBuildQueueIconSize}"
+           							Height="{StaticResource HUDBuildQueueIconSize}"
+									Source="{Binding [icon]}"/>
+							
+						</Grid>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</DataTemplate>
+		
+		<DataTemplate x:Key="ObserverUIUnits">
+	        <ItemsControl ItemsSource="{Binding [units]}" Margin="-2,0,-2,0">
+	            <ItemsControl.ItemsPanel>
+	                <ItemsPanelTemplate>
+	                    <DockPanel/>
+	                </ItemsPanelTemplate>
+	            </ItemsControl.ItemsPanel>
+				
+			    <ItemsControl.ItemContainerStyle>
+			      	<Style TargetType="ContentPresenter">
+			        	<Setter Property="DockPanel.Dock" Value="Right"/>
+			      	</Style>
+			    </ItemsControl.ItemContainerStyle>
+	
+	            <ItemsControl.ItemTemplate>
+	                <DataTemplate>
+						<Grid Margin="2,4,2,0">
+							<Rectangle 
+									Width="{StaticResource HUDBuildQueueIconSize}"
+           							Height="{StaticResource HUDBuildQueueIconSize}"
+									Fill="{StaticResource MilitaryButtonBgBrush}" />
+							<Rectangle 
+									Width="{StaticResource HUDBuildQueueIconSize}"
+           							Height="{StaticResource HUDBuildQueueIconSize}"
+									Fill="{StaticResource MilitaryLightButtonBgHighlightBrush}" />
+				
+							<Image 
+									Width="{StaticResource HUDBuildQueueIconSize}"
+           							Height="{StaticResource HUDBuildQueueIconSize}"
+									Source="{Binding [icon]}"/>
+                            <TextBlock 
+									VerticalAlignment="Top"
+									HorizontalAlignment="Left"
+									Style="{StaticResource HUDCommandCardButtonTextBlockStyle}"
+                                	Text="{Binding [queued], Converter={StaticResource CastToIntOperator}}" />
+                            <TextBlock 
+									VerticalAlignment="Bottom"
+									HorizontalAlignment="Right"
+									Style="{StaticResource HUDCommandCardButtonTextBlockStyle}"
+                                	Text="{Binding [count], Converter={StaticResource CastToIntOperator}}" />
+							
+						</Grid>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</DataTemplate>
+		
+		<DataTemplate x:Key="ObserverUIName">
+			<Grid VerticalAlignment="Center">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				
+	            <TextBlock Style="{StaticResource nHUDHeaderSmallTextBlockStyle}"
+						Text="{Binding [name]}"/>
+				
+				<Rectangle Grid.Row="1" Fill="{Binding [color]}" Height="2"/>
+				
+	        </Grid>
+		</DataTemplate>
+		
+        <LinearGradientBrush x:Key="ObserverUIBrushOpaqueLeftToRight" 
+				StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Offset="0" />
+            <GradientStop Offset="1" Color="#FF000000" />
+        </LinearGradientBrush>
+		
+        <LinearGradientBrush x:Key="ObserverUIBrushOpaqueRightToLeft" 
+				StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Offset="0" Color="#FF000000" />
+            <GradientStop Offset="1" />
+        </LinearGradientBrush>
+	</Grid.Resources>
+	
+	<Grid.ColumnDefinitions>
+		<ColumnDefinition Width="*" />
+		<ColumnDefinition Width="200" />
+		<ColumnDefinition Width="*" />
+	</Grid.ColumnDefinitions>
+	<Grid	Grid.Column="0"
+	        VerticalAlignment="Top">
+		
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			
+			<ContentControl	ContentTemplate="{StaticResource ObserverUIBackgroundAndBorder}" Content="{Binding [player1]}"/>
+			<Image	HorizontalAlignment="Right"
+					OpacityMask="{StaticResource ObserverUIBrushOpaqueLeftToRight}"
+					Source="{Binding [player1][civImage]}"
+					Height="82" />
+			
+			<Grid Margin="2,2,2,2" HorizontalAlignment="Left">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				
+				<ContentControl	Grid.ColumnSpan="2"
+						ContentTemplate="{StaticResource ObserverUIResources}"
+						Content="{Binding [player1]}" />
+				
+                <Image Grid.Column="2" Grid.RowSpan="3" 
+						Height="60" Width="60" Margin="10,0,10,0"
+						HorizontalAlignment="Center" VerticalAlignment="Center"
+						Source="{Binding [player1] [age]}"/>
+				
+				<Rectangle Grid.Row="1" Grid.ColumnSpan="2" Fill="#616C8C" Height="1.2" Margin="10,0,10,4"/>
+				
+				<ContentControl	Grid.Row="2"
+						ContentTemplate="{StaticResource ObserverUIPopulation}"
+						Content="{Binding [player1]}" />
+				
+				<ContentControl	Grid.Row="2" Grid.Column="1"
+						ContentTemplate="{StaticResource ObserverUIRelics}"
+						Content="{Binding [player1]}" />
+				
+				<ContentControl	Grid.Column="3" Grid.RowSpan="3"
+						ContentTemplate="{StaticResource ObserverUIName}"
+						Content="{Binding [player1]}" />
+			</Grid>
+			
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				
+				<ContentControl	Grid.Column="0" HorizontalAlignment="Left"
+						ContentTemplate="{StaticResource ObserverUIUpgradesQueued}"
+						Content="{Binding [player1]}" />
+				
+				<ContentControl	Grid.Column="1" HorizontalAlignment="Right"
+						ContentTemplate="{StaticResource ObserverUIUnits}"
+						Content="{Binding [player1]}" />
+			</Grid>
+		</Grid>
+	</Grid>
+	
+	<Grid	Grid.Column="2" 
+	        VerticalAlignment="Top">
+		
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+		
+			<ContentControl	ContentTemplate="{StaticResource ObserverUIBackgroundAndBorder}" Content="{Binding [player2]}"/>
+			<Image	HorizontalAlignment="Left"
+					OpacityMask="{StaticResource ObserverUIBrushOpaqueRightToLeft}"
+					Source="{Binding [player2][civImage]}"
+					Height="82"/>
+			
+			<Grid Margin="2,2,2,2" HorizontalAlignment="Right">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				
+				<ContentControl	Grid.Column="2" Grid.ColumnSpan="2"
+						HorizontalAlignment="Right"
+						ContentTemplate="{StaticResource ObserverUIResources}"
+						Content="{Binding [player2]}" />
+				
+                <Image Grid.Column="1" Grid.RowSpan="3"
+						Height="60" Width="60" Margin="10,0,10,0"
+						HorizontalAlignment="Center" VerticalAlignment="Center"
+						Source="{Binding [player2] [age]}"/>
+				
+				<Rectangle Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2" Fill="#616C8C" Height="1.2" Margin="10,0,10,4"/>
+				
+				<ContentControl	Grid.Column="2"	Grid.Row="2"
+						ContentTemplate="{StaticResource ObserverUIPopulation}"
+						Content="{Binding [player2]}" />
+				
+				<ContentControl	Grid.Column="3" Grid.Row="2" 
+						ContentTemplate="{StaticResource ObserverUIRelics}"
+						Content="{Binding [player2]}" />
+				
+				<ContentControl Grid.RowSpan="3"
+						ContentTemplate="{StaticResource ObserverUIName}"
+						Content="{Binding [player2]}" />
+			</Grid>
+			
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				
+				<ContentControl	Grid.Column="1" HorizontalAlignment="Right"
+						ContentTemplate="{StaticResource ObserverUIUpgradesQueued}"
+						Content="{Binding [player2]}" />
+				
+				<ContentControl	Grid.Column="0" HorizontalAlignment="Left"
+						ContentTemplate="{StaticResource ObserverUIUnits}"
+						Content="{Binding [player2]}" />
+			</Grid>
+		</Grid>
+	</Grid>
+</Grid>
+]]

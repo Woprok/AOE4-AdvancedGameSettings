@@ -130,6 +130,8 @@ import("specials/ags_utilities.scar")
 import("specials/ags_testing.scar")
 -- Additional UI elements
 import("specials/ags_match_ui.scar")
+-- Kusch_AOE Observer UI (active by default as it's just great and deserves to be always on)
+import("replay/ObserverUI.scar")
 
 ---------------------------------------------------------------------------------------------------
 -- AGS LIBRARY GUIDELINES AND INFORMATIONS

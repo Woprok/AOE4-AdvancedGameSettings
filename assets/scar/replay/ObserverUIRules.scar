@@ -1,0 +1,125 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Kusch_AOE
+--
+-- Description:
+-- Observer UI
+---------------------------------------------------------------------------------------------------
+
+_IsUpping = {}
+
+function InitializeObserverUIRules()
+	for index, playerTable in pairs(PLAYERS) do
+		_IsUpping[playerTable.id.PlayerID] = 0
+	end
+	
+	Rule_AddInterval(UpdateObserverUIDataContext, 1)
+
+    Rule_AddGlobalEvent(ObserverUI_OnUpgradeStart, GE_UpgradeStart)
+    Rule_AddGlobalEvent(ObserverUI_OnConstructionStart, GE_ConstructionStart)
+
+    Rule_AddGlobalEvent(ObserverUI_OnUpgradeCancelled, GE_UpgradeCancelled)
+    Rule_AddGlobalEvent(ObserverUI_OnConstructionCancelled, GE_ConstructionCancelled)
+    
+    Rule_AddGlobalEvent(ObserverUI_OnUpgradeComplete, GE_UpgradeComplete)
+end
+
+function RemoveObserverUIRules()
+	Rule_Remove(UpdateObserverUIDataContext)
+
+    Rule_RemoveGlobalEvent(ObserverUI_OnUpgradeStart)
+    Rule_RemoveGlobalEvent(ObserverUI_OnConstructionStart)
+
+    Rule_RemoveGlobalEvent(ObserverUI_OnUpgradeCancelled)
+    Rule_RemoveGlobalEvent(ObserverUI_OnConstructionCancelled)
+    
+    Rule_RemoveGlobalEvent(ObserverUI_OnUpgradeComplete)
+end
+
+function ObserverUI_IsPlayerUpping(player)
+	return _IsUpping[player.PlayerID] > 0
+end
+
+function AgeToRequiredEntityTypeForUpping(age)
+    local ageToType = {
+        "wonder_dark_age",
+        "wonder_feudal_age",
+        "wonder_castle_age"
+    }
+    return ageToType[age]
+end
+
+function GetPlayerFromExecuter(executer)
+    if executer.PlayerID ~= nil then
+        return executer
+    end
+
+    if executer.EntityID ~= nil and not World_OwnsEntity(executer) then
+        return Entity_GetPlayerOwner(executer)
+    end
+
+    return nil
+end
+
+function ObserverUI_OnUpgradeStart(context)
+    if not BP_IsUpgradeOfType(context.upgrade, "abbasid_wing_upgrade") then
+        return
+    end
+
+    player = GetPlayerFromExecuter(context.executer)
+    if player == nil then
+        return
+    end
+
+    age = Player_GetCurrentAge(player)
+
+    if age < 4 then
+        _IsUpping[player.PlayerID] = 1
+    end
+end
+
+function ObserverUI_OnConstructionStart(context)
+    local age = Player_GetCurrentAge(context.player)
+    local requiredEntityType = AgeToRequiredEntityTypeForUpping(age)
+    if requiredEntityType == nil or not Entity_IsOfType(context.entity, requiredEntityType) then
+        return
+    end
+
+    _IsUpping[context.player.PlayerID] = _IsUpping[context.player.PlayerID] + 1
+end
+
+function ObserverUI_OnUpgradeCancelled(context)
+    if not BP_IsUpgradeOfType(context.upgrade, "abbasid_wing_upgrade") then
+        return
+    end
+
+    player = GetPlayerFromExecuter(context.executer)
+    if player == nil then
+        return
+    end
+
+    _IsUpping[context.executer.PlayerID] = 0
+end
+
+function ObserverUI_OnConstructionCancelled(context)
+    local age = Player_GetCurrentAge(context.player)
+    local requiredEntityType = AgeToRequiredEntityTypeForUpping(age)
+    if requiredEntityType == nil or not Entity_IsOfType(context.entity, requiredEntityType) then
+        return
+    end
+
+    _IsUpping[context.player.PlayerID] = math.max(0, _IsUpping[context.player.PlayerID] - 1)
+end
+
+function ObserverUI_OnUpgradeComplete(context)
+    if not BP_IsUpgradeOfType(context.upgrade, "wonder_age_upgrade") then
+        return
+    end
+
+    player = GetPlayerFromExecuter(context.executer)
+    if player == nil then
+        return
+    end
+
+    _IsUpping[player.PlayerID] = 0
+end
