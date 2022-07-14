@@ -39,11 +39,22 @@ _Speeds up production and reduces cost of economic units to help establish stron
 _Provides percantage bonus to each player based on selected value. Economic bonuses are faster gather rates, larger carrying capacity and higher trade. Military bonuses include higher armor, health for all units and buildings. Buildings also receive higher production and research speed._
 ### Full Menu Preview
 ![image](https://user-images.githubusercontent.com/37557138/169667259-c9b3af09-d406-4e96-a2cb-9e5db00eb363.png)
+![image](https://user-images.githubusercontent.com/37557138/179069958-e119b2f6-58fe-478d-a361-64b16c09bb8e.png)
+Game mode that pitches players to fight without any civilization bonus. To obtain advantage players have to capture cities spread in a grid like shape around the map.
+![image](https://user-images.githubusercontent.com/37557138/179069844-ef919d42-5225-467b-b775-57d0ad965999.png)
+Additional Options for Nomad AGS:
+* Spawn Scout (Scattered)
+_Spawns scout for scattered settlement start (classic nomad from AOE2). Available only in Nomad AGS._
+
+![image](https://user-images.githubusercontent.com/37557138/179069811-aa982eea-47e1-47e8-8824-063706852409.png)
+Default game mode provided by this mod, provides almost all customization.
 ![image](https://user-images.githubusercontent.com/37557138/179068645-195cc617-dc53-47aa-b460-8d0ee02b3da2.png)
 ![image](https://user-images.githubusercontent.com/37557138/179068717-7c699581-aba8-4763-9759-ed00f27f127f.png)
 ![image](https://user-images.githubusercontent.com/37557138/179068770-711d5091-6901-496d-98bb-a54c17d05369.png)
 ![image](https://user-images.githubusercontent.com/37557138/179069141-6fea89cb-5649-4ef9-8e27-df2678795731.png)
 ![image](https://user-images.githubusercontent.com/37557138/179069268-743ee388-0920-4897-91f3-eecc6d49cf98.png)
+![image](https://user-images.githubusercontent.com/37557138/179069453-7febbf28-7d1d-4dde-83c3-fb0e90268351.png)
+![image](https://user-images.githubusercontent.com/37557138/179069611-81ccae9c-e95a-4121-9586-6a9678472879.png)
 
 
 ## Feedback & Contribution:
