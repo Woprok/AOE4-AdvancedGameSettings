@@ -106,6 +106,7 @@ AGS_GLOBAL_SETTINGS = {
 	ReligiousSettings = {
 		Timer = 10,
 		ResumableTimer = false,
+		SingleCentralSite = false,
 	},
 	WonderSettings = {
 		Timer = 15,
@@ -335,6 +336,9 @@ function AGS_GlobalSettings_DefineWinSettings(category)
 	end
 	if category.option_win_setting_religious_resumable_timer ~= nil then
 		AGS_GLOBAL_SETTINGS.ReligiousSettings.ResumableTimer = category.option_win_setting_religious_resumable_timer
+	end
+	if category.option_win_setting_religious_central_site_only ~= nil then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.SingleCentralSite = category.option_win_setting_religious_central_site_only
 	end
 	if category.option_win_setting_wonder_timer then
 		AGS_GlobalSettings_SetWonderTimer(category.option_win_setting_wonder_timer)
