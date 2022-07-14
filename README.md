@@ -42,14 +42,9 @@ _Provides percantage bonus to each player based on selected value. Economic bonu
 ![image](https://user-images.githubusercontent.com/37557138/179068645-195cc617-dc53-47aa-b460-8d0ee02b3da2.png)
 ![image](https://user-images.githubusercontent.com/37557138/179068717-7c699581-aba8-4763-9759-ed00f27f127f.png)
 ![image](https://user-images.githubusercontent.com/37557138/179068770-711d5091-6901-496d-98bb-a54c17d05369.png)
-![image](https://user-images.githubusercontent.com/37557138/179068869-a3f7ac5b-8213-476a-8d79-212f23b3bf2d.png)
-![image](https://user-images.githubusercontent.com/37557138/179068894-51984cc1-73aa-4796-959e-74fb256474c5.png)
+![image](https://user-images.githubusercontent.com/37557138/179069141-6fea89cb-5649-4ef9-8e27-df2678795731.png)
+![image](https://user-images.githubusercontent.com/37557138/179069268-743ee388-0920-4897-91f3-eecc6d49cf98.png)
 
-![image](https://user-images.githubusercontent.com/37557138/167272731-036610fb-7021-4d34-89c8-879e684a22b4.png)  
-![image](https://user-images.githubusercontent.com/37557138/167272736-5b8b0890-e9f8-4255-8974-08ab9d034b9b.png)   
-![image](https://user-images.githubusercontent.com/37557138/167272744-1819f0c3-7e43-4a2f-9c55-a9fd2ae866eb.png)  
-![image](https://user-images.githubusercontent.com/37557138/167272748-28b8d81a-8e43-422a-8272-42dc51289a98.png)  
-![image](https://user-images.githubusercontent.com/37557138/167299668-dbd44689-99ed-4f45-bf29-d9f2784c4c84.png)  
 
 ## Feedback & Contribution:
 Contribution in any form is welcomed. Let's built something great together :)   
