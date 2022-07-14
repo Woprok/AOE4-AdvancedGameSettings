@@ -57,9 +57,10 @@ Default game mode provided by this mod, provides almost all customization.
 ![image](https://user-images.githubusercontent.com/37557138/179069611-81ccae9c-e95a-4121-9586-6a9678472879.png)   
   
 
-## Feedback & Contribution:
+## Feedback & Contribution & Donations:
 Contribution in any form is welcomed. Let's built something great together :)   
 Be free to also provide ideas or requests via issues/tickets.  
+Donation link can be found in the side bar of this repository under "Sponsor this project".
 
 ## Bug & other issues:    
 Include as much information as possible.   
