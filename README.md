@@ -39,7 +39,12 @@ _Speeds up production and reduces cost of economic units to help establish stron
 _Provides percantage bonus to each player based on selected value. Economic bonuses are faster gather rates, larger carrying capacity and higher trade. Military bonuses include higher armor, health for all units and buildings. Buildings also receive higher production and research speed._
 ### Full Menu Preview
 ![image](https://user-images.githubusercontent.com/37557138/169667259-c9b3af09-d406-4e96-a2cb-9e5db00eb363.png)
-![image](https://user-images.githubusercontent.com/37557138/167272719-32d5087c-794f-46e9-8ec1-bf674c8b62ee.png)  
+![image](https://user-images.githubusercontent.com/37557138/179068645-195cc617-dc53-47aa-b460-8d0ee02b3da2.png)
+![image](https://user-images.githubusercontent.com/37557138/179068717-7c699581-aba8-4763-9759-ed00f27f127f.png)
+![image](https://user-images.githubusercontent.com/37557138/179068770-711d5091-6901-496d-98bb-a54c17d05369.png)
+![image](https://user-images.githubusercontent.com/37557138/179068869-a3f7ac5b-8213-476a-8d79-212f23b3bf2d.png)
+![image](https://user-images.githubusercontent.com/37557138/179068894-51984cc1-73aa-4796-959e-74fb256474c5.png)
+
 ![image](https://user-images.githubusercontent.com/37557138/167272731-036610fb-7021-4d34-89c8-879e684a22b4.png)  
 ![image](https://user-images.githubusercontent.com/37557138/167272736-5b8b0890-e9f8-4255-8974-08ab9d034b9b.png)   
 ![image](https://user-images.githubusercontent.com/37557138/167272744-1819f0c3-7e43-4a2f-9c55-a9fd2ae866eb.png)  
