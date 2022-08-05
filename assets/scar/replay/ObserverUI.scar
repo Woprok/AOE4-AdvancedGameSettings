@@ -9,6 +9,7 @@
 import("replay/xaml/ObserveNPlayers.scar")
 import("replay/xaml/Observe2Players.scar")
 import("replay/xaml/ToggleUIButton.scar")
+import("replay/xaml/SwapPlayers1v1Button.scar")
 import("replay/ObserverUIUpdateUi.scar")
 import("replay/ObserverUIRules.scar")
 
@@ -24,6 +25,8 @@ function ObserverUI_OnInit()
 	local observeXaml = _ObserveNPlayersXaml
 	if World_GetPlayerCount() == 2 then
 		observeXaml = _Observe2PlayersXaml
+		
+		UI_AddChild("", "XamlPresenter", "SwapPlayers1v1Button", { IsHitTestVisible = true, Xaml = _SwapPlayers1v1ButtonXaml, DataContext = UI_CreateDataContext(_SwapPlayers1v1ButtonDataContext)})
 	end
 	
 	UI_AddChild("", "XamlPresenter", "ToggleUIButton", { IsHitTestVisible = true, Xaml = _ToggleUIButtonXaml, DataContext = UI_CreateDataContext(_ToggleUIButtonDataContext)})
@@ -32,6 +35,10 @@ function ObserverUI_OnInit()
 	Set_ReplayStatViewer_And_ImprovedUI_Visibility(true)
 end
 
+_SwapPlayers1v1ButtonDataContext = { 
+	command = UI_CreateCommand("SwapPlayers1v1")
+}
+
 _ToggleUIButtonDataContext = { 
 	command = UI_CreateCommand("SwitchBetween_ReplayStatViewer_And_ImprovedUI")
 }
@@ -39,14 +46,10 @@ _ToggleUIButtonDataContext = {
 _IsImprovedUIVisible = true
 
 function SwitchBetween_ReplayStatViewer_And_ImprovedUI()
-	print("SwitchBetween_ReplayStatViewer_And_ImprovedUI")
-	
 	Set_ReplayStatViewer_And_ImprovedUI_Visibility(not _IsImprovedUIVisible)
 end
 
 function Set_ReplayStatViewer_And_ImprovedUI_Visibility(improvedUIIsVisible)
-	print("Set_ReplayStatViewer_And_ImprovedUI_Visibility")
-	
 	_IsImprovedUIVisible = improvedUIIsVisible
 	
 	if improvedUIIsVisible then
@@ -61,6 +64,7 @@ function ShowImprovedUI()
 	InitializeObserverUIRules()
 	
 	UI_SetPropertyValue("ObserverUI", "Visibility", "Visible")
+	UI_SetPropertyValue("SwapPlayers1v1Button", "Visibility", "Visible")
 	UI_SetPropertyValue("uniqueSquadsPanel", "Visibility", "Collapsed")
 	UI_SetPropertyValue("DynastyUI", "Visibility", "Collapsed")
 	UI_SetPropertyValue("ReplayStatViewer", "Visibility", "Collapsed")
@@ -72,6 +76,7 @@ function ShowClassicUI()
 	RemoveObserverUIRules()
 	
 	UI_SetPropertyValue("ObserverUI", "Visibility", "Collapsed")
+	UI_SetPropertyValue("SwapPlayers1v1Button", "Visibility", "Collapsed")
 	UI_SetPropertyValue("uniqueSquadsPanel", "Visibility", "Visible")
 	UI_SetPropertyValue("DynastyUI", "Visibility", "Visible")
 	UI_SetPropertyValue("ReplayStatViewer", "Visibility", "Visible")

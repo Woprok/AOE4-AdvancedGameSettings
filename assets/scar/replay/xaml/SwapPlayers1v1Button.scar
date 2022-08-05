@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Kusch_AOE
+--
+-- Description:
+-- Observer UI
+---------------------------------------------------------------------------------------------------
+
+_SwapPlayers1v1ButtonXaml = 
+[[<ToggleButton 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        
+        HorizontalAlignment="Right" 
+        VerticalAlignment="Bottom"
+        Margin="0,0,325,36"
+        
+        Height="36"
+        Width="36"
+
+        Style="{StaticResource SecondaryRaisedContentToggleButton}"
+        
+        Command="{Binding [command]}">
+    <Image Source="pack://application:,,,/WPFGUI;component/images/multiplayer/1v1.png" />
+</ToggleButton>
+]]

@@ -9,18 +9,19 @@
 
 AGS_COLOR_MAINTAINER_MODULE = "AGS_ColorMaintainer"
 -- Indices are 1 - 9, so it's 1:1 to default slot mapping.
-AGS_COLOR_MAINTAINER_TABLE = {
-	{ Color = AGS_GS_COLOR_BLUE },
-	{ Color = AGS_GS_COLOR_RED },
-	{ Color = AGS_GS_COLOR_YELLOW },
-	{ Color = AGS_GS_COLOR_GREEN },
-	{ Color = AGS_GS_COLOR_TURQUOISE },
-	{ Color = AGS_GS_COLOR_PURPLE },
-	{ Color = AGS_GS_COLOR_ORANGE },
-	{ Color = AGS_GS_COLOR_PINK }, 
-	{ Color = AGS_GS_COLOR_GREY },
-}
+--AGS_COLOR_MAINTAINER_TABLE = {
+--	{ Color = AGS_GS_COLOR_BLUE },
+--	{ Color = AGS_GS_COLOR_RED },
+--	{ Color = AGS_GS_COLOR_YELLOW },
+--	{ Color = AGS_GS_COLOR_GREEN },
+--	{ Color = AGS_GS_COLOR_TURQUOISE },
+--	{ Color = AGS_GS_COLOR_PURPLE },
+--	{ Color = AGS_GS_COLOR_ORANGE },
+--	{ Color = AGS_GS_COLOR_PINK }, 
+--	{ Color = AGS_GS_COLOR_GREY },
+--}
 
+-- This needs to be fixed everytime they change colours...
 AGS_COLOR_MAINTAINER_TO_SLOT_TABLE = { -- Holds the slot index of each player colour
 	["#FF188CFF"] = 1,
 	["#FFFF3B30"] = 2,
@@ -28,7 +29,7 @@ AGS_COLOR_MAINTAINER_TO_SLOT_TABLE = { -- Holds the slot index of each player co
 	["#FF00C700"] = 4,
 	["#FF00E8E8"] = 5,
 	["#FFAE6BFF"] = 6,
-	["#FFFF6600"] = 7,
+	["#FFFF8800"] = 7,
 	["#FFF65BB2"] = 8,
 	["#FF888888"] = 9
 }

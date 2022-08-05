@@ -103,4 +103,10 @@ function AGS_Settled_SpawnUnits(player_id, player_civ)
 	local sbp_shp = AGS_GetNeutralUnit(AGS_BP_SHEEP)
 	local snameSHP = AGS_SGroupName(player_id, AGS_BP_SHEEP)
 	AGS_SpawnSquad(player_id, snameSHP, sbp_shp, nil, World_Pos(-9, 0, -9), AGS_GLOBAL_SETTINGS.StartingSheeps)	
+
+	if player_civ == AGS_CIV_HRE then		
+		local sbp_mnk = AGS_GetCivilizationUnit(player_civ, AGS_BP_MONK)
+		local snameMNK = AGS_SGroupName(player_id, AGS_BP_MONK)
+		local sg_mnk = AGS_SpawnSquad(player_id, snameMNK, sbp_mnk, nil, World_Pos(-14, 0, -14), AGS_GLOBAL_SETTINGS.StartingMonks)	
+	end	
 end

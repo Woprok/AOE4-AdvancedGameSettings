@@ -45,7 +45,7 @@ Core_RegisterModule(AGS_MATCH_UI_MODULE)
 
 function AGS_MatchUI_UpdateModuleSettings()	
 	AGS_Print("AGS_MatchUI_UpdateModuleSettings")
-	if not AGS_GLOBAL_SETTINGS.MatchUI then
+	if not AGS_GLOBAL_SETTINGS.MatchUI or UI_IsReplay() then
 		Core_UnregisterModule(AGS_MATCH_UI_MODULE)
 	end
 end
