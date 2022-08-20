@@ -770,7 +770,7 @@ function AGS_EGroupNeutralName(unique_num, egroup_focus_name)
 end
 
 -- Spawn entity and return it to caller.
-function AGS_SpawnEntity(player_id, egroup_name, bp_entity, position, position_offset, opt_do_rounding)
+function AGS_SpawnEntity(player_id, egroup_name, bp_entity, position, position_offset, opt_do_rounding, opt_do_correction)
 	if position == nil then
 		position = Player_GetStartingPosition(player_id)	
 	end
@@ -792,6 +792,12 @@ function AGS_SpawnEntity(player_id, egroup_name, bp_entity, position, position_o
 	-- could have been done with
 	-- Util_CreateEntities(playerid, egroupid, blueprintID, pos, numentities, toward, snapToGround, skipForceConstruct, useMarkerTransform)
 	local e = Entity_CreateFacing(bp_entity, player_id, placement, rotation, true)
+	
+	if opt_do_correction then
+		local safe_spawn = World_GetSpawnablePosition(placement, e)
+		Entity_WarpToPos(e, safe_spawn)	
+	end
+	
 	Entity_Spawn(e)
 	Entity_ForceConstruct(e)
 	Entity_SnapToGridAndGround(e, false)

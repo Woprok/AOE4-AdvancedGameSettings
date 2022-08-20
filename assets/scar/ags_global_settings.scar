@@ -73,7 +73,7 @@ AGS_GS_COLOR_GREY = 9 -- Monsoon/Natural Grey
 -- Local player should never change. And be ready after Initialization Phase.
 -- Local player is used for UI & visual logic. Gameplay logic should never use it as it will cause desync.
 AGS_GS_LOCAL_PLAYER = nil
-AGS_GLOBAL_SETTINGS_BUILD = "3.2"
+AGS_GLOBAL_SETTINGS_BUILD = "3.4.0"
 AGS_GLOBAL_SETTINGS_MODULE = "AGS_GlobalSettings"
 AGS_GLOBAL_SETTINGS = {
 	Annihilation = true, -- Player loses everything.
@@ -106,6 +106,7 @@ AGS_GLOBAL_SETTINGS = {
 	ReligiousSettings = {
 		Timer = 10,
 		ResumableTimer = false,
+		SingleCentralSite = false,
 	},
 	WonderSettings = {
 		Timer = 15,
@@ -154,6 +155,7 @@ AGS_GLOBAL_SETTINGS = {
 	WonderConstruction = false,
 	Treasures = false,
 	
+	ScatteredScout = false, -- defined only for nomad
 	StartingMonks = 1, --undefined
 	StartingScouts = 1, -- undefined
 	StartingSheeps = 1, -- undefined
@@ -171,16 +173,6 @@ AGS_GLOBAL_SETTINGS = {
 	
 	PlayerColors = {
 		IsEnforcing = false,
-		FirstSlot = AGS_GS_COLOR_BLUE, 
-		SecondSlot = AGS_GS_COLOR_RED, 
-		ThirdSlot = AGS_GS_COLOR_YELLOW, 
-		FourthSlot = AGS_GS_COLOR_GREEN, 
-		FifthSlot = AGS_GS_COLOR_TURQUOISE, 
-		SixthSlot = AGS_GS_COLOR_PURPLE, 
-		SeventhSlot = AGS_GS_COLOR_ORANGE, 
-		EighthSlot = AGS_GS_COLOR_PINK, 
-		-- Not used, but defined by Relic. Might be useful for scenarios.
-		NinthSlot = AGS_GS_COLOR_GREY, 
 	},
 	PlayerHandicaps = {
 		HandicapType = AGS_GS_HANDICAP_TYPE_DISABLED,
@@ -345,6 +337,9 @@ function AGS_GlobalSettings_DefineWinSettings(category)
 	if category.option_win_setting_religious_resumable_timer ~= nil then
 		AGS_GLOBAL_SETTINGS.ReligiousSettings.ResumableTimer = category.option_win_setting_religious_resumable_timer
 	end
+	if category.option_win_setting_religious_central_site_only ~= nil then
+		AGS_GLOBAL_SETTINGS.ReligiousSettings.SingleCentralSite = category.option_win_setting_religious_central_site_only
+	end
 	if category.option_win_setting_wonder_timer then
 		AGS_GlobalSettings_SetWonderTimer(category.option_win_setting_wonder_timer)
 	end
@@ -426,6 +421,9 @@ function AGS_GlobalSettings_DefineMatchSettings(category)
 	if category.option_match_setting_treasures ~= nil then
 		AGS_GLOBAL_SETTINGS.Treasures = category.option_match_setting_treasures
 	end
+	if category.option_match_setting_scattered_scout ~= nil then
+		AGS_GLOBAL_SETTINGS.ScatteredScout = category.option_match_setting_scattered_scout
+	end
 end
 
 function AGS_GlobalSettings_DefineLegacySettings(category)
@@ -456,7 +454,6 @@ function AGS_GlobalSettings_DefinePlayerSettings(category)
 	if category.option_player_setting_color_is_enforcing ~= nil then
 		AGS_GLOBAL_SETTINGS.PlayerColors.IsEnforcing = category.option_player_setting_color_is_enforcing
 	end
-	AGS_GlobalSettings_SetSlotColor(category)
 end
 function AGS_GlobalSettings_DefineHandicapSettings(category)
 	if category.option_handicap_setting_handicap_type ~= nil then
@@ -539,58 +536,6 @@ function AGS_GlobalSettings_RetrieveSlotHandicap(slot_handicap)
 		return 3.5
 	elseif slot_handicap.enum_value == slot_handicap.enum_items.slot_handicap_4 then
 		return 4.0
-	end
-end
-
-function AGS_GlobalSettings_SetSlotColor(category)
-	if category.option_player_setting_slot_1 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.FirstSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_1)
-	end
-	if category.option_player_setting_slot_2 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.SecondSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_2)
-	end
-	if category.option_player_setting_slot_3 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.ThirdSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_3)
-	end
-	if category.option_player_setting_slot_4 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.FourthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_4)
-	end
-	if category.option_player_setting_slot_5 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.FifthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_5)
-	end
-	if category.option_player_setting_slot_6 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.SixthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_6)
-	end
-	if category.option_player_setting_slot_7 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.SeventhSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_7)
-	end
-	if category.option_player_setting_slot_8 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.EighthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_8)
-	end
-	if category.option_player_setting_slot_9 then
-		AGS_GLOBAL_SETTINGS.PlayerColors.NinthSlot = AGS_GlobalSettings_RetrieveSlotColor(category.option_player_setting_slot_9)
-	end
-end
-
-function AGS_GlobalSettings_RetrieveSlotColor(slot_color)
-	if slot_color.enum_value == slot_color.enum_items.slot_color_1 then
-		return AGS_GS_COLOR_BLUE
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_2 then
-		return AGS_GS_COLOR_RED
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_3 then
-		return AGS_GS_COLOR_YELLOW
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_4 then
-		return AGS_GS_COLOR_GREEN
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_5 then
-		return AGS_GS_COLOR_TURQUOISE
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_6 then
-		return AGS_GS_COLOR_PURPLE
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_7 then
-		return AGS_GS_COLOR_ORANGE
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_8 then
-		return AGS_GS_COLOR_PINK
-	elseif slot_color.enum_value == slot_color.enum_items.slot_color_9 then
-		return AGS_GS_COLOR_GREY
 	end
 end
 

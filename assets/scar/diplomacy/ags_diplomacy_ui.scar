@@ -114,6 +114,7 @@ function Diplomacy_CreateUI()
         </Style>		
 		<!-- Resource button style - a clone of HUDBaseButtonStyle but IsEnabled setter changes Opacity instead of Visibility of background -->
 		<Style x:Key="DiplomacyResourceButtonStyle" TargetType="Button">
+			<Setter Property="IsTabStop" Value="False" />
 	        <Setter Property="SnapsToDevicePixels" Value="true" />
 	        <Setter Property="OverridesDefaultStyle" Value="true" />
 	        <Setter Property="HorizontalAlignment" Value="Left" />
@@ -220,9 +221,9 @@ function Diplomacy_CreateUI()
 	<Grid Grid.Row="1"
 		  Panel.ZIndex="1"
 		  Visibility="{Binding [is_ui_expanded], Converter={StaticResource BoolToVis}}">
-		<ContentControl Template="{StaticResource CanvasTertiaryVerticalGradientBackgroundBox}">
-            <ContentControl Template="{StaticResource TexturedTertiaryThickDoubleBorders}">
-				<Grid>
+		<ContentControl Template="{StaticResource CanvasTertiaryVerticalGradientBackgroundBox}" IsTabStop="False">
+            <ContentControl Template="{StaticResource TexturedTertiaryThickDoubleBorders}" IsTabStop="False">
+				<Grid Style="{StaticResource FlowControl}">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
@@ -298,7 +299,7 @@ function Diplomacy_CreateUI()
 					<Rectangle Grid.Row="1"
                                Style="{StaticResource DiplomacyHorizontalSeparatorStyle}" />
 					<!-- Player list -->
-					<ItemsControl Grid.Row="2" ItemsSource="{Binding [players]}">
+					<ItemsControl Grid.Row="2" ItemsSource="{Binding [players]}" IsTabStop="False">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>								
 								<Grid Visibility="{Binding [is_visible], Converter={StaticResource BoolToVis}}">
@@ -440,6 +441,7 @@ function Diplomacy_CreateUI()
 									
 									<!-- Resource amount buttons -->
 									<ItemsControl Grid.Column="3" 
+												  IsTabStop="False"
 												  VerticalAlignment="Center" HorizontalAlignment="Right"
 												  ItemsSource="{Binding [tribute]}"
 												  Visibility="{Binding [is_tribute_visible], Converter={StaticResource BoolToVis}}" >
@@ -523,6 +525,7 @@ function Diplomacy_CreateUI()
 									
 									<!-- Relation buttons -->
 									<ItemsControl Grid.Column="2" 
+											      IsTabStop="False"
 												  VerticalAlignment="Center" HorizontalAlignment="Center"
 												  ItemsSource="{Binding [relations]}"
 												  Visibility="{Binding [is_diplomacy_visible], Converter={StaticResource BoolToVis}}" >
@@ -613,7 +616,7 @@ function Diplomacy_CreateUI()
 						
 						<!-- Resource subtotals-->
 						<ItemsControl Grid.Row="0" Grid.Column="2" 
-									  ItemsSource="{Binding [subtotal]}" 
+									  ItemsSource="{Binding [subtotal]}" IsTabStop="False"
 									  HorizontalAlignment="Right" VerticalAlignment="Center"
 									  Margin="0,0,0,7">
 							<ItemsControl.ItemsPanel>
@@ -662,13 +665,13 @@ function Diplomacy_CreateUI()
 							<Button Content="{esUtility:LocString $11161243}"
 									Command="{Binding [command][send_tribute]}"
 									Style="{StaticResource HUDPrimaryRaisedTextButton}"
-									Margin="0,0,12,0"
+									Margin="0,0,12,0" IsTabStop="False"
 									IsEnabled="{Binding [total_resources][amount], Converter={StaticResource GreaterCompare}, ConverterParameter=0}"
 									esUtility:AudioAttachedProperty.PreviewMouseLeftButtonUpSound="sfx_ui_hud_inGame_tribute_send_play">
 
 							</Button>
 							<!-- Clear button -->
-							<Button Content="{esUtility:LocString $11161244}"
+							<Button Content="{esUtility:LocString $11161244}" IsTabStop="False"
 									Command="{Binding [command][clear_tribute]}"
 									Style="{StaticResource HUDSecondaryRaisedTextButton}" 
 									IsEnabled="{Binding [total_resources][amount], Converter={StaticResource GreaterCompare}, ConverterParameter=0}"

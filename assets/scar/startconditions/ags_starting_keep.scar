@@ -48,6 +48,6 @@ function AGS_StartingKeep_Create()
 		local start_adjusted_pos = AGS_Starts_GetStartPosition(player.id)		
 		center_pos = AGS_CalculateCenterOffset(start_adjusted_pos, 25, 25)	
 		
-		AGS_SpawnEntity(player.id, ename, ebp_building, center_pos, nil, false)
+		AGS_SpawnEntity(player.id, ename, ebp_building, center_pos, nil, false, true)
 	end
 end
