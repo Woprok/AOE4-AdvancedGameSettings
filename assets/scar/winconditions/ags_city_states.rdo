@@ -12550,7 +12550,9 @@
 		<DataProperty Name="m_objectiveUnitTypes" Type="Object"/>
 		<DataProperty Name="m_devOnly" Type="Bool" Value="false"/>
 		<DataProperty Name="m_egroupNamePrefixDestroyList" Type="String"/>
-		<DataProperty Name="m_permittedInventoryItemCategories" Type="String"/>
+		<DataProperty Name="m_permittedInventoryItemCategories" Type="String">
+			<DataValue>IIT_PlayerCosmetic</DataValue>
+		</DataProperty>
 		<DataProperty Name="m_feImageUnselected" Type="String" Value="images\illustrations\create_game\game_mode_keep_rush_unselected"/>
 	</DataObject>
 </DataWarehouse>
