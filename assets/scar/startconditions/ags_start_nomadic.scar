@@ -46,6 +46,8 @@ function AGS_Nomadic_PresetExecute()
 	AGS_Print("AGS_Nomadic_PresetExecute")
 	if not AGS_GLOBAL_SETTINGS.UsingPrefabStart then
 		AGS_Nomadic_CreateSpawn()
+	else
+		AGS_Nomadic_AdjustVillagers()
 	end
 end
 
@@ -69,6 +71,31 @@ function AGS_Nomadic_DestroySpawn()
 	AGS_Print("AGS_Nomadic_DestroySpawn")
 	for _, player in pairs(PLAYERS) do	
 		EGroup_DestroyAllEntities(Player_GetEntities(player.id))
+	end
+end
+
+-- Adjusting prefab start.
+function AGS_Nomadic_AdjustVillagers()
+	for _, player in pairs(PLAYERS) do	
+		local villager_count = AGS_GLOBAL_SETTINGS.StartingVillagers
+		-- Adjust count to a new value.		
+		local sgroup = Player_GetSquadsFromType(player.id, AGS_BP_VILLAGER)
+		villager_count = villager_count - SGroup_CountSpawned(sgroup)
+		if villager_count > 0 then
+			local sbp_vil = AGS_GetCivilizationUnit(player.raceName, AGS_BP_VILLAGER)
+			local snameVIL = AGS_SGroupName(player.id, AGS_BP_VILLAGER)
+			local start_adjusted_pos = AGS_Starts_GetStartPosition(player.id)
+			AGS_SpawnSquad(player.id, snameVIL, sbp_vil, start_adjusted_pos, World_Pos(0, 0, -10), villager_count)
+		elseif villager_count < 0 then 
+			-- Desired number was lower, we will eliminate few villagers.
+			local idx = 1
+			while(villager_count < 0) do
+				local soon_dead = SGroup_GetSquadAt(sgroup, idx)
+				Squad_Destroy(soon_dead)
+				villager_count = villager_count + 1
+				idx = idx + 1
+			end
+		end		
 	end
 end
 
