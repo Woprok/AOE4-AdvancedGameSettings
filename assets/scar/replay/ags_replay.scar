@@ -1,0 +1,38 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Enables replay UI in multiplayer matches and disables it for single player.
+---------------------------------------------------------------------------------------------------
+
+AGS_REPLAY_MODULE = "AGS_Replay"
+
+if World_IsMultiplayerGame() then
+	import("replay/ObserverUI.scar")
+end
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_REPLAY_MODULE)	
+
+function AGS_Replay_UpdateModuleSettings()
+	AGS_Print("AGS_Replay_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.ObserverUI then
+		AGS_Print("AGS_Replay_Off")
+		Core_UnregisterModule(AGS_REPLAY_MODULE)
+	else	
+		-- TODO import file here ?
+	end
+end
+
+-- Disables observer ui in multiplayer matches.
+function AGS_Replay_AdjustSettings()
+	AGS_Print("AGS_Replay_AdjustSettings")
+	if AGS_GLOBAL_SETTINGS.ObserverUI and AGS_IsLocalGame() then
+		AGS_GLOBAL_SETTINGS.ObserverUI = false
+	end
+end	

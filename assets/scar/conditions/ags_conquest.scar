@@ -311,7 +311,7 @@ function AGS_Conquest_FinishOffConquest(player)
 		local conquerable_count = AGS_Conquest_GetTeammatesConquerableCount(player)	
 		
 		-- Check if player still has reason to be in conquest game.	
-		if conquerable_count.built > 0 and conquerable_count.remaining <= 0 then
+		if conquerable_count ~= nil and conquerable_count.built > 0 and conquerable_count.remaining <= 0 then
 			for _, ally in pairs(teammates) do
 				AGS_Conquest_EliminateGroup(ally)	
 			end

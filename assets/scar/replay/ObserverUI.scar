@@ -4,6 +4,8 @@
 --
 -- Description:
 -- Observer UI
+-- Kusch_AOE Observer UI (active by default in multiplayer and disabled for single player.)
+-- It's just great and deserves to be always on whenever possible.
 ---------------------------------------------------------------------------------------------------
 
 import("replay/xaml/ObserveNPlayers.scar")
@@ -19,6 +21,7 @@ function ObserverUI_OnInit()
 	print("ObserverUI_OnInit")
 	
 	if not UI_IsReplay() then
+		Core_UnregisterModule("ObserverUI")
 		return
 	end
 	
