@@ -88,3 +88,9 @@ Yes as long as you are doing more than minimal amount of changes or your mod isn
 Create ticket and we will see...
 * Mod Localization to other languages  
 If you can provide translation, it will be incorporated into the mod. Current english database is [here](https://github.com/Woprok/AOE4-AdvancedGameSettings/blob/master/assets/locdb/Advanced%20Game%20Settings_en.csv) If you want to test localization on local version of the mod you can use this [cheatsheet image to add entry to localization database.](https://github.com/Woprok/AOE4-AdvancedGameSettings/blob/master/resources/GUIDE%20TO%20NEW%20LOCALIZATION.png)
+* How does the vision work and which option affects it ?
+Team Vision is currently still tied to Team Victory[not really Team Victory more like its tied to how I am determining who can win the game] (it made sense when I wrote it months ago... might have not been best decision)
+
+Team Victory -> FFA & Team Vision -> Any => Noone will have vision during treaty or during the game for any of their mutual "allies"
+Team Victory -> Initial Teams & Team Vision -> Requires Market/Always => Only teams setup in lobby will share vision during the game, including treaty
+Team Victory -> Dynamic Teams & Team Vision -> Requires Market/Always => everyone has vision during treaties and mutual allies see each other
