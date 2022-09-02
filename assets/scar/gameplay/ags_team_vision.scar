@@ -169,8 +169,10 @@ function AGS_TeamVision_UpdateVisionBetweenPlayers(playerA, playerB)
 		return
 	end
 	if not AGS_Teams_AreTeamVictoryEligible(playerA, playerB) then
+		World_EnableSharedLineOfSight(playerA.id, playerB.id, false)	
 		return
 	end
+	AGS_Print("Vision changed")
 	local is_fulfilling_requirements = playerA.AGS_TeamVisionAllowed and playerB.AGS_TeamVisionAllowed
 	World_EnableSharedLineOfSight(playerA.id, playerB.id, is_fulfilling_requirements)	
 end
