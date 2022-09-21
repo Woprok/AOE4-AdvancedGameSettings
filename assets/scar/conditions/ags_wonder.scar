@@ -6,6 +6,10 @@
 -- Description:
 -- Wonder win condition.
 -- The classic 'wonder' win condition in which the player wins by building a wonder and defending it for some time.
+
+-- TODO add event filters
+-- Wonder
+-- Rule_AddEventFilter_EntityType(Wonder_OnDamageReceived, FC_Victim, FO_OR, { _wonder.types.age4 }, { })
 ---------------------------------------------------------------------------------------------------
 
 import("conditions/conditiondata/ags_wonder_data.scar")

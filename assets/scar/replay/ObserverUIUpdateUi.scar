@@ -155,7 +155,7 @@ function UpdateResources(t, player)
 end
 
 function GetPopulationVsMaximumPopulation(player)
-	local maxPop = Player_GetMaxPopulation(player, CT_Personnel)
+	local maxPop = Player_GetCurrentPopulationCap(player, CT_Personnel)
 	local curPop = Player_GetCurrentPopulation(player, CT_Personnel)
 	
 	return math.floor(curPop) .. "/" .. math.floor(maxPop)

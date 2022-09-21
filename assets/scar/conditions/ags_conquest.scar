@@ -7,6 +7,12 @@
 -- Conquest win condition.
 -- A team is eliminated when all of its players have lost all their landmarks (including capital town center).
 -- The last team remaining is the victor.
+
+-- TODO add event filters
+-- Conquest
+-- Rule_AddEventFilter_EntityType(Conquest_OnDamageReceived, FC_Victim, FO_OR, { _conquest.types.landmark }, { _conquest.types.wonder })
+-- Rule_AddEventFilter_EntityType(Conquest_OnDamageReceived, FC_Victim, FO_OR, { "town_center_capital" }, {  })
+-- Rule_AddEventFilter_StateModelBool(Conquest_OnDamageReceived, FC_Victim, FO_OR, { "town_center_is_capital" }, {  })
 ---------------------------------------------------------------------------------------------------
 
 import("conditions/conditiondata/ags_conquest_data.scar")

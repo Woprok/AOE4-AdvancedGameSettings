@@ -72,6 +72,14 @@ AGS_STARTING_CITIES_OPTIONS = {
 		civ = AGS_CIV_SULTANATE,
 		option = AGS_STARTING_CITIES_TYPES.Standard,
 	},
+	{
+		civ = AGS_CIV_MALIAN,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_OTTOMAN,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
 }
 AGS_STARTING_CITIES_POSITIONS = {
 	
