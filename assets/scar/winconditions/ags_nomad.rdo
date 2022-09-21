@@ -33,6 +33,8 @@
 					<DataValue Name="WinCondition::StartingBuilding">11933228577579667835</DataValue>
 					<DataValue Name="WinCondition::StartingBuilding">5107564880182237111</DataValue>
 					<DataValue Name="WinCondition::StartingBuilding">13540076547874140049</DataValue>
+					<DataValue Name="WinCondition::StartingBuilding">1588351403152093470</DataValue>
+					<DataValue Name="WinCondition::StartingBuilding">16120652919595441172</DataValue>
 					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
 					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="979071694464482559" OwnerId="10708872900011966298">
 						<DataProperty Name="m_playerUpgrades" Type="Object"/>
@@ -49,6 +51,27 @@
 							<DataValue Name="ReflectPBG_EntityProperties">3962387031875152851</DataValue>
 							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
 							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="3962387031875152851" OwnerId="979071694464482559">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value=""/>
+							</DataObject>
+						</DataProperty>
+					</DataObject>
+					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
+					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="1588351403152093470" OwnerId="10708872900011966298">
+						<DataProperty Name="m_playerUpgrades" Type="Object"/>
+						<DataProperty Name="m_startingSquads" Type="Object"/>
+						<DataProperty Name="m_race" Type="Object">
+							<DataValue Name="ReflectPBG_Race">6227896775367864642</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_Race/-->
+							<DataObject Name="" Type="ReflectPBG_Race" Id="6227896775367864642" OwnerId="1588351403152093470">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value="malian"/>
+							</DataObject>
+						</DataProperty>
+						<DataProperty Name="m_building" Type="Object">
+							<DataValue Name="ReflectPBG_EntityProperties">12638135507154245513</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
+							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="12638135507154245513" OwnerId="1588351403152093470">
 								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
 								<DataProperty Name="m_fileName" Type="String" Value=""/>
 							</DataObject>
@@ -175,6 +198,27 @@
 							<DataValue Name="ReflectPBG_EntityProperties">13449985271275044217</DataValue>
 							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
 							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="13449985271275044217" OwnerId="13540076547874140049">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value=""/>
+							</DataObject>
+						</DataProperty>
+					</DataObject>
+					<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/-->
+					<DataObject Name="" Type="WinCondition::StartingBuilding" Id="16120652919595441172" OwnerId="10708872900011966298">
+						<DataProperty Name="m_playerUpgrades" Type="Object"/>
+						<DataProperty Name="m_startingSquads" Type="Object"/>
+						<DataProperty Name="m_race" Type="Object">
+							<DataValue Name="ReflectPBG_Race">10071697197524040176</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_Race/-->
+							<DataObject Name="" Type="ReflectPBG_Race" Id="10071697197524040176" OwnerId="16120652919595441172">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value="ottoman"/>
+							</DataObject>
+						</DataProperty>
+						<DataProperty Name="m_building" Type="Object">
+							<DataValue Name="ReflectPBG_EntityProperties">15411615210322677642</DataValue>
+							<!--WinCondition/WinCondition::StartingBuildingReplacement/WinCondition::StartingBuilding/ReflectPBG_EntityProperties/-->
+							<DataObject Name="" Type="ReflectPBG_EntityProperties" Id="15411615210322677642" OwnerId="16120652919595441172">
 								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
 								<DataProperty Name="m_fileName" Type="String" Value=""/>
 							</DataObject>
@@ -8783,6 +8827,8 @@
 					<DataValue Name="EntityPrecacheItem">1136369047366388048</DataValue>
 					<DataValue Name="EntityPrecacheItem">16350226832167354398</DataValue>
 					<DataValue Name="EntityPrecacheItem">45244624958451720</DataValue>
+					<DataValue Name="SquadPrecacheItem">8670009976991642550</DataValue>
+					<DataValue Name="SquadPrecacheItem">12287823697360682554</DataValue>
 					<!--WinCondition/PrecacheList/EntityPrecacheItem/-->
 					<DataObject Name="" Type="EntityPrecacheItem" Id="45244624958451720" OwnerId="12677363177492434524">
 						<DataProperty Name="#BaseTypes" Type="String" Value="IPrecacheItem#0|"/>
@@ -8880,6 +8926,18 @@
 						</DataProperty>
 					</DataObject>
 					<!--WinCondition/PrecacheList/SquadPrecacheItem/-->
+					<DataObject Name="" Type="SquadPrecacheItem" Id="8670009976991642550" OwnerId="12677363177492434524">
+						<DataProperty Name="#BaseTypes" Type="String" Value="IPrecacheItem#0|"/>
+						<DataProperty Name="m_blueprint" Type="Object">
+							<DataValue Name="ReflectPBG_SquadProperties">9913465226012251519</DataValue>
+							<!--WinCondition/PrecacheList/SquadPrecacheItem/ReflectPBG_SquadProperties/-->
+							<DataObject Name="" Type="ReflectPBG_SquadProperties" Id="9913465226012251519" OwnerId="8670009976991642550">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value="unit_king_1_mal"/>
+							</DataObject>
+						</DataProperty>
+					</DataObject>
+					<!--WinCondition/PrecacheList/SquadPrecacheItem/-->
 					<DataObject Name="" Type="SquadPrecacheItem" Id="9543627643879776857" OwnerId="12677363177492434524">
 						<DataProperty Name="#BaseTypes" Type="String" Value="IPrecacheItem#0|"/>
 						<DataProperty Name="m_blueprint" Type="Object">
@@ -8888,6 +8946,18 @@
 							<DataObject Name="" Type="ReflectPBG_SquadProperties" Id="1386373102780388603" OwnerId="9543627643879776857">
 								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
 								<DataProperty Name="m_fileName" Type="String" Value="unit_king_1_fre"/>
+							</DataObject>
+						</DataProperty>
+					</DataObject>
+					<!--WinCondition/PrecacheList/SquadPrecacheItem/-->
+					<DataObject Name="" Type="SquadPrecacheItem" Id="12287823697360682554" OwnerId="12677363177492434524">
+						<DataProperty Name="#BaseTypes" Type="String" Value="IPrecacheItem#0|"/>
+						<DataProperty Name="m_blueprint" Type="Object">
+							<DataValue Name="ReflectPBG_SquadProperties">15204238185952820386</DataValue>
+							<!--WinCondition/PrecacheList/SquadPrecacheItem/ReflectPBG_SquadProperties/-->
+							<DataObject Name="" Type="ReflectPBG_SquadProperties" Id="15204238185952820386" OwnerId="12287823697360682554">
+								<DataProperty Name="#BaseTypes" Type="String" Value="PropertyBagGroupReflectReference#0|Provider_PropertyBagGroup#0|"/>
+								<DataProperty Name="m_fileName" Type="String" Value="unit_king_1_ott"/>
 							</DataObject>
 						</DataProperty>
 					</DataObject>
