@@ -75,7 +75,8 @@ Ideally all of the following:
 ### Known Issues
 
 #### AI
-Game has currently no dedicated API for AI as an result any issue related to AI behaviour can't be fixed. So any behaviour such as AI aging up even if players can't or AI being slower then expected to age up or play is out of reach to fix at the moment for a mod...
+Game has currently no dedicated API for AI as an result any issue related to AI behaviour can't be fixed. So any behaviour such as AI aging up even if players can't or AI being slower then expected to age up or plays/behaves worse then in standard game is out of reach to fix at the moment for a mod...  
+For some reason AI doesn't like gamemode/script changes and plays worse then normals... Cause of this effect is not known...
 I suggest you to provide feedback to Relic, so they can improve AI or provide official API.  
 
 #### King Unit
