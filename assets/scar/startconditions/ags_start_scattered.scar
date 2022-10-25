@@ -12,7 +12,7 @@ AGS_SCATTERED_MODULE = "AGS_Scattered"
 AGS_SCATTERED_RADIUS = 1
 AGS_SCATTERED_TUNING = 1.9
 AGS_SCATTERED_WOOD = 400
-AGS_SCATTERED_STONE = 300
+AGS_SCATTERED_STONE = 350
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
