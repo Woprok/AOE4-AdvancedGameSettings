@@ -133,7 +133,8 @@ import("specials/ags_testing.scar")
 -- Additional UI elements
 import("specials/ags_match_ui.scar")
 -- Observer UI
-import("replay/ags_replay.scar")
+-- Disabled due to Caster Mode UI
+-- import("replay/ags_replay.scar")
 
 ---------------------------------------------------------------------------------------------------
 -- AGS LIBRARY GUIDELINES AND INFORMATIONS
