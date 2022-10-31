@@ -1,0 +1,51 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- dirtyharryiv
+--
+-- Description:
+-- Additional populatoin capacity for houses
+---------------------------------------------------------------------------------------------------
+
+AGS_HOUSE_MODIFIER_MODULE = "AGS_HouseModifier"
+AGS_HOUSE_MODIFIER_MODIFIERS = { }
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_HOUSE_MODIFIER_MODULE)
+
+function AGS_HouseModifier_DestroyedListener(context)
+	AGS_Print("AGS_HouseModifier_DestroyedListener")
+	local modifier = AGS_HOUSE_MODIFIER_MODIFIERS[#AGS_HOUSE_MODIFIER_MODIFIERS]
+	if modifier then
+		Modifier_Remove(modifier)
+		AGS_HOUSE_MODIFIER_MODIFIERS[#AGS_HOUSE_MODIFIER_MODIFIERS] = nil
+	end
+end
+function AGS_HouseModifier_ConstructionListener(context)
+	AGS_Print("AGS_HouseModifier_ConstructionListener")
+	AGS_Print(AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity)
+	if Entity_IsOfType(context.entity, "house") then
+		AGS_HOUSE_MODIFIER_MODIFIERS[#AGS_HOUSE_MODIFIER_MODIFIERS + 1] = Modify_PlayerPopCap(context.player, AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity, MUT_Addition)
+		Rule_AddEntityEvent(AGS_HouseModifier_DestroyedListener, context.entity, GE_EntityKilled)
+	end
+end
+
+function AGS_PopulationCapacity_EarlyInitializations()
+	AGS_Print("AGS_PopulationCapacity_EarlyInitializations")
+	AGS_HouseModifier_Change()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_HouseModifier_Change()
+	for i=1,World_GetPlayerCount() do
+		local p = World_GetPlayerAt(i)
+		Rule_RemovePlayerEvent(AGS_HouseModifier_ConstructionListener, p)
+		Rule_AddPlayerEvent(AGS_HouseModifier_ConstructionListener, p, GE_ConstructionComplete)
+	end
+end

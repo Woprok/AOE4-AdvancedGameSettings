@@ -138,6 +138,7 @@ AGS_GLOBAL_SETTINGS = {
 	MinimumPopulation = 0,
 	MinimumPopulationReset = false, -- undefined, removes mongol bonus
 	MaximumPopulation = 200,
+	AdditionalHouseCapacity = 0,
 	StartingVillagers = 6,
 	StartingKeeps = 0,
 	EarlyMarket = false,
@@ -397,6 +398,9 @@ function AGS_GlobalSettings_DefineMatchSettings(category)
 	end
 	if category.option_match_setting_max_population then
 		AGS_GlobalSettings_SetMaximumPopulation(category.option_match_setting_max_population)
+	end
+	if category.option_match_setting_add_house_capacity then
+		AGS_GlobalSettings_SetAdditionalHouseCapacity(category.option_match_setting_add_house_capacity)
 	end
 	if category.option_match_setting_starting_villagers then
 		AGS_GlobalSettings_SetStartingVillagers(category.option_match_setting_starting_villagers)
@@ -955,6 +959,30 @@ function AGS_GlobalSettings_SetMaximumPopulation(max_population)
 		AGS_GLOBAL_SETTINGS.MaximumPopulation = 1000
 	elseif max_population.enum_value == max_population.enum_items.max_population_10000 then
 		AGS_GLOBAL_SETTINGS.MaximumPopulation = 10000
+	end
+end
+
+function AGS_GlobalSettings_SetAdditionalHouseCapacity(additional_house_capactity)
+	if additional_house_capactity.enum_value == additional_house_capactity.enum_items.add_house_capacity_0 then
+		AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity = 0
+	elseif additional_house_capactity.enum_value == additional_house_capactity.enum_items.add_house_capacity_5 then
+		AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity = 5
+	elseif additional_house_capactity.enum_value == additional_house_capactity.enum_items.add_house_capacity_10 then
+		AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity = 10
+	elseif additional_house_capactity.enum_value == additional_house_capactity.enum_items.add_house_capacity_15 then
+		AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity = 15
+	elseif additional_house_capactity.enum_value == additional_house_capactity.enum_items.add_house_capacity_20 then
+		AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity = 20
+	elseif additional_house_capactity.enum_value == additional_house_capactity.enum_items.add_house_capacity_25 then
+		AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity = 25
+	elseif additional_house_capactity.enum_value == additional_house_capactity.enum_items.add_house_capacity_30 then
+		AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity = 30
+	elseif additional_house_capactity.enum_value == additional_house_capactity.enum_items.add_house_capacity_40 then
+		AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity = 40
+	elseif additional_house_capactity.enum_value == additional_house_capactity.enum_items.add_house_capacity_50 then
+		AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity = 50
+	elseif additional_house_capactity.enum_value == additional_house_capactity.enum_items.add_house_capacity_100 then
+		AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity = 100
 	end
 end
 
