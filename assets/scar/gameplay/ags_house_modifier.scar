@@ -4,7 +4,7 @@
 -- dirtyharryiv
 --
 -- Description:
--- Additional populatoin capacity for houses
+-- Additional population capacity for houses
 ---------------------------------------------------------------------------------------------------
 
 AGS_HOUSE_MODIFIER_MODULE = "AGS_HouseModifier"
@@ -16,26 +16,31 @@ AGS_HOUSE_MODIFIER_MODIFIERS = { }
 
 Core_RegisterModule(AGS_HOUSE_MODIFIER_MODULE)
 
-function AGS_HouseModifier_DestroyedListener(context)
-	AGS_Print("AGS_HouseModifier_DestroyedListener")
-	local modifier = AGS_HOUSE_MODIFIER_MODIFIERS[#AGS_HOUSE_MODIFIER_MODIFIERS]
-	if modifier then
-		Modifier_Remove(modifier)
-		AGS_HOUSE_MODIFIER_MODIFIERS[#AGS_HOUSE_MODIFIER_MODIFIERS] = nil
-	end
-end
-function AGS_HouseModifier_ConstructionListener(context)
-	AGS_Print("AGS_HouseModifier_ConstructionListener")
-	AGS_Print(AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity)
-	if Entity_IsOfType(context.entity, "house") then
-		AGS_HOUSE_MODIFIER_MODIFIERS[#AGS_HOUSE_MODIFIER_MODIFIERS + 1] = Modify_PlayerPopCap(context.player, AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity, MUT_Addition)
-		Rule_AddEntityEvent(AGS_HouseModifier_DestroyedListener, context.entity, GE_EntityKilled)
-	end
-end
 
 function AGS_PopulationCapacity_EarlyInitializations()
 	AGS_Print("AGS_PopulationCapacity_EarlyInitializations")
 	AGS_HouseModifier_Change()
+end
+
+---------------------------------------------------------------------------------------------------
+-- Callbacks:
+---------------------------------------------------------------------------------------------------
+
+function AGS_HouseModifier_DestroyedListener(context)
+	AGS_Print("AGS_HouseModifier_DestroyedListener")
+	local modifier = AGS_HOUSE_MODIFIER_MODIFIERS[context.victim.EntityID]
+	if modifier then
+		Modifier_Remove(modifier)
+		AGS_HOUSE_MODIFIER_MODIFIERS[context.victim.EntityID] = nil
+	end
+end
+
+function AGS_HouseModifier_ConstructionListener(context)
+	AGS_Print("AGS_HouseModifier_ConstructionListener")
+	if Entity_IsOfType(context.entity, "house") then
+		AGS_HOUSE_MODIFIER_MODIFIERS[context.entity.EntityID] = Modify_PlayerPopCap(context.player, AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity, MUT_Addition)
+		Rule_AddEntityEvent(AGS_HouseModifier_DestroyedListener, context.entity, GE_EntityKilled)
+	end
 end
 
 ---------------------------------------------------------------------------------------------------
