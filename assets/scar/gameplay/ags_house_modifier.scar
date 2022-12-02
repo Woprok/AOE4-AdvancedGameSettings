@@ -2,9 +2,10 @@
 -- Authors:
 -- Relic
 -- dirtyharryiv
+-- Woprock
 --
 -- Description:
--- Additional population capacity for houses
+-- Additional population capacity for houses.
 ---------------------------------------------------------------------------------------------------
 
 AGS_HOUSE_MODIFIER_MODULE = "AGS_HouseModifier"
@@ -16,6 +17,12 @@ AGS_HOUSE_MODIFIER_MODIFIERS = { }
 
 Core_RegisterModule(AGS_HOUSE_MODIFIER_MODULE)
 
+function AGS_PopulationCapacity_UpdateModuleSettings()
+	AGS_Print("AGS_PopulationCapacity_UpdateModuleSettings")
+	if AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity == 0 then
+		Core_UnregisterModule(AGS_HOUSE_MODIFIER_MODULE)
+	end
+end
 
 function AGS_PopulationCapacity_EarlyInitializations()
 	AGS_Print("AGS_PopulationCapacity_EarlyInitializations")
