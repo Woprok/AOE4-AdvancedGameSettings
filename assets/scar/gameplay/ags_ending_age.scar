@@ -56,10 +56,18 @@ end
 function AGS_EndingAge_SetMaximumAge(player, max_age)
 	local prefix = AGS_CIV_PREFIXES[player.raceName]
 	
+	if prefix == "ott_" then
+		prefix = "sul_"
+		-- This is here due to ottomans not having their own, but they are using other civ
+		-- for now it looks like it's delhi menu that is used.
+		AGS_Print(prefix)
+	end
+	
 	if player.raceName == AGS_CIV_ABBASID then
 		AGS_EndingAge_RemoveAgeTechnology(player, prefix, max_age)
 	else
 		if max_age < AGS_GS_AGE_FEUDAL then 
+			-- This is commented due to TC availability for nomad...
 			--Player_SetConstructionMenuAvailability(player.id, prefix.."age2", ITEM_REMOVED)
 			Player_SetConstructionMenuAvailability(player.id, prefix.."age1_wonders", ITEM_REMOVED)
 		end
