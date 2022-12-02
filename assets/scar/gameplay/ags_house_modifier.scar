@@ -17,15 +17,15 @@ AGS_HOUSE_MODIFIER_MODIFIERS = { }
 
 Core_RegisterModule(AGS_HOUSE_MODIFIER_MODULE)
 
-function AGS_PopulationCapacity_UpdateModuleSettings()
-	AGS_Print("AGS_PopulationCapacity_UpdateModuleSettings")
+function AGS_HouseModifier_UpdateModuleSettings()
+	AGS_Print("AGS_HouseModifier_UpdateModuleSettings")
 	if AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity == 0 then
 		Core_UnregisterModule(AGS_HOUSE_MODIFIER_MODULE)
 	end
 end
 
-function AGS_PopulationCapacity_EarlyInitializations()
-	AGS_Print("AGS_PopulationCapacity_EarlyInitializations")
+function AGS_HouseModifier_EarlyInitializations()
+	AGS_Print("AGS_HouseModifier_EarlyInitializations")
 	AGS_HouseModifier_Change()
 end
 
