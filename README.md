@@ -37,6 +37,13 @@ _Search for small treasures around the map and claim them before your enemies._
 _Speeds up production and reduces cost of economic units to help establish strong economy faster._
 * Handicaps  
 _Provides percantage bonus to each player based on selected value. Economic bonuses are faster gather rates, larger carrying capacity and higher trade. Military bonuses include higher armor, health for all units and buildings. Buildings also receive higher production and research speed._
+* Tournament Balance  
+_Nomad tournament adjustments:_  
+   - Mongols: +100 Wood  
+   - English: +50 Wood  
+   - Ottomans: +50 Stone  
+   - Chinese: Main TC build time +100%  
+   - All: Outpost only after first TC built.
 ### Full Menu Preview
 ![image](https://user-images.githubusercontent.com/37557138/169667259-c9b3af09-d406-4e96-a2cb-9e5db00eb363.png)   
 ![image](https://user-images.githubusercontent.com/37557138/179069958-e119b2f6-58fe-478d-a361-64b16c09bb8e.png)    
