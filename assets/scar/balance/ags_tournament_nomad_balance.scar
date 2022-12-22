@@ -6,6 +6,9 @@
 --
 -- Description:
 -- Nomad tournament adjustments.
+-- Mongols: +100 Wood
+-- English: +50 Wood
+-- Ottomans: +50 Stone 
 ---------------------------------------------------------------------------------------------------
 
 AGS_TOURNAMENT_NOMAD_BALANCE = "AGS_TournamentNomadBalance"
@@ -26,8 +29,8 @@ function AGS_TournamentNomadBalance_UpdateModuleSettings()
 	end
 end
 
-function AGS_Scattered_OnStarting()
-	AGS_Print("AGS_Scattered_OnStarting")
+function AGS_TournamentNomadBalance_OnStarting()
+	AGS_Print("AGS_TournamentNomadBalance_OnStarting")
 	for _, player in pairs(PLAYERS) do	
 		
 		-- Verify that this is forcing build mode to be enabled from the start.
