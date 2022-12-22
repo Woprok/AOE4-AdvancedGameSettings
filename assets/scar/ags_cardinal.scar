@@ -126,6 +126,7 @@ import("gameplay/ags_unit_rates.scar")
 import("gameplay/ags_wonder_construction.scar")
 import("gameplay/ags_wonder_scale_cost.scar")
 import("gameplay/ags_site_limit.scar")
+import("balance/ags_tournament_nomad_balance.scar")
 
 -- Wrapper around all default match options, that will have minimal changes done to them.
 import("specials/ags_utilities.scar")

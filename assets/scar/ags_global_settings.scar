@@ -189,6 +189,7 @@ AGS_GLOBAL_SETTINGS = {
 	
 	MatchUI = true, -- undefined
 	ObserverUI = true, -- undefined
+	TournamentNomadBalance = false,
 }
 
 ---------------------------------------------------------------------------------------------------
@@ -429,6 +430,9 @@ function AGS_GlobalSettings_DefineMatchSettings(category)
 	if category.option_match_setting_scattered_scout ~= nil then
 		AGS_GLOBAL_SETTINGS.ScatteredScout = category.option_match_setting_scattered_scout
 	end
+	if category.option_match_setting_tournament_nomad_balance ~= nil then
+		AGS_GLOBAL_SETTINGS.TournamentNomadBalance = category.option_match_setting_tournament_nomad_balance
+	end
 end
 
 function AGS_GlobalSettings_DefineLegacySettings(category)
@@ -577,6 +581,8 @@ end
 function AGS_GlobalSettings_SetTreatyTimer(treaty)
 	if treaty.enum_value == treaty.enum_items.treaty_0 then
 		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 0
+	elseif treaty.enum_value == treaty.enum_items.treaty_3 then
+		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 3
 	elseif treaty.enum_value == treaty.enum_items.treaty_5 then
 		AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 5
 	elseif treaty.enum_value == treaty.enum_items.treaty_10 then

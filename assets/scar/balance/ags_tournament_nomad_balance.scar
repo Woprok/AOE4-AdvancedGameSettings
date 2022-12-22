@@ -1,0 +1,56 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+-- MrMerlin
+--
+-- Description:
+-- Nomad tournament adjustments.
+---------------------------------------------------------------------------------------------------
+
+AGS_TOURNAMENT_NOMAD_BALANCE = "AGS_TournamentNomadBalance"
+AGS_TOURNAMENT_NOMAD_BALANCE_MONGOL_WOOD = 100
+AGS_TOURNAMENT_NOMAD_BALANCE_ENGLISH_WOOD = 50
+AGS_TOURNAMENT_NOMAD_BALANCE_OTTOMAN_STONE = 50
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_TOURNAMENT_NOMAD_BALANCE)	
+
+function AGS_TournamentNomadBalance_UpdateModuleSettings()
+	AGS_Print("AGS_TournamentNomadBalance_UpdateModuleSettings")
+	if AGS_GLOBAL_SETTINGS.TournamentNomadBalance then
+		Core_UnregisterModule(AGS_TOURNAMENT_NOMAD_BALANCE)
+	end
+end
+
+function AGS_Scattered_OnStarting()
+	AGS_Print("AGS_Scattered_OnStarting")
+	for _, player in pairs(PLAYERS) do	
+		
+		-- Verify that this is forcing build mode to be enabled from the start.
+		-- Insist that player do not have capital.
+		-- Player_SetStateModelFloat(player.id, "has_capital", 0)	
+		-- Player should be able to build structures.
+		-- Player_SetStateModelBool(player.id, "player_can_construct_structures", true)	
+		
+		-- Increase starting resources based on what is missing from "low"
+		if player.raceName == AGS_CIV_MONGOL then
+			Player_GiftResource(player.id, RT_Wood, AGS_TOURNAMENT_NOMAD_BALANCE_MONGOL_WOOD)
+		end
+		
+		if player.raceName == AGS_CIV_ENGLISH then
+			Player_GiftResource(player.id, RT_Wood, AGS_TOURNAMENT_NOMAD_BALANCE_ENGLISH_WOOD)
+		end
+				
+		if player.raceName == AGS_CIV_OTTOMAN then
+			Player_GiftResource(player.id, RT_Stone, AGS_TOURNAMENT_NOMAD_BALANCE_OTTOMAN_STONE)
+		end
+		
+		if player.raceName == AGS_CIV_CHINESE then
+		end
+		
+	end
+end
