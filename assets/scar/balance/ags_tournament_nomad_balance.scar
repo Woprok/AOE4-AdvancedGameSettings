@@ -8,7 +8,9 @@
 -- Nomad tournament adjustments.
 -- Mongols: +100 Wood
 -- English: +50 Wood
--- Ottomans: +50 Stone 
+-- Ottomans: +50 Stone
+-- Chinese: Main TC build time +100%
+-- All: Outpost only after first age up.
 ---------------------------------------------------------------------------------------------------
 
 AGS_TOURNAMENT_NOMAD_BALANCE = "AGS_TournamentNomadBalance"
@@ -24,21 +26,78 @@ Core_RegisterModule(AGS_TOURNAMENT_NOMAD_BALANCE)
 
 function AGS_TournamentNomadBalance_UpdateModuleSettings()
 	AGS_Print("AGS_TournamentNomadBalance_UpdateModuleSettings")
-	if AGS_GLOBAL_SETTINGS.TournamentNomadBalance then
+	if not AGS_GLOBAL_SETTINGS.TournamentNomadBalance then
 		Core_UnregisterModule(AGS_TOURNAMENT_NOMAD_BALANCE)
 	end
 end
 
 function AGS_TournamentNomadBalance_OnStarting()
 	AGS_Print("AGS_TournamentNomadBalance_OnStarting")
-	for _, player in pairs(PLAYERS) do	
-		
-		-- Verify that this is forcing build mode to be enabled from the start.
-		-- Insist that player do not have capital.
-		-- Player_SetStateModelFloat(player.id, "has_capital", 0)	
-		-- Player should be able to build structures.
-		-- Player_SetStateModelBool(player.id, "player_can_construct_structures", true)	
-		
+	AGS_TournamentNomadBalance_ApplyBalance()
+end
+
+function AGS_TournamentNomadBalance_OnPlay()
+	AGS_Print("AGS_TournamentNomadBalance_OnPlay")
+	Rule_AddGlobalEvent(AGS_TournamentNomadBalance_OnConstructionComplete, GE_ConstructionComplete)
+	Rule_AddGlobalEvent(AGS_TournamentNomadBalance_OnUpgradeComplete, GE_UpgradeComplete)
+end
+
+function AGS_TournamentNomadBalance_OnGameOver()
+	AGS_Print("AGS_TournamentNomadBalance_OnGameOver")
+	Rule_RemoveGlobalEvent(AGS_TournamentNomadBalance_OnConstructionComplete)
+	Rule_RemoveGlobalEvent(AGS_TournamentNomadBalance_OnUpgradeComplete)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Callbacks:
+---------------------------------------------------------------------------------------------------
+
+function AGS_TournamentNomadBalance_OnUpgradeComplete(context)
+	if context == nil or context.executer == nil or context.upgrade == nil then
+		return
+	end
+	local entity_id = context.executer
+	if scartype(entity_id) ~= ST_ENTITY or World_OwnsEntity(entity_id) then
+		return
+	end
+	local owner = Entity_GetPlayerOwner(entity_id)
+	if owner == nil then 
+		return
+	end
+	local player = Core_GetPlayersTableEntry(owner)
+	if player == nil or player.raceName ~= AGS_CIV_ABBASID then 
+		return
+	end
+	local pbg = context.upgrade
+	if BP_IsUpgradeOfType(pbg, "abbasid_wing_upgrade") then
+		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player.raceName, AGS_BP_OUTPOST), ITEM_DEFAULT)
+	end	
+end
+
+function AGS_TournamentNomadBalance_OnConstructionComplete(context)	
+	if context == nil or context.player == nil or context.entity == nil then 
+		return
+	end	
+	if World_OwnsEntity(context.entity) then
+		return
+	end	
+	local player = Core_GetPlayersTableEntry(context.player)
+	-- Eliminated players are not interesting.
+	if player.isEliminated or player.raceName == AGS_CIV_ABBASID then
+		return
+	end
+	-- We are looking only for landmarks.
+	if AGS_IsALandmark(context.entity) then
+		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player.raceName, AGS_BP_OUTPOST), ITEM_DEFAULT)
+	end
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+--
+function AGS_TournamentNomadBalance_ApplyBalance()
+	for _, player in pairs(PLAYERS) do			
 		-- Increase starting resources based on what is missing from "low"
 		if player.raceName == AGS_CIV_MONGOL then
 			Player_GiftResource(player.id, RT_Wood, AGS_TOURNAMENT_NOMAD_BALANCE_MONGOL_WOOD)
@@ -53,7 +112,15 @@ function AGS_TournamentNomadBalance_OnStarting()
 		end
 		
 		if player.raceName == AGS_CIV_CHINESE then
+			-- Nerf TC build time
+			local ebp = AGS_GetCivilizationEntity(player.raceName, AGS_BP_TC_CAPITAL)
+			AGS_TournamentNomadBalance_Nerf(player.id, "cost_ticks_modifier", 2, ebp)
 		end
-		
+		-- Block outpost
+		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player.raceName, AGS_BP_OUTPOST), ITEM_LOCKED)
 	end
 end
+-- Apply function.
+function AGS_TournamentNomadBalance_Nerf(player_id, modifier_type, modifier_value, modifier_ebp)
+	Modifier_ApplyToPlayer(Modifier_Create(MAT_EntityType, modifier_type, MUT_Multiplication, false, modifier_value, modifier_ebp), player_id, 0.0)
+end	

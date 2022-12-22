@@ -64,6 +64,7 @@ AGS_BP_DEPOSIT_STONE = "stone"
 AGS_BP_DEPOSIT_FOOD = "forage_bush"
 AGS_BP_DEPOSIT_MARKET = "settlement"
 AGS_BP_DEPOSIT_ANIMAL = "animal"
+AGS_BP_OUTPOST = "outpost"
 
 AGS_ENTITY_TABLE = {
 	neutral = {
@@ -95,6 +96,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_eng",		
 		house = "building_house_control_eng",
 		blacksmith = "building_tech_unit_infantry_control_eng",
+		outpost = "building_defense_outpost_eng",
 	},
 	chinese = {
 		castle = "building_defense_keep_chi",
@@ -115,6 +117,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_chi",	
 		house = "building_house_control_chi",	
 		blacksmith = "building_tech_unit_infantry_control_chi",	
+		outpost = "building_defense_outpost_chi",
 	},
 	french = {
 		castle = "building_defense_keep_fre",
@@ -135,6 +138,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_fre",	
 		house = "building_house_control_fre",	
 		blacksmith = "building_tech_unit_infantry_control_fre",
+		outpost = "building_defense_outpost_fre",
 	},
 	hre = {
 		castle = "building_defense_keep_hre",
@@ -156,6 +160,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_hre",	
 		house = "building_house_control_hre",
 		blacksmith = "building_tech_unit_infantry_control_hre",	
+		outpost = "building_defense_outpost_hre",
 	},
 	rus = {	
 		castle = "building_defense_keep_control_rus",
@@ -176,6 +181,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_rus",	
 		house = "building_house_control_rus",	
 		blacksmith = "building_tech_unit_infantry_control_rus",
+		outpost = "building_defense_wooden_fort_rus",		
 	},
 	abbasid = {
 		castle = "building_defense_keep_control_abb",
@@ -197,6 +203,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_abb",		
 		house = "building_house_control_abb",	
 		blacksmith = "building_tech_unit_infantry_control_abb",
+		outpost = "building_defense_outpost_control_abb",
 	},
 	mongol = {
 		castle = "building_defense_keep_control_nov",
@@ -217,6 +224,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_mon",	
 		house = "building_house_mon",
 		blacksmith = "building_tech_unit_infantry_mon",
+		outpost = "building_defense_outpost_mon",
 	},
 	sultanate = {
 		castle = "building_defense_keep_control_sul",
@@ -237,6 +245,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_sul",	
 		house = "building_house_control_sul",	
 		blacksmith = "building_tech_unit_infantry_control_sul",
+		outpost = "building_defense_outpost_control_sul",
 	},
 	malian = {
 		castle = "building_defense_keep_mal",
@@ -257,6 +266,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_mal",	
 		house = "building_house_mal",	
 		blacksmith = "building_tech_unit_infantry_mal",
+		outpost = "building_defense_outpost_mal",
 	},
 	ottoman = {
 		castle = "building_defense_keep_ott",
@@ -277,6 +287,7 @@ AGS_ENTITY_TABLE = {
 		scar_dock = "building_unit_naval_ott",	
 		house = "building_house_ott",	
 		blacksmith = "building_tech_unit_infantry_ott",
+		outpost = "building_defense_outpost_ott",
 	},
 }
 
