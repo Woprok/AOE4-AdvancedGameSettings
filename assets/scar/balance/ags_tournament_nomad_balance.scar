@@ -39,40 +39,16 @@ end
 function AGS_TournamentNomadBalance_OnPlay()
 	AGS_Print("AGS_TournamentNomadBalance_OnPlay")
 	Rule_AddGlobalEvent(AGS_TournamentNomadBalance_OnConstructionComplete, GE_ConstructionComplete)
-	Rule_AddGlobalEvent(AGS_TournamentNomadBalance_OnUpgradeComplete, GE_UpgradeComplete)
 end
 
 function AGS_TournamentNomadBalance_OnGameOver()
 	AGS_Print("AGS_TournamentNomadBalance_OnGameOver")
 	Rule_RemoveGlobalEvent(AGS_TournamentNomadBalance_OnConstructionComplete)
-	Rule_RemoveGlobalEvent(AGS_TournamentNomadBalance_OnUpgradeComplete)
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Callbacks:
 ---------------------------------------------------------------------------------------------------
-
-function AGS_TournamentNomadBalance_OnUpgradeComplete(context)
-	if context == nil or context.executer == nil or context.upgrade == nil then
-		return
-	end
-	local entity_id = context.executer
-	if scartype(entity_id) ~= ST_ENTITY or World_OwnsEntity(entity_id) then
-		return
-	end
-	local owner = Entity_GetPlayerOwner(entity_id)
-	if owner == nil then 
-		return
-	end
-	local player = Core_GetPlayersTableEntry(owner)
-	if player == nil or player.raceName ~= AGS_CIV_ABBASID then 
-		return
-	end
-	local pbg = context.upgrade
-	if BP_IsUpgradeOfType(pbg, "abbasid_wing_upgrade") then
-		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player.raceName, AGS_BP_OUTPOST), ITEM_DEFAULT)
-	end	
-end
 
 function AGS_TournamentNomadBalance_OnConstructionComplete(context)	
 	if context == nil or context.player == nil or context.entity == nil then 
@@ -83,11 +59,11 @@ function AGS_TournamentNomadBalance_OnConstructionComplete(context)
 	end	
 	local player = Core_GetPlayersTableEntry(context.player)
 	-- Eliminated players are not interesting.
-	if player.isEliminated or player.raceName == AGS_CIV_ABBASID then
+	if player.isEliminated then
 		return
 	end
 	-- We are looking only for landmarks.
-	if AGS_IsALandmark(context.entity) then
+	if AGS_IsACapital(context.entity) then
 		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player.raceName, AGS_BP_OUTPOST), ITEM_DEFAULT)
 	end
 end
