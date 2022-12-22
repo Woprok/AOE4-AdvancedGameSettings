@@ -10,7 +10,7 @@
 -- English: +50 Wood
 -- Ottomans: +50 Stone
 -- Chinese: Main TC build time +100%
--- All: Outpost only after first age up.
+-- All: Outpost only after first TC built.
 ---------------------------------------------------------------------------------------------------
 
 AGS_TOURNAMENT_NOMAD_BALANCE = "AGS_TournamentNomadBalance"
