@@ -101,3 +101,5 @@ Team Vision is currently still tied to Team Victory [Basically determined by who
   - Team Victory -> FFA & Team Vision -> Any => Noone will have vision during treaty or during the game for any of their mutual "allies"  
   - Team Victory -> Initial Teams & Team Vision -> Requires Market/Always => Only teams setup in lobby will share vision during the game, including treaty  
   - Team Victory -> Dynamic Teams & Team Vision -> Requires Market/Always => everyone has vision during treaties and mutual allies see each other  
+* AOE4 mod page link:  
+https://www.ageofempires.com/mods/details/55544/  
