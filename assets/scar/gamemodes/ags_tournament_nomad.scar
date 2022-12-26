@@ -20,7 +20,7 @@ import("ags_cardinal.scar")
 Core_RegisterModule("AGS_Tournament_Nomad")	
 
 function AGS_Tournament_Nomad_AdjustSettings()
-	AGS_Print("AGS_Nomad_AdjustSettings")
+	AGS_Print("AGS_Tournament_Nomad_AdjustSettings")
 	-- Setting up everything that is not configurable for this mode.
 	AGS_GLOBAL_SETTINGS.UsingPrefabStart = false
 	AGS_GLOBAL_SETTINGS.RevealSpawn = false
@@ -34,7 +34,8 @@ function AGS_Tournament_Nomad_AdjustSettings()
 	AGS_GLOBAL_SETTINGS.Relations = true
 	AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_SCATTERED
 	AGS_GLOBAL_SETTINGS.TeamVictory = AGS_GS_TEAM_VICTORY_FFA
-	AGS_GLOBAL_SETTINGS.Treaty = 3
+	AGS_GLOBAL_SETTINGS.Treaty = true
+	AGS_GLOBAL_SETTINGS.TreatySettings.Timer = 3
 	AGS_GLOBAL_SETTINGS.StartingVillagers = 8
 	AGS_GLOBAL_SETTINGS.TournamentNomadBalance = true
 end
