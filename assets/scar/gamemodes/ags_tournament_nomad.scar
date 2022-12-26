@@ -1,0 +1,40 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Entry point for an gamemode.
+-- Contains only gamemode specific functionality and generic delegate calls.
+-- Everything else is imported and done as part of "ags_cardinal.scar"
+---------------------------------------------------------------------------------------------------
+
+import("ags_cardinal.scar")
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+-- This file is loaded last, this means that all methods are invoked at the end of chain.
+-- It might be possible to assume that all imported modules are finished with the stage when we are called.
+-- Hopefully noone will ever confuse this in code with Nomadic start... (I am sure I will :D)
+Core_RegisterModule("AGS_Tournament_Nomad")	
+
+function AGS_Tournament_Nomad_AdjustSettings()
+	AGS_Print("AGS_Nomad_AdjustSettings")
+	-- Setting up everything that is not configurable for this mode.
+	AGS_GLOBAL_SETTINGS.UsingPrefabStart = false
+	AGS_GLOBAL_SETTINGS.RevealSpawn = false
+	-- Optimized only for 1v1 multiplayer experience.
+	AGS_GLOBAL_SETTINGS.IsAdjustingAI = false
+	AGS_GLOBAL_SETTINGS.PlayerColors.IsEnforcing = true
+	AGS_GLOBAL_SETTINGS.RevealFowOnElimination = true
+	AGS_GLOBAL_SETTINGS.StartingResources = AGS_GS_RESOURCES_LOW
+	AGS_GLOBAL_SETTINGS.TeamVision = AGS_GS_TEAM_VISION_ALWAYS
+	AGS_GLOBAL_SETTINGS.Tributes = true
+	AGS_GLOBAL_SETTINGS.Relations = true
+	AGS_GLOBAL_SETTINGS.Settlement = AGS_GS_SETTLEMENT_SCATTERED
+	AGS_GLOBAL_SETTINGS.TeamVictory = AGS_GS_TEAM_VICTORY_FFA
+	AGS_GLOBAL_SETTINGS.Treaty = 3
+	AGS_GLOBAL_SETTINGS.StartingVillagers = 8
+	AGS_GLOBAL_SETTINGS.TournamentNomadBalance = true
+end
