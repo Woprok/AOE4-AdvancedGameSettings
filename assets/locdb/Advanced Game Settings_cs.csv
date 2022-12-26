@@ -1,0 +1,395 @@
+﻿ID,SourceText,TranslatedText
+1,,Pokročilé nastavení hry
+2,,Rozšiřuje standardní herní režim Age of Empires 4 o nové možnosti a skutečně vám dává možnost přizpůsobit si nastavení zápasu (např. diplomace
+3,,Pokročilé nastavení hry vám poskytuje řadu možností zápasů a výherních podmínek
+4,,Podmínky pro výhru
+5,,Zničení
+6,,Zničte všechny nepřátele. Tato možnost je povinná
+7,,Odstranění
+8,,Přežíte déle než všichni vaši nepřátelé. Vypnutí této možnosti zabrání vyřešení zápasu
+9,,Kapitulace
+10,,Nevzdávej se. Vypnutí této možnosti zabrání vyřešení zápasu
+11,,Dobytí
+12,,Dobýt všechny nepřátelské cíle
+13,,Královražda
+14,,Poraz všechny nepřátelské krále
+15,,Náboženský
+16,,Ovládejte všechna posvátná místa
+17,,Div světa
+18,,Postavte a braňte div
+19,,Skóre
+20,,Dosáhněte nejvyššího skóre před koncem časovače
+21,,Podmínky hry
+22,,Osidlí
+23,,Prvotní osidlí
+24,,Roztroušeně
+25,,Kočovné
+26,,Usazeno
+27,,Období míru
+28,,Počateční období míru
+29,,Zakázáno
+30,,5 minut
+31,,10 minut
+32,,15 minut
+33,,20 minut
+34,,25 minut
+35,,30 minut
+36,,35 minut
+37,,40 minut
+38,,45 minut
+39,,50 minut
+40,,55 minut
+41,,60 minut
+42,,65 minut
+43,,70 minut
+44,,75 minut
+45,,80 minut
+46,,85 minut
+47,,90 minut
+48,,95 minut
+49,,100 minut
+50,,105 minut
+51,,110 minut
+52,,115 minut
+53,,120 minut
+54,,Vítězství týmu
+55,,Umožňuje týmům vyhrát hru
+56,,Volná rvačka
+57,,Počáteční týmy
+58,,Dynamické týmy
+59,,Týmová solidarita
+60,,Pokud je některý člen týmu poražen
+61,,Nastavení vyhry
+62,,Dobytí hlavního města
+63,,Dobytí vyžaduje zničení prvního centra města
+64,,Dobytí památek
+65,,Dobytí vyžaduje zničení všech památek
+66,,Dobytí městských center
+67,,Dobytí vyžaduje zničení všech dodatečných center měst
+68,,Dobytí hradu
+69,,Dobytí vyžaduje zničení všech pevností
+70,,Dobytí divu světa
+71,,Dobytí vyžaduje zničení zázraku k odstranění hráče
+72,,Náboženský časovač
+73,,Čas potřebný k udržení všech posvátných míst
+74,,Okamžitý
+75,,1 minuta
+76,,2 minuty
+77,,3 minuty
+78,,4 minuty
+79,,6 minut
+80,,7 minut
+81,,8 minut
+82,,9 minut
+83,,11 minut
+84,,12 minut
+85,,13 minut
+86,,14 minut
+87,,Náboženský časovač může pokračovat
+88,,Časovač pokračuje od okamžiku
+89,,Časovač divú světa 
+90,,Čas potřebný k uspěšné obraně divú světa
+91,,Div sveta poslední stání
+92,,Zničení hotového zázraku odstraní majitele
+93,,Cena divu sveta
+94,,Škálujte náklady na zázrak na základě počtu hráčů. To definuje další množství všech zdrojů na hráče. Cena začíná na 3000 za každý zdroj.
+95,,0 za hráče
+96,,250 za hráče
+97,,375 za hráče
+98,,500 za hráče
+99,,750 za hráče
+100,,1000 za hráče
+101,,1500 za hráče
+102,,2000 za hráče
+103,,Nastavení hry
+104,,Tribut
+105,,Hráči mohou posílat zdroje spojencům
+106,,Diplomacie
+107,,Hráči si mohou nastavit své vlastní aliance
+108,,Týmové vidění
+109,,Sdílené vidění mezi spojenci
+110,,Žádne
+111,,Vyžaduje trh
+112,,Vždy
+113,,Vidění mapy
+114,,Počáteční vidění mapy
+115,,Skryté
+116,,Prozkoumáno
+117,,Odhaleno
+118,,Počáteční věk
+119,,Počáteční věk pro všechny hráče
+120,,Temný věk
+121,,Feudální věk
+122,,Hradní věk
+123,,Imperiální věk
+124,,Pozdní imperiální věk
+125,,Končící věk
+126,,Konečný věk pro všechny hráče
+127,,Technologický věk
+128,,Počáteční technologie prozkoumány pro všechny hráče
+129,,Počáteční zdroje
+130,,Počáteční zdroje pro všechny hráče
+131,,Normální
+132,,Vysoký
+133,,Velmi vysoký
+134,,Maximální
+135,,Odhaleni po odstranění
+136,,Umožnit odhaleni mapy po odstranění
+137,,Nastavení soubouju
+138,,Zobrazit skóre
+139,,Skóre hráčů jsou viditelné
+140,,Skóre Zobrazit umístění
+141,,Zobrazit aktuální sólové místo v hodnocení režimu skóre. Skóre týmu se vyhodnocuje až na konci hry
+142,,Časovač skóre
+143,,Čas
+144,,Minimální populační kapacita
+145,,Mění počáteční kapacitu populace bez domů. Nepřekročí maximální kapacitu obyvatel.
+146,,Maximální populační kapacita
+147,,Mění maximální kapacitu populace. Vyžaduje domy
+148,,0
+149,,25
+150,,50
+151,,75
+152,,100
+153,,125
+154,,150
+155,,175
+156,,200
+157,,225
+158,,250
+159,,275
+160,,300
+161,,350
+162,,400
+163,,450
+164,,500
+165,,550
+166,,600
+167,,650
+168,,700
+169,,750
+170,,800
+171,,850
+172,,900
+173,,950
+174,,1000
+175,,10000
+176,,Začínající vesničané
+177,,Změní počáteční počet vesničanů pro každého hráče
+178,,1
+179,,2
+180,,3
+181,,4
+182,,5
+183,,6
+184,,7
+185,,8
+186,,9
+187,,10
+188,,15
+189,,20
+190,,30
+191,,35
+192,,40
+193,,45
+194,,Počáteční hrad
+195,,Každý hráč začíná s hradem blízko začátku
+196,,Starší nastavení
+197,,Počáteční král
+198,,Každý hráč začíná z králem blízko začátku
+199,,Zvonek
+200,,Obsahuje velikonoční vajíčko
+201,,Předčasný trh
+202,,Umožňuje výstavbu trhu v době temna
+203,,Bombardování stromů
+204,,Umožňuje obléhacím zařízením a lodím s vlastností cíl zem ničit stromy
+205,,Rychlost simulace
+206,,Mění rychlost simulace hry. Tuto možnost nelze použít ve hře pro více hráčů a bude zakázána.
+207,,Herní hodnotity
+208,,Vynásobí všechny následující rychlosti shromažďování
+209,,1-krát
+210,,2-krát
+211,,3-krát
+212,,4-krát
+213,,5-krát
+214,,6-krát
+215,,7-krát
+216,,8-krát
+217,,9-krát
+218,,10-krát
+219,,0.95-krát
+220,,0.90-krát
+221,,0.85-krát
+222,,0.80-krát
+223,,0.75-krát
+224,,20-krát
+225,,Omezení na městé centra
+226,,Zakáže výstavbu dalších městských center
+227,,Žádný
+228,,Normální
+229,,Primární centrum města
+230,,Chraňte své spoluhráče.
+231,,%1PLAYER_NAME% se vzdal v solidaritě se svým spoluhráčem
+232,,%1MINUTES_REMAINING% minut do konce smlouvy
+233,,Smlouva skončila
+234,,Vztahy
+235,,Přátelství
+236,,Neutralita
+237,,Nepřátelství
+238,,Aktuální postoj
+239,,Staňte se přátelským hráčem %1PLAYER_NAME%
+240,,Staňte se neutrální vůči %1PLAYER_NAME%
+241,,Staňte se nepřátelským hráčem %1PLAYER_NAME%
+242,,Rozptýlený start
+243,,Zmocněný král
+244,,Král bude mít další bonusy a schopnosti
+245,,Týmová rovnováha
+246,,Pokud tým ztratí hráče
+247,,Počet obyvatel
+248,,Populace a zdroje
+249,,Žádný Dock
+250,,Deaktivuje stavbu doků v jakémkoli věku
+251,,Střední
+252,,Bojujte až do hořkého konce.
+253,,Převahu až do konce.
+254,,Monarcha nepodléhá žádné pozemské autoritě
+255,,Král
+256,,Opevněný
+257,,Nepodařilo se ochránit hráče %1PLAYER_NAME%.
+258,,Všechny ostatní týmy se rozpadly.
+259,,Zničit všechno.
+260,,Povolit AI převzetí
+261,,Hráči
+262,,Opravdu král všech jsi.
+263,,Nepodařilo se ochránit krále.
+264,,%1PLAYER_NAME% zavražděn
+265,,Nepřítel útočí na krále hráče %1PLAYER_NAME%.
+266,,Král pod útokem
+267,,„%1PLAYER_NAME% dobýt“
+268,,Vaše impérium bylo dobyto.
+269,,Porazil si všechny nepřátele.
+270,,Přežít a předstihnout všechny.
+271,,Vaše impérium bylo zapomenuto historií.
+272,,Vaše Impérium září nejjasněji.
+273,,Stále čeká %1PLAYER_NAME% na Godota.
+274,,%1PLAYER_NAME% nemohl odolat slávě tohoto divu světa
+275,,Budování divu světa
+276,,Památka zničená
+277,,Nepodařilo se udržet divu světa.
+278,,Nastavení hráče
+279,,Vynutit barvy
+280,,Opravuje barvy pro diplomacii. Způsobí automatickou aktualizaci barev pro každý slot
+281,,Používá jej Enforce Colors k určení barvy
+282,,Modrý
+283,,Červené
+284,,Žlutá
+285,,Zelená
+286,,Tyrkysový
+287,,Nachový
+288,,Oranžový
+289,,Růžový
+290,,Šedá
+291,,Vynucený slot 1 barva
+292,,Vynucený slot 2 barva
+293,,Vynucený slot 3 barva
+294,,Vynucený slot 4 barva
+295,,Vynucený slot 5 barva
+296,,Vynucený slot 6 barva
+297,,Vynucený slot 7 barva
+298,,Vynucený slot 8 barva
+299,,Hodnoty jednotek
+300,,Vynásobí maximální rychlost pohybu jednotky zvolenou hodnotou.
+301,,1.05-krát
+302,,1.10-krát
+303,,1.15-krát
+304,,1.20-krát
+305,,1.25-krát
+306,,1 minuta do konce smlouvy
+307,,Připravte se na válku.
+308,,To se nemělo stát.
+309,,Pero je skutečně nejsilnější zbraní v historii.
+310,,Do konce hry %1MINUTES_REMAINING% minut
+311,,1 minuta do konce hry
+312,,Přežít a předstihnout všechny. Hodnocení %1RANK_POSITION%.
+313,,%1PLAYER_NAME% se poklonil před novým bohem
+314,,1.50-krát
+315,,1.75-krát
+316,,Přepnout zobrazení cílů
+317,,Přepíná mezi zobrazením cílů nebo jejich dočasným skrytím.
+318,,Pokročilé nastavení hry
+319,,Zpětná vazba
+320,,Nastavení soubouju
+321,,Verze modu:
+322,,Nomád AGS
+323,,Nomad je založen na dobře známém jiném nomádském modu. Toto je založeno na Pokročilých nastavení hry a díky tomu poskytuje diplomacii a několik možností
+324,,Konstrukce div světa
+325,,Umožňuje konstrukci divu světa bez podmínky div světa nebo podmínky dobytí s vybraným dobytí divu světa.
+326,,Dvojí pracovníci
+327,,Snižuje náklady a rychlost výroby všech ekonomických jednotek na polovinu: vesničan
+328,,Nastavení handicapu
+329,,Typ handicapu
+330,,Pokud není deaktivován
+331,,Oba
+332,,Válečný
+333,,Ekonomický
+334,,Handicap slotu 1
+335,,Určuje hodnotu bonusu poskytnutého handicapem hráči na tomto slotu v lobby.
+336,,10%
+337,,20%
+338,,30%
+339,,40%
+340,,50%
+341,,60%
+342,,70%
+343,,80%
+344,,90%
+345,,100%
+346,,150%
+347,,200%
+348,,250%
+349,,300%
+350,,Handicap slotu 2
+351,,Handicap slotu 3
+352,,Handicap slotu 4
+353,,Handicap slotu 5
+354,,Handicap slotu 6
+355,,Handicap slotu 7
+356,,Handicap slotu 8
+357,,Poklady
+358,,Na mapě se náhodně objeví poklady.
+359,,Nízký
+360,,Dobýt většinu městských států a zajistit si vítězství. Každý hráč začíná s několika mnichy a musí najít a převzít město.\nVýběr civilizace nemá žádný vliv. Počet obyvatel je omezen na 150. Hru vyhraje tým
+361,,Války městských států
+362,,Ovládejte většinu měst
+363,,Město %1NAMEORNUMBER%
+364,,%1PLAYER_NAME% byl asimilován
+365,,Blížíte se k kulturnímu vítězství
+366,,Váš tým se blíží Kulturnímu vítězství
+367,,Nepřítel se blíží kulturnímu vítězství
+368,,Obsazovaní městského státu
+369,,Spojenec dobývá městský stát
+370,,Nepřítel dobývá městský stát
+371,,Městský stát dobýt
+372,,Spojenec dobyl městský stát
+373,,Nepřítel dobyl městský stát
+374,,Bitva o městský stát
+375,,Spojenec bojuje o městský stát
+376,,Nepřítel bojuje o městský stát
+377,,Městský stát osvobozen
+378,,Městský stát osvobozen spojencěm
+379,,Městský stát ztracený
+380,,Osvobozovaní městského státu
+381,,Spojenec osvobozuje městský stát
+382,,Nepřítel osvobozuje městský stát
+383,,Týmové dobývání
+384,,Hráči jsou dobyti pouze tehdy
+385,,Přidat průzkumníka (rozptýlený)
+386,,Když je vybrán rozptýlený začátek
+387,,Náboženské jednotné centrální místo
+388,,Nahradí všechna posvátná místa generovaná generátorem map jediným místem
+389,,Přidejte kapacitu domu
+390,,Další populační kapacita pro domy.
+391,,Turnajová rovnost
+392,,Úplný seznam změn naleznete v oficiálním úložišti GitHub.
+393,,Nomádský turnaj AGS
+394,,Předkonfigurovaná verze Nomád pro The Nomadic Clash turnaj organizován MrMerlin.

@@ -13,6 +13,11 @@
 			<EngineName i:nil="true" />
 			<Name>zh-Hans</Name>
 		</Locale>
+		<Locale>
+			<DisplayName>Czech</DisplayName>
+			<EngineName i:nil="true" />
+			<Name>cs</Name>
+		</Locale>
 	</Locales>
 	<Pipelines />
 	<Scans />
