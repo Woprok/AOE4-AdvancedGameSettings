@@ -1,5 +1,5 @@
 ﻿ID,SourceText,TranslatedText
-1,,Pokročilé nastavení hry
+1,Advanced Game Settings,Pokročilé nastavení hry
 2,,Rozšiřuje standardní herní režim Age of Empires 4 o nové možnosti a skutečně vám dává možnost přizpůsobit si nastavení zápasu (např. diplomace
 3,,Pokročilé nastavení hry vám poskytuje řadu možností zápasů a výherních podmínek
 4,,Podmínky pro výhru
@@ -8,7 +8,7 @@
 7,,Odstranění
 8,,Přežíte déle než všichni vaši nepřátelé. Vypnutí této možnosti zabrání vyřešení zápasu
 9,,Kapitulace
-10,,Nevzdávej se. Vypnutí této možnosti zabrání vyřešení zápasu
+10,Do not surrender. Disabling this option will prevent match from being resolved if last opponent surrenders.,Nekapituluj. Vypnutí této možnosti zabrání vyřešení zápasu.
 11,,Dobytí
 12,,Dobýt všechny nepřátelské cíle
 13,,Královražda
@@ -229,7 +229,7 @@
 228,,Normální
 229,,Primární centrum města
 230,,Chraňte své spoluhráče.
-231,,%1PLAYER_NAME% se vzdal v solidaritě se svým spoluhráčem
+231,%1PLAYER_NAME% surrendered in solidarity with his teammate,%1PLAYER_NAME% ustoupil vzhledem k solidaritě se svým spoluhráčem
 232,,%1MINUTES_REMAINING% minut do konce smlouvy
 233,,Smlouva skončila
 234,,Vztahy
@@ -267,7 +267,7 @@
 266,,Král pod útokem
 267,,„%1PLAYER_NAME% dobýt“
 268,,Vaše impérium bylo dobyto.
-269,,Porazil si všechny nepřátele.
+269,Conquered all enemies.,Všechny nepřátele padli.
 270,,Přežít a předstihnout všechny.
 271,,Vaše impérium bylo zapomenuto historií.
 272,,Vaše Impérium září nejjasněji.
@@ -282,7 +282,7 @@
 281,,Používá jej Enforce Colors k určení barvy
 282,,Modrý
 283,,Červené
-284,,Žlutá
+284,Yellow,Zlatá
 285,,Zelená
 286,,Tyrkysový
 287,,Nachový
@@ -383,13 +383,13 @@
 382,,Nepřítel osvobozuje městský stát
 383,,Týmové dobývání
 384,,Hráči jsou dobyti pouze tehdy
-385,,Přidat průzkumníka (rozptýlený)
+385,,Přidat zvěda (rozptýlený)
 386,,Když je vybrán rozptýlený začátek
 387,,Náboženské jednotné centrální místo
 388,,Nahradí všechna posvátná místa generovaná generátorem map jediným místem
 389,,Přidejte kapacitu domu
-390,,Další populační kapacita pro domy.
+390,Additional population capacity for houses.,Další populace pro domy.
 391,,Turnajová rovnost
-392,,Úplný seznam změn naleznete v oficiálním úložišti GitHub.
+392,,Úplný seznam změn k dispozici na oficiálním úložišti modu na GitHube.
 393,,Nomádský turnaj AGS
 394,,Předkonfigurovaná verze Nomád pro The Nomadic Clash turnaj organizován MrMerlin.
