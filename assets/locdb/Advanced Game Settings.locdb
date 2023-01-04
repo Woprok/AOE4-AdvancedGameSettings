@@ -18,11 +18,6 @@
 			<EngineName i:nil="true" />
 			<Name>cs</Name>
 		</Locale>
-		<Locale>
-			<DisplayName>Chinese (Traditional)</DisplayName>
-			<EngineName i:nil="true" />
-			<Name>zh-Hant</Name>
-		</Locale>
 	</Locales>
 	<Pipelines />
 	<Scans />
