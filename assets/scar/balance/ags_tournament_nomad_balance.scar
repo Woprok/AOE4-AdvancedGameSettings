@@ -8,7 +8,7 @@
 -- Nomad tournament adjustments.
 -- Mongols: +100 Wood
 -- English: +50 Wood
--- Ottomans: +50 Stone
+-- Ottomans: +50 Stone +50 Wood
 -- Chinese: Main TC build time +100%
 -- All: Outpost only after first TC built.
 ---------------------------------------------------------------------------------------------------
@@ -17,6 +17,7 @@ AGS_TOURNAMENT_NOMAD_BALANCE = "AGS_TournamentNomadBalance"
 AGS_TOURNAMENT_NOMAD_BALANCE_MONGOL_WOOD = 100
 AGS_TOURNAMENT_NOMAD_BALANCE_ENGLISH_WOOD = 50
 AGS_TOURNAMENT_NOMAD_BALANCE_OTTOMAN_STONE = 50
+AGS_TOURNAMENT_NOMAD_BALANCE_OTTOMAN_WOOD = 50
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -85,6 +86,7 @@ function AGS_TournamentNomadBalance_ApplyBalance()
 				
 		if player.raceName == AGS_CIV_OTTOMAN then
 			Player_GiftResource(player.id, RT_Stone, AGS_TOURNAMENT_NOMAD_BALANCE_OTTOMAN_STONE)
+			Player_GiftResource(player.id, RT_Wood, AGS_TOURNAMENT_NOMAD_BALANCE_OTTOMAN_WOOD)
 		end
 		
 		if player.raceName == AGS_CIV_CHINESE then

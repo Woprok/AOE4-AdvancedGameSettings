@@ -92,7 +92,7 @@ AGS_GLOBAL_SETTINGS = {
 	MaintainTeamBalance = AGS_GS_TEAM_BALANCE_NONE,
 	
 	EliminationSettings = {
-		EnableAITakeover = true, -- This will prevent disconnected player to be eliminated. Results not tested.
+		EnableAITakeover = false, -- This will prevent disconnected player to be eliminated. Results not tested.
 	},
 	
 	ConquestSettings = {
