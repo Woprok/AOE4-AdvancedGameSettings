@@ -51,7 +51,7 @@ import("gameplay/cheat.scar")
 --		option_vision[option_vision_default]
 --		option_speed[option_speed_2x, option_speed_3x, option_speed_20x, option_speed_50x, option_speed_100x]
 --		option_initial_units[initial_units_none, initial_units_standard]
---		option_starting_resources[resources_standard, resources_high, resources_very_high, resources_max] (Automatically binded by statetree)
+--		option_resources[resources_standard, resources_high, resources_very_high, resources_max] (Automatically binded by statetree)
 --		option_timer[option_timer_reset]
 ---------------------------------------------------------------------------------------------------
 
