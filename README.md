@@ -41,7 +41,7 @@ _Provides percantage bonus to each player based on selected value. Economic bonu
 _Nomad tournament adjustments:_  
    - Mongols: +100 Wood  
    - English: +50 Wood  
-   - Ottomans: +50 Stone  
+   - Ottomans: +50 Stone +50 Wood    
    - Chinese: Main TC build time +100%  
    - All: Outpost only after first TC built.
 ### Full Menu Preview
