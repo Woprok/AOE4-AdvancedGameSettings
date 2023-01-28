@@ -103,7 +103,7 @@
 102,,2000 za hráče
 103,,Nastavení hry
 104,,Tribut
-105,,Hráči mohou posílat zdroje spojencům
+105,Players can send resources to allies,Hráči mohou posílat zdroje spojencům
 106,,Diplomacie
 107,,Hráči si mohou nastavit své vlastní aliance
 108,,Týmové vidění
@@ -279,7 +279,7 @@
 278,,Nastavení hráče
 279,,Vynutit barvy
 280,,Opravuje barvy pro diplomacii. Způsobí automatickou aktualizaci barev pro každý slot
-281,,Používá jej Enforce Colors k určení barvy
+281,Used by Enforce Colors to determine which color is used by this slot. Requires Enforce Colors to be allowed.,Zakazuje timove barvy
 282,,Modrý
 283,,Červené
 284,Yellow,Zlatá
@@ -321,7 +321,7 @@
 320,,Nastavení soubouju
 321,,Verze modu:
 322,,Nomád AGS
-323,,Nomad je založen na dobře známém jiném nomádském modu. Toto je založeno na Pokročilých nastavení hry a díky tomu poskytuje diplomacii a několik možností
+323,"Nomad is based on well known other nomad mod. This is based on Advanced Game Settings and due to that it provides diplomacy and few options that stays true to nomad nature.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings",Nomad je založen na dobře známém jiném nomádském modu. Toto je založeno na Pokročilých nastavení hry ako diplomacii a několik možností
 324,,Konstrukce div světa
 325,,Umožňuje konstrukci divu světa bez podmínky div světa nebo podmínky dobytí s vybraným dobytí divu světa.
 326,,Dvojí pracovníci
