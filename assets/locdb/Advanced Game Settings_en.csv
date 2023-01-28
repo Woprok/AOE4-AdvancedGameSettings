@@ -393,3 +393,5 @@
 392,,,,Tournament Option,,For full list of changes visit the official GitHub repository.
 393,,,,,,Nomad Tournament AGS
 394,,,,,,Preconfigured version of Nomad for The Nomadic Clash organized by MrMerlin.
+395,,,,KOTH,,King of the Hill AGS
+396,,,,KOTH,,"Provides quick way to play King of the Hill on any map.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"

@@ -107,6 +107,8 @@ AGS_GLOBAL_SETTINGS = {
 		Timer = 10,
 		ResumableTimer = false,
 		SingleCentralSite = false,
+		MilitarySites = false, -- undefined, used by KOTH
+		MilitarySitesRate = 1000, --undefined, used by KOTH
 	},
 	WonderSettings = {
 		Timer = 15,

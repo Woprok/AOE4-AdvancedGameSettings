@@ -1,0 +1,57 @@
+---------------------------------------------------------------------------------------------------
+-- Authors:
+-- Relic
+-- Woprock
+--
+-- Description:
+-- Updates definition of all military units to be able to capture site.
+-- Can be redefined for various capture time length.
+-- It's possible to force all units to behave like monks, if they receive "monk_capture_holy_site" ability and loose
+-- ability "military_neutralize_holy_site"
+---------------------------------------------------------------------------------------------------
+
+AGS_MILITARY_SITES_MODULE = "AGS_MilitarySites"
+AGS_MILITARY_SITES_MODIFIERS = { }
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_MILITARY_SITES_MODULE)	
+
+function AGS_MilitarySites_UpdateModuleSettings()
+	AGS_Print("AGS_MilitarySites_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.ReligiousSettings.MilitarySites then
+		Core_UnregisterModule(AGS_MILITARY_SITES_MODULE)
+	end
+end
+
+function AGS_MilitarySites_PresetFinalize()
+	AGS_Print("AGS_MilitarySites_PresetFinalize")
+	AGS_MilitarySites_ApplyRates(BP_GetSquadBlueprintsWithType(AGS_BP_MILITARY))
+	AGS_MilitarySites_ApplyRates(BP_GetSquadBlueprintsWithType(AGS_BP_KING))
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+-- This function changes rates for capture and revert of military sites.
+function AGS_MilitarySites_ApplyRates(bps)
+	for _, sbp in pairs(bps) do 
+		if AGS_MILITARY_SITES_MODIFIERS[sbp.PropertyBagGroupID] == nil then
+			AGS_MILITARY_SITES_MODIFIERS[sbp.PropertyBagGroupID] = true
+			for _, player in pairs(PLAYERS) do	
+				AGS_MilitarySites_ApplyAddModifier(player.id, sbp, "capture_rate_squad_modifier", AGS_GLOBAL_SETTINGS.ReligiousSettings.MilitarySitesRate)
+				AGS_MilitarySites_ApplyMulModifier(player.id, sbp, "capture_revert_rate_squad_modifier", AGS_GLOBAL_SETTINGS.ReligiousSettings.MilitarySitesRate)
+			end
+		end
+	end
+end
+-- Apply function.
+function AGS_MilitarySites_ApplyAddModifier(player_id, modifier_sbp, modifier_type, modifier_value)
+	Modifier_ApplyToPlayer(Modifier_Create(MAT_SquadType, modifier_type, MUT_Addition, false, modifier_value, modifier_sbp), player_id, 0.0)
+end	
+-- Apply function.
+function AGS_MilitarySites_ApplyMulModifier(player_id, modifier_sbp, modifier_type, modifier_value)
+	Modifier_ApplyToPlayer(Modifier_Create(MAT_SquadType, modifier_type, MUT_Multiplication, false, modifier_value, modifier_sbp), player_id, 0.0)
+end	
