@@ -41,8 +41,8 @@ function AGS_MilitarySites_ApplyRates(bps)
 		if AGS_MILITARY_SITES_MODIFIERS[sbp.PropertyBagGroupID] == nil then
 			AGS_MILITARY_SITES_MODIFIERS[sbp.PropertyBagGroupID] = true
 			for _, player in pairs(PLAYERS) do	
-				AGS_MilitarySites_ApplyAddModifier(player.id, sbp, "capture_rate_squad_modifier", AGS_GLOBAL_SETTINGS.ReligiousSettings.MilitarySitesRate)
-				AGS_MilitarySites_ApplyMulModifier(player.id, sbp, "capture_revert_rate_squad_modifier", AGS_GLOBAL_SETTINGS.ReligiousSettings.MilitarySitesRate)
+				AGS_MilitarySites_ApplyAddModifier(player.id, sbp, "capture_rate_squad_modifier", AGS_GLOBAL_SETTINGS.ReligiousSettings.MilitarySitesUpRate)
+				AGS_MilitarySites_ApplyMulModifier(player.id, sbp, "capture_revert_rate_squad_modifier", AGS_GLOBAL_SETTINGS.ReligiousSettings.MilitarySitesDownRate)
 			end
 		end
 	end

@@ -308,7 +308,7 @@
 307,,Připravte se na válku.
 308,,To se nemělo stát.
 309,,Pero je skutečně nejsilnější zbraní v historii.
-310,,Do konce hry %1MINUTES_REMAINING% minut
+310,%1MINUTES_REMAINING% minutes until Game Ends,Zbývá %1MINUTES_REMAINING% minut do konce hry
 311,,1 minuta do konce hry
 312,,Přežít a předstihnout všechny. Hodnocení %1RANK_POSITION%.
 313,,%1PLAYER_NAME% se poklonil před novým bohem
@@ -333,7 +333,7 @@
 332,,Válečný
 333,,Ekonomický
 334,,Handicap slotu 1
-335,,Určuje hodnotu bonusu poskytnutého handicapem hráči na tomto slotu v lobby.
+335,Determines value of bonus provided by handicap to player on this slot in lobby.,Určuje hodnotu vyhody hráča na tomto slotu v lobby.
 336,,10%
 337,,20%
 338,,30%

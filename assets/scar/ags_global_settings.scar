@@ -73,10 +73,10 @@ AGS_GS_COLOR_GREY = 9 -- Monsoon/Natural Grey
 -- Local player should never change. And be ready after Initialization Phase.
 -- Local player is used for UI & visual logic. Gameplay logic should never use it as it will cause desync.
 AGS_GS_LOCAL_PLAYER = nil
-AGS_GLOBAL_SETTINGS_BUILD = "3.9.7"
+AGS_GLOBAL_SETTINGS_BUILD = "3.9.9"
 AGS_GLOBAL_SETTINGS_MODULE = "AGS_GlobalSettings"
 AGS_GLOBAL_SETTINGS = {
-	Annihilation = true, -- Player loses everything.
+	Annihilation = true, -- Player loses everything. 
 	Elimination = true, -- Player quits.
 	Surrender = true, -- Player surrenders.
 	Conquest = true, -- Player objective conquest.
@@ -108,7 +108,10 @@ AGS_GLOBAL_SETTINGS = {
 		ResumableTimer = false,
 		SingleCentralSite = false,
 		MilitarySites = false, -- undefined, used by KOTH
-		MilitarySitesRate = 1000, --undefined, used by KOTH
+		Refresh = true, -- undefined, as it's always active
+		RefreshTimer = 1, -- undefined, in minutes as all other timers
+		MilitarySitesUpRate = 1000, -- undefined, used by KOTH
+		MilitarySitesDownRate = 1000, -- undefined, used by KOTH
 	},
 	WonderSettings = {
 		Timer = 15,

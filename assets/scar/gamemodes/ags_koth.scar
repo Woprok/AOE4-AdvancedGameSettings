@@ -26,10 +26,13 @@ function AGS_KOTH_AdjustSettings()
 	AGS_GLOBAL_SETTINGS.Elimination = true -- Player quits.
 	AGS_GLOBAL_SETTINGS.Surrender = true -- Player surrenders.
 	AGS_GLOBAL_SETTINGS.Religious = true -- Player control sites.
-	AGS_GLOBAL_SETTINGS.Wonder = false -- Player defend wonder.
+	AGS_GLOBAL_SETTINGS.Wonder = false -- Player defend wonder. 
 		
 	AGS_GLOBAL_SETTINGS.ReligiousSettings.MilitarySites = true
-	AGS_GLOBAL_SETTINGS.ReligiousSettings.MilitarySitesRate = 500 --instant
+	AGS_GLOBAL_SETTINGS.ReligiousSettings.MilitarySitesUpRate = 6 -- approx 5 seconds, e.g. full time 30 / 6
+	AGS_GLOBAL_SETTINGS.ReligiousSettings.MilitarySitesDownRate = 500 -- almost instant
+	AGS_GLOBAL_SETTINGS.ReligiousSettings.Refresh = true -- swaps to minimum always
+	AGS_GLOBAL_SETTINGS.ReligiousSettings.RefreshTimer = 3 -- minimum time in minutes
 	
 	-- Setting up everything that is not configurable for this mode.
 	AGS_GLOBAL_SETTINGS.UsingPrefabStart = true

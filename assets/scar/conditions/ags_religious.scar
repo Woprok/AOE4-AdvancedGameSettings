@@ -15,6 +15,7 @@ AGS_RELIGIOUS_ACTIVE = true
 AGS_RELIGIOUS_OBJECTIVE = nil
 AGS_RELIGIOUS_SACRED_SITE_OBJECTIVES = { }
 AGS_RELIGIOUS_VICTORY_TIME = 10 * 60
+AGS_RELIGIOUS_REFRESH_TIME = 1 * 60
 AGS_RELIGIOUS_TIMER = "capture_victory_timer"
 AGS_RELIGIOUS_OBJECTIVE_IS_TIMER = false
 -- Holds group that contains all sites, used only during initialization.
@@ -42,6 +43,7 @@ function AGS_Religious_UpdateModuleSettings()
 		return
 	end
 	AGS_RELIGIOUS_VICTORY_TIME = AGS_GLOBAL_SETTINGS.ReligiousSettings.Timer * 60
+	AGS_RELIGIOUS_REFRESH_TIME = AGS_GLOBAL_SETTINGS.ReligiousSettings.RefreshTimer * 60
 end
 
 function AGS_Religious_PresetFinalize()
@@ -293,6 +295,11 @@ function AGS_Religious_TerminateTimer()
 	if Timer_Exists(AGS_RELIGIOUS_TIMER) then
 		-- Save timer as we might need it for resumeable condition
 		local remains = Timer_GetRemaining(AGS_RELIGIOUS_TIMER)
+		
+		if AGS_GLOBAL_SETTINGS.ReligiousSettings.Refresh and remains < AGS_RELIGIOUS_REFRESH_TIME then
+			remains = AGS_RELIGIOUS_REFRESH_TIME	
+		end
+		
 		AGS_RELIGIOUS_LAST_CAPTURER.AGS_SacredSites.objective_remaining_time = remains
 		for _, ally in pairs(AGS_RELIGIOUS_LAST_CAPTURER.AGS_Team.allies) do
 			ally.AGS_SacredSites.objective_remaining_time = remains

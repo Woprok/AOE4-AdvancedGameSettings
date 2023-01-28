@@ -3776,7 +3776,7 @@
 		</DataProperty>
 		<DataProperty Name="m_name" Type="String" Value="advanced_game_settings_koth"/>
 		<DataProperty Name="m_objectiveUnitTypes" Type="Object"/>
-		<DataProperty Name="m_devOnly" Type="Bool" Value="false"/>
+		<DataProperty Name="m_devOnly" Type="Bool" Value="true"/>
 		<DataProperty Name="m_egroupNamePrefixDestroyList" Type="String"/>
 		<DataProperty Name="m_permittedInventoryItemCategories" Type="String">
 			<DataValue>IIT_PlayerCosmetic</DataValue>
