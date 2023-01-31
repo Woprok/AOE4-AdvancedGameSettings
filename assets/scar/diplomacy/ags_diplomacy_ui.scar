@@ -961,7 +961,7 @@ function Diplomacy_CreateDataContext()
 end
 
 function Diplomacy_FormatTeamNumber(team_number)	
-	if team_number > 10000 then 
+	if team_number > 100 then 
 		return "-"
 	end
 	return tostring(team_number)
