@@ -453,7 +453,12 @@ function AGS_Religious_OnHolySiteChange(context)
 	-- Get instigating player
 	local instigating_player = nil 
 	if context.instigatorSquad ~= nil then
-		instigating_player = Core_GetPlayersTableEntry(Squad_GetPlayerOwner(context.instigatorSquad))
+		-- This checks verifies that squad is owned by player, e.g. in case of surrender to avoid crash.
+		if not World_OwnsSquad(context.instigatorSquad) then
+			instigating_player = Core_GetPlayersTableEntry(Squad_GetPlayerOwner(context.instigatorSquad))
+		else
+			return
+		end
 	end
 	local site_entity_id = context.strategicPointEntity
 	
