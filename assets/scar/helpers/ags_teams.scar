@@ -73,7 +73,7 @@ function AGS_Teams_CreateStaticTeams()
 			-- Team game sets team how they are defined and removes all no teamers.
 			local team_id = Player_GetTeam(player.id)
 			if team_id >= 100 then
-				team_id = 100 + player.slotIndex
+				team_id = 10000 + player.slotIndex
 			end
 			player.AGS_Team = {
 				index = team_id,
