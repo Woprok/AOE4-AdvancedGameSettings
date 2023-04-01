@@ -161,6 +161,8 @@ function Diplomacy_AddTribute(player_index, resource_index, amount)
 		t.amount = t.amount + math.floor(n)
 		t.opacity = math.min(1.0, t.amount + min_opacity)
 	end
+	-- Updates in highger increment amount then 100
+	amount = amount * Player_GetTributeIncrementModifier();
 	
 	for _, context_player in pairs(_diplomacy.data_context.players) do 
 		if context_player.player_index == player_index then
