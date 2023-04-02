@@ -439,7 +439,11 @@ function AGS_Conquest_GetPlayerConquerableCount(player, player_conquerables)
 end
 -- Returns number of Enemy Conquerables standing for a given player.
 function AGS_Conquest_CountEnemyConquerables(player)
-	local conquerable_counter = nil
+	local conquerable_counter = {
+			built = 0,
+			remaining = 0,
+			destroyed = 0,
+	}	
 	for _, enemy in pairs(AGS_Teams_GetAllCurrentOpponents(player, true)) do 
 		conquerable_counter = AGS_Conquest_GetPlayerConquerableCount(enemy, conquerable_counter)
 	end
@@ -447,7 +451,11 @@ function AGS_Conquest_CountEnemyConquerables(player)
 end
 -- Returns number of Friendly Conqerables standing for a given player.
 function AGS_Conquest_GetTeammatesConquerableCount(player)
-	local conquerable_counter = nil
+	local conquerable_counter = {
+			built = 0,
+			remaining = 0,
+			destroyed = 0,
+	}	
 	for _, ally in pairs(AGS_Teams_GetAllCurrentTeammates(player, true)) do 
 		conquerable_counter = AGS_Conquest_GetPlayerConquerableCount(ally, conquerable_counter)
 	end
