@@ -11,8 +11,8 @@
 AGS_SCATTERED_MODULE = "AGS_Scattered"
 AGS_SCATTERED_RADIUS = 1
 AGS_SCATTERED_TUNING = 1.9
-AGS_SCATTERED_WOOD = 400
-AGS_SCATTERED_STONE = 350
+AGS_SCATTERED_WOOD = 0
+AGS_SCATTERED_STONE = 0
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -65,10 +65,10 @@ function AGS_Scattered_OnStarting()
 		end
 		
 		-- Increase starting resources to cover cost of building an TC
-		if player.raceName ~= AGS_CIV_MONGOL then
-			Player_GiftResource(player.id, RT_Stone, AGS_SCATTERED_STONE)
-		end
-		Player_GiftResource(player.id, RT_Wood, AGS_SCATTERED_WOOD)
+		--if player.raceName ~= AGS_CIV_MONGOL then
+		--	Player_GiftResource(player.id, RT_Stone, AGS_SCATTERED_STONE)
+		--end
+		--Player_GiftResource(player.id, RT_Wood, AGS_SCATTERED_WOOD)
 		
 		Core_CallDelegateFunctions("AdjustAIPlayers", AGS_AI_ADJUSTREASON_NOMAD, player)
 	end
