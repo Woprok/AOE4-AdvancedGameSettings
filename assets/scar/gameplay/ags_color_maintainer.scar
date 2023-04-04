@@ -34,6 +34,8 @@ AGS_COLOR_MAINTAINER_TO_SLOT_TABLE = { -- Holds the slot index of each player co
 	["#FF888888"] = 9
 }
 
+AGS_COLOR_MAINTAINER_CAN_REFRESH = true
+
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
@@ -49,6 +51,7 @@ end
 function AGS_ColorMaintainer_EarlyInitializations()
 	AGS_Print("AGS_ColorMaintainer_EarlyInitializations")
 	AGS_ColorMaintainer_CreateAutomaticSlots()
+	AGS_ColorMaintainer_EnableEnforcing()
 	AGS_ColorMaintainer_RefreshSlots()
 end
 
@@ -67,9 +70,22 @@ function AGS_ColorMaintainer_OnRelationshipChanged(observer_id, target_id)
 	AGS_ColorMaintainer_RefreshSlots()
 end	
 
+function AGS_ColorMaintainer_OnGameOver()
+	AGS_Print("AGS_ColorMaintainer_OnGameOver")
+	AGS_ColorMaintainer_DisableEnforcing()
+end
+
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+
+function AGS_ColorMaintainer_EnableEnforcing()
+	AGS_COLOR_MAINTAINER_CAN_REFRESH = true
+end
+
+function AGS_ColorMaintainer_DisableEnforcing()
+	AGS_COLOR_MAINTAINER_CAN_REFRESH = false
+end
 
 function AGS_ColorMaintainer_CreateAutomaticSlots()
 	for _, player in pairs(PLAYERS) do
@@ -77,11 +93,13 @@ function AGS_ColorMaintainer_CreateAutomaticSlots()
 			Slot = AGS_COLOR_MAINTAINER_TO_SLOT_TABLE[UI_GetColourAsString(Player_GetUIColour(player.id))],
 		}
 	end
-	
 end
 
 function AGS_ColorMaintainer_RefreshSlots()
 	--PlayerColour_Disable()
+	if not AGS_COLOR_MAINTAINER_CAN_REFRESH then
+		return
+	end
 	PlayerColour_Enable()	
 	for _, player in pairs(PLAYERS) do
 		if not player.isEliminated then
