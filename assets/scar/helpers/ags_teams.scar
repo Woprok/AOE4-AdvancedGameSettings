@@ -23,12 +23,22 @@ function AGS_Teams_EarlyInitializations()
 end
 
 function AGS_Teams_OnPlayerDefeated(player, reason)
+	AGS_Print("AGS_Teams_OnPlayerDefeated")
 	-- Assign to default team field once player is eliminated. Hopefully nothing will overwrite it after we do it.
 	if player ~= nil then
-		player.team = {
-			index = player.AGS_Team.index,
-			players = player.AGS_Team.allies,
-		}
+		player.team.index = player.AGS_Team.index
+		player.team.players = player.AGS_Team.allies
+	end
+end
+
+function AGS_Teams_OnGameOver()
+	AGS_Print("AGS_Teams_OnGameOver")
+	-- On end game fix issues with incorrectly displayed team.
+	for _, player in pairs(PLAYERS) do 
+		if player ~= nil then
+			player.team.index = player.AGS_Team.index
+			player.team.players = player.AGS_Team.allies
+		end
 	end
 end
 
