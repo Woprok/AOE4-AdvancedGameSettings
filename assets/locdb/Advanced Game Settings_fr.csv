@@ -1,6 +1,6 @@
 ﻿ID,SourceText,TranslatedText
 1,Mod Title,Advanced Game Settings
-2,,"Étend le mode de jeu standard d'Age of Empires 4 avec de nouvelles options et vous donne vraiment la possibilité de personnaliser les paramètres de match.\n\nContient des conditions de victoire supplémentaires comme le score, l'option classique du roi de la colline, la course aux merveilles et bien d'autres types de victoire. Fournit de nouvelles options telles que différents départs comme nomade ou fortifié et de nombreuses nouvelles options, y compris le traité et la diplomatie, les restrictions d'âge, le handicap...\n\nL'aide, les commentaires, les rapports de bogues et la contribution au mode peuvent être effectués à : \nhttps://github.com/search?q=AOE4-AdvancedGameSettings\nCommunity Traductions :\n - Chinese\n - Czech\n - Français (par Patroller)\n"
+2,,"Étend le mode de jeu standard d'Age of Empires 4 avec de nouvelles options et vous donne vraiment la possibilité de personnaliser les paramètres de match.\n\nContient des conditions de victoire supplémentaires comme le score, l'option classique du roi de la colline, la course aux merveilles et bien d'autres types de victoire. Fournit de nouvelles options telles que différents départs comme nomade ou fortifié et de nombreuses nouvelles options, y compris le traité et la diplomatie, les restrictions d'âge, le handicap...\n\nL'aide, les commentaires, les rapports de bogues et la contribution au mode peuvent être effectués à : \nhttps://github.com/search?q=AOE4-AdvancedGameSettings\nCommunity Traductions :\n - Chinese\n - Czech\n - Français\n"
 3,,"Les paramètres de jeu avancés vous offrent une variété d'options de match et de conditions de victoire pour personnaliser votre jeu et y jouer comme vous le souhaitez.\n\nL'aide, les commentaires, les rapports de bugs et la contribution au mode peuvent être effectués sur:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
 4,,Conditions de victoire
 5,,Annihilation
@@ -54,7 +54,7 @@
 53,,120 minutes
 54,,Victoire par équipe
 55,,Activer pour permettre aux équipes de gagner
-56,,Gratuit pour tous
+56,,Libre pour tous
 57,,Équipes initiales
 58,,Équipes dynamiques
 59,,Solidarité d'équipe
@@ -257,7 +257,7 @@
 256,,Fortifié
 257,,Ne pas réussi à protégé %1PLAYER_NAME%.
 258,,Toutes les autres équipes se sont effondrées.
-259,,Annihiler totu.
+259,,Annihiler tout.
 260,,Activer la reprise d'IA
 261,,"Les joueurs qui quittent seront remplacés par une IA, au lieu d'être éliminés."
 262,,Vous êtes vraiment le roi de tout le monde.
@@ -382,7 +382,7 @@
 381,,Libération de la cité-état alliée.
 382,,Libération de la cité-état par l'ennemi.
 383,,Conquête d'équipe
-384,,"Les joeurs ne sont conquis uniquement si tout les bâtiments de leurs coéquipiers sont détruits. Ne fonctionne pas les équipes diplomatiques, dû au fonctionnement des relations."
+384,,"Les joueurs ne sont conquis uniquement si tout les bâtiments de leurs coéquipiers sont détruits. Ne fonctionne pas les équipes diplomatiques, dû au fonctionnement des relations."
 385,,Apparition d'éclaireur (Dispersé)
 386,,"Un éclaireur apparait en complément des villageois, quand le départ en Colonie Dispersé est sélectionné."
 387,,Site central religieux unique.
