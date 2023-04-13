@@ -69,7 +69,8 @@ function AGS_StartingKing_Empower(sid, player)
 			
 	Squad_RemoveAbility(sid, BP_GetAbilityBlueprint("core_unit_death"))
 	-- Aura +4 Armor +50% Damage
-	--Squad_AddAbility(sid, BP_GetAbilityBlueprint("general_aura_armor"))
+	-- Aura does not work as it overrides other instances of this aura, armor was moved back to king.
+	-- Squad_AddAbility(sid, BP_GetAbilityBlueprint("general_aura_armor"))
 	
 	AGS_StartingKing_Buff("armor_scalar_for_ranged_damage", 5)
 	AGS_StartingKing_Buff("armor_scalar_for_melee_damage", 5)
