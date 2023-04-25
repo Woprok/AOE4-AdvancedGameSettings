@@ -18,6 +18,11 @@
 			<EngineName i:nil="true" />
 			<Name>cs</Name>
 		</Locale>
+		<Locale>
+			<DisplayName>Français</DisplayName>
+			<EngineName i:nil="true" />
+			<Name>fr</Name>
+		</Locale>
 	</Locales>
 	<Pipelines />
 	<Scans />

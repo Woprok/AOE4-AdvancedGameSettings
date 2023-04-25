@@ -1,0 +1,397 @@
+﻿ID,SourceText,TranslatedText
+1,Mod Title,Paramètres de Partie Avancés
+2,,"Étends le mode de jeu standard d'Age of Empires 4 avec de nouvelles options et vous donne vraiment la possibilité de personnaliser les paramètres de match.\n\nContient des conditions de victoire supplémentaires comme le score, l'option classique du roi de la colline, la course aux merveilles et bien d'autres types de victoire. Fournit de nouvelles options telles que différents départs comme nomade ou fortifié et de nombreuses nouvelles options, y compris le traité et la diplomatie, les restrictions d'âge, le handicap...\n\nL'aide, les commentaires, les rapports de bogues et la contribution au mode peuvent être effectués à : \nhttps://github.com/search?q=AOE4-AdvancedGameSettings\nCommunity Traductions :\n - Chinese\n - Czech\n - Français\n"
+3,,"Les paramètres de jeu avancés vous offrent une variété d'options de match et de conditions de victoire pour personnaliser votre jeu et y jouer comme vous le souhaitez.\n\nL'aide, les commentaires, les rapports de bugs et la contribution au mode peuvent être effectués sur:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+4,,Conditions de victoire
+5,,Annihilation
+6,,"Détruisez tous les ennemis. Cette option est obligatoire, sauf si vous souhaitez que le joueur ne soit jamais éliminé même s'il perds tout."
+7,,Élimination
+8,,Prévalez plus longtemps que tous vos ennemis. La désactivation de cette option empêchera le match d'être résolu si le dernier adversaire abandonne.
+9,,Capitulation
+10,,Ne pas capituler. La désactivation de cette option empêchera le match d'être résolu si le dernier adversaire se rend.
+11,,Conquête
+12,,Conquérir tous les objectifs ennemis.
+13,,Régicide
+14,,Vaincre tous les rois ennemis.
+15,,Religion
+16,,Contrôler tout les sites sacrés.
+17,,Merveille
+18,,Construire et défendre la merveille.
+19,,Score
+20,,Atteindre le score le plus élevé avant la fin du chronomètre.
+21,,Conditions de jeu
+22,,Colonie
+23,,Colonie initiale
+24,,Dispersé
+25,,Nomade
+26,,Colonisé
+27,,Traité
+28,,Période de paix
+29,,Désactivé
+30,,5 minutes
+31,,10 minutes
+32,,15 minutes
+33,,20 minutes
+34,,25 minutes
+35,,30 minutes
+36,,35 minutes
+37,,40 minutes
+38,,45 minutes
+39,,50 minutes
+40,,55 minutes
+41,,60 minutes
+42,,65 minutes
+43,,70 minutes
+44,,75 minutes
+45,,80 minutes
+46,,85 minutes
+47,,90 minutes
+48,,95 minutes
+49,,100 minutes
+50,,105 minutes
+51,,110 minutes
+52,,115 minutes
+53,,120 minutes
+54,,Victoire par équipe
+55,,Activer pour permettre aux équipes de gagner.
+56,,Libre pour tous
+57,,Équipes initiales
+58,,Équipes dynamiques
+59,,Solidarité d'équipe
+60,,"Si un membre de l'équipe est vaincu, toute l'équipe perdra la partie. Une pour tous, tous pour un."
+61,,Conditions de victoire
+62,,Conquête des capitales
+63,,La conquête nécessite la destruction du premier centre-ville pour éliminer le joueur.
+64,,Conquête des points d'intérets
+65,,La conquête nécessite la destruction des points d'intérets d'âge 4 pour éliminer le joueur.
+66,,Conquête des centres-villes
+67,,La conquête nécessite la destruction de tous les centres-villes supplémentaires pour éliminer le joueur.
+68,,Conquête des forts
+69,,La conquête nécessite la desctruction de tous les forts pour éliminer le joueur.
+70,,Conquête des merveilles
+71,,La conquête nécessite la destruction de la merveille du joueur pour l'éliminer.
+72,,Minuterie religieuse
+73,,Temps nécessaire pour tenir tous les sites sacrés.
+74,,Instantané
+75,,1 minute
+76,,2 minutes
+77,,3 minutes
+78,,4 minutes
+79,,6 minutes
+80,,7 minutes
+81,,8 minutes
+82,,9 minutes
+83,,11 minutes
+84,,12 minutes
+85,,13 minutes
+86,,14 minutes
+87,,Minuterie de reprise religieuse
+88,,La minuterie continue à partir du moment où elle a été interrompe lors de la recapture.
+89,,Minuterie de merveilles
+90,,Temps requis pour défendre une merveille.
+91,,Dernière merveille debout
+92,,Détruire la merveille terminée éliminera le joueur.
+93,,Échelle de côut des merveilles
+94,,Échelle du coût de la merveille en fonction du nombre de joueurs. Cela définit la quantité additionnelle de ressources par joueurs. Le prix commence à 3000 de chaque ressource.
+95,,0 par joueur
+96,,250 par joueur
+97,,375 par joueur
+98,,500 par joueur
+99,,750 par joueur
+100,,1000 par joueur
+101,,1500 par joueur
+102,,2000 par joueur
+103,,Réglages du jeu
+104,,Hommages
+105,,Les joueurs peuvent envoyer des ressources aux alliés.
+106,,Diplomatie
+107,,Les joueurs peuvent définir les propres alliances.
+108,,Vision d'équipe
+109,,Vision partagée entre les alliés.
+110,,Aucune
+111,,Nécessite un marché
+112,,Toujours
+113,,Vision de la carte
+114,,Vision de la carte au démarrage.
+115,,Dissimulée
+116,,Explorée
+117,,Révélée
+118,,Âge de départ
+119,,Âge initial pour tout les joueurs.
+120,,Âge sombre
+121,,Âge féodal
+122,,Âge des chateaux
+123,,Âge impérial
+124,,Âge tardif impérial
+125,,Âge final
+126,,Âge final pour tous les joueurs.
+127,,Âge technologique 
+128,,Technologies initiales recherchées pour tous les joueurs.
+129,,Ressources de départ
+130,,Ressources de départ pour tous les joueurs.
+131,,Normal
+132,,Hautes
+133,,Très hautes
+134,,Maximales
+135,,Révèle le brouillard à l'élimination
+136,,Supprime le brouillard du joueur éliminé.
+137,,Réglages de match
+138,,Afficher le score
+139,,Les scores des joueurs sont visibles lorsques les informations de joueurs sont épinglées.
+140,,Afficher le score de classement
+141,,"Afficher la place actuelle en solo dans le classement de score. Le score de l'équipe n'est évalué qu'à la fin du jeu, si la victoire de l'équipe est autorisée. La condition de victoire du score n'utilise pas la même métrique que le score par défaut."
+142,,Minuterie de score
+143,,Temps après lequel le score décidera du jeu.
+144,,Capacité de pop. minimale
+145,,"Change la population initale, hors maisons. Ne dépasse pas la capacité maximale de pop."
+146,,Capactié de pop. maximale
+147,,"Change la population initale. Nécessite des maisons pour y parvenir."
+148,,0
+149,,25
+150,,50
+151,,75
+152,,100
+153,,125
+154,,150
+155,,175
+156,,200
+157,,225
+158,,250
+159,,275
+160,,300
+161,,350
+162,,400
+163,,450
+164,,500
+165,,550
+166,,600
+167,,650
+168,,700
+169,,750
+170,,800
+171,,850
+172,,900
+173,,950
+174,,1000
+175,,10000
+176,,Villageois de départ
+177,,Modifie le nombre initial de villageois par joueurs.
+178,,1
+179,,2
+180,,3
+181,,4
+182,,5
+183,,6
+184,,7
+185,,8
+186,,9
+187,,10
+188,,15
+189,,20
+190,,30
+191,,35
+192,,40
+193,,45
+194,,Fort de départ
+195,,Chaque joueurs démarre avec un fort à proximité.
+196,,Paramètres hérités
+197,,Roi de départ
+198,,Chaquie joueurs démarre avec un roi à proximité.
+199,,Ding
+200,,Easter Egg
+201,,Marché précoce
+202,,Autorisé la construction d'un marché pendant l'âge sombre.
+203,,Bombardement d'arbres
+204,,Autorise les armes de sièges et les navires avec ciblage au sol de détruire les arbres.
+205,,Vitesse de simulation
+206,,Change la vitesse de simulation. Cette option ne peut pas être utilisée en multijoueur et sera désactivée.
+207,,Ratios du jeu
+208,,"Multiplies tout les ratios de récoltes, vitesse de construction/réparation/production par la valeur sélectionnée."
+209,,1x
+210,,2x
+211,,3x
+212,,4x
+213,,5x
+214,,6x
+215,,7x
+216,,8x
+217,,9x
+218,,10x
+219,,0.95x
+220,,0.90x
+221,,0.85x
+222,,0.80x
+223,,0.75x
+224,,20x
+225,,Restrictions de centres-villes
+226,,Désactive la construction centres-villes supplémentaires.
+227,,Aucun
+228,,Normal
+229,,Point d'intérets
+230,,Protégez vos coéquipiers.
+231,,%1PLAYER_NAME% s'est rendu en solidarité avec son coéquipier
+232,,%1MINUTES_REMAINING% minutes avec la fin du traité.
+233,,"La traité est terminé, preparez vous pour l'effusion de sang."
+234,,Relations
+235,,Amitié
+236,,Neutralité
+237,,Hostilité
+238,,Position acutelle
+239,,Devenir ami avec %1PLAYER_NAME%
+240,,Devenir neutre avec %1PLAYER_NAME%
+241,,Devenir hostile avec %1PLAYER_NAME%
+242,,Démarrage dispersé
+243,,Puissance du roi
+244,,Le roi aura des bonus et compétences additionnelles.
+245,,Équilibrage d'équipe
+246,,"Si l'équipe perd un joueur, les membres restants partageront sa capacité de population et ses ressources. Les équipes dynamiques ne sont pas éligibles pour cela."
+247,,Population
+248,,Population & Ressources
+249,,Pas de quai
+250,,"Désactive la construction de quais à tout âges, non conseillé sur des cartes qui sépare les joueurs uniquement par de l'eau."
+251,,Moyen
+252,,Combattez jusqu'à la toute fin.
+253,,Prévaloir jusqu'à la fin.
+254,,"Le monarque est sujet à aucune autorité terrestre, tirant son droit de gouverner directement de la volonté de dieu. Ne le questionnez pas!"
+255,,Roi
+256,,Fortifié
+257,,Ne pas réussi à protégé %1PLAYER_NAME%.
+258,,Toutes les autres équipes se sont effondrées.
+259,,Annihiler tout.
+260,,Activer la reprise par l'IA
+261,,"Les joueurs qui quittent seront remplacés par une IA, au lieu d'être éliminés."
+262,,Vous êtes vraiment le roi de tout le monde.
+263,,N'a pas réussi à protéger le roi.
+264,,%1PLAYER_NAME% assassiné.
+265,,L'ennemi attaque le roi de %1PLAYER_NAME%.
+266,,Le roi subit une attaque !
+267,,"""%1PLAYER_NAME% conquis"""
+268,,Votre empire a été conquis.
+269,,Conquérir tout les ennemis.
+270,,Survivre et surpasser tout le monde.
+271,,Votre empire a été oublié par l'histoire.
+272,,Votre empire brille le plus fort.
+273,,En attente de %1PLAYER_NAME% pour Godot.
+274,,%1PLAYER_NAME% n'a pas pu résister à la gloire de la merveille.
+275,,Construire une merveille
+276,,Point d'intéret détruit.
+277,,Échoué à tenir la merveille.
+278,,Réglages de joueur
+279,,Imposer les couleurs
+280,,"Fixe les couleurs pour la diplomatie. Cause la mise à jour des couleurs automatiques pour chaque emplacement, chaque fois que le jeu provoque des changements conflictuels. Cette option désactive les couleurs d'équipes et les rend indisponibles."
+281,,Utilisé par Imposer les couleurs quelle couleur est utilisée par quel emplacement. Nécessite d'avoir Imposer les couleurs activé.
+282,,Bleu
+283,,Rouge
+284,,Jaune
+285,,Vert
+286,,Turquoise
+287,,Violet
+288,,Orange
+289,,Rose
+290,,Gris
+291,,Couleur Slot 1 forcée
+292,,Couleur Slot 2 forcée
+293,,Couleur Slot 3 forcée
+294,,Couleur Slot 4 forcée
+295,,Couleur Slot 5 forcée
+296,,Couleur Slot 6 forcée
+297,,Couleur Slot 7 forcée
+298,,Couleur Slot 8 forcée
+299,,Ratios d'unités
+300,,Multiplie les ratios de mouvements par la valeur sélectionnée.
+301,,1.05x
+302,,1.10x
+303,,1.15x
+304,,1.20x
+305,,1.25x
+306,,1 minute avant que le traité se termine.
+307,,Préparez vous pour la guerre.
+308,,Ce n'était pas censé se passer.
+309,,Le stylo est vraiment l'arme la plus puissante de l'histoire.
+310,,%1MINUTES_REMAINING% minutes avant la fin de la partie.
+311,,1 minute avant la fin de la partie.
+312,,Survivre et surpasser tout le monde. Rang %1RANK_POSITION%.
+313,,%1PLAYER_NAME% s'incline devant le nouveau dieu.
+314,,1.50x
+315,,1.75x
+316,,Basculer les objectifs
+317,,Bascule entre Afficher les objectifs ou Les masquer temporairement.
+318,,Paramètres de Partie Avancés
+319,,Commentaires
+320,,Réglages de match
+321,,Version du mod:
+322,,Nomad AGS
+323,,"Nomad est basé sur un autre mod nomade bien connu. Ceci est basé sur les paramètres de jeu avancés et, grâce à cela, il fournit de la diplomatie et quelques options qui restent fidèles à la nature nomade.\n\nL'aide, les commentaires, les rapports de bogues et la contribution au mode peuvent être effectués sur:\nhttps://github.com /search?q=AOE4-AdvancedGameSettings"
+324,,Construction de merveilles
+325,,Active la construction de merveilles sans besoin de conditions de victories liées aux merveilles.
+326,,Travailleurs doubles
+327,,"Coût et vitesse de production divisé par deux pour les unités économiques: Villageois, Marchant, Bâteau de pêche, pour tous les joueurs."
+328,,Réglage d'handicap
+329,,Type d'handicap
+330,,"Si non désactivé, fournit à chaque emplacement de joueur le niveau de bonus spécifié pour cet emplacement. Le type de bonus peut être Économique, Militaire, ou les deux."
+331,,Les deux
+332,,Militaire
+333,,Économique
+334,,Slot 1 Handicap
+335,,Détermine la valeur de bonus donné par le handicap au joueur dans cette emplacement.
+336,,10%
+337,,20%
+338,,30%
+339,,40%
+340,,50%
+341,,60%
+342,,70%
+343,,80%
+344,,90%
+345,,100%
+346,,150%
+347,,200%
+348,,250%
+349,,300%
+350,,Slot 2 Handicap
+351,,Slot 3 Handicap
+352,,Slot 4 Handicap
+353,,Slot 5 Handicap
+354,,Slot 6 Handicap
+355,,Slot 7 Handicap
+356,,Slot 8 Handicap
+357,,Trésors
+358,,Des trésors apparaîtront aléatoirement autour de la carte.
+359,,Bas
+360,,"Conquérir la majorité des cités-états pour assurer la victoire. Chaque joueur commence avec quelques moines et doit trouver et prendre le contrôle de la ville.\nLe choix de civilisation n'a aucun effet. La population est limitée à 150. L'équipe qui contrôle 75% des villes gagnera la partie. \n\nL'aide, les commentaires, les rapports de bogues et la contribution au mode peuvent être effectués sur:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+361,,Guerre de cités-états
+362,,Contrôler la majorité des villes.
+363,,Villes %1NAMEORNUMBER% 
+364,,%1PLAYER_NAME% à été assimilée
+365,,Vous vous approchez de la victoire culturelle.
+366,,Vous équipe s'approche de la victoire culturelle.
+367,,L'ennnemi s'approche de la victoire culturelle.
+368,,Capture de la cité-état
+369,,L'allié capture la cité-état
+370,,L'ennemi capture la cité-état
+371,,La cité-état est capturée.
+372,,Cité-état alliée capturée.
+373,,Cité-état ennemie capturée.
+374,,Contestation de la cité-état
+375,,Cité-état alliée contestée.
+376,,Cité-état ennemie contestée.
+377,,Cité-état libérée.
+378,,Cité-état alliée libérée.
+379,,Cité-état perdue.
+380,,Libération de la cité-état.
+381,,Libération de la cité-état alliée.
+382,,Libération de la cité-état par l'ennemi.
+383,,Conquête d'équipe
+384,,"Les joueurs ne sont conquis uniquement si tout les bâtiments de leurs coéquipiers sont détruits. Ne fonctionne pas les équipes diplomatiques, dû au fonctionnement des relations."
+385,,Apparition d'éclaireur (Dispersé)
+386,,"Un éclaireur apparait en complément des villageois, quand le départ en Colonie Dispersé est sélectionné."
+387,,Site central religieux unique.
+388,,Remplace tout les sites sacrés générés par le générateur de carte par un site unique placé aussi près que possible du centre de la carte.
+389,,Ajout de capacité aux maisons
+390,,Capacité additionnelle pour les maisons.
+391,,Équilibre du tournoi
+392,,"Pour la liste complète des modifications, visitez le référentiel GitHub officiel."
+393,,Nomad Tournament AGS
+394,,Version préconfigurée de Nomad pour The Nomadic Clash organisé par MrMerlin.
+395,,King of the Hill AGS
+396,,"Fournit un moyen rapide de jouer à King of the Hill sur n'importe quelle carte.\n\nL'aide, les commentaires, les rapports de bogues et la contribution au mode peuvent être effectués sur:\nhttps://github.com/search?q=AOE4-Advanced Game Settings"
