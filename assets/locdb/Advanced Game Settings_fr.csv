@@ -145,7 +145,7 @@
 144,,Capacité de pop. minimale
 145,,"Change la population initale, hors maisons. Ne dépasse pas la capacité maximale de pop."
 146,,Capactié de pop. maximale
-147,,"Change la population initale. Nécessite des maisons pour y parvenir."
+147,,Change la population initale. Nécessite des maisons pour y parvenir.
 148,,0
 149,,25
 150,,50
