@@ -22,6 +22,8 @@ AGS_WONDER_SCALE_COST_RESOURCE_COUNT = {
 	mongol = { total = 3, food = 1, wood = 1, gold = 1, stone = 0},
 	abbasid = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
 	sultanate = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
+	malian = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
+	ottoman = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
 }
 
 ---------------------------------------------------------------------------------------------------
