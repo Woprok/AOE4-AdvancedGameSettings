@@ -214,7 +214,7 @@ function AGS_GlobalSettings_SetupSettings(options)
 		AGS_GlobalSettings_DefineWinConditions(options.section_inner_win_conditions)
 	end
 	
-	if options.section_inner_win_conditions then
+	if options.section_inner_game_conditions then
 		AGS_GlobalSettings_DefineGameConditions(options.section_inner_game_conditions)
 	end
 	
