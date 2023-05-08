@@ -11,6 +11,7 @@ AGS_TEAMS_MODULE = "AGS_Teams"
 AGS_TEAMS_TABLE = {
 	
 }
+
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
@@ -45,6 +46,30 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Functions:
 ---------------------------------------------------------------------------------------------------
+
+-- Checks if the team game is started with just one team.
+function AGS_Teams_IsSingleTeamSandbox()
+	-- Only static teams can be a sandbox.
+	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_STANDARD then
+		local first_index = nil
+		-- go through all players and check if they are all on same team
+		for _, player in pairs(PLAYERS) do 
+			if first_index == nil then
+				first_index = player.AGS_Team.index
+			end
+			if first_index ~= player.AGS_Team.index then
+				return false
+			end
+		end
+		-- nil is problem as it would mean that game had no players, otherwise we already jumped out.
+		-- so this will return true only if the players are in single team game.
+		if first_index ~= nil then
+			return true
+		end
+	end
+	-- FFA & Dynamic is never a sandbox game.
+	return false
+end
 
 function AGS_Teams_CreateInitialTeams()	
 	-- Create Static Teams for either static or dynamic teams. (Does not matter for now.)
@@ -111,7 +136,7 @@ function AGS_Teams_DoesWinnerGroupExists()
 		winner_group = AGS_Teams_GetSoloTeamWinner()
 	end
 	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_STANDARD then
-		winner_group = AGS_Teams_GetStaticTeamWinnders()
+		winner_group = AGS_Teams_GetStaticTeamWinners()
 	end
 	if AGS_GLOBAL_SETTINGS.TeamVictory == AGS_GS_TEAM_VICTORY_DYNAMIC then
 		winner_group = AGS_Teams_GetDynamicTeamWinners()
@@ -145,7 +170,7 @@ function AGS_Teams_GetSoloTeamWinner()
 	return nil	
 end
 -- Returns nil or winner list from statics.
-function AGS_Teams_GetStaticTeamWinnders()
+function AGS_Teams_GetStaticTeamWinners()
 	local winner_group = { }
 	local total_alive = AGS_Teams_CountAlivePlayers()
 	for _, team in pairs(AGS_TEAMS_TABLE) do

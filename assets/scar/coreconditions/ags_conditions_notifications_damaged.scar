@@ -48,7 +48,7 @@ function AGS_Notifications_Damaged(uwid, attacker, owner, notification)
 	if owner_relation == AGS_SAE_SELF then
 		priority = AGS_NP_MAX
 	elseif owner_relation == AGS_SAE_ALLY then
-		title = Loc_FormatText(notification.ally_attacked, owner.playerName)
+		title = Loc_FormatText(notification.ally_attacked, AGS_GetCurrentName(owner))
 	end
 	
 	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, priority, title, sfx, color)
@@ -94,20 +94,20 @@ function AGS_Notifications_Destroyed(uwid, owner, killer, notification)
 		if owner_relation == attacker_relation then
 			title = Loc_FormatText(notification.ally_destroyed)
 		else
-			title = Loc_FormatText(notification.ally_crushed, owner.playerName)
+			title = Loc_FormatText(notification.ally_crushed, AGS_GetCurrentName(owner))
 			priority = AGS_NP_MAX
 		end
 	else
 		sfx = notification.enemy_destroyed_sfx
 		
 		if owner_relation == attacker_relation then
-			title = Loc_FormatText(notification.enemy_destroyed, owner.playerName)			
+			title = Loc_FormatText(notification.enemy_destroyed, AGS_GetCurrentName(owner))			
 		elseif attacker_relation == AGS_SAE_SELF then
-			title = Loc_FormatText(notification.self_killed, owner.playerName)
+			title = Loc_FormatText(notification.self_killed, AGS_GetCurrentName(owner))
 		elseif attacker_relation == AGS_SAE_ALLY then
-			title = Loc_FormatText(notification.ally_killed, owner.playerName)
+			title = Loc_FormatText(notification.ally_killed, AGS_GetCurrentName(owner))
 		else
-			title = Loc_FormatText(notification.enemy_killed, owner.playerName)		
+			title = Loc_FormatText(notification.enemy_killed, AGS_GetCurrentName(owner))		
 		end
 	end	
 	

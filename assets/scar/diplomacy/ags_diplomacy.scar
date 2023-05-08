@@ -123,7 +123,7 @@ function Diplomacy_OnPlayerNameChanged(context)
 	if _diplomacy ~= nil then 
 		for _, context_player in pairs(_diplomacy.data_context.players) do	
 			local player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)
-			context_player.name.text = Player_GetDisplayName(player.id).LocString
+			context_player.name.text = AGS_GetCurrentName(player).LocString
 		end		
 		Diplomacy_UpdateDataContext()
 	end

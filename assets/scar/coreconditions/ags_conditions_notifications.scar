@@ -153,11 +153,11 @@ function AGS_Notifications_ObjectiveAction(player, notification)
 	if owner_relation == AGS_SAE_SELF then
 		title = Loc_FormatText(notification.self_action)
 	elseif owner_relation == AGS_SAE_ALLY then
-		title = Loc_FormatText(notification.ally_action, player.playerName)
+		title = Loc_FormatText(notification.ally_action, AGS_GetCurrentName(player))
 		sfx = notification.ally_action_sfx
 		priority = AGS_NP_HIGH
 	else
-		title = Loc_FormatText(notification.enemy_action, player.playerName)	
+		title = Loc_FormatText(notification.enemy_action, AGS_GetCurrentName(player))	
 		sfx = notification.enemy_action_sfx
 		priority = AGS_NP_MAX	
 	end
@@ -177,7 +177,7 @@ function AGS_Notifications_Eliminated(player, cue_opt_fielded)
 	-- Notify via sound.
 	AGS_Notifications_SoundCue(player, AGS_NOTIFICATIONS_SOUND_ELIMINATED)
 	-- Notify via message in right bottom corner.	
-	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, AGS_NP_HIGH, Loc_FormatText(cue_opt_fielded.title, player.playerName), cue_opt_fielded.sfx)
+	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, AGS_NP_HIGH, Loc_FormatText(cue_opt_fielded.title, AGS_GetCurrentName(player)), cue_opt_fielded.sfx)
 end
 
 ---------------------------------------------------------------------------------------------------

@@ -1089,3 +1089,7 @@ function AGS_GetFreeItems(all, used)
 	end	
 	return free
 end
+-- It's safe to call LocString on this result
+function AGS_GetCurrentName(player)
+	return Core_GetPlayerName(player.id)
+end
