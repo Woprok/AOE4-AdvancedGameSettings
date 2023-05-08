@@ -26,6 +26,7 @@ AGS_BP_KING = "king"
 AGS_BP_SHEEP = "sheep"
 AGS_BP_TREE = "tree"
 AGS_BP_LANDMARK = "wonder"
+AGS_BP_LANDMARK_OTHER = "landmark"
 AGS_BP_WONDER = "wonder_imperial_age"
 AGS_BP_SACRED_SITE = "special_beacon"
 -- All buildings should be tagged with this otherwise winconditions & others will not work.
@@ -985,17 +986,21 @@ end
 function AGS_IsACapital(entity_id)		
 	return Entity_GetStateModelBool(entity_id, "town_center_is_capital") or Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL)
 end
+-- Checks for both wonder and landmark with IsOfType
+function AGS_IsALandmarkInner(entity_id)
+	return Entity_IsOfType(entity_id, AGS_BP_LANDMARK) or Entity_IsOfType(entity_id, AGS_BP_LANDMARK_OTHER)
+end
 
 function AGS_IsALandmark(entity_id)		
-	return Entity_IsOfType(entity_id, AGS_BP_LANDMARK) and not Entity_IsOfType(entity_id, AGS_BP_WONDER)	
+	return AGS_IsALandmarkInner(entity_id) and not Entity_IsOfType(entity_id, AGS_BP_WONDER)	
 end
 
 function AGS_IsATownCenter(entity_id)		
-	return Entity_IsOfType(entity_id, AGS_BP_TC) and not Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL) and not Entity_IsOfType(entity_id, AGS_BP_LANDMARK)		
+	return Entity_IsOfType(entity_id, AGS_BP_TC) and not Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL) and not AGS_IsALandmarkInner(entity_id)		
 end
 
 function AGS_IsAKeep(entity_id)		
-	return Entity_IsOfType(entity_id, AGS_BP_KEEP) and not Entity_IsOfType(entity_id, AGS_BP_LANDMARK)	
+	return Entity_IsOfType(entity_id, AGS_BP_KEEP) and not AGS_IsALandmarkInner(entity_id)
 end
 
 function AGS_IsAWonder(entity_id)		
@@ -1004,7 +1009,7 @@ end
 
 function AGS_IsThisSpecialMobileBuildingDead(entity_id)
 	return Entity_IsOfType(entity_id, AGS_BP_MOBILE) 
-		and (Entity_IsOfType(entity_id, AGS_BP_LANDMARK) or Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL))
+		and (AGS_IsALandmarkInner(entity_id) or Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL))
 		and not Entity_GetStateModelBool(entity_id, "landmark_active")	
 end
 

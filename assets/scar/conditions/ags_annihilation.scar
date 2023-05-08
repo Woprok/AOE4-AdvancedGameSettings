@@ -232,7 +232,7 @@ function AGS_Annihilation_IsAbleToProduce(player)
 			else
 				if Entity_IsProductionQueueAvailable(entity) or Entity_GetStateModelBool(entity, "do_unpacking_construction") then				
 					-- Track if player has a landmark that can produce units
-					if Entity_IsOfType(entity, AGS_BP_LANDMARK) then
+					if AGS_IsALandmarkInner(entity_id) then
 						has_landmark_entity_with_queue = true
 						-- Track if player has a production building
 					else

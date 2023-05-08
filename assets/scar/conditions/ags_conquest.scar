@@ -360,6 +360,7 @@ function AGS_Conquest_InitializeConquerables()
 				end
 			end
 		end
+		-- TODO add filter such as EGroup_Filter(eg_player_landmarks, landmark_types, FILTER_KEEP)
 		EGroup_ForEach(eg_player_conquerables, AGS_TrackConquerable)
 	end
 end
