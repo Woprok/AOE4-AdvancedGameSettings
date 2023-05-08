@@ -66,7 +66,8 @@ AGS_BP_DEPOSIT_FOOD = "forage_bush"
 AGS_BP_DEPOSIT_MARKET = "settlement"
 AGS_BP_DEPOSIT_ANIMAL = "animal"
 AGS_BP_OUTPOST = "outpost"
--- This represents any tradeable building. Landmarks, Docks, 
+-- This represents any tradeable building. Landmarks, Docks, Markets. 
+-- Counts for tributes.
 AGS_BP_TYPE_TRADE = "trade_post"
 
 AGS_ENTITY_TABLE = {
