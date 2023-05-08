@@ -121,7 +121,7 @@ function AGS_TeamVision_OnConstructionComplete(context)
 	end
 	
 	local player = Core_GetPlayersTableEntry(context.player)	
-	if player ~= nil and Entity_IsOfType(context.entity, AGS_BP_MARKET) then		
+	if player ~= nil and Entity_IsOfType(context.entity, AGS_BP_TYPE_TRADE) then		
 		player.AGS_TeamVisionAllowed = true		
 		AGS_TeamVision_UpdateVisionForPlayer(player)
 	end	
@@ -133,10 +133,11 @@ function AGS_TeamVision_OnEntityKilled(context)
 	end
 	
 	local player = Core_GetPlayersTableEntry(context.victimOwner)
-	if player ~= nil and Entity_IsOfType(context.victim, AGS_BP_MARKET) then
+	if player ~= nil and Entity_IsOfType(context.victim, AGS_BP_TYPE_TRADE) then
 		-- We will ignore edge cases with mongol landmark and landmarks in general.
 		-- Lets call it landmark bonus, you never lose this. :)
-		local egroup = Player_GetEntitiesFromType(player.id, AGS_BP_MARKET)
+		-- Now it's expanded to all tradeable buildings properly.
+		local egroup = Player_GetEntitiesFromType(player.id, AGS_BP_TYPE_TRADE)
 		if EGroup_CountSpawned(egroup) == 0 then
 			player.AGS_TeamVisionAllowed = false	
 			AGS_TeamVision_UpdateVisionForPlayer(player)
