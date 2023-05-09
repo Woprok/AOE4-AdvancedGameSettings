@@ -58,6 +58,7 @@ function AGS_Notifications_Destroyed(uwid, owner, killer, notification)
 	-- If local is eliminated or we have no entry for this structure
 	if AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid] == nil then
 		if killer == nil then
+			AGS_Notifications_DestroyedNeutral(uwid, owner, notification)
 			return
 		else
 			AGS_NOTIFICATIONS_DAMAGED_TIMERS[uwid] = {
@@ -111,5 +112,16 @@ function AGS_Notifications_Destroyed(uwid, owner, killer, notification)
 		end
 	end	
 	
+	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, priority, title, sfx, color)
+end
+-- Edge case where building is destroyed by neutral player will now have notification.
+-- This can happen only if it was solo killed by boar or something.
+-- Otherwise we should have last attacker ?
+function AGS_Notifications_DestroyedNeutral(uwid, owner, notification)
+	-- this has small priority as it was destroyed by noone ?
+	local priority = AGS_NP_LOW
+	local title = Loc_FormatText(notification.self_crushed)
+	local sfx = notification.enemy_destroyed_sfx
+	local color = {1, 1, 1, 1}
 	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, priority, title, sfx, color)
 end
