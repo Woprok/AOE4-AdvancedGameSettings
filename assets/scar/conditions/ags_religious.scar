@@ -160,7 +160,8 @@ function AGS_Religious_CreateSiteData()
 			entity = EGroup_GetSpawnedEntityAt(AGS_RELIGIOUS_SACRED_SITE_EGROUP, i),
 			pos = Entity_GetPosition(EGroup_GetSpawnedEntityAt(AGS_RELIGIOUS_SACRED_SITE_EGROUP, i)),
 			player_last_capturing = nil,
-			color_last_capturing = nil,
+			--color should be retrieved from player to be correct all the time
+			--color_last_capturing = nil,
 			progress = AGS_RELIGIOUS_PROGRESS_MIN,
 			objective = nil,
 			flash = nil,
@@ -219,7 +220,8 @@ function AGS_Religious_UpdateSacredSiteObjectives()
 		elseif site.progress == 0 then
 			state = OS_Incomplete
 		end			
-		AGS_Objectives_SetColorProgress(site.objective, state, site.color_last_capturing, math.abs(site.progress))		
+		-- this originally used stored color site.color_last_capturing
+		AGS_Objectives_SetColorProgress(site.objective, state, Player_GetUIColour(site.player_last_capturing), math.abs(site.progress))		
 	end	
 end
 
@@ -462,10 +464,17 @@ function AGS_Religious_OnHolySiteChange(context)
 	end
 	local site_entity_id = context.strategicPointEntity
 	
+	-- Check if squad is nil and exit function if there is no instigating squad, except for changeType CT_StartedRevertingCooldown (7) and CT_CapturedContestedEnded (11)
+	-- For change type 6, 7 and 11 they do not require a squad, and the squad can be nil when a squad dies within the capture radius (7) or leaves the radius (11).
+	if (context.instigatorSquad == nil and context.changeType ~= 6 and context.changeType ~= 7 and context.changeType ~= 11) then
+		AGS_Print(string.format("Nil Squad for Holy Site Change Type %d", context.changeType))
+		return
+	end
+	
 	-- CT_Captured: If captured
 	if context.changeType == 0 then
 		AGS_Religious_OnHolySiteChangeTypeCapture(instigating_player, holy_site_pos)
-	-- CT_Reverting: If owned Holy Site is being neutralized
+	-- CT_Reverting: If owned Holy Site is being neutralized or contested
 	elseif context.changeType == 1 then
 		AGS_Religious_OnHolySiteChangeTypeNeutralizing(instigating_player, site_entity_id, holy_site_progress, holy_site_pos, context.strategicPointOwner)
 	-- Currently not used CT_Secured: if secured.
@@ -487,6 +496,12 @@ function AGS_Religious_OnHolySiteChange(context)
 	-- CT_Halted: If progress halted (e.g. enemy enters proximity while you are present)
 	elseif context.changeType == 8 then
 		AGS_Religious_OnHolySiteChangeTypeContested(instigating_player, site_entity_id, holy_site_progress, holy_site_pos)
+	-- CT_Halted: If enemy enters proximity while you are present post-capture.
+	elseif context.changeType == 10 then
+		AGS_Religious_OnHolySiteChangeTypeContested(instigating_player, site_entity_id, holy_site_progress, holy_site_pos)		
+	-- CT_CapturedContestedEnded: If all contesting units leave a site. 
+	elseif context.changeType == 11 then
+		AGS_Religious_OnHolySiteChangeTypeContestEnded(site_entity_id)
 	end	
 end
 
@@ -514,7 +529,7 @@ function AGS_Religious_OnHolySiteChangeTypeContinue(instigating_player, site_ent
 		if site.entity == site_entity_id then
 			site.player_last_capturing = instigating_player.id
 			-- Changed from original if to simply always be specific player color instead of merging.
-			site.color_last_capturing = Player_GetUIColour(instigating_player.id)
+			-- site.color_last_capturing = Player_GetUIColour(instigating_player.id)
 			if not site.is_revealed then
 				FOW_RevealArea(holy_site_pos, AGS_RELIGIOUS_VISION_RADIUS, -1)
 				site.is_revealed = true
@@ -538,6 +553,10 @@ function AGS_Religious_OnHolySiteChangeTypeContinue(instigating_player, site_ent
 end
 
 function AGS_Religious_OnHolySiteChangeTypeContested(instigating_player, site_entity_id, holy_site_progress, holy_site_pos)
+	-- Pause timer, if it's running
+	if Timer_Exists(AGS_RELIGIOUS_TIMER) then
+		Timer_Pause(AGS_RELIGIOUS_TIMER)
+	end		
 	
 	if holy_site_progress ~= 0 then
 		local selected_relation = AGS_SAE_ALLY
@@ -631,5 +650,18 @@ function AGS_Religious_OnHolySiteChangeTypeCapture(instigating_player, holy_site
 		AGS_Notifications_ObjectiveActionSelectable(instigating_player, AGS_NOTIFICATIONS_RELIGIOUS_CAPTURED, instigator_relation)
 		-- Trigger a blip that matches colour of instigator
 		UI_CreateMinimapBlipOnPosFrom(instigating_player.id, holy_site_pos, 5, "objective_holy_site")
+	end
+end
+
+function AGS_Religious_OnHolySiteChangeTypeContestEnded(site_entity_id)
+	-- If victory timer exists then resume it.
+	if Timer_Exists(AGS_RELIGIOUS_TIMER) then
+		Timer_Resume(AGS_RELIGIOUS_TIMER)
+	end
+	-- Stop flashing site
+	for _, site in pairs(AGS_RELIGIOUS_SACRED_SITE_OBJECTIVES) do
+		--if site.entity == site_entity_id then
+			AGS_Religious_SetSiteFlash(site, false)
+		--end
 	end
 end
