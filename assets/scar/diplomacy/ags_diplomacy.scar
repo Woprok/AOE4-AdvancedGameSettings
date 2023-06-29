@@ -231,7 +231,7 @@ function AGS_Diplomacy_Create(relations)
 			style = ECV_Queue,
 		},
 		entity_type = {
-			market = "market",
+			market = "scar_market",
 		},
 		tribute = {
 			is_age_2 = true,						--false check removed used to calculate data_context.is_tribute_enabled				
