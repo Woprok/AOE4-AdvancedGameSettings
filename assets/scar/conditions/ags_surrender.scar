@@ -54,13 +54,19 @@ function AGS_Surrender_OnPlayerDefeated(player, reason)
 	AGS_Print("AGS_Surrender_OnPlayerDefeated")
 	if reason == AGS_WR_SURRENDER then 
 		AGS_Notifications_Eliminated(player, AGS_NOTIFICATIONS_SURRENDER)
-		-- We require special check for cases when surrender is valid resolver for situation for AI.
-		if AGS_Conditions_CheckVictory(AGS_SURRENDER_ACTIVE, AGS_Presentations_Victory, AGS_WR_SURRENDER,
-				AGS_Objectives_PresentWrap(
-					AGS_SURRENDER_OBJECTIVE, 
-					OS_Complete, 
-					AGS_OBJECTIVES_SURRENDER.title)) then
-			return
+		-- This would end the game for single team game without check.
+		-- Teammates needs to be eliminated by other conditions.
+		-- AI Teammates will be dealt with by the default handle.
+		-- Only non sandbox games reach inner if.
+		if AGS_Surrender_CanEndGame(player) then
+			-- We require special check for cases when surrender is valid resolver for situation for AI.
+			if AGS_Conditions_CheckVictory(AGS_SURRENDER_ACTIVE, AGS_Presentations_Victory, AGS_WR_SURRENDER,
+					AGS_Objectives_PresentWrap(
+						AGS_SURRENDER_OBJECTIVE, 
+						OS_Complete, 
+						AGS_OBJECTIVES_SURRENDER.title)) then
+				return
+			end
 		end
 	end
 	-- If this was not ended yet, we will attempt to do it.
@@ -114,4 +120,13 @@ end
 
 function AGS_Surrender_RemoveObjective()
 	AGS_Objectives_Set(AGS_SURRENDER_OBJECTIVE, nil, false)
+end
+
+function AGS_Surrender_CanEndGame(eliminated_player)
+	-- Cant end game with surrender in case of single team game.
+	-- This is same as elimination. In both cases we should avoid ending game with single team.
+	if AGS_Teams_IsSingleTeamSandbox() then
+		return false
+	end	
+	return true
 end

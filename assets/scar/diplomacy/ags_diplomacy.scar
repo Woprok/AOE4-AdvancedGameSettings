@@ -19,6 +19,11 @@ AGS_DIPLOMACY_DATA = {
 	RelationsEnabled = false,
 	RelationsOverrideEnabled = nil,
 }
+-- Optional import for Xbox UI. Note this will need a custom implementation for diplomacy menu to have relations.
+-- They seems to be completely omitted from this version.
+if(UI_IsXboxUI()) then
+	import("gameplay/xbox_diplomacy_menus.scar")
+end
 
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
@@ -118,7 +123,7 @@ function Diplomacy_OnPlayerNameChanged(context)
 	if _diplomacy ~= nil then 
 		for _, context_player in pairs(_diplomacy.data_context.players) do	
 			local player = Core_GetPlayersTableEntryFromIndex(context_player.player_index)
-			context_player.name.text = Player_GetDisplayName(player.id).LocString
+			context_player.name.text = AGS_GetCurrentName(player).LocString
 		end		
 		Diplomacy_UpdateDataContext()
 	end
@@ -198,7 +203,7 @@ function AGS_Diplomacy_Create(relations)
 		data_context = {
 			is_ui_visible = true,										
 			is_ui_expanded = false,				
-			is_subtotal_visible = false,					-- Whether to show/hide total/subtotal/tax amounts
+			is_subtotal_visible = true,					-- Whether to show/hide total/subtotal/tax amounts
 			is_team_visible = true,							-- Whether the team column is displayed
 			is_tribute_enabled = false,						-- Whether the local player meets the requirements to send tribute to others  
 
@@ -217,6 +222,8 @@ function AGS_Diplomacy_Create(relations)
 			total_taxes = {amount = 0},
 			total_cost = {amount = 0},
 			players = {},
+			increment = 100,						-- Amount by which one button click increments/decrements tribute
+			IsMultiPage = false,
 			headerRelations = Loc_FormatText("$64c5019a145c4e4da448dbd3adeea61e:234"),
 		},
 		cue = {							-- Event cue template (shown when player changes relationship or receives tribute) 
@@ -231,7 +238,7 @@ function AGS_Diplomacy_Create(relations)
 			style = ECV_Queue,
 		},
 		entity_type = {
-			market = "market",
+			market = "trade_post",
 		},
 		tribute = {
 			is_age_2 = true,						--false check removed used to calculate data_context.is_tribute_enabled				
@@ -243,7 +250,8 @@ function AGS_Diplomacy_Create(relations)
 			is_score_visible_override = nil, 		-- used to override data_context.players.player.is_score_visible	
 			is_team_visible_override = nil,			-- used to override data_context.players.player.is_team_visible	
 			
-			increment = 100,						-- Amount by which one button click increments/decrements tribute
+			normal_increment = 100,				    -- Amount by which a button click alone increases/decreases tribute
+			multiplied_increment = 500,				-- Amount by which a button click with left trigger held increases/decreases tribute
 			tax_rate = 0.3,							-- TODO: Move this into AE data?
 			limit = 9999,							-- Limit button text to 4 digits so it doesn't wrap
 		},		

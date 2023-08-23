@@ -293,10 +293,15 @@ end
 -- Stops all active timers.
 function AGS_Wonder_DeactivateTimers()
 	for _, player in pairs(PLAYERS) do 
-		if Timer_Exists(player.AGS_Wonder.objective_timer) then
-			Timer_End(player.AGS_Wonder.objective_timer)
-		end
+		AGS_Wonder_EndTimer(player)
 	end	
+end
+-- Stops active timer for single player
+function AGS_Wonder_EndTimer(player)
+	if Timer_Exists(player.AGS_Wonder.objective_timer) then
+		Timer_End(player.AGS_Wonder.objective_timer)
+		Player_SetStateModelFloat(player.id, "wonder_timer", 0)
+	end
 end
 --Removes all objectives regardless of wonder state.
 function AGS_Wonder_RemoveAllObjectives()
@@ -402,9 +407,7 @@ end
 function AGS_Wonder_ResetTimerObjective(player)
 	Music_UnlockIntensity()
 	-- End timer for everyone.
-	if Timer_Exists(player.AGS_Wonder.objective_timer) then
-		Timer_End(player.AGS_Wonder.objective_timer)
-	end
+	AGS_Wonder_EndTimer(player)
 	-- Finish objective for everyone.
 	AGS_Wonder_InformNegativeProgressChange(player)
 	-- Local player show build again with automatic popup for objective.
@@ -423,10 +426,7 @@ function AGS_Wonder_CleanWonder(player)
 			end			
 		end			
 		-- If wonder timer exists. End and reset timer
-		if Timer_Exists(player.AGS_Wonder.objective_timer) then				
-			Timer_End(player.AGS_Wonder.objective_timer)
-			Player_SetStateModelFloat(player.id, "wonder_timer", 0)
-		end	
+		AGS_Wonder_EndTimer(player)
 		AGS_Objectives_Set(player.AGS_Wonder.objective, nil, false)	
 	end	
 end

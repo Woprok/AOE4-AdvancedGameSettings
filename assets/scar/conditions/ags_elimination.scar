@@ -7,6 +7,7 @@
 -- Elimination win condition.
 -- A player is eliminated when they quit (through the button in the Pause menu) or otherwise drop/disconnect. 
 -- The last remaining player/team wins. 
+-- This is different from Relic. We are checking for AI elimination only in Surrender condition.
 ---------------------------------------------------------------------------------------------------
 
 import("conditions/conditiondata/ags_elimination_data.scar")
@@ -34,7 +35,7 @@ function AGS_Elimination_OnPlayerAITakeover(context)
 	if context ~= nil and context.player ~= nil then
 		local player = Core_GetPlayersTableEntry(context.player)
 		if player ~= nil and player.isHuman and not player.isEliminated then
-			AGS_Print(string.format("Elimination_OnPlayerAITakeover() - %s replaced by AI", player.playerName.LocString))		
+			AGS_Print(string.format("Elimination_OnPlayerAITakeover() - %s replaced by AI", AGS_GetCurrentName(player).LocString))		
 			-- Human players here quit the game and are eliminated
 			-- AI players here were hosted on the now disconnected human players computer, and need to move to another
 			-- client. This was done in C++ land (in GameWorld::SetGameOver and GameWorld::StationTakeOverAi) so don't
@@ -72,11 +73,15 @@ function AGS_Elimination_OnPlayerDefeated(player, reason)
 	AGS_Print("AGS_Elimination_OnPlayerDefeated")
 	if reason == AGS_WR_ELIMINATION then
 		AGS_Notifications_Eliminated(player, AGS_NOTIFICATIONS_ELIMINATION)
-		AGS_Conditions_CheckVictory(AGS_ELIMINATION_ACTIVE, AGS_Presentations_Victory, AGS_WR_ELIMINATION,
-			AGS_Objectives_PresentWrap(
-				AGS_ELIMINATION_OBJECTIVE, 
-				OS_Complete, 
-				AGS_OBJECTIVES_ELIMINATION.title))
+		-- This would end the game for single team game without check.
+		-- Teammates needs to be eliminated by other conditions.
+		if AGS_Elimination_CanEndGame(player) then
+			AGS_Conditions_CheckVictory(AGS_ELIMINATION_ACTIVE, AGS_Presentations_Victory, AGS_WR_ELIMINATION,
+				AGS_Objectives_PresentWrap(
+					AGS_ELIMINATION_OBJECTIVE, 
+					OS_Complete, 
+					AGS_OBJECTIVES_ELIMINATION.title))
+		end
 	end
 end
 
@@ -103,4 +108,13 @@ end
 
 function AGS_Elimination_RemoveObjective()
 	AGS_Objectives_Set(AGS_ELIMINATION_OBJECTIVE, nil, false)
+end
+
+function AGS_Elimination_CanEndGame(eliminated_player)
+	-- Cant end game with elimination in case of single team game.
+	-- This is same as surrender . In both cases we should avoid ending game with single team.
+	if AGS_Teams_IsSingleTeamSandbox() then
+		return false
+	end	
+	return true
 end

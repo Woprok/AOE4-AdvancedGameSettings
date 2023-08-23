@@ -26,6 +26,7 @@ AGS_BP_KING = "king"
 AGS_BP_SHEEP = "sheep"
 AGS_BP_TREE = "tree"
 AGS_BP_LANDMARK = "wonder"
+AGS_BP_LANDMARK_OTHER = "landmark"
 AGS_BP_WONDER = "wonder_imperial_age"
 AGS_BP_SACRED_SITE = "special_beacon"
 -- All buildings should be tagged with this otherwise winconditions & others will not work.
@@ -49,7 +50,8 @@ AGS_BP_BARRACKS = "barracks"
 AGS_BP_ARCHERY_RANGE = "archery_range"
 AGS_BP_STABLE = "stable"
 AGS_BP_WORKSHOP = "siege_workshop"
-AGS_BP_MARKET = "market"
+-- Market does not exists anymore ?
+AGS_BP_MARKET = "scar_market"
 AGS_BP_DOCK = "scar_dock"
 AGS_BP_HOUSE = "house"
 AGS_BP_BLACKSMITH = "blacksmith"
@@ -65,6 +67,9 @@ AGS_BP_DEPOSIT_FOOD = "forage_bush"
 AGS_BP_DEPOSIT_MARKET = "settlement"
 AGS_BP_DEPOSIT_ANIMAL = "animal"
 AGS_BP_OUTPOST = "outpost"
+-- This represents any tradeable building. Landmarks, Docks, Markets. 
+-- Counts for tributes.
+AGS_BP_TYPE_TRADE = "trade_post"
 
 AGS_ENTITY_TABLE = {
 	neutral = {
@@ -81,7 +86,7 @@ AGS_ENTITY_TABLE = {
 		town_center_capital = "building_town_center_capital_eng",
 		town_center = "building_town_center_eng",
 		town_center_landmark = "building_landmark_age2_westminster_palace_eng",
-		market = "building_econ_market_control_eng",
+		scar_market = "building_econ_market_control_eng",
 		villager = "unit_villager_1_eng",
 		scout = "unit_scout_1_eng",
 		king = "unit_king_1_eng",
@@ -102,7 +107,7 @@ AGS_ENTITY_TABLE = {
 		castle = "building_defense_keep_chi",
 		town_center_capital = "building_town_center_capital_chi",
 		town_center = "building_town_center_chi",
-		market = "building_econ_market_control_chi",
+		scar_market = "building_econ_market_control_chi",
 		villager = "unit_villager_1_chi",
 		scout = "unit_scout_1_chi",
 		king = "unit_king_1_chi",	
@@ -123,7 +128,7 @@ AGS_ENTITY_TABLE = {
 		castle = "building_defense_keep_fre",
 		town_center_capital = "building_town_center_capital_fre",
 		town_center = "building_town_center_fre",
-		market = "building_econ_market_control_fre",
+		scar_market = "building_econ_market_control_fre",
 		villager = "unit_villager_1_fre",
 		scout = "unit_scout_1_fre",
 		king = "unit_king_1_fre",
@@ -145,7 +150,7 @@ AGS_ENTITY_TABLE = {
 		town_center_capital = "building_town_center_capital_hre",
 		town_center = "building_town_center_hre",
 		town_center_landmark = "building_landmark_age3_hohenzollern_castle_hre",
-		market = "building_econ_market_control_hre",
+		scar_market = "building_econ_market_control_hre",
 		villager = "unit_villager_1_hre",
 		scout = "unit_scout_1_hre",
 		king = "unit_king_1_hre",
@@ -166,7 +171,7 @@ AGS_ENTITY_TABLE = {
 		castle = "building_defense_keep_control_rus",
 		town_center_capital = "building_town_center_capital_rus",
 		town_center = "building_town_center_rus",
-		market = "building_econ_market_control_rus",
+		scar_market = "building_econ_market_control_rus",
 		villager = "unit_villager_1_rus",
 		scout = "unit_scout_1_rus",
 		king = "unit_king_1_rus",
@@ -187,7 +192,7 @@ AGS_ENTITY_TABLE = {
 		castle = "building_defense_keep_control_abb",
 		town_center_capital = "building_town_center_capital_abb",
 		town_center = "building_town_center_abb",
-		market = "building_econ_market_control_abb",
+		scar_market = "building_econ_market_control_abb",
 		villager = "unit_villager_1_abb",
 		scout = "unit_scout_1_abb",
 		king = "unit_king_1_abb",
@@ -210,7 +215,7 @@ AGS_ENTITY_TABLE = {
 		town_center_capital = "building_town_center_capital_mon",
 		town_center_capital_moving = "building_town_center_capital_moving_mon",
 		town_center = "building_town_center_mon",
-		market = "building_econ_market_mon",
+		scar_market = "building_econ_market_mon",
 		villager = "unit_villager_1_mon",
 		scout = "unit_khan_1_mon",
 		king = "unit_king_1_mon",
@@ -230,7 +235,7 @@ AGS_ENTITY_TABLE = {
 		castle = "building_defense_keep_control_sul",
 		town_center_capital = "building_town_center_capital_sul",
 		town_center = "building_town_center_sul",
-		market = "building_econ_market_control_sul",
+		scar_market = "building_econ_market_control_sul",
 		villager = "unit_villager_1_sul",
 		scout = "unit_scout_1_sul",
 		king = "unit_king_1_sul",
@@ -251,7 +256,7 @@ AGS_ENTITY_TABLE = {
 		castle = "building_defense_keep_mal",
 		town_center_capital = "building_town_center_capital_mal",
 		town_center = "building_town_center_mal",
-		market = "building_econ_market_mal",
+		scar_market = "building_econ_market_mal",
 		villager = "unit_villager_1_mal",
 		scout = "unit_scout_1_mal",
 		king = "unit_king_1_mal",
@@ -272,7 +277,7 @@ AGS_ENTITY_TABLE = {
 		castle = "building_defense_keep_ott",
 		town_center_capital = "building_town_center_capital_ott",
 		town_center = "building_town_center_ott",
-		market = "building_econ_market_ott",
+		scar_market = "building_econ_market_ott",
 		villager = "unit_villager_1_ott",
 		scout = "unit_scout_1_ott",
 		king = "unit_king_1_ott",
@@ -981,17 +986,21 @@ end
 function AGS_IsACapital(entity_id)		
 	return Entity_GetStateModelBool(entity_id, "town_center_is_capital") or Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL)
 end
+-- Checks for both wonder and landmark with IsOfType
+function AGS_IsALandmarkInner(entity_id)
+	return Entity_IsOfType(entity_id, AGS_BP_LANDMARK) or Entity_IsOfType(entity_id, AGS_BP_LANDMARK_OTHER)
+end
 
 function AGS_IsALandmark(entity_id)		
-	return Entity_IsOfType(entity_id, AGS_BP_LANDMARK) and not Entity_IsOfType(entity_id, AGS_BP_WONDER)	
+	return AGS_IsALandmarkInner(entity_id) and not Entity_IsOfType(entity_id, AGS_BP_WONDER)	
 end
 
 function AGS_IsATownCenter(entity_id)		
-	return Entity_IsOfType(entity_id, AGS_BP_TC) and not Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL) and not Entity_IsOfType(entity_id, AGS_BP_LANDMARK)		
+	return Entity_IsOfType(entity_id, AGS_BP_TC) and not Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL) and not AGS_IsALandmarkInner(entity_id)		
 end
 
 function AGS_IsAKeep(entity_id)		
-	return Entity_IsOfType(entity_id, AGS_BP_KEEP) and not Entity_IsOfType(entity_id, AGS_BP_LANDMARK)	
+	return Entity_IsOfType(entity_id, AGS_BP_KEEP) and not AGS_IsALandmarkInner(entity_id)
 end
 
 function AGS_IsAWonder(entity_id)		
@@ -1000,7 +1009,7 @@ end
 
 function AGS_IsThisSpecialMobileBuildingDead(entity_id)
 	return Entity_IsOfType(entity_id, AGS_BP_MOBILE) 
-		and (Entity_IsOfType(entity_id, AGS_BP_LANDMARK) or Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL))
+		and (AGS_IsALandmarkInner(entity_id) or Entity_IsOfType(entity_id, AGS_BP_TC_CAPITAL))
 		and not Entity_GetStateModelBool(entity_id, "landmark_active")	
 end
 
@@ -1079,4 +1088,8 @@ function AGS_GetFreeItems(all, used)
 		end
 	end	
 	return free
+end
+-- It's safe to call LocString on this result
+function AGS_GetCurrentName(player)
+	return Core_GetPlayerName(player.id)
 end

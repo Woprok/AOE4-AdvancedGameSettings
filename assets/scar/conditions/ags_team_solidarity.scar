@@ -101,5 +101,5 @@ function AGS_TeamSolidarity_Eliminate(ally, defeated_teammate)
 			AGS_TEAM_SOLIDARITY_OBJECTIVE, 
 			OS_Failed, 
 			AGS_OBJECTIVES_TEAMSOLIDARITY.title_lost, 
-			defeated_teammate.playerName))
+			AGS_GetCurrentName(owner)))
 end

@@ -40,17 +40,19 @@ end
 
 -- Callback invoked by Diplomacy button
 function Diplomacy_ToggleDiplomacyUI()	
-	_diplomacy.data_context.is_ui_expanded = not _diplomacy.data_context.is_ui_expanded	
-	if(_diplomacy.data_context.is_ui_expanded) then
-		UI_AddEventHandler("Scar", "HUDPageBase.Cancel", "Diplomacy_HideDiplomacyUI")
-		Rule_AddGlobalEvent(Diplomacy_OnPlayerAddResource, GE_PlayerAddResource)		
-		Rule_AddGlobalEvent(Diplomacy_OnPlayerTeamChanged, GE_PlayerTeamIdUpdated)
-	else
-		UI_RemoveEventHandler("Scar", "HUDPageBase.Cancel", "Diplomacy_HideDiplomacyUI")
-		Rule_RemoveGlobalEvent(Diplomacy_OnPlayerAddResource)		
-		Rule_RemoveGlobalEvent(Diplomacy_OnPlayerTeamChanged)
+	if (UI_IsXboxUI() and _diplomacy.data_context.is_ui_visible) or not UI_IsXboxUI() then
+		_diplomacy.data_context.is_ui_expanded = not _diplomacy.data_context.is_ui_expanded	
+		if(_diplomacy.data_context.is_ui_expanded) then
+			UI_AddEventHandler("Scar", "HUDPageBase.Cancel", "Diplomacy_HideDiplomacyUI")
+			Rule_AddGlobalEvent(Diplomacy_OnPlayerAddResource, GE_PlayerAddResource)
+			Rule_AddGlobalEvent(Diplomacy_OnPlayerTeamChanged, GE_PlayerTeamIdUpdated)
+		else
+			UI_RemoveEventHandler("Scar", "HUDPageBase.Cancel", "Diplomacy_HideDiplomacyUI")
+			Rule_RemoveGlobalEvent(Diplomacy_OnPlayerAddResource)	
+			Rule_RemoveGlobalEvent(Diplomacy_OnPlayerTeamChanged)
+		end
+		Diplomacy_UpdateDataContext()
 	end
-	Diplomacy_UpdateDataContext()
 end
 
 -- Force menu open or closed (more for use by mission scripts)
@@ -70,6 +72,10 @@ end
 -- Callback used to show/hide scripted UI elements. 
 function Diplomacy_ShowUI(show)
 	if _diplomacy ~= nil and scartype(show) == ST_BOOLEAN then 
+		-- Close the menu before hiding it so focus is removed
+		if UI_IsXboxUI() and _diplomacy.data_context.is_ui_expanded and not show then
+			Diplomacy_ToggleDiplomacyUI()
+		end
 		_diplomacy.data_context.is_ui_visible = show
 		Diplomacy_UpdateUI()
 	end
@@ -79,7 +85,10 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function Diplomacy_CreateUI()
-	
+	if UI_IsXboxUI() then
+		DiplomacyMenus_CreateXboxTributeUI()
+		return
+	end
 	if not _diplomacy.is_ui_created then 
 	
 		PlayerColour_SetConfigChangedCallback(Diplomacy_UpdateNameColours)
@@ -790,7 +799,7 @@ function Diplomacy_UpdateDataContext()
 				resource.tooltip.requirements = Loc_Empty()
 			else
 				local currResources = Player_GetResource(Game_GetLocalPlayer(), _diplomacy.resources[j].resource_type)
-				local minTaxedIncrement = _diplomacy.tribute.increment * (1.0 + Diplomacy_GetTaxRate(Game_GetLocalPlayer()))
+				local minTaxedIncrement = _diplomacy.data_context.increment * (1.0 + Diplomacy_GetTaxRate(Game_GetLocalPlayer()))
 				
 				local underMinTribute = currResources < minTaxedIncrement
 			

@@ -87,7 +87,7 @@ function Diplomacy_IncreaseTribute(parameter)
 	local parts = string.split(parameter)
 	local player_index = tonumber(parts[1])
 	local resource_index = tonumber(parts[2])
-	if Diplomacy_AddTribute(player_index, resource_index, _diplomacy.tribute.increment) then 
+	if Diplomacy_AddTribute(player_index, resource_index, _diplomacy.data_context.increment) then 
 		Diplomacy_UpdateUI()
 	end
 end
@@ -97,7 +97,7 @@ function Diplomacy_DecreaseTribute(parameter)
 	local parts = string.split(parameter)
 	local player_index = tonumber(parts[1])
 	local resource_index = tonumber(parts[2])	
-	if Diplomacy_AddTribute(player_index, resource_index, -_diplomacy.tribute.increment) then 
+	if Diplomacy_AddTribute(player_index, resource_index, -_diplomacy.data_context.increment) then 
 		Diplomacy_UpdateUI()
 	end
 end
@@ -161,7 +161,7 @@ function Diplomacy_AddTribute(player_index, resource_index, amount)
 		t.amount = t.amount + math.floor(n)
 		t.opacity = math.min(1.0, t.amount + min_opacity)
 	end
-	-- Updates in highger increment amount then 100
+	-- Updates in higher increment amount then 100
 	amount = amount * Player_GetTributeIncrementModifier();
 	
 	for _, context_player in pairs(_diplomacy.data_context.players) do 

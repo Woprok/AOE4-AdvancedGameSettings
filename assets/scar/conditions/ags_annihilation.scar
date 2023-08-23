@@ -114,7 +114,7 @@ function AGS_Annihilation_OnLandmarkDestroyed(context)
 end
 -- Tracks which players have built a market (and can therefore gift resources to allies).
 function AGS_Annihilation_OnConstructionComplete(context)
-	if context ~= nil and context.entity ~= nil and Entity_IsOfType(context.entity, AGS_BP_MARKET) then
+	if context ~= nil and context.entity ~= nil and Entity_IsOfType(context.entity, AGS_BP_TYPE_TRADE) then
 		local owner = context.player
 		for _, player in pairs(AGS_ANNIHILATION_PLAYERS_WITH_MARKETS) do
 			if player == owner then 
@@ -225,14 +225,14 @@ function AGS_Annihilation_IsAbleToProduce(player)
 	for i = 1, EGroup_CountSpawned(entities) do
 		local entity = EGroup_GetEntityAt(entities, i)	
 		-- Accounts for both packed Mongol buildings and finished buildings of other civs 
-		if Entity_IsOfType(entity, AGS_BP_MOBILE) or Entity_GetBuildingProgress(entity) >= 1.0 then			
+		if Entity_IsOfType(entity, AGS_BP_MOBILE) or Entity_GetBuildingProgress(entity) >= 1.0 or Entity_GetStateModelBool(entity, "do_unpacking_construction") then			
 			-- Check if this entity has a production queue that is not disabled
 			if AGS_IsThisSpecialMobileBuildingDead(entity) then
 				AGS_Print("Mobile building is destroyed and will be ignored for annihilation...")
 			else
-				if Entity_IsProductionQueueAvailable(entity) then				
+				if Entity_IsProductionQueueAvailable(entity) or Entity_GetStateModelBool(entity, "do_unpacking_construction") then				
 					-- Track if player has a landmark that can produce units
-					if Entity_IsOfType(entity, AGS_BP_LANDMARK) then
+					if AGS_IsALandmarkInner(entity) then
 						has_landmark_entity_with_queue = true
 						-- Track if player has a production building
 					else
