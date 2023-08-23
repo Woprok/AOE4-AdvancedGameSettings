@@ -7,6 +7,7 @@
 -- Religious win condition.
 -- Players (or Teams) use Monks to capture Holy Sites around the map.
 -- When the player or team captures all Holy Sites, they must defend them for a period of time to win the match.
+-- TODO figure out why we cant remove color_last_capturing as Relic did in May 2023 PUP
 ---------------------------------------------------------------------------------------------------
 
 import("conditions/conditiondata/ags_religious_data.scar")
@@ -161,7 +162,7 @@ function AGS_Religious_CreateSiteData()
 			pos = Entity_GetPosition(EGroup_GetSpawnedEntityAt(AGS_RELIGIOUS_SACRED_SITE_EGROUP, i)),
 			player_last_capturing = nil,
 			--color should be retrieved from player to be correct all the time
-			--color_last_capturing = nil,
+			color_last_capturing = nil,
 			progress = AGS_RELIGIOUS_PROGRESS_MIN,
 			objective = nil,
 			flash = nil,
@@ -221,7 +222,7 @@ function AGS_Religious_UpdateSacredSiteObjectives()
 			state = OS_Incomplete
 		end			
 		-- this originally used stored color site.color_last_capturing
-		AGS_Objectives_SetColorProgress(site.objective, state, Player_GetUIColour(site.player_last_capturing), math.abs(site.progress))		
+		AGS_Objectives_SetColorProgress(site.objective, state, site.color_last_capturing, math.abs(site.progress))		
 	end	
 end
 
@@ -529,7 +530,7 @@ function AGS_Religious_OnHolySiteChangeTypeContinue(instigating_player, site_ent
 		if site.entity == site_entity_id then
 			site.player_last_capturing = instigating_player.id
 			-- Changed from original if to simply always be specific player color instead of merging.
-			-- site.color_last_capturing = Player_GetUIColour(instigating_player.id)
+			site.color_last_capturing = Player_GetUIColour(instigating_player.id)
 			if not site.is_revealed then
 				FOW_RevealArea(holy_site_pos, AGS_RELIGIOUS_VISION_RADIUS, -1)
 				site.is_revealed = true
