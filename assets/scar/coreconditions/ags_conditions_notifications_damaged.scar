@@ -122,6 +122,6 @@ function AGS_Notifications_DestroyedNeutral(uwid, owner, notification)
 	local priority = AGS_NP_LOW
 	local title = Loc_FormatText(notification.self_crushed)
 	local sfx = notification.enemy_destroyed_sfx
-	local color = {1, 1, 1, 1}
-	AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, priority, title, sfx, color)
+	--local color = {1, 1, 1, 1}
+	--AGS_Notifications_CreateTextCue(AGS_NOTIFICATIONS_CORE, priority, title, sfx, color)
 end
