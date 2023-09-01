@@ -78,10 +78,12 @@ Ideally all of the following:
 - Tuning pack used.
 - Options used in the match.  
 - What happened before the crash or bug.  
+
 In case of any crash:
-- C:\Users\USERNAME\Documents\My Games\Age of Empires IV\warnings.log contains report from scar (script) crashes and will help resolve the issue.   
-Additionally:  
-- C:\Users\USERNAME\Documents\My Games\Age of Empires IV\LogFiles contains logs, in some cases they might contain additional information that might help for a problem to be resolved. Most informations are logged in scarlog and warnings.    
+- C:\Users\USERNAME\Documents\My Games\Age of Empires IV\warnings.log contains report from scar (script) crashes and will help resolve the issue.    
+
+Optional:   
+- C:\Users\USERNAME\Documents\My Games\Age of Empires IV\LogFiles contains logs, in some cases they might contain additional information that might help for a problem to be resolved. Most informations are logged in scarlog and warnings.
 
 ### Known Issues
 
