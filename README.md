@@ -72,12 +72,16 @@ Donation link can be found in the side bar of this repository under "Sponsor thi
 ## Bug & other issues:    
 Include as much information as possible.   
 Ideally all of the following:  
+- Platform (PC, Xbox, etc.)
 - Amount of PLAYERS & AI's and their teams.
 - Map, seed, biome. 
 - Tuning pack used.
 - Options used in the match.  
 - What happened before the crash or bug.  
-- C:\Users\USERNAME\Documents\My Games\Age of Empires IV\LogFiles contains logs, in some cases they might contain additional information that might help for a problem to be resolved. Most informations are logged in scarlog and warnings.  
+In case of any crash:
+- C:\Users\USERNAME\Documents\My Games\Age of Empires IV\warnings.log contains report from scar (script) crashes and will help resolve the issue.   
+Additionally:  
+- C:\Users\USERNAME\Documents\My Games\Age of Empires IV\LogFiles contains logs, in some cases they might contain additional information that might help for a problem to be resolved. Most informations are logged in scarlog and warnings.    
 
 ### Known Issues
 
