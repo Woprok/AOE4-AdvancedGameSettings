@@ -368,7 +368,7 @@ end
 
 function AGS_StartingCities_RemoveMapSacredSites()	
 	local all_prefab_sites = EGroup_CreateUnique()
-	World_GetBlueprintEntities(AGS_GetNeutralEntity(AGS_BP_SACRED_SITE), all_prefab_sites)
+	World_GetAllEntitiesOfType(all_prefab_sites, AGS_BP_SACRED_SITE)	
 	for i = 1, EGroup_CountSpawned(all_prefab_sites) do
 		local eid = EGroup_GetSpawnedEntityAt(all_prefab_sites, i)
 		if eid ~= nil and Entity_IsSpawned(eid) then

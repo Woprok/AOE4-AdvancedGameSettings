@@ -51,7 +51,7 @@ function AGS_Religious_PresetFinalize()
 	AGS_Print("AGS_Religious_PresetFinalize")
 	-- Create new group and allocate all sacred sites to it. If group is empty unload this module.
 	AGS_RELIGIOUS_SACRED_SITE_EGROUP = EGroup_CreateUnique()
-	World_GetBlueprintEntities(AGS_GetNeutralEntity(AGS_BP_SACRED_SITE), AGS_RELIGIOUS_SACRED_SITE_EGROUP)	
+	World_GetAllEntitiesOfType(AGS_RELIGIOUS_SACRED_SITE_EGROUP, AGS_BP_SACRED_SITE)	
 	if EGroup_CountSpawned(AGS_RELIGIOUS_SACRED_SITE_EGROUP) == 0 then
 		Core_UnregisterModule(AGS_RELIGIOUS_MODULE)
 		return	

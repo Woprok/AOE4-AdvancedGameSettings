@@ -24,29 +24,58 @@ function AGS_HouseModifier_UpdateModuleSettings()
 	end
 end
 
-function AGS_HouseModifier_EarlyInitializations()
-	AGS_Print("AGS_HouseModifier_EarlyInitializations")
-	AGS_HouseModifier_Change()
+function AGS_HouseModifier_OnPlay()
+	AGS_Print("AGS_HouseModifier_OnPlay")
+	AGS_HouseModifier_Initialize()
+	Rule_AddGlobalEvent(AGS_HouseModifier_OnConstructionComplete, GE_ConstructionComplete)
+	Rule_AddGlobalEvent(AGS_HouseModifier_OnEntityKilled, GE_EntityKilled)
+end
+
+function AGS_HouseModifier_OnGameOver()
+	AGS_Print("AGS_HouseModifier_OnGameOver")
+	Rule_RemoveGlobalEvent(AGS_HouseModifier_OnConstructionComplete)
+	Rule_RemoveGlobalEvent(AGS_HouseModifier_OnEntityKilled)
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Callbacks:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_HouseModifier_DestroyedListener(context)
-	AGS_Print("AGS_HouseModifier_DestroyedListener")
+function AGS_HouseModifier_OnEntityKilled(context)
+	AGS_Print("AGS_HouseModifier_OnEntityKilled")
+	if context.victimOwner == nil or context.victim == nil then
+		return
+	end
+	local player = Core_GetPlayersTableEntry(context.victimOwner)
+	-- Eliminated players are not interesting.
+	if player == nil or player.isEliminated then
+		return
+	end
+	-- Find existing and remove it.
 	local modifier = AGS_HOUSE_MODIFIER_MODIFIERS[context.victim.EntityID]
-	if modifier then
+	if modifier ~= nil then
 		Modifier_Remove(modifier)
 		AGS_HOUSE_MODIFIER_MODIFIERS[context.victim.EntityID] = nil
 	end
 end
 
-function AGS_HouseModifier_ConstructionListener(context)
-	AGS_Print("AGS_HouseModifier_ConstructionListener")
-	if Entity_IsOfType(context.entity, "house") then
-		AGS_HOUSE_MODIFIER_MODIFIERS[context.entity.EntityID] = Modify_PlayerPopCap(context.player, AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity, MUT_Addition)
-		Rule_AddEntityEvent(AGS_HouseModifier_DestroyedListener, context.entity, GE_EntityKilled)
+function AGS_HouseModifier_OnConstructionComplete(context)
+	AGS_Print("AGS_HouseModifier_OnConstructionComplete")
+	if context == nil or context.player == nil or context.entity == nil then 
+		return
+	end	
+	-- Only houses are interesting.
+	if not Entity_IsOfType(context.entity, AGS_BP_HOUSE) then
+		return
+	end
+	local player = Core_GetPlayersTableEntry(context.player)
+	-- Eliminated players are not interesting.
+	if player == nil or player.isEliminated then
+		return
+	end
+	-- Only new.
+	if AGS_HOUSE_MODIFIER_MODIFIERS[context.entity.EntityID] == nil then
+		AGS_HOUSE_MODIFIER_MODIFIERS[context.entity.EntityID] = Modify_PlayerPopCap(player.id, AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity, MUT_Addition)
 	end
 end
 
@@ -54,10 +83,19 @@ end
 -- Functions:
 ---------------------------------------------------------------------------------------------------
 
-function AGS_HouseModifier_Change()
-	for i=1,World_GetPlayerCount() do
-		local p = World_GetPlayerAt(i)
-		Rule_RemovePlayerEvent(AGS_HouseModifier_ConstructionListener, p)
-		Rule_AddPlayerEvent(AGS_HouseModifier_ConstructionListener, p, GE_ConstructionComplete)
+function AGS_HouseModifier_Initialize()
+	for _, player in pairs(PLAYERS) do
+		local eg_player_entities = Player_GetAllEntities(player.id)
+		
+		local AGS_TrackHouses = function(gid, idx, eid)
+			local entity_uwid = Entity_GetID(eid)
+			-- Track entity UWIDs.
+			if Entity_IsOfType(eid, AGS_BP_HOUSE) and AGS_HOUSE_MODIFIER_MODIFIERS[entity_uwid] == nil then				
+				AGS_HOUSE_MODIFIER_MODIFIERS[entity_uwid] = Modify_PlayerPopCap(player.id, AGS_GLOBAL_SETTINGS.AdditionalHouseCapacity, MUT_Addition)
+			end
+		end
+		
+		-- TODO add filter such as EGroup_Filter(eg_player_landmarks, landmark_types, FILTER_KEEP)
+		EGroup_ForEach(eg_player_entities, AGS_TrackHouses)
 	end
 end

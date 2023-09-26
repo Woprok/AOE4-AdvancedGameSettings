@@ -1,0 +1,233 @@
+--[[xboxhudresources.xaml
+<!--  Diplomacy Player List Item Template  -->
+    <DataTemplate x:Key="XboxDiplomacyPlayerListItemTemplate">
+        <Grid Width="Auto" MinHeight="65"
+              Margin="-5,0,5,10" HorizontalAlignment="Stretch"
+              Visibility="{Binding [is_visible], Converter={StaticResource BoolToVis}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition>
+                    <ColumnDefinition.Style>
+                        <Style TargetType="ColumnDefinition">
+                            <Setter Property="MinWidth" Value="540" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding [is_team_visible]}" Value="False">
+                                    <Setter Property="MinWidth" Value="475" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ColumnDefinition.Style>
+                </ColumnDefinition>
+                <ColumnDefinition>
+                    <ColumnDefinition.Style>
+                        <Style TargetType="ColumnDefinition">
+                            <Setter Property="MinWidth" Value="135" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding [is_team_visible]}" Value="False">
+                                    <Setter Property="MinWidth" Value="0" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ColumnDefinition.Style>
+                </ColumnDefinition>
+                <ColumnDefinition MinWidth="300" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Rectangle Grid.Column="0"
+                       Margin="0,0,5,0"
+                       Style="{StaticResource Xbox_HUDPanelDarkBackground}" />
+            <Rectangle Grid.Column="1"
+                       Margin="5,0"
+                       Style="{StaticResource Xbox_HUDPanelDarkBackground}" />
+            <Rectangle Grid.Column="2"
+                       Margin="5,0,0,0"
+                       Style="{StaticResource Xbox_HUDPanelDarkBackground}" />
+
+            <ContentControl x:Name="PlayerListHighlightState" Grid.ColumnSpan="3">
+                <ContentControl.OpacityMask>
+                    <LinearGradientBrush StartPoint="0,1" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="Black" />
+                        <GradientStop Offset="1" Color="Transparent" />
+                    </LinearGradientBrush>
+                </ContentControl.OpacityMask>
+                <ContentControl.Style>
+                    <Style BasedOn="{StaticResource Xbox_HighlightAnimation}" TargetType="{x:Type ContentControl}">
+                        <Setter Property="IsEnabled" Value="True" />
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource Mode=TemplatedParent}}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentControl.Style>
+            </ContentControl>
+            <!--  Player name & details  -->
+            <Grid Grid.Column="0"
+                  Margin="26,0,0,1" HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Row="0" Grid.Column="0"
+                      Grid.ColumnSpan="2">
+                    <TextBlock MinWidth="180"
+                               HorizontalAlignment="Left" VerticalAlignment="Center"
+                               Effect="{StaticResource DropShadowTextStyle}"
+                               Text="{Binding [name][text]}">
+                        <TextBlock.Style>
+                            <Style BasedOn="{StaticResource xbox_HUDBodyStatsText}" TargetType="{x:Type TextBlock}">
+                                <Setter Property="Foreground" Value="{Binding [name][color]}" />
+                            </Style>
+                        </TextBlock.Style>
+
+                    </TextBlock>
+                    <Separator Background="{Binding [name][color]}" Visibility="{Binding [is_eliminated], Converter={StaticResource BoolToVis}}" />
+                </Grid>
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2"
+                            Orientation="Horizontal">
+                    <Image Height="28"
+                           Margin="0,0,10,0" VerticalAlignment="Center"
+                           Effect="{StaticResource DropShadowTextStyle}"
+                           Source="{Binding [civ_flag]}" />
+                    <TextBlock Width="16"
+                               Margin="0,0,0,3" HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               Effect="{StaticResource DropShadowTextStyle}"
+                               Style="{StaticResource xbox_HUDBodyStatsText}"
+                               Text="|" TextAlignment="Center" />
+                    <TextBlock MinWidth="20"
+                               Margin="0,3,0,0" HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               Style="{StaticResource TitleTextBlockStyle}"
+                               Text="{Binding [age]}"
+                               TextAlignment="Center" />
+                    <TextBlock Width="16"
+                               Margin="0,0,0,3" HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               Effect="{StaticResource DropShadowTextStyle}"
+                               Style="{StaticResource xbox_HUDBodyStatsText}"
+                               Text="|" TextAlignment="Center"
+                               Visibility="{Binding [is_score_visible], Converter={StaticResource BoolToVis}}" />
+                    <TextBlock VerticalAlignment="Center"
+                               Effect="{StaticResource DropShadowTextStyle}"
+                               Style="{StaticResource xbox_HUDBodyStatsText}"
+                               Text="{Binding [score_total], Converter={StaticResource LocalizedStringConverter}, ConverterParameter=$11164626}"
+                               Visibility="{Binding [is_score_visible], Converter={StaticResource BoolToVis}}" />
+                </StackPanel>
+            </Grid>
+            <!--  Team  -->
+            <Grid Grid.Column="1"
+                  Margin="0"
+                  Visibility="{Binding [is_team_visible], Converter={StaticResource BoolToVis}}">
+                <Border Width="24" Height="24"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        BorderBrush="{DynamicResource PrimaryColorLightBrush}"
+                        BorderThickness="1"
+                        Visibility="{Binding [is_ally], Converter={StaticResource BoolToVis}}" />
+                <TextBlock Margin="0,2,0,0" HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource xbox_HUDBodyStatsText}"
+                           Text="{Binding [team][name]}" />
+            </Grid>
+            <!--  Resource amount buttons  -->
+            <ItemsControl Grid.Column="2"
+                          Width="Auto" Height="Auto"
+                          Margin="2,0,0,0" HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Focusable="False"
+                          ItemsSource="{Binding [tribute]}"
+                          Visibility="{Binding [is_tribute_visible], Converter={StaticResource BoolToVis}}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <esControls:SpacedStackPanel Orientation="Horizontal" Spacing="12" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Width="64" Height="61"
+                                esControls:ButtonHelper.AcceptsGamepadCommands="{Binding [is_enabled]}"
+                                esControls:ButtonHelper.CommandParameter="{Binding [resourceClickedParameter]}"
+                                esControls:ButtonHelper.GamepadFaceTopCommand="{Binding [resourceRightClickedCommand]}"
+                                esControls:ButtonHelper.RightClickCommand="{Binding [resourceRightClickedCommand]}"
+                                Command="{Binding [resourceClickedCommand]}"
+                                CommandParameter="{Binding [resourceClickedParameter]}"
+                                IsHitTestVisible="{Binding [is_enabled]}"
+                                KeyboardNavigation.AcceptsReturn="{Binding [is_enabled]}"
+                                Style="{StaticResource XboxDiplomacyResourceButtonStyle}"
+                                ToolTipService.InitialShowDelay="0"
+                                ToolTipService.IsEnabled="{Binding IsController, Mode=OneWay, Source={x:Static device:DeviceModel.Instance}, Converter={StaticResource InvBool}}"
+                                ToolTipService.ShowDuration="86400000" ToolTipService.ShowOnDisabled="True">
+                            <sControls:XboxDescriptionHelper.Description>
+                                <MultiBinding Converter="{StaticResource LocalizedStringMultiConverter}" ConverterParameter="$999212">
+                                    <Binding Path="[tooltip][help]" />
+                                    <Binding Path="[tooltip][requirements]" />
+                                </MultiBinding>
+                            </sControls:XboxDescriptionHelper.Description>
+                            <Button.Content>
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image Width="32"
+                                           Opacity="{Binding [opacity]}"
+                                           Source="{Binding [imageSource]}" />
+                                    <TextBlock HorizontalAlignment="Center"
+                                               Style="{StaticResource Xbox_HUDText_ResourcesPanel}"
+                                               Text="{Binding [amount], Converter={StaticResource CastToIntOperator}}" />
+                                </StackPanel>
+                            </Button.Content>
+                            <!--  Resource tooltip  -->
+                            <Button.ToolTip>
+                                <ToolTip Content="{Binding}"
+                                         DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
+                                         Placement="Left"
+                                         Style="{StaticResource Xbox_TextOnlyToolTipStyle}">
+                                    <ToolTip.ContentTemplate>
+                                        <DataTemplate>
+                                            <ContentControl Width="{StaticResource HUDTooltipMaxWidthSmall}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="{StaticResource HUDTooltipGutterWidthGridLength}" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Grid.Column="1" Orientation="Vertical">
+                                                        <!--  "Tribute"  -->
+                                                        <TextBlock Style="{StaticResource xbox_HUDTitleText}" Text="{utility:LocString $11164972}" />
+                                                        <Grid HorizontalAlignment="Left">
+                                                            <!--  "Left-click to increase. Right-click to decrease."  -->
+                                                            <TextBlock Margin="{StaticResource SmallMarginTop}"
+                                                                       Style="{StaticResource xbox_HUDAltBodyStatsText}"
+                                                                       Text="{utility:LocString $11164971}"
+                                                                       TextWrapping="Wrap"
+                                                                       Visibility="{Binding IsController, Mode=OneWay, Converter={StaticResource InvBoolToVis}, Source={x:Static device:DeviceModel.Instance}}" />
+                                                            <!--  "Hold LT to increase increment amount."  -->
+                                                            <sControls:TextBlockIcons Margin="{StaticResource SmallMarginTop}"
+                                                                                      SourceText="{utility:LocString $1001569}"
+                                                                                      Style="{StaticResource xbox_HUDAltBodyStatsText}"
+                                                                                      TextWrapping="Wrap"
+                                                                                      Visibility="{Binding IsController, Mode=OneWay, Converter={StaticResource BoolToVis}, Source={x:Static device:DeviceModel.Instance}}" />
+                                                        </Grid>
+                                                        <TextBlock Margin="{StaticResource SmallMarginTop}"
+                                                                   Style="{StaticResource xbox_HUDBodyStatsText}"
+                                                                   Text="{Binding [tooltip][help]}" />
+                                                        <TextBlock Margin="{StaticResource SmallMarginTop}"
+                                                                   Style="{StaticResource xbox_HUDBodyStatsText}"
+                                                                   Text="{Binding [tooltip][requirements]}" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </ContentControl>
+                                        </DataTemplate>
+                                    </ToolTip.ContentTemplate>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </DataTemplate>
+]]
