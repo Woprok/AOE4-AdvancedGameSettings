@@ -70,14 +70,24 @@ Be free to also provide ideas or requests via issues/tickets.
 Donation link can be found in the side bar of this repository under "Sponsor this project".
 
 ## Bug & other issues:    
-Include as much information as possible.   
+Verify that you are using mod published by Zlatý Bludišťak.
+![image](https://github.com/Woprok/AOE4-AdvancedGameSettings/assets/37557138/e15fbac0-5b33-41fc-9d84-6cfe828a7b8a)
+
+Once you have verified that you are using correct version of the mod and issue persists.  
+Create a issue and try to provide as much information as possible.    
 Ideally all of the following:  
+- Platform (PC, Xbox, etc.)
 - Amount of PLAYERS & AI's and their teams.
-- Map, seed, biome. 
+- Map, seed, biome, gamemode (as there is multiple AGS gamemodes).
+- **All OPTIONS used in the match.**  
 - Tuning pack used.
-- Options used in the match.  
 - What happened before the crash or bug.  
-- C:\Users\USERNAME\Documents\My Games\Age of Empires IV\LogFiles contains logs, in some cases they might contain additional information that might help for a problem to be resolved. Most informations are logged in scarlog and warnings.  
+
+In case of any crash:
+- C:\Users\USERNAME\Documents\My Games\Age of Empires IV\warnings.log contains report from scar (script) crashes and will help resolve the issue.    
+
+Optional:   
+- C:\Users\USERNAME\Documents\My Games\Age of Empires IV\LogFiles contains logs, in some cases they might contain additional information that might help for a problem to be resolved. Most informations are logged in scarlog and warnings.
 
 ### Known Issues
 
