@@ -14,7 +14,7 @@
 AGS_GS_TEAM_VICTORY_FFA = 0
 AGS_GS_TEAM_VICTORY_STANDARD = 1
 AGS_GS_TEAM_VICTORY_DYNAMIC = 2
--- Settlement
+-- Settlements
 AGS_GS_SETTLEMENT_SCATTERED = 0
 AGS_GS_SETTLEMENT_NOMADIC = 1
 AGS_GS_SETTLEMENT_SETTLED = 2
@@ -34,7 +34,7 @@ AGS_GS_TEAM_VISION_ALWAYS = 2
 AGS_GS_MAP_VISION_CONCEALED = 0
 AGS_GS_MAP_VISION_EXPLORED = 1
 AGS_GS_MAP_VISION_REVEALED = 2
--- Age
+-- Ages
 AGS_GS_AGE_NONE = 0
 AGS_GS_AGE_DARK = 1
 AGS_GS_AGE_FEUDAL = 2
@@ -53,7 +53,7 @@ AGS_GS_RESOURCES_MAXIMUM = 6
 AGS_GS_TC_RESTRICTIONS_NONE = 0
 AGS_GS_TC_RESTRICTIONS_NORMAL = 1
 AGS_GS_TC_RESTRICTIONS_LANDMARKS = 2
--- Handicap
+-- Handicaps
 AGS_GS_HANDICAP_TYPE_DISABLED = 0
 AGS_GS_HANDICAP_TYPE_ECONOMIC = 1
 AGS_GS_HANDICAP_TYPE_MILITARY = 2
@@ -73,7 +73,7 @@ AGS_GS_COLOR_GREY = 9 -- Monsoon/Natural Grey
 -- Local player should never change. And be ready after Initialization Phase.
 -- Local player is used for UI & visual logic. Gameplay logic should never use it as it will cause desync.
 AGS_GS_LOCAL_PLAYER = nil
-AGS_GLOBAL_SETTINGS_BUILD = "4.2.0.7"
+AGS_GLOBAL_SETTINGS_BUILD = "4.2.1.0"
 AGS_GLOBAL_SETTINGS_MODULE = "AGS_GlobalSettings"
 AGS_GLOBAL_SETTINGS = {
 	Annihilation = true, -- Player loses everything. 
@@ -93,8 +93,7 @@ AGS_GLOBAL_SETTINGS = {
 	
 	EliminationSettings = {
 		EnableAITakeover = false, -- This will prevent disconnected player to be eliminated. Results not tested.
-	},
-	
+	},	
 	ConquestSettings = {
 		Capital = true,
 		Landmarks = true,
