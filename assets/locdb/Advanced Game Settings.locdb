@@ -28,6 +28,11 @@
 			<EngineName i:nil="true" />
 			<Name>fr</Name>
 		</Locale>
+		<Locale>
+			<DisplayName>Korean</DisplayName>
+			<EngineName i:nil="true" />
+			<Name>ko</Name>
+		</Locale>
 	</Locales>
 	<Pipelines />
 	<Scans />
