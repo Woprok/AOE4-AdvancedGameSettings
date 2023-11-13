@@ -1,0 +1,397 @@
+ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
+1,,,,Mod Title,,고급 게임 설정
+2,,,,Mod Page Description,,"에이지 오브 엠파이어 4 표준 게임 모드를 확장하고 새로운 옵션으로 매치 설정을 자기 취향에 맞게 설정할 수 있는 기능을 제공합니다.\n\n점수, 고전 킹 오브 더 힐 옵션, 불가사의 러쉬, 그리고 더 많은 승리 유형들과 같이 추가적인 승리 조건이 포함되어 있습니다. 유목민이나 요새화와 같은 다양한 시작 조건과 조약 및 외교, 시대 제한, 핸디캡 등 다양한 새로운 옵션을 제공합니다.\n\n도움말, 피드백, 버그 제보 및 모드 기여: \nhttps://github.com/search?q=AOE4-AdvancedGameSettings\n커뮤니티 번역:\n - 중국어\n - 체코어\n - 불어\n - 한국어"
+3,,,,Mod Gamemode Description,,"고급 게임 설정은 게임을 자기 취향에 맞게 설정하고 원하는 대로 플레이할 수 있는 다양한 매치 옵션과 승리 조건을 제공합니다.\n\n도움말, 피드백, 버그 제보 및 모드 기여:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+4,,,,Option Header,,승리 조건
+5,,,,Annihilation Option,,섬멸
+6,,,,Annihilation Option,,"모든 적을 처치하십시오. 이 옵션을 비활성화하면 플레이어가 모든 것을 잃어도 절대 탈락되지 않습니다."
+7,,,,Elimination Option,,제거
+8,,,,Elimination Option,,모든 적보다 더 오랫동안 이겨내세요. 이 옵션을 비활성화하면 마지막 상대가 종료 시 매치가 완료되지 않습니다.
+9,,,,Surrender Option,,항복
+10,,,,Surrender Option,,항복하지 마세요. 이 옵션을 비활성화하면 마지막 상대가 항복할 시 매치가 완료되지 않습니다.
+11,,,,Conquest Option,,정복
+12,,,,Conquest Option,,모든 적의 목표물을 정복하세요.
+13,,,,Regicide Option,,국왕 시해
+14,,,,Regicide Option,,모든 적의 국왕을 제거하세요.
+15,,,,Religious Option,,신성
+16,,,,Religious Option,,성지를 모두 점령하세요.
+17,,,,Wonder Option,,불가사의
+18,,,,Wonder Option,,불가사의를 건설하고 방어하세요.
+19,,,,Score Option,,점수
+20,,,,Score Option,,타이머가 끝나기 전에 높은 점수를 달성하세요.
+21,,,,Option Header,,게임 조건
+22,,,,Settlement Option,,정착
+23,,,,Settlement Option,,매치 시작 시 정착 여부
+24,,,,Settlement Option,,산재
+25,,,,Settlement Option,,유목
+26,,,,Settlement Option,,정착
+27,,,,Treaty Option,,조약
+28,,,,Treaty Option,,평화 조약 기간
+29,,,,Generic,,비활성화
+30,,,,Generic,,5분
+31,,,,Generic,,10분
+32,,,,Generic,,15분
+33,,,,Generic,,20분
+34,,,,Generic,,25분
+35,,,,Generic,,30분
+36,,,,Generic,,35분
+37,,,,Generic,,40분
+38,,,,Generic,,45분
+39,,,,Generic,,50분
+40,,,,Generic,,55분
+41,,,,Generic,,60분
+42,,,,Generic,,65분
+43,,,,Generic,,70분
+44,,,,Generic,,75분
+45,,,,Generic,,80분
+46,,,,Generic,,85분
+47,,,,Generic,,90분
+48,,,,Generic,,95분
+49,,,,Generic,,100분
+50,,,,Generic,,105분
+51,,,,Generic,,110분
+52,,,,Generic,,115분
+53,,,,Generic,,120분
+54,,,,Team Victory Option,,팀 승리
+55,,,,Team Victory Option,,팀으로 게임에서 승리할 수 있게 활성화합니다.
+56,,,,Team Victory Option,,Free For All
+57,,,,Team Victory Option,,초기 팀
+58,,,,Team Victory Option,,동적 팀
+59,,,,Team Solidarity Option,,팀 연대
+60,,,,Team Solidarity Option,,팀원이 패배하면 그 팀의 다른 팀원들도 바로 매치에서 패배합니다. 모두는 하나를 위해, 하나는 모두를 위해!
+61,,,,Option Header,,승리 설정
+62,,,,Conquest Option,,수도 정복
+63,,,,Conquest Option,,정복에서 플레이어를 제거하려면 첫 마을 회관을 파괴해야 합니다.
+64,,,,Conquest Option,,랜드마크 정복
+65,,,,Conquest Option,,정복에서 플레이어를 제거하려면 모든 시대의 랜드마크를 파괴해야 합니다.
+66,,,,Conquest Option,,마을 회관 정복
+67,,,,Conquest Option,,정복에서 플레이어를 제거하려면 모든 추가 마을 회관들을 파괴해야 합니다.
+68,,,,Conquest Option,,성채 정복
+69,,,,Conquest Option,,정복에서 플레이어를 제거하려면 모든 성채들을 파괴해야 합니다.
+70,,,,Conquest Option,,불가사의 정복
+71,,,,Conquest Option,,정복에서 플레이어를 제거하려면 불가사의를 파괴해야 합니다.
+72,,,,Religious Option,,신성 타이머
+73,,,,Religious Option,,모든 성지를 지키는 데 필요한 시간을 설정합니다.
+74,,,,Generic,,즉시
+75,,,,Generic,,1분
+76,,,,Generic,,2분
+77,,,,Generic,,3분
+78,,,,Generic,,4분
+79,,,,Generic,,6분
+80,,,,Generic,,7분
+81,,,,Generic,,8분
+82,,,,Generic,,9분
+83,,,,Generic,,11분
+84,,,,Generic,,12분
+85,,,,Generic,,13분
+86,,,,Generic,,14분
+87,,,,Religious Option,,신성 재개 타이머
+88,,,,Religious Option,,성지를 재탈환 시 중단된 시간부터 타이머가 계속됩니다.
+89,,,,Wonder Option,,불가사의 타이머
+90,,,,Wonder Option,,불가사의를 방어하는 시간
+91,,,,Wonder Option,,불가사의 최후의 저항
+92,,,,Wonder Option,,완성된 불가사의를 파괴하면 소유한 플레이어는 제거됩니다.
+93,,,,Wonder Option,,불가사의 규모 비용
+94,,,,Wonder Option,,플레이어의 수에 따라 불가사의의 비용을 조정합니다. 플레이어당 모든 자원의 추가 양을 정합니다. 시작 가격은 각 자원의 3000입니다.
+95,,,,Generic,,플레이어당 0
+96,,,,Generic,,플레이어당 250
+97,,,,Generic,,플레이어당 375
+98,,,,Generic,,플레이어당 500
+99,,,,Generic,,플레이어당 750
+100,,,,Generic,,플레이어당 1000
+101,,,,Generic,,플레이어당 1500
+102,,,,Generic,,플레이어당 2000
+103,,,,Option Header,,게임 설정
+104,,,,Tribute Option,,공물
+105,,,,Tribute Option,,플레이어가 아군에게 자원을 보낼 수 있습니다.
+106,,,,Diplomacy Option,,외교
+107,,,,Diplomacy Option,,플레이어가 자신만의 연합을 결성할 수 있습니다.
+108,,,,Team Vision Option,,팀 시야
+109,,,,Team Vision Option,,우호국과 시야를 공유합니다.
+110,,,,Generic,,없음
+111,,,,Team Vision Option,,시장 필요
+112,,,,Team Vision Option,,항상
+113,,,,Map Vision Option,,지도 시야
+114,,,,Map Vision Option,,매치 시작 시 지도의 시야 상태를 설정합니다.
+115,,,,Map Vision Option,,미탐사
+116,,,,Map Vision Option,,탐사 완료
+117,,,,Map Vision Option,,시야 확보
+118,,,,Age Option,,시작 시대
+119,,,,Age Option,,매치 시작 시 모든 플레이어의 시대를 설정합니다.
+120,,,,Age Option,,암흑 시대
+121,,,,Age Option,,봉건 시대
+122,,,,Age Option,,성주 시대
+123,,,,Age Option,,제국 시대
+124,,,,Age Option,,제국 시대 말
+125,,,,Age Option,,최종 시대
+126,,,,Age Option,,매치 시작 시 모든 플레이어의 최종 시대를 설정합니다.
+127,,,,Age Option,,기술 시대
+128,,,,Age Option,,매치 시작 시 모든 플레이어의 연구된 기술 시대를 설정합니다.
+129,,,,Resource Option,,시작 자원
+130,,,,Resource Option,,매치 시작 시 모든 플레이어의 할당되는 자원을 설정합니다.
+131,,,,Generic,,표준
+132,,,,Generic,,높음
+133,,,,Generic,,매우 높음
+134,,,,Generic,,최대
+135,,,,FOW Option,,제거당하면 지도 보기
+136,,,,FOW Option,,제거당한 플레이어는 전장의 안개 없이 지도를 볼 수 있습니다.
+137,,,,Option Header,,매치 설정
+138,,,,Score Visibility Option,,점수 표시
+139,,,,Score Visibility Option,,플레이어 점수는 고정 플레이어 정보가 켜져 있을 때 표시됩니다.
+140,,,,Score Option,,점수 표시 배치
+141,,,,Score Option,,"점수 모드 순위에서 현재 단독 순위를 보여줍니다. 팀 점수는 팀 승리가 허용된 경우 경기 종료 시에만 평가됩니다. 점수 승리 조건은 기본 점수와 동일한 방식을 사용하지 않습니다."
+142,,,,Score Option,,점수 타이머
+143,,,,Score Option,,시간이 끝난 후 점수로 게임을 결정짓게 됩니다.
+144,,,,Population Option,,최소 인구 수용량
+145,,,,Population Option,,집이 없을 때 초기 인구 수용량을 변경합니다. 최대 인구 수용량보다 많게 설정하지 마십시오.
+146,,,,Population Option,,최대 인구 수용량
+147,,,,Population Option,,최대 인구 수용량을 변경합니다. 설정된 값에 도달하기 위해선 집이 필요합니다.
+148,,,,Number,,0
+149,,,,Number,,25
+150,,,,Number,,50
+151,,,,Number,,75
+152,,,,Number,,100
+153,,,,Number,,125
+154,,,,Number,,150
+155,,,,Number,,175
+156,,,,Number,,200
+157,,,,Number,,225
+158,,,,Number,,250
+159,,,,Number,,275
+160,,,,Number,,300
+161,,,,Number,,350
+162,,,,Number,,400
+163,,,,Number,,450
+164,,,,Number,,500
+165,,,,Number,,550
+166,,,,Number,,600
+167,,,,Number,,650
+168,,,,Number,,700
+169,,,,Number,,750
+170,,,,Number,,800
+171,,,,Number,,850
+172,,,,Number,,900
+173,,,,Number,,950
+174,,,,Number,,1000
+175,,,,Number,,10000
+176,,,,Villager Option,,시작 주민
+177,,,,Villager Option,,각 플레이어의 초기 주민 수 변경
+178,,,,Number,,1
+179,,,,Number,,2
+180,,,,Number,,3
+181,,,,Number,,4
+182,,,,Number,,5
+183,,,,Number,,6
+184,,,,Number,,7
+185,,,,Number,,8
+186,,,,Number,,9
+187,,,,Number,,10
+188,,,,Number,,15
+189,,,,Number,,20
+190,,,,Number,,30
+191,,,,Number,,35
+192,,,,Number,,40
+193,,,,Number,,45
+194,,,,Keep Option,,시작 성채
+195,,,,Keep Option,,모든 플레이어들은 매치를 시작할 때 성채가 시작 지점 근처에 배치합니다.
+196,,,,Option Header,,레거시 설정
+197,,,,King Option,,시작 국왕
+198,,,,King Option,,모든 플레이어들은 매치를 시작할 때 국왕이 시작 지점 근처에 배치합니다.
+199,,,,Ding Option,,딩
+200,,,,Ding Option,,이스터 에그
+201,,,,Market Option,,빠른 시장
+202,,,,Market Option,,암흑 시대에서 시장을 건설할 수 있게 합니다.
+203,,,,Tree Option,,나무 폭격
+204,,,,Tree Option,,공성 무기와 함선들로 지면 공격을 통해 나무들을 파괴할 수 있습니다.
+205,,,,Speed Option,,시뮬레이션 속도
+206,,,,Speed Option,,게임 시뮬레이션 속도를 변경합니다. 이 옵션은 멀티플레이어에서 사용할 수 없습니다.
+207,,,,Game Rate Option,,게임 속도
+208,,,,Game Rate Option,,"채집, 건설, 수리, 생산 속도를 선택한 값으로 곱합니다."
+209,,,,Number,,1x
+210,,,,Number,,2x
+211,,,,Number,,3x
+212,,,,Number,,4x
+213,,,,Number,,5x
+214,,,,Number,,6x
+215,,,,Number,,7x
+216,,,,Number,,8x
+217,,,,Number,,9x
+218,,,,Number,,10x
+219,,,,Number,,0.95x
+220,,,,Number,,0.90x
+221,,,,Number,,0.85x
+222,,,,Number,,0.80x
+223,,,,Number,,0.75x
+224,,,,Number,,20x
+225,,,,TC Option,,마을 회관 제한
+226,,,,TC Option,,마을 회관 추가 건설을 비활성화합니다.
+227,,,,TC Option,,없음
+228,,,,TC Option,,표준
+229,,,,TC Option,,랜드마크
+230,,,,Team Solidarity,,당신의 팀원을 보호하세요.
+231,,,,Team Solidarity,,%1PLAYER_NAME%은(는) 그의 팀원들과 연대 항복했습니다.
+232,,,,Treaty,,조약 만료까지 남은 시간: %1MINUTES_REMAINING%분
+233,,,,Treaty,,"조약은 만료되었으니, 유혈사태에 대비하세요."
+234,,,,Diplomacy,,관계
+235,,,,Diplomacy,,우호적
+236,,,,Diplomacy,,중립
+237,,,,Diplomacy,,적대적
+238,,,,Diplomacy,,현재 정세
+239,,,,Diplomacy,,%1PLAYER_NAME%와(과) 우호적인 관계가 됩니다.
+240,,,,Diplomacy,,%1PLAYER_NAME%와(과) 중립적인 관계가 됩니다.
+241,,,,Diplomacy,,%1PLAYER_NAME%와(과) 적대적인 관계가 됩니다.
+242,,,,Settlement Option Summary,,흩어진 시작
+243,,,,King Option,,권능한 국왕
+244,,,,King Option,,국왕은 추가 보너스와 능력을 갖게 됩니다.
+245,,,,Team Balance Option,,팀 밸런스
+246,,,,Team Balance Option,,"팀이 플레이어를 잃으면 남은 팀원들이 패배한 플레이어의 인구 수용량과 자원을 공유받게 됩니다. 동적 팀은 해당되지 않습니다."
+247,,,,Team Balance Option,,인구
+248,,,,Team Balance Option,,인구 & 자원
+249,,,,Dock Option,,부두 없음
+250,,,,Dock Option,,"어떤 시대에서든 부두 건설을 비활성화하며, 강이나 바다로 플레이어를 구분하는 지도에서 사용하지 않는 것을 권장합니다."
+251,,,extra_text,Generic,,중간
+252,,,help_text,Surrender,,끝장을 볼 때까지 싸우세요.
+253,,,extra_text,Elimination,,마지막까지 이겨내세요.
+254,,,help_text,"Regicide King Unit, Requires Attributes",,"군주님은 신의 뜻에 따라 직접 통치할 권리를 통해 지상에서의 권위를 받을 수 없습니다. 그에게 묻지 마십시오!"
+255,,,screen_name,"Regicide King Unit, Requires Attributes",,국왕
+256,,,,Settlement Option,,요새화
+257,,,ags_conditions_objectives,Team Solidarity,,%1PLAYER_NAME% 보호에 실패했습니다.
+258,,,ags_conditions_objectives,Team Solidarity,,모든 상대 팀들은 무너졌습니다.
+259,,,ags_conditions_objectives,Annihilation,,모두 섬멸하세요.
+260,,,,AI Takeover,,대체 AI 켜기
+261,,,,AI Takeover,,"플레이어가 종료하면 탈락하지 않고 AI로 대체합니다."
+262,,,ags_conditions_objectives,Regicide,,당신은 모두에게 진정한 국왕이십니다.
+263,,,ags_conditions_objectives,Regicide,,국왕 보호에 실패했습니다.
+264,,,ags_conditions_notifications,Regicide,,%1PLAYER_NAME%이(가) 암살당했습니다.
+265,,,ags_conditions_objectives,Regicide,,%1PLAYER_NAME%의 국왕이 공격받고 있습니다.
+266,,,ags_conditions_notifications,Regicide,,국왕이 공격받고 있습니다.
+267,,,ags_conditions_notifications,Conquest,,"""%1PLAYER_NAME%이(가) 정복되었습니다."""
+268,,,ags_conditions_objectives,Conquest,,당신의 제국은 정복되었습니다.
+269,,,ags_conditions_objectives,Conquest,,모든 적을 정복했습니다.
+270,,,ags_conditions_objectives,Score,,살아남아 모두를 능가하세요.
+271,,,ags_conditions_objectives,Score,,당신의 제국은 역사 속에서 잊혀졌습니다.
+272,,,ags_conditions_objectives,Score,,당신의 제국은 가장 밝게 빛납니다.
+273,,,ags_conditions_notifications,Score,,%1PLAYER_NAME%은(는) 여전히 고도(Godot)를 기다리고 있습니다.
+274,,,ags_conditions_notifications,Wonder,,%1PLAYER_NAME%은(는) 불가사의의 영광을 견디지 못했습니다.
+275,,,ags_conditions_notifications,Wonder,,불가사의를 건설하세요.
+276,,,ags_conditions_notifications,Conquest,,랜드마크가 파괴되었습니다.
+277,,,ags_conditions_objectives,Wonder,,불가사의를 지켜내지 못했습니다.
+278,,,,Option Header,,플레이어 설정
+279,,,,Colors,,강제 색상
+280,,,,Colors,,"외교를 위해 색상을 수정합니다. 게임에서 충돌이 발생할 때마다 각 슬롯의 색상을 자동으로 업데이트합니다. 이 옵션은 팀 색상을 비활성화하여 사용할 수 없게 만듭니다."
+281,,,,Colors,,이 슬롯에서 강제 사용할 색상을 결정합니다. 강제 색상을 활성화해야 합니다.
+282,,,,Colors,,파랑
+283,,,,Colors,,빨강
+284,,,,Colors,,노랑
+285,,,,Colors,,초록
+286,,,,Colors,,청록
+287,,,,Colors,,보라
+288,,,,Colors,,주황
+289,,,,Colors,,분홍
+290,,,,Colors,,회색
+291,,,,Colors,,슬롯 1 강제 색상
+292,,,,Colors,,슬롯 2 강제 색상
+293,,,,Colors,,슬롯 3 강제 색상
+294,,,,Colors,,슬롯 4 강제 색상
+295,,,,Colors,,슬롯 5 강제 색상
+296,,,,Colors,,슬롯 6 강제 색상
+297,,,,Colors,,슬롯 7 강제 색상
+298,,,,Colors,,슬롯 8 강제 색상
+299,,,,Unit Rates Option,,유닛 속도
+300,,,,Unit Rates Option,,유닛 이동의 최대 속도에 선택한 값을 곱합니다.
+301,,,,Number,,1.05x
+302,,,,Number,,1.10x
+303,,,,Number,,1.15x
+304,,,,Number,,1.20x
+305,,,,Number,,1.25x
+306,,,,Treaty,,조약 종료까지 1분
+307,,,ags_conditions_objectives,Treaty,,전쟁을 준비하세요.
+308,,,ags_conditions_objectives,Treaty,,이런 일은 일어나서는 안 되는 일이었습니다.
+309,,,ags_conditions_objectives,Treaty,,펜은 역사상 가장 강력한 무기입니다.
+310,,,ags_conditions_notifications,Score,,게임 종료까지 %1MINUTES_REMAINING%분 남았습니다.
+311,,,ags_conditions_notifications,Score,,게임 종료까지 1분 남았습니다.
+312,,,ags_conditions_objectives,Score,,살아남아 모두를 능가하세요. 현재 %1RANK_POSITION%위.
+313,,,ags_conditions_notifications,Religious,,%1PLAYER_NAME%은(는) 새로운 신에게 절을 올렸습니다.
+314,,,,Number,,1.50x
+315,,,,Number,,1.75x
+316,,,,Ingame Button,,목표 전환
+317,,,,Ingame Button,,목표를 표시하거나 일시적으로 숨깁니다.
+318,,,,Ingame Button,,고급 게임 설정
+319,,,,Ingame Button,,피드백
+320,,,ags_match_ui,Ingame Button,,매치 설정
+321,,,ags_match_ui,Ingame Button,,모드 버전:
+322,,,,Mod Title,,유목민 고급 게임 설정
+323,,,,Mod Gamemode Description,,"유목민은 잘 알려진 다른 유목민 모드를 기반으로 되어 있습니다. 이 모드는 고급 게임 설정을 기반으로 하며, 유목민 모드 기본에 충실한 외교와 일부 옵션을 제공합니다.\n\n도움말, 피드백, 버그 제보 및 모드 기여:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+324,,,,Wonder Construction,,불가사의 건설
+325,,,,Wonder Construction,,불가사의 승리 조건이나 정복 승리 조건의 불가사의 정복이 아니여도 불가사의를 건설할 수 있게 합니다.
+326,,,,Double Workers Option,,일꾼 두 배
+327,,,,Double Workers Option,,"주민, 상인, 어선과 같은 경제 유닛의 비용과 생산 시간을 절반으로 줄입니다."
+328,,,,Handicap Option,,핸디캡 설정
+329,,,,Handicap Option,,핸디캡 유형
+330,,,,Handicap Option,,"활성화할 경우 각 해당 슬롯 플레이어에게 지정된 보너스 수준을 제공합니다. 보너스 유형은 경제, 군사 또는 둘 다입니다."
+331,,,,Handicap Option,,둘 다
+332,,,,Handicap Option,,군사
+333,,,,Handicap Option,,경제
+334,,,,Handicap Option,,슬롯 1 핸디캡
+335,,,,Handicap Option,,로비의 이 슬롯에 있는 플레이어에게 핸디캡으로 제공되는 보너스의 값을 설정합니다.
+336,,,,Number,,10%
+337,,,,Number,,20%
+338,,,,Number,,30%
+339,,,,Number,,40%
+340,,,,Number,,50%
+341,,,,Number,,60%
+342,,,,Number,,70%
+343,,,,Number,,80%
+344,,,,Number,,90%
+345,,,,Number,,100%
+346,,,,Number,,150%
+347,,,,Number,,200%
+348,,,,Number,,250%
+349,,,,Number,,300%
+350,,,,Handicap Option,,슬롯 2 핸디캡
+351,,,,Handicap Option,,슬롯 3 핸디캡
+352,,,,Handicap Option,,슬롯 4 핸디캡
+353,,,,Handicap Option,,슬롯 5 핸디캡
+354,,,,Handicap Option,,슬롯 6 핸디캡
+355,,,,Handicap Option,,슬롯 7 핸디캡
+356,,,,Handicap Option,,슬롯 8 핸디캡
+357,,,,Treasure Option,,보물
+358,,,,Treasure Option,,지도 주변에 임의로 약간의 보물이 생성합니다.
+359,,,,Resource Option,,적음
+360,,,,State Wars,,"다수의 도시 국가를 점령하여 성공적으로 확보하세요. 각 플레이어는 소수의 성직자로 시작하여 도시를 찾아 점령해야 합니다.\n문명에 따른 선택에 대해 효과가 없습니다. 인구 수는 150명으로 제한되어 있습니다. 도시의 75%를 장악한 팀이 승리합니다.\n\n도움말, 피드백, 버그 제보 및 모드 기여:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+361,,,,State Wars,,도시 국가 전쟁
+362,,,ags_conditions_objectives,State Wars,,대다수의 도시를 통제하세요.
+363,,,ags_conditions_objectives,State Wars,,%1NAMEORNUMBER% 도시
+364,,,ags_culture_data,State Wars,,%1PLAYER_NAME%이(가) 흡수함
+365,,,ags_culture_data,State Wars,,당신은 문화 승리에 가까워지고 있습니다
+366,,,ags_culture_data,State Wars,,당신의 팀은 문화 승리에 가까워지고 있습니다
+367,,,ags_culture_data,State Wars,,적이 문화 승리에 가까워지고 있습니다
+368,,,ags_culture_data,State Wars,,도시 국가를 점령 중
+369,,,ags_culture_data,State Wars,,아군이 도시 국가를 점령 중
+370,,,ags_culture_data,State Wars,,적군이 도시 국가를 점령 중
+371,,,ags_culture_data,State Wars,,도시 국가 점령 완료
+372,,,ags_culture_data,State Wars,,아군이 도시 국가를 점령함
+373,,,ags_culture_data,State Wars,,적군이 도시 국가를 점령함
+374,,,ags_culture_data,State Wars,,도시국가를 경쟁 중
+375,,,ags_culture_data,State Wars,,아군이 도시 국가를 경쟁 중
+376,,,ags_culture_data,State Wars,,적군이 도시 국가를 경쟁 중
+377,,,ags_culture_data,State Wars,,도시 국가 해방함
+378,,,ags_culture_data,State Wars,,아군이 도시 국가를 해방함
+379,,,ags_culture_data,State Wars,,도시 국가를 잃음
+380,,,ags_culture_data,State Wars,,도시 국가를 해방 중
+381,,,ags_culture_data,State Wars,,아군이 도시 국가를 해방 중
+382,,,ags_culture_data,State Wars,,적군이 도시 국가를 해방 중
+383,,,,Conquest Option,,팀 정복
+384,,,,Conquest Option,,"플레이어들은 상대 팀원들의 정복 가능한 건물들을 파괴해야만 승리할 수 있습니다. 관계가 어떤지에 따라 외교로 맺은 팀은 적용되지 않습니다."
+385,,,,Nomad Scout Option,,정찰병 소환 (산재)
+386,,,,Nomad Scout Option,,"흩어진 시작을 활성화했을 시, 주민 외에도 정찰병을 배치합니다."
+387,,,,Religious Option,,신성 단일 중앙 성지
+388,,,,Religious Option,,지도 생성을 통해 생성된 모든 성지들을 단일 성지로 바꿔 지도 중앙에 최대한 가깝게 배치합니다.
+389,,,,House Option,,추가 집 수용량
+390,,,,House Option,,집의 인구 수용량을 추가합니다.
+391,,,,Tournament Option,,토너먼트 밸런스
+392,,,,Tournament Option,,변경사항에 대한 전체 목록은 공식 GitHub 저장소를 참조하십시오.
+393,,,,,,유목민 토너먼트 고급 게임 설정
+394,,,,,,MrMerlin의 The Nomadic Clash을 위한 사전 구성 버전입니다.
+395,,,,KOTH,,킹 오브 더 힐 고급 게임 설정
+396,,,,KOTH,,"어떤 지도에서도 킹 오브 더 힐을 빠르게 플레이할 수 있습니다.\n\n도움말, 피드백, 버그 제보 및 모드 기여:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
