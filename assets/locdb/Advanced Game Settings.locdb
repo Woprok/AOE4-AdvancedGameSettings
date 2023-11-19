@@ -28,6 +28,11 @@
 			<EngineName i:nil="true" />
 			<Name>fr</Name>
 		</Locale>
+		<Locale>
+			<DisplayName>Português (Brasil)</DisplayName>
+			<EngineName i:nil="true" />
+			<Name>pt-BR</Name>
+		</Locale>
 	</Locales>
 	<Pipelines />
 	<Scans />
