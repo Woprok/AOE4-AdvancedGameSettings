@@ -1,0 +1,397 @@
+﻿ID,SourceText,TranslatedText
+1,Advanced Game Settings,Advanced Game Settings
+2,"Extends Age of Empires 4 standard game mode with new options and truly gives you an ability to customize match settings.\n\nContains additional win conditions like score, classic king of the hill option, wonder rush and many more victory types. Provides new options such as different starts like nomad or fortified and many new options including treaty & diplomacy, age restrictions, handicap...\n\nHelp, feedback, bug reports and contribution to mode can be done at: \nhttps://github.com/search?q=AOE4-AdvancedGameSettings\nCommunity Translations:\n - Chinese\n - Czech\n - French","Estende o modo de jogo padrão do Age of Empires 4 com novas opções e oferece a capacidade de personalizar de verdade as configurações de partida.\n\nContém condiçes de vitória adicionais como pontuação, a clássica opção de Rei da Colina, Corrida das Maravilhas e muitos outros tipos de vitória. Fornece diferentes começos como nômade ou fortificado e muitas novas opções de jogo, incluindo tratados de paz e diplomacia, restrições de eras, vantagens...\n\nAjuda, feedback, relatórios de bugs e contribuição para o modo podem ser feitos em: \nhttps://github.com/search?q=AOE4-AdvancedGameSettings\nTraduções da comunidade:\n - Chinês\n - Tcheco\n - Francês\n - Português do Brasil"
+3,"Advanced Game Settings provides you with a variety of match options and win conditions to customize your game and play it how you want to.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings","Advanced Game Settings oferece uma variedade de opções de partida e condições de vitória para você personalizar seu jogo e jogá-lo como quiser.\n\nAjuda, feedback, relatórios de bugs e contribuições para o modo podem ser feitos em:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+4,Win Conditions,Condições de Vitória
+5,Annihilation,Aniquilação
+6,"Destroy all enemies. This option is required, unless you wish for player to be never eliminated even if he loses everything.","Destrua todos os inimigos. Esta opção é necessária, a menos que você queira que o jogador nunca seja eliminado, mesmo que perca tudo."
+7,Elimination,Eliminação
+8,Prevail longer then all your enemies. Disabling this option will prevent match from being resolved if last opponent quits.,Prevaleça por mais tempo que todos os seus inimigos. Desativar esta opção impedirá que a partida seja resolvida se o último oponente desistir.
+9,Surrender,Rendição
+10,Do not surrender. Disabling this option will prevent match from being resolved if last opponent surrenders.,Sem Rendição. Desativar esta opção impedirá que a partida seja resolvida caso o último oponente se renda.
+11,Conquest,Conquista
+12,Conquer all enemy objectives,Conquiste todos os objetivos inimigos
+13,Regicide,Regicídio
+14,Defeat all enemy Kings,Derrote todos os reis inimigos
+15,Religious,Religioso
+16,Control all the Sacred Sites,Controle todos os Locais Sagrados
+17,Wonder,Maravilhas
+18,Build and defend the Wonder,Construa e defenda uma Maravilha
+19,Score,Pontuação
+20,Achieve highest score before timer ends,Alcance a maior pontuação antes que o tempo acabe
+21,Game Conditions,Condições de Jogo
+22,Settlement,Assentamento
+23,Initial settlement,Assentamento Inicial
+24,Scattered,Disperso
+25,Nomadic,Nômade
+26,Settled,Estabelecido
+27,Treaty,Tratado de Paz
+28,Period of peace,Período de Paz
+29,Disabled,Desabilitado
+30,5 minutes,5 minutos
+31,10 minutes,10 minutos
+32,15 minutes,15 minutos
+33,20 minutes,20 minutos
+34,25 minutes,25 minutos
+35,30 minutes,30 minutos
+36,35 minutes,35 minutos
+37,40 minutes,40 minutos
+38,45 minutes,45 minutos
+39,50 minutes,50 minutos
+40,55 minutes,55 minutos
+41,60 minutes,60 minutos
+42,65 minutes,65 minutos
+43,70 minutes,70 minutos
+44,75 minutes,75 minutos
+45,80 minutes,80 minutos
+46,85 minutes,85 minutos
+47,90 minutes,90 minutos
+48,95 minutes,95 minutos
+49,100 minutes,100 minutos
+50,105 minutes,105 minutos
+51,110 minutes,110 minutos
+52,115 minutes,115 minutos
+53,120 minutes,120 minutos
+54,Team Victory,Vitória em Equipe
+55,Enables for teams to win a game,Permite que a partida seja ganha em equipe
+56,Free For All,Jogo Livre
+57,Initial Teams,Equipes Iniciais
+58,Dynamic Teams,Equipes Dinâmicas
+59,Team Solidarity,Solidariedade de Equipe
+60,If any team member is defeated then that team will immediately lose the game. One for all. All for one.,Se algum membro da equipe for derrotado então aquela equipe perderá o jogo imediatamente. Um por todos. Todos por um.
+61,Win Settings,Configurações de Vitória
+62,Conquest Capital,Conquista de Capital
+63,Conquest requires destruction of first town center to eliminate player,Conquista requer a destruição do Centro da Cidade inicial para eliminar o jogador
+64,Conquest Landmarks,Conquista de Marcos
+65,Conquest requires destruction of all age up landmarks to eliminate player,Conquista requer a destruição de todos os Marcos de avanço de eras para eliminar o jogador
+66,Conquest Town Centers,Conquista de Centros da Cidade
+67,Conquest requires destruction of all additional town centers to eliminate player,Conquista requer a destruição de todos os Centros da Cidade adicionais para eliminar o jogador
+68,Conquest Keeps,Conquista de Castelos
+69,Conquest requires destruction of all keeps to eliminate player,Conquista requer a destruição de todas as Torres de Menagem para eliminar o jogador
+70,Conquest Wonder,Conquista de Maravilhas
+71,Conquest requires destruction of the wonder to eliminate player,Conquista requer a destruição da Maravilha para eliminar o jogador
+72,Religious Timer,Timer Religioso
+73,Time required to hold all sacred sites,Tempo requerido para manter todos os locais sagrados
+74,Instant,Instantâneo
+75,1 minute,1 minuto
+76,2 minutes,2 minutos
+77,3 minutes,3 minutos
+78,4 minutes,4 minutos
+79,6 minutes,6 minutos
+80,7 minutes,7 minutos
+81,8 minutes,8 minutos
+82,9 minutes,9 minutos
+83,11 minutes,11 minutos
+84,12 minutes,12 minutos
+85,13 minutes,13 minutos
+86,14 minutes,14 minutos
+87,Religious Resumable Timer,Timer Religioso Resumível
+88,Timer continues from the moment it was interrupted on recapture,O timer continua do momento em que foi interrompido ao recapturar.
+89,Wonder Timer,Timer de Maravilha
+90,Time required to defend wonder,Tempo requerido para defender uma maravilha.
+91,Wonder Last Stand,Última Maravilha em Pé
+92,Destroying finished wonder will eliminate owner,Destruir uma maravilha terminada eliminará o jogador que a construiu.
+93,Wonder Scale Cost,Escala de Custo de Maravilha
+94,Scale cost of wonder based on amount of players. This defines additional amount of all resources per player. Price starts at 3000 of each resource.,Escala o custo da maravilha com base no número de jogadores. Isso define a quantidade adicional de todos os recursos por jogador. O preço começa em 3.000 de cada recurso.
+95,0 per player,0 por jogador
+96,250 per player,250 por jogador
+97,375 per player,375 por jogador
+98,500 per player,500 por jogador
+99,750 per player,750 por jogador
+100,1000 per player,1000 por jogador
+101,1500 per player,1500 por jogador
+102,2000 per player,2000 por jogador
+103,Game Settings,Configurações do Jogo
+104,Tributes,Tributos
+105,Players can send resources to allies,Jogadores podem enviar recursos para aliados.
+106,Diplomacy,Diplomacia
+107,Players can set their own alliances,Jogadores podem definir suas próprias alianças.
+108,Team Vision,Visão de Equipe
+109,Shared vision between allies,Visão compartilhada entre aliados.
+110,None,Nenhum
+111,Requires Market,Requer Mercado
+112,Always,Sempre
+113,Map Vision,Visão do Mapa
+114,Starting vision over the map,Visãp inicial sobre o mapa
+115,Concealed,Oculto
+116,Explored,Explorado
+117,Revealed,Revelado
+118,Starting Age,Era Inicial
+119,Initial age for all players,Era inicial para todos os jogadores
+120,Dark Age,Era das Trevas (I)
+121,Feudal Age,Era Feudal (II)
+122,Castle Age,Era dos Castelos (III)
+123,Imperial Age,Era Imperial (IV)
+124,Late-Imperial Age,Pós Era Imperial (IV Avançado)
+125,Ending Age,Era Final
+126,Final age for all players,Era final para todos os jogadores
+127,Technology Age,Tecnologia Inicial
+128,Initial technologies researched for all players,Tecnologias iniciais pesquisadas para todos os jogadores
+129,Starting Resources,Recursos Iniciais
+130,Starting resources for all players,Quantidade de recursos iniciais para todos os jogadores
+131,Normal,Normais
+132,High,Altos
+133,Very High,Muito Altos
+134,Maximum,Máximos
+135,Reveal FOW on Elimination,Revela Névoa na Eliminação
+136,Removes FOW for eliminated player,Remove a Névoa de Guerra para jogadores eliminados
+137,Match Settings,Configurações da partida
+138,Show Score,Mostrar Pontuação
+139,Player Scores are visible when Pinned Player Information is On,Pontuação dos Jogadores é visivel quando a opção Mostrar Informações do Jogador Fixado estiver Ativa
+140,Score Show Placement,Mostrar Colocação Geral
+141,"Show current solo place in score mode ranking. Team score is evaluated only at the end of the game, if team victory is allowed. Score victory condition does not use same metric as default score.","Mostra a colocação solo no ranking de pontuação. A pontuação da equipe é avaliada apenas no fim do jogo se a Vitória em Equipe estiver habilitada. A condição de vitória por pontuação não utiliza a mesma metrica da pontuação padrão."
+142,Score Timer,Timer de Pontuação
+143,Time after which will score decide the game,Tempo requerido para decidir o jogo por pontuação
+144,Min Population Capacity,Capacidade Mínima de População
+145,Changes initial population capacity without houses. Will not exceed maximum population capacity.,Altera a capacidade inicial da população sem casas. Não excederá a capacidade máxima da população.
+146,Max Population Capacity,Capacidade Máxima de População
+147,Changes maximum population capacity. Requires houses to reach it.,Altera a capacidade máxima da população. Requer casas para alcançar.
+148,0,0
+149,25,25
+150,50,50
+151,75,75
+152,100,100
+153,125,125
+154,150,150
+155,175,175
+156,200,200
+157,225,225
+158,250,250
+159,275,275
+160,300,300
+161,350,350
+162,400,400
+163,450,450
+164,500,500
+165,550,550
+166,600,600
+167,650,650
+168,700,700
+169,750,750
+170,800,800
+171,850,850
+172,900,900
+173,950,950
+174,1000,1000
+175,10000,10000
+176,Starting Villagers,Aldeões Iniciais
+177,Changes initial villager count for each player,Altera a quantidade de aldeões que cada jogador começa
+178,1,1
+179,2,2
+180,3,3
+181,4,4
+182,5,5
+183,6,6
+184,7,7
+185,8,8
+186,9,9
+187,10,10
+188,15,15
+189,20,20
+190,30,30
+191,35,35
+192,40,40
+193,45,45
+194,Starting Keep,Castelo Inicial
+195,Every players starts with a Keep near start,Cada jogador começa com uma Torre de Menagem próximo do ponto inicial
+196,Legacy Settings,Configurações Legadas
+197,Starting King,Início com Rei
+198,Every players starts with a King near start,Cada jogador começa com um Rei próximo do ponto inicial
+199,Ding,Ding
+200,Easter Egg,Easter Egg
+201,Early Market,Mercado Antecipado
+202,Allows construction of the market in Dark Age,Permite a construção de um Mercado na Era das Trevas
+203,Tree Bombardment,Cerco Contra Árvores
+204,Allows siege and ships with target ground to destroy trees,Permite que árvores sejam derrubadas por armas de cerco e navios que ataquem o chão
+205,Simulation Speed,Velocidade de Simulação
+206,Changes game simulation ticks. This option can not be used in multiplayer and will be disabled.,Altera os tiques da simulação do jogo. Esta opção não pode ser usada no modo multijogador e estará desativada.
+207,Game Rates,Ritmo de Jogo
+208,"Multiplies all of the following gathering rates, construction speed, repair rate and production speed by selected value.","Multiplica as taxas de coleta, velocidade de construção, taxa de reparo e velocidade de produção pelo valor selecionado."
+209,1x,1x
+210,2x,2x
+211,3x,3x
+212,4x,4x
+213,5x,5x
+214,6x,6x
+215,7x,7x
+216,8x,8x
+217,9x,9x
+218,10x,10x
+219,0.95x,0.95x
+220,0.90x,0.90x
+221,0.85x,0.85x
+222,0.80x,0.80x
+223,0.75x,0.75x
+224,20x,20x
+225,Town Center Restrictions,Restrição de Centros da Cidade
+226,Disables construction of additional Town Centers,Desabilita a construção de Centros da Cidade adicionais
+227,None,Nenhuma
+228,Normal,Normal
+229,Landmarks,Marcos
+230,Protect your teammates.,Proteja seus companheiros
+231,%1PLAYER_NAME% surrendered in solidarity with his teammate,%1PLAYER_NAME% se rendeu em solidariedade ao seu companheiro.
+232,%1MINUTES_REMAINING% minutes until Treaty Ends,%1MINUTES_REMAINING% minutos até o Fim do Tratado de Paz
+233,"Treaty is over, prepare for bloodshed.","O Tratado de Paz acabou, preparem-se para o derramamento de sangue."
+234,Relations,Relaçes
+235,Friendship,Amizade
+236,Neutrality,Neutralidade
+237,Hostility,Hostilidade
+238,Current stance,Postura atual
+239,Become friendly to %1PLAYER_NAME%,Tornar-se amigo de %1PLAYER_NAME%
+240,Become neutral to %1PLAYER_NAME%,Tornar-se neutro com %1PLAYER_NAME%
+241,Become hostile to %1PLAYER_NAME%,Tornar-se hostil com %1PLAYER_NAME%
+242,Scattered Start,Início Disperso
+243,Empowered King,Rei Poderoso
+244,King will have additional bonuses and abilities,O Rei terá bônus e habilidades adicionais
+245,Team Balance,Balanceamento de Equipes
+246,"Should team lose a player, remaining members will share his population capacity and resources. Dynamic teams are not eligible for this.","Caso a equipe perca um jogador, os membros restantes compartilharão sua capacidade populacional e recursos. Equipes dinâmicas não são elegíveis para isso."
+247,Population,População
+248,Population & Resources,População e Recursos
+249,No Dock,Sem Doca
+250,"Disables construction of docks in any age, not advised to be used on maps that separate players only by water.",Desabilita a construção de docas em qualquer era. Não é aconselhável utilizar em mapas que separam os jogadores apenas pela água.
+251,Medium,Médios
+252,Fight until the bitter end.,Lute até o amargo fim.
+253,Prevail until the end.,Prevaleça até o fim.
+254,"Monarch is subject to no earthly authority, deriving his right to rule directly from the will of God. Just don't question him!","O monarca não está sujeito a nenhuma autoridade terrena, derivando seu direito de governar diretamente da vontade de Deus. Apenas não o questione!"
+255,King,Rei
+256,Fortified,Fortificado
+257,Failed to protect %1PLAYER_NAME%.,Falhou em proteger %1PLAYER_NAME%.
+258,All other teams crumbled.,Todas as outras equipes desmoronaram.
+259,Annihilate everything.,Aniquile Tudo.
+260,Enable AI Takeovers,Permitir Controle de IA
+261,"Players that quit will be replaced by AI, instead of being eliminated.",Jogadores que saírem serão substituçãos por IAs ao invés de serem eliminados.
+262,Truly a king of everyone you are.,você realmente é o rei de todos.
+263,Failed to protect the king.,Falhou em proteger o rei.
+264,%1PLAYER_NAME% assassinated,%1PLAYER_NAME% assassinado
+265,Enemy attacking %1PLAYER_NAME%'s king,Inimigos atacando o rei de %1PLAYER_NAME%
+266,King under attack,Rei sob ataque!
+267,"""%1PLAYER_NAME% conquered""","""%1PLAYER_NAME% foi conquistado"""
+268,Your empire has been conquered.,Seu império foi conquistado.
+269,Conquered all enemies.,Conquistou todos os inimigos.
+270,Survive and outshine everyone.,Sobrevida e ofusque a todos.
+271,Your empire was forgotten by the history.,Seu império foi esquecido pela história.
+272,Your Empire shines brightest.,Seu império se sobressaiu.
+273,Still waits %1PLAYER_NAME% for Godot.,%1PLAYER_NAME% ainda está Esperando Godot.
+274,%1PLAYER_NAME% couldn't withstand the glory of the wonder,%1PLAYER_NAME% não conseguiu resistir à glória da Maravilha
+275,Building a wonder,Construindo uma Maravilha
+276,Destroyed Landmark,Destruiu um Marco
+277,Failed to hold the wonder.,Falhou em proteger a Maravilha.
+278,Player Settings,Configuração de Jogadores
+279,Enforce Colors,Forçar Cores
+280,"Fixes colors for diplomacy. Causes automatic update of colors for each slot, whenever game causes conflicting change. This option disables team colors and makes them unavailable.",Fixa as cores para diplomacia. Atualiza automaticamente as cores para cada espaço do lobby sempre que o jogo causar alterações conflitantes. Esta opção desativa as cores das equipes e as torna indisponíveis.
+281,Used by Enforce Colors to determine which color is used by this slot. Requires Enforce Colors to be allowed.,Usado pela opção Forçar Cores para determinar qual cor será utilizada por esse espaço. Requer Forçar Cores habilitado.
+282,Blue,Azul
+283,Red,Vermelho
+284,Yellow,Amarelo
+285,Green,Verde
+286,Turquoise,Turquesa
+287,Purple,Roxo
+288,Orange,Laranja
+289,Pink,Rosa
+290,Grey,Cinza
+291,Enforced Slot 1 Color,Cor Forçada Para o Espaço 1
+292,Enforced Slot 2 Color,Cor Forçada Para o Espaço 2
+293,Enforced Slot 3 Color,Cor Forçada Para o Espaço 3
+294,Enforced Slot 4 Color,Cor Forçada Para o Espaço 4
+295,Enforced Slot 5 Color,Cor Forçada Para o Espaço 5
+296,Enforced Slot 6 Color,Cor Forçada Para o Espaço 6
+297,Enforced Slot 7 Color,Cor Forçada Para o Espaço 7
+298,Enforced Slot 8 Color,Cor Forçada Para o Espaço 8
+299,Unit Rates,Ritmo de Unidades
+300,Multiplies unit movement maximum speed by selected value.,Multiplica a velocidade máxima de movimento das unidades pelo valor selecionado.
+301,1.05x,1.05x
+302,1.10x,1.10x
+303,1.15x,1.15x
+304,1.20x,1.20x
+305,1.25x,1.25x
+306,1 minute until Treaty Ends,1 minuto até o Tratado de Paz acabar
+307,Prepare for the war.,Prepare-se para a guerra.
+308,This was not supposed to happen.,Isso não devia ter acontecido.
+309,Pen is truly strongest weapon in history.,Bem que dizem que a pena é a arma mais poderosa da história.
+310,%1MINUTES_REMAINING% minutes until Game Ends,%1MINUTES_REMAINING% minutos para o Fim do Jogo
+311,1 minute until Game Ends,1 minuto para o Fim do Jogo
+312,Survive and outshine everyone. Rank %1RANK_POSITION%.,Sobreviva e ofusque a todos. Rank %1RANK_POSITION%.
+313,%1PLAYER_NAME% bowed down before new god,%1PLAYER_NAME% curvou-se a um novo deus
+314,1.50x,1.50x
+315,1.75x,1.75x
+316,Toggle Objectives,Alternar Objetivos
+317,Switches between showing objectives or temporarily hiding them.,Alterna entre mostrar e ocultar os objetivos.
+318,Advanced Game Settings,Advanced Game Settings
+319,Feedback,Feedback
+320,Match Settings,Configurações da Partida
+321,Mod version:,Versão do Mod
+322,Nomad AGS,Nômade AGS
+323,"Nomad is based on well known other nomad mod. This is based on Advanced Game Settings and due to that it provides diplomacy and few options that stays true to nomad nature.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings","Nômade AGS é baseado em outro mod nômade bem conhecido. Esse modo no AGS fornece diplomacia e poucas opções que permanecem fiéis à natureza nômade.\n\nAjuda, feedback, relatórios de bugs e contribuições para o modo podem ser feitos em:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+324,Wonder Construction,Construção de Maravilha
+325,Enables Wonder construction without Wonder win condition or Conquest win condition with Conquest Wonder selected.,Permite a construção de Maravilha sem a condição de vitória associada ou a vitória por Conquista com a opção Conquista de Maravilhas selecionada.
+326,Double Workers,Produção Dobrada
+327,"Halves the cost and production speed of all economic units: villager, trader, fishing boat for all players.","Reduz pela metade o custo e tempo de produção para todas as unidades econômicas como aldeão, mercador e barco de pesca para todos os jogadores."
+328,Handicap Settings,Configurações de Vantagem
+329,Handicap Type,Tipo de Vantagem
+330,"If not disabled, provides to each player slot level of bonus specified for that slot. Bonus type is either Economic, Military or Both.","Se não estiver desabilitado, fornece a cada jogador o nível de bônus especificado para esse espaço. O tipo de bônus é Econômico, Militar ou Ambos."
+331,Both,Ambos
+332,Military,Militar
+333,Economic,Econômica
+334,Slot 1 Handicap,Vantagem do Espaço 1
+335,Determines value of bonus provided by handicap to player on this slot in lobby.,Determina o valor de bônus provido ao jogador nesse espaço no lobby.
+336,10%,10%
+337,20%,20%
+338,30%,30%
+339,40%,40%
+340,50%,50%
+341,60%,60%
+342,70%,70%
+343,80%,80%
+344,90%,90%
+345,100%,100%
+346,150%,150%
+347,200%,200%
+348,250%,250%
+349,300%,300%
+350,Slot 2 Handicap,Vantagem do Espaço 2
+351,Slot 3 Handicap,Vantagem do Espaço 3
+352,Slot 4 Handicap,Vantagem do Espaço 4
+353,Slot 5 Handicap,Vantagem do Espaço 5
+354,Slot 6 Handicap,Vantagem do Espaço 6
+355,Slot 7 Handicap,Vantagem do Espaço 7
+356,Slot 8 Handicap,Vantagem do Espaço 8
+357,Treasures,Tesouros
+358,Few treasures will appear randomly around the map.,Alguns tesouros aparecerão aleatoriamente pelo mapa
+359,Low,Baixos
+360,"Conquer majority of city-states to ensure victory. Each players starts with few monks and has to find and takeover city.\nCivilization choice has no effect. Population is limited to 150. Team that controls 75% of cities will win the game.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings","Conquiste a maioria das cidades-estado para garantir a vitória. Cada jogador começa com poucos monges e precisa encontrar e dominar a cidade.\nA escolha da civilização não tem efeito. A população é limitada a 150. A equipe que controlar 75% das cidades vencerá o jogo.\n\nAjuda, feedback, relatórios de bugs e contribuições para o modo podem ser feitos em:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
+361,City-State Wars,Guerra de Cidades-Estado
+362,Control majority of cities,Controle a maioria das cidades
+363,City %1NAMEORNUMBER% ,Cidade %1NAMEORNUMBER% 
+364,%1PLAYER_NAME% was assimilated,%1PLAYER_NAME% foi assimilado
+365,You are approaching Culture Victory,você está se aproximando de uma Vitória Cultural
+366,Your team is approaching Culture Victory,Sua equipe está se aproximando de uma Vitória Cultural
+367,Enemy is approaching Culture Victory,O inimigo está se aproximando de uma Vitória Cultural
+368,Capturing City-State,Capturando Cidade-Estado
+369,Ally capturing City-State,Aliado capturando Cidade-Estado
+370,Enemy capturing City-State,Inimigo capturando Cidade-Estado
+371,City-State captured,Cidade-Estado capturada
+372,Ally captured City-State,Aliado capturou Cidade-Estado
+373,Enemy captured City-State,Inimigo capturou Cidade-Estado
+374,Contesting City-State,Contestando Cidade-Estado
+375,Ally contesting City-State,Aliado contestando Cidade-Estado
+376,Enemy contesting City-State,Inimigo contestando Cidade-Estado
+377,Liberated City-State,Libertou Cidade-Estado
+378,Ally liberated City-State,Aliado libertou Cidade-Estado
+379,City-State lost,Cidade-Estado perdida
+380,Liberating City-State,Libertando Cidade-Estado
+381,Ally liberating City-State,Aliado libertandoCidade-Estado
+382,Enemy liberating City-State,Inimigo libertando Cidade-Estado
+383,Team Conquest,Conquista de Equipe
+384,"Players are conquered only if all their teammates conquerable buildings are destroyed. Does not work with diplomacy teams, due to how relations work.","Os jogadores são conquistados somente se todos os edifícios conquistáveis de seus companheiros de equipe forem destruídos. Não funciona com equipes diplomáticas, pela forma como funcionam as relações."
+385,Spawn Scout (Scattered),Gerar Batedor (Disperso)
+386,"Spawns scout in addition to villagers, when Scattered Settlement start is selected.","Gera um batedor juntamente com os aldeões, quando o início com Assentamento Disperso é selecionado."
+387,Religious Single Central Site,Local Sagrado Único
+388,Replaces all sacred sites generated by map generator with single site that is placed as close to center of the map as possible.,Substitui todos os locais sagrados gerados pelo gerador de mapas por um único local colocado o mais próximo possível do centro do mapa.
+389,Add House Capacity,Aumentar Capacidade de Casas
+390,Additional population capacity for houses.,Capacidade populacional adicional para casas.
+391,Tournament Balance,Balanceamento de Torneio
+392,For full list of changes visit the official GitHub repository.,"Para a lista com todas as alterações, visite o repositório oficial no GitHub"
+393,Nomad Tournament AGS,Torneio Nômade AGS
+394,Preconfigured version of Nomad for The Nomadic Clash organized by MrMerlin.,Versão preconfigurada do Nomad for The Nomadic Clash organizado pelo MrMerlin.
+395,King of the Hill AGS,Rei da Colina AGS
+396,"Provides quick way to play King of the Hill on any map.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings","Fornece uma maneira rápida de jogar Rei da Colina em qualquer mapa.\n\nAjuda, feedback, relatórios de bugs e contribuições para o modo podem ser feitos em:\nhttps://github.com/search?q=AOE4-AdvancedGameSettings"
